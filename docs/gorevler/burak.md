@@ -22,6 +22,7 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 - **Destek:** —
 - **Çıktı:** Benchmark raporu (poster için de kullanılacak)
 - **Kabul kriteri:** Aday modeller: Llama 3.x 8B Instruct (q4_K_M), Gemma 9B, Qwen 7B. 10 Türkçe CV ile: JSON uyumu, yetkinlik doğruluğu, token/sn, RAM. CPU ve (varsa) GPU ölçümü. Kazanan model + yedek model seçildi.
+- **Devam notu (24.10.2026):** Yapılan: henüz başlanmadı; Ataberk'in T-007 PR'ı (#10) incelendi, Anıl onayladı. · Sıradaki adım: Docker Desktop'ı kur (`winget install Docker.DockerDesktop`, yönetici izni + yeniden başlatma isteyebilir) → #10 birleşince `cp .env.example .env`, `make up`, `make model` → #10'a "denedim" yorumu yazıp onayla. Sonra benchmark scripti (`ai/benchmark/`): 3 aday model × T-019'daki sentetik CV'ler, ölçütler kabul kriterindeki gibi. · Açık sorular / engeller: Ollama imaj sürümü sabitlenmeli (#10'a not yazıldı); bu bilgisayarda GPU var mı bakılmadı. · Branch: yok (başlarken `burak/ollama-benchmark` açılacak)
 
 ### T-019 · Etiketli değerlendirme veri seti (altın standart)
 
@@ -31,6 +32,7 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 - **Destek:** Ataberk, Anıl
 - **Çıktı:** eval/dataset (anonim)
 - **Kabul kriteri:** En az 50 anonimleştirilmiş CV (TR + EN, farklı formatlar, 5 taranmış). Her CV'nin yetkinlikleri 2 kişi tarafından elle etiketlendi; anlaşmazlıklar 3. kişiyle çözüldü. Gerçek CV'ler için sahiplerinden yazılı izin.
+- **Devam notu (24.10.2026):** Yapılan: `ai/eval/` altyapısı main'de (#3, #7): README (süreç + redaksiyon adımları), etiketleme kılavuzu, izin formu taslağı, 82 yetkinlikli geçici liste, 3 sentetik CV, `check_labels.py` / `agreement.py` + testler. Python 3.12 kurulu, repo kökünde `.venv`. · Sıradaki adım: (1) `ai/eval/izin-formu.md`'yi danışmana onaylat (Google Drive/yurt dışı ve silme tarihi soruları); (2) CV topla: en az 50, TR+EN, ≥ 5 taranmış; README 1. adımdaki gerçek redaksiyon + `pdftotext` kontrolü; Drive'a `cv-NNN.pdf`, `ai/eval/dataset/manifest.csv`'ye satır; (3) Ataberk ve Anıl'la etiketleme (atama tablosu README'de); ilerleme: `.venv\Scripts\python ai/eval/scripts/check_labels.py`. · Açık sorular / engeller: 01.11 son tarihi 50 CV × 2 etiketleyici için sıkışık; kick-off'ta konuşulacak (#4'e yorum yazıldı). · Branch: `burak/degerlendirme-veri-seti`
 
 ### T-024 · UML diyagramları
 
