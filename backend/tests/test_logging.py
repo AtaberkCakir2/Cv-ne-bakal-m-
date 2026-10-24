@@ -13,7 +13,13 @@ from app.core.logging import JsonFormatter, mask_pii, request_id_var
         ("tel: 0532 123 45 67", "tel: [TELEFON]"),
         ("tel: +90 532-123-45-67", "tel: [TELEFON]"),
         ("tel: 5321234567", "tel: [TELEFON]"),
+        ("tckn 12345678901 girildi", "tckn [TCKN] girildi"),
+        ("tel 05321234567", "tel [TELEFON]"),  # 11 hane ama 0 ile başlıyor → TCKN değil, telefon
         ("analiz süresi 61234 ms, 150 ilan", "analiz süresi 61234 ms, 150 ilan"),
+        (
+            "analiz 3f6c2a9e8d1b4c7a9e2f1a2b3c4d5e6f",
+            "analiz 3f6c2a9e8d1b4c7a9e2f1a2b3c4d5e6f",
+        ),  # istek kimliği bozulmaz
     ],
 )
 def test_mask_pii(raw: str, expected: str) -> None:
