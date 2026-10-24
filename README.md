@@ -62,3 +62,10 @@ Servisler:
 5. `contracts/` değişiklikleri için üç kişinin de onayı gerekir.
 
 Kurallar ve Claude talimatları: [CLAUDE.md](CLAUDE.md)
+
+## Görevler ve plan
+
+- Kişi bazlı görev listeleri (durumların tek doğru kaynağı): [docs/gorevler/](docs/gorevler/)
+- Başlangıç planı (Excel + PDF, referans): [docs/plan/](docs/plan/)
+
+Claude Code'u repo klasöründe açıp **"başlıyorum"** demeniz yeterli: repoyu günceller, ekipteki değişiklikleri özetler ve günün görevini önerir.

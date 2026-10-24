@@ -1,0 +1,382 @@
+# Anıl — Görevler
+
+**Alan:** Backend API, Web/Masaüstü ve Proje Yönetimi · **37 görev · 299 saat**
+
+Bu dosya Anıl'ın görev listesidir ve görev durumlarının tek doğru kaynağıdır. Sadece Anıl (veya onun Claude'u) günceller.
+
+**Durum nasıl güncellenir:** İlgili görevin `- **Durum:**` satırını şu değerlerden biriyle değiştirin: `Yapılacak`, `Devam Ediyor`, `Engellendi`, `Tamamlandı`. Durum değişikliği, işin kendisiyle aynı PR'da gönderilir. `Engellendi` olursa sebebini **Not** satırına yazın ve gruba haber verin.
+
+Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, referans). Tarih veya kapsam değişirse Excel değil bu dosya güncellenir.
+
+---
+
+## Ön Hazırlık
+
+### T-000 · Fizibilite raporu (revize 2)
+
+- **Durum:** Tamamlandı
+- **Tarih:** 14.09.2026 – 18.10.2026 · **Öncelik:** P0 · **Efor:** 20 saat · **Alan:** Proje Yönetimi
+- **Bağımlılık:** —
+- **Destek:** Ataberk, Burak
+- **Çıktı:** Fizibilite raporu PDF
+- **Kabul kriteri:** Problem, pazar, mimari, maliyet, risk ve takvim bölümleri yazıldı; danışmana teslim edildi.
+- **Not:** Rapor danışmana teslim edildi.
+
+---
+
+## Sprint 0
+
+### T-001 · Kick-off toplantısı ve rol dağılımı
+
+- **Durum:** Yapılacak
+- **Tarih:** 19.10.2026 – 19.10.2026 · **Öncelik:** P0 · **Efor:** 3 saat · **Alan:** Proje Yönetimi
+- **Bağımlılık:** —
+- **Destek:** Ataberk, Burak
+- **Çıktı:** Toplantı notu + RACI
+- **Kabul kriteri:** RACI onaylandı; iletişim kanalı (Discord/WhatsApp) açıldı; haftalık toplantı günü ve danışman görüşme periyodu (2 haftada bir) belirlendi.
+
+### T-002 · Kanban panosu kurulumu (GitHub Projects)
+
+- **Durum:** Yapılacak
+- **Tarih:** 19.10.2026 – 25.10.2026 · **Öncelik:** P1 · **Efor:** 3 saat · **Alan:** Proje Yönetimi
+- **Bağımlılık:** T-001
+- **Destek:** —
+- **Çıktı:** GitHub Projects panosu
+- **Kabul kriteri:** Bu Excel'deki görevler issue olarak açıldı; etiketler (alan, öncelik, sprint), milestone'lar ve sprint görünümü hazır.
+
+### T-003 · MVP kapsamının dondurulması (MoSCoW)
+
+- **Durum:** Yapılacak
+- **Tarih:** 19.10.2026 – 25.10.2026 · **Öncelik:** P0 · **Efor:** 4 saat · **Alan:** Proje Yönetimi
+- **Bağımlılık:** T-001
+- **Destek:** Ataberk, Burak
+- **Çıktı:** Kapsam dokümanı
+- **Kabul kriteri:** Must/Should/Could/Won't listesi yazıldı. Karar: v1.0 = Web + Windows/macOS (Electron) + Android. iOS = v1.1. Kapsam değişikliği sadece ekip kararıyla.
+
+### T-004 · Arayüz sözleşmelerinin yazılması (JSON şemaları)
+
+- **Durum:** Devam Ediyor
+- **Tarih:** 19.10.2026 – 25.10.2026 · **Öncelik:** P0 · **Efor:** 8 saat · **Alan:** Proje Yönetimi
+- **Bağımlılık:** T-003
+- **Destek:** Ataberk, Burak
+- **Çıktı:** /contracts klasörü + OpenAPI v0
+- **Kabul kriteri:** Üç sözleşme: (1) ilan/yetkinlik veri formatı (Ataberk→Burak), (2) analiz sonucu JSON şeması (Burak→Anıl), (3) OpenAPI taslağı. Hepsi repoda /contracts altında; değişiklik PR ile.
+- **Not:** Taslaklar contracts/ altında. Üç kişinin birlikte okuyup onaylaması gerekiyor.
+
+### T-021 · Wireframe ve kullanıcı akışları (Figma)
+
+- **Durum:** Yapılacak
+- **Tarih:** 19.10.2026 – 25.10.2026 · **Öncelik:** P0 · **Efor:** 10 saat · **Alan:** UI / UX
+- **Bağımlılık:** T-003
+- **Destek:** —
+- **Çıktı:** Figma linki
+- **Kabul kriteri:** Ekranlar: giriş/kayıt, KVKK onayı, hedef pozisyon seçimi, CV yükleme, analiz bekleme, sonuç panosu, kaynak detayı (pop-up), geçmiş analizler, profil/ayarlar, hesap silme.
+
+### T-025 · Bilişim Kongresi posteri
+
+- **Durum:** Tamamlandı
+- **Tarih:** 19.10.2026 – 04.11.2026 · **Öncelik:** P0 · **Efor:** 12 saat · **Alan:** Kongre / TÜBİTAK
+- **Bağımlılık:** T-021, T-024 (Burak), T-018 (Burak)
+- **Destek:** Ataberk, Burak
+- **Çıktı:** Poster PDF (baskı formatında)
+- **Kabul kriteri:** Problem, mimari diyagram, akış, arayüz prototipi ve ilk benchmark sonuçları. Danışman onayı alındı, baskıya hazır PDF teslim edildi. SON TARİH: 04.11.2026.
+- **Not:** Poster hazırlandı ve gönderildi.
+
+### T-022 · Tasarım sistemi
+
+- **Durum:** Yapılacak
+- **Tarih:** 26.10.2026 – 01.11.2026 · **Öncelik:** P1 · **Efor:** 6 saat · **Alan:** UI / UX
+- **Bağımlılık:** T-021
+- **Destek:** —
+- **Çıktı:** Figma bileşen kütüphanesi
+- **Kabul kriteri:** Renk paleti, tipografi, buton/kart/grafik bileşenleri, açık/koyu tema, erişilebilirlik (kontrast AA).
+
+### T-023 · FastAPI proje iskeleti
+
+- **Durum:** Yapılacak
+- **Tarih:** 26.10.2026 – 01.11.2026 · **Öncelik:** P0 · **Efor:** 8 saat · **Alan:** Backend API
+- **Bağımlılık:** T-007 (Ataberk)
+- **Destek:** Ataberk
+- **Çıktı:** backend/ iskeleti
+- **Kabul kriteri:** Katmanlı yapı (routers / services / repositories / schemas), pydantic-settings, yapılandırılmış JSON log, /health ve /health/ready, otomatik OpenAPI, global hata formatı.
+
+---
+
+## Sprint 1
+
+### T-037 · Kimlik doğrulama ve yetkilendirme
+
+- **Durum:** Yapılacak
+- **Tarih:** 02.11.2026 – 15.11.2026 · **Öncelik:** P0 · **Efor:** 16 saat · **Alan:** Backend API
+- **Bağımlılık:** T-023, T-012 (Ataberk)
+- **Destek:** —
+- **Çıktı:** /auth endpoint'leri + testler
+- **Kabul kriteri:** Kayıt/giriş, argon2 parola hash, JWT access (15 dk) + refresh (7 gün, rotasyonlu, DB'de hash), e-posta doğrulama, şifre sıfırlama, user/admin rolleri.
+
+### T-038 · CV yükleme endpoint'i
+
+- **Durum:** Yapılacak
+- **Tarih:** 02.11.2026 – 08.11.2026 · **Öncelik:** P0 · **Efor:** 8 saat · **Alan:** Backend API
+- **Bağımlılık:** T-023
+- **Destek:** Burak
+- **Çıktı:** POST /analyses
+- **Kabul kriteri:** Multipart, en fazla 5 MB ve 5 sayfa, MIME + magic byte kontrolü (sadece PDF). Dosya diske yazılmaz; bellekten kuyruğa aktarılır; SHA-256 hash kaydedilir.
+
+### T-026 · Poster baskı kontrolü ve teslim alma
+
+- **Durum:** Yapılacak
+- **Tarih:** 05.11.2026 – 05.11.2026 · **Öncelik:** P0 · **Efor:** 2 saat · **Alan:** Kongre / TÜBİTAK
+- **Bağımlılık:** T-025
+- **Destek:** —
+- **Çıktı:** Basılı poster
+- **Kabul kriteri:** Baskı provası renk/çözünürlük kontrolü; üniversiteden teslim alındı.
+
+### T-027 · Kongre sunumu ve canlı demo
+
+- **Durum:** Yapılacak
+- **Tarih:** 09.11.2026 – 15.11.2026 · **Öncelik:** P0 · **Efor:** 6 saat · **Alan:** Kongre / TÜBİTAK
+- **Bağımlılık:** T-026
+- **Destek:** Ataberk, Burak
+- **Çıktı:** Demo videosu + sunum
+- **Kabul kriteri:** Posterin yerleştirilmesi; 3 dakikalık anlatım provası (herkes sunabilmeli); yedek olarak 2 dk demo videosu.
+
+### T-039 · Asenkron analiz işi (Celery + Redis)
+
+- **Durum:** Yapılacak
+- **Tarih:** 09.11.2026 – 15.11.2026 · **Öncelik:** P0 · **Efor:** 14 saat · **Alan:** Backend API
+- **Bağımlılık:** T-038
+- **Destek:** Burak
+- **Çıktı:** Kuyruk altyapısı
+- **Kabul kriteri:** POST /analyses → 202 + analysis_id; durum: queued/processing/done/failed; ilerleme SSE veya polling ile; görev zaman aşımı 180 sn; otomatik 1 tekrar deneme.
+
+### T-040 · Web arayüzü altyapısı (Electron ile ortak)
+
+- **Durum:** Yapılacak
+- **Tarih:** 09.11.2026 – 15.11.2026 · **Öncelik:** P0 · **Efor:** 8 saat · **Alan:** Web / Masaüstü
+- **Bağımlılık:** T-023, T-022
+- **Destek:** —
+- **Çıktı:** web/ iskeleti
+- **Kabul kriteri:** React + Vite + TypeScript, TanStack Query, React Router; OpenAPI'den otomatik TS istemci (openapi-typescript); ortam değişkenleri.
+
+---
+
+## Sprint 2
+
+### T-048 · Analiz sonuç ve katalog endpoint'leri
+
+- **Durum:** Yapılacak
+- **Tarih:** 16.11.2026 – 22.11.2026 · **Öncelik:** P0 · **Efor:** 10 saat · **Alan:** Backend API
+- **Bağımlılık:** T-039
+- **Destek:** —
+- **Çıktı:** Endpoint'ler + testler
+- **Kabul kriteri:** GET /analyses, /analyses/{id}, DELETE /analyses/{id}; GET /roles, /roles/{slug}/skills, /skills/{slug}/resources. Kullanıcı sadece kendi analizini görebilir (IDOR testi).
+
+### T-051 · Giriş, kayıt, şifre sıfırlama ve KVKK onay ekranları
+
+- **Durum:** Yapılacak
+- **Tarih:** 16.11.2026 – 22.11.2026 · **Öncelik:** P0 · **Efor:** 10 saat · **Alan:** Web / Masaüstü
+- **Bağımlılık:** T-040, T-037
+- **Destek:** —
+- **Çıktı:** Auth ekranları
+- **Kabul kriteri:** Form doğrulama, hata mesajları, token yenileme (otomatik), KVKK/açık rıza onay kutuları zorunlu.
+
+### T-052 · CV yükleme ve analiz bekleme ekranı
+
+- **Durum:** Yapılacak
+- **Tarih:** 16.11.2026 – 22.11.2026 · **Öncelik:** P0 · **Efor:** 8 saat · **Alan:** Web / Masaüstü
+- **Bağımlılık:** T-040, T-039
+- **Destek:** —
+- **Çıktı:** Yükleme ekranı
+- **Kabul kriteri:** Sürükle-bırak, dosya kontrolü, hedef pozisyon seçimi, ilerleme durumu (kuyrukta / analiz ediliyor), zaman aşımında anlamlı mesaj.
+
+### T-049 · Profil ve KVKK endpoint'leri
+
+- **Durum:** Yapılacak
+- **Tarih:** 23.11.2026 – 29.11.2026 · **Öncelik:** P0 · **Efor:** 10 saat · **Alan:** Backend API
+- **Bağımlılık:** T-037
+- **Destek:** —
+- **Çıktı:** /users/me endpoint'leri
+- **Kabul kriteri:** Profil güncelleme, hedef pozisyon; rıza kaydı (sürümlü); verilerimi indir (JSON); hesabımı sil (anında anonimleştirme, 30 gün içinde kalıcı silme).
+
+### T-053 · Sonuç panosu
+
+- **Durum:** Yapılacak
+- **Tarih:** 23.11.2026 – 29.11.2026 · **Öncelik:** P0 · **Efor:** 16 saat · **Alan:** Web / Masaüstü
+- **Bağımlılık:** T-052, T-048
+- **Destek:** —
+- **Çıktı:** Sonuç ekranı
+- **Kabul kriteri:** Uyum skoru göstergesi; mevcut / eksik yetkinlik grafiği; "150 ilanın %75'i" ifadeleri; kaynak kartları; pop-up detay; geri bildirim (1-5 yıldız); geçmiş analizler.
+
+---
+
+## Sprint 3
+
+### T-050 · Rate limit ve hata yönetimi
+
+- **Durum:** Yapılacak
+- **Tarih:** 30.11.2026 – 06.12.2026 · **Öncelik:** P1 · **Efor:** 6 saat · **Alan:** Backend API
+- **Bağımlılık:** T-037
+- **Destek:** —
+- **Çıktı:** Middleware
+- **Kabul kriteri:** Redis tabanlı sınır: analiz 5/saat/kullanıcı, giriş 10/dk/IP, genel 100/dk. RFC 7807 hata formatı; 429 için Retry-After başlığı.
+
+### T-059 · Electron masaüstü uygulaması
+
+- **Durum:** Yapılacak
+- **Tarih:** 30.11.2026 – 13.12.2026 · **Öncelik:** P0 · **Efor:** 14 saat · **Alan:** Web / Masaüstü
+- **Bağımlılık:** T-053
+- **Destek:** —
+- **Çıktı:** Kurulum dosyaları
+- **Kabul kriteri:** Web arayüzünü sarmalar; contextIsolation açık, nodeIntegration kapalı; electron-builder ile Windows (NSIS) ve macOS (dmg); electron-updater + GitHub Releases ile otomatik güncelleme.
+
+### T-065 · KVKK aydınlatma metni, açık rıza, gizlilik politikası, kullanım koşulları
+
+- **Durum:** Yapılacak
+- **Tarih:** 30.11.2026 – 06.12.2026 · **Öncelik:** P0 · **Efor:** 8 saat · **Alan:** Güvenlik & KVKK
+- **Bağımlılık:** T-030 (Burak)
+- **Destek:** Burak
+- **Çıktı:** Yasal metinler (web sayfası)
+- **Kabul kriteri:** Danışman/hukuk birimi kontrolü; uygulama içi onay; consents tablosuna sürüm kaydı; gizlilik politikası URL'si (mağazalar için zorunlu); VERBİS yükümlülüğü değerlendirildi.
+
+### T-069 · API entegrasyon testleri
+
+- **Durum:** Yapılacak
+- **Tarih:** 07.12.2026 – 13.12.2026 · **Öncelik:** P0 · **Efor:** 10 saat · **Alan:** Test & QA
+- **Bağımlılık:** T-048, T-049
+- **Destek:** —
+- **Çıktı:** tests/api
+- **Kabul kriteri:** pytest + httpx + testcontainers (gerçek Postgres/Redis); auth, yükleme, analiz, silme, yetki (IDOR) akışları. Kapsama ≥ %70.
+
+---
+
+## Sprint 4
+
+### T-076 · Google Play kapalı test (14 gün, 12+ testçi)
+
+- **Durum:** Yapılacak
+- **Tarih:** 21.12.2026 – 04.01.2027 · **Öncelik:** P0 · **Efor:** 6 saat · **Alan:** Mobil
+- **Bağımlılık:** T-062 (Burak), T-065
+- **Destek:** Burak
+- **Çıktı:** Kapalı test kanalı
+- **Kabul kriteri:** Play Console hesabı; veri güvenliği formu, gizlilik politikası URL'si, içerik derecelendirmesi; AAB yükleme. Yeni kişisel geliştirici hesaplarında üretime çıkmak için en az 12 testçiyle 14 gün kesintisiz kapalı test ZORUNLU → en geç 21.12.2026'da başlamalı.
+
+### T-078 · Beta / UAT planı ve beta kullanıcı toplama
+
+- **Durum:** Yapılacak
+- **Tarih:** 21.12.2026 – 27.12.2026 · **Öncelik:** P0 · **Efor:** 6 saat · **Alan:** Test & QA
+- **Bağımlılık:** T-053
+- **Destek:** Ataberk, Burak
+- **Çıktı:** UAT planı
+- **Kabul kriteri:** 20-30 öğrenci beta kullanıcısı; test senaryoları; geri bildirim formu + SUS anketi; hata bildirme kanalı.
+
+### T-080 · API dokümantasyonu ve README'ler
+
+- **Durum:** Yapılacak
+- **Tarih:** 21.12.2026 – 27.12.2026 · **Öncelik:** P1 · **Efor:** 4 saat · **Alan:** Dokümantasyon
+- **Bağımlılık:** T-048
+- **Destek:** —
+- **Çıktı:** docs/api + README
+- **Kabul kriteri:** OpenAPI açıklamaları ve örnekler; her modül için README (kurulum, çalıştırma, test).
+
+---
+
+## Sprint 5
+
+### T-082 · Beta / UAT yürütme
+
+- **Durum:** Yapılacak
+- **Tarih:** 28.12.2026 – 10.01.2027 · **Öncelik:** P0 · **Efor:** 10 saat · **Alan:** Test & QA
+- **Bağımlılık:** T-078, T-075 (Ataberk)
+- **Destek:** Ataberk, Burak
+- **Çıktı:** Beta raporu
+- **Kabul kriteri:** 2 hafta; günlük hata triyajı. Çıkış kriteri: kritik (P0) hata = 0, SUS ≥ 70, analiz başarı oranı ≥ %95.
+
+### T-084 · Beta hata düzeltmeleri — Backend ve istemciler
+
+- **Durum:** Yapılacak
+- **Tarih:** 28.12.2026 – 10.01.2027 · **Öncelik:** P0 · **Efor:** 12 saat · **Alan:** Backend API
+- **Bağımlılık:** T-082
+- **Destek:** —
+- **Çıktı:** Kapanmış issue'lar
+- **Kabul kriteri:** API, web, Electron ve mobil hataları; regresyon testi.
+
+### T-089 · Masaüstü dağıtım
+
+- **Durum:** Yapılacak
+- **Tarih:** 04.01.2027 – 10.01.2027 · **Öncelik:** P1 · **Efor:** 4 saat · **Alan:** Web / Masaüstü
+- **Bağımlılık:** T-059
+- **Destek:** —
+- **Çıktı:** Release v1.0.0-rc
+- **Kabul kriteri:** Windows kurulum dosyası ve macOS dmg; imzasız kurulum uyarıları (SmartScreen/Gatekeeper) için kullanıcı rehberi; indirme sayfası.
+
+### T-090 · Mağaza kayıtları
+
+- **Durum:** Yapılacak
+- **Tarih:** 04.01.2027 – 10.01.2027 · **Öncelik:** P1 · **Efor:** 5 saat · **Alan:** Mobil
+- **Bağımlılık:** T-076
+- **Destek:** Burak
+- **Çıktı:** Play Store kaydı
+- **Kabul kriteri:** Uygulama ikonu, ekran görüntüleri, kısa/uzun açıklama (TR+EN), kategori, iletişim e-postası, içerik derecelendirmesi.
+
+---
+
+## Sprint 6
+
+### T-092 · Kod dondurma ve v1.0.0 sürüm adayı
+
+- **Durum:** Yapılacak
+- **Tarih:** 13.01.2027 – 15.01.2027 · **Öncelik:** P0 · **Efor:** 2 saat · **Alan:** Go-Live
+- **Bağımlılık:** T-082
+- **Destek:** Ataberk, Burak
+- **Çıktı:** v1.0.0 etiketi
+- **Kabul kriteri:** Sadece kritik hata düzeltmesi; CHANGELOG; sürüm etiketi v1.0.0; release notları.
+
+### T-093 · Go-Live kontrol listesinin tamamlanması
+
+- **Durum:** Yapılacak
+- **Tarih:** 13.01.2027 – 15.01.2027 · **Öncelik:** P0 · **Efor:** 4 saat · **Alan:** Go-Live
+- **Bağımlılık:** T-092
+- **Destek:** Ataberk, Burak
+- **Çıktı:** İmzalı checklist + Go/No-Go kararı
+- **Kabul kriteri:** "Go-Live Kontrol Listesi" sayfasındaki tüm maddeler Tamamlandı; eksik madde varsa Go/No-Go toplantısında karar.
+
+### T-095 · Play Store üretim yayını
+
+- **Durum:** Yapılacak
+- **Tarih:** 18.01.2027 – 18.01.2027 · **Öncelik:** P0 · **Efor:** 2 saat · **Alan:** Go-Live
+- **Bağımlılık:** T-076, T-094 (Ataberk)
+- **Destek:** Burak
+- **Çıktı:** Play Store'da yayında
+- **Kabul kriteri:** Kapalı testten üretime yükseltme (aşamalı yayın %20 → %100); inceleme süresi için tampon bırakıldı.
+
+### T-099 · Final sunumu ve canlı demo
+
+- **Durum:** Yapılacak
+- **Tarih:** 25.01.2027 – 31.01.2027 · **Öncelik:** P0 · **Efor:** 8 saat · **Alan:** Dokümantasyon
+- **Bağımlılık:** T-098 (Burak)
+- **Destek:** Ataberk, Burak
+- **Çıktı:** Sunum dosyası
+- **Kabul kriteri:** Jüri sunumu; canlı demo + yedek video; herkesin kendi modülünü anlattığı bölümler.
+- **Not:** Tarih bölüm takvimine göre güncellenmeli.
+
+### T-100 · Proje retrospektifi ve v1.1 yol haritası
+
+- **Durum:** Yapılacak
+- **Tarih:** 25.01.2027 – 31.01.2027 · **Öncelik:** P2 · **Efor:** 2 saat · **Alan:** Proje Yönetimi
+- **Bağımlılık:** T-097 (Ataberk)
+- **Destek:** Ataberk, Burak
+- **Çıktı:** Yol haritası
+- **Kabul kriteri:** Ne iyi gitti / ne kötü gitti; v1.1 planı (iOS, LinkedIn PDF içe aktarma, mülakat soruları, öğrenme ilerleme takibi).
+
+---
+
+## Sürekli
+
+### T-005 · Sprint törenleri (tüm dönem)
+
+- **Durum:** Yapılacak
+- **Tarih:** 19.10.2026 – 31.01.2027 · **Öncelik:** P1 · **Efor:** 14 saat · **Alan:** Proje Yönetimi
+- **Bağımlılık:** T-001
+- **Destek:** Ataberk, Burak
+- **Çıktı:** Sprint notları
+- **Kabul kriteri:** Her sprint başında planlama (1 sa), sonunda demo + retro (1 sa); haftalık 15 dk durum toplantısı. Notlar wiki'de.
