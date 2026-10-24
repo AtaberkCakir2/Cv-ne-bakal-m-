@@ -93,8 +93,8 @@ def pick_pair(by_annotator: dict[str, list[dict[str, Any]]], cv_id: str) -> tupl
 def gold_draft(result: PairResult, skills_a: list[dict[str, Any]], skills_b: list[dict[str, Any]]) -> dict[str, Any]:
     by_a = {s["skill"]: s for s in skills_a}
     by_b = {s["skill"]: s for s in skills_b}
-    agreed = []
-    pending = []
+    agreed: list[dict[str, Any]] = []
+    pending: list[dict[str, Any]] = []
     for skill, lv_a, lv_b in result.level_pairs:
         if lv_a == lv_b:
             years = by_a[skill].get("years") if by_a[skill].get("years") == by_b[skill].get("years") else None
