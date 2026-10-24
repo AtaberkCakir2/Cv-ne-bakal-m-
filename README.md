@@ -68,4 +68,4 @@ Kurallar ve Claude talimatları: [CLAUDE.md](CLAUDE.md)
 - Kişi bazlı görev listeleri (durumların tek doğru kaynağı): [docs/gorevler/](docs/gorevler/)
 - Başlangıç planı (Excel + PDF, referans): [docs/plan/](docs/plan/)
 
-Claude Code'u repo klasöründe açıp **"başlıyorum"** demeniz yeterli: repoyu günceller, ekipteki değişiklikleri özetler ve günün görevini önerir.
+Claude Code'u repo klasöründe açıp **"başlıyorum"** demeniz yeterli: repoyu günceller, dokümanları okur, ekipteki değişiklikleri özetler, yarım kalan işinizi bulur ve günün görevini önerir. Gün sonunda **"bitiriyorum"** deyin: nerede kaldığınızı görev dosyanıza not eder ve yarım işi kendi branch'inize gönderir, ertesi gün oradan devam edilir.
