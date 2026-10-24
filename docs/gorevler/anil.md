@@ -73,8 +73,8 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 - **Destek:** —
 - **Çıktı:** Figma linki
 - **Kabul kriteri:** Ekranlar: giriş/kayıt, KVKK onayı, hedef pozisyon seçimi, CV yükleme, analiz bekleme, sonuç panosu, kaynak detayı (pop-up), geçmiş analizler, profil/ayarlar, hesap silme.
-
 - **Not:** Figma yerine tıklanabilir HTML wireframe: `web/prototip/index.html` (10 ekran, API notları ve hata durumlarıyla). Figma'ya aktarmak isteğe bağlı.
+
 ### T-025 · Bilişim Kongresi posteri
 
 - **Durum:** Tamamlandı
