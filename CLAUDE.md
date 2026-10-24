@@ -34,6 +34,23 @@ Akış: İstemci (web / Electron / React Native) → FastAPI → Redis kuyruğu 
 8. Commit mesajları Türkçe ve kısa olabilir; conventional commits öneki kullan: `feat:`, `fix:`, `docs:`, `test:`, `refactor:`, `chore:`.
 9. Kullanıcıyla Türkçe konuş.
 
+## Nerede ne var
+
+Bir konuda bilgi gerekirse tahmin etmeden önce bu dosyalara bak:
+
+| Konu | Dosya |
+|---|---|
+| Proje neden var, jüriye ne söz verildi | `docs/fizibilite-raporu.md` |
+| Alınmış kararlar ve gerekçeleri | `docs/kararlar.md` |
+| Mimari, teknoloji seçimleri, ortamlar, sunucu servisleri, RACI | `docs/mimari.md` |
+| Veritabanı tabloları ve sütunları | `docs/veritabani.md` |
+| Modüller arası veri formatları, API listesi | `contracts/` |
+| Görevler, tarihler, kabul kriterleri | `docs/gorevler/<isim>.md` |
+| Canlıya çıkış listesi, SLO'lar, olay prosedürleri | `docs/go-live.md` |
+| Riskler ve bütçe | `docs/riskler.md` |
+
+Kullanıcıyla yeni bir karar alındığında (teknoloji seçimi, kapsam veya tarih değişikliği vb.) `docs/kararlar.md`'ye eklemeyi öner; yazılmayan karar ekibin diğer üyeleri için yoktur.
+
 ## Kim çalışıyor?
 
 Oturumun başında kullanıcının kim olduğunu belirle: `git config user.name` ve `git config user.email` değerlerinde "Ataberk", "Burak" veya "Anıl/Anil" geçiyorsa (büyük/küçük harf ve Türkçe karakter farkını yok say) o kişidir. Belirlenemezse kullanıcıya sor. Kişinin görev dosyası:
