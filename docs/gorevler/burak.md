@@ -23,7 +23,7 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-019 · Etiketli değerlendirme veri seti (altın standart)
 
-- **Durum:** Yapılacak
+- **Durum:** Devam Ediyor
 - **Tarih:** 19.10.2026 – 01.11.2026 · **Öncelik:** P0 · **Efor:** 12 saat · **Alan:** AI / NLP
 - **Bağımlılık:** —
 - **Destek:** Ataberk, Anıl
