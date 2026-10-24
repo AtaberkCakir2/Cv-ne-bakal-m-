@@ -46,7 +46,7 @@ def main(argv: list[str] | None = None) -> int:
         if cv_id not in manifest:
             report.error(f"{cv_id}: etiketi var ama manifest.csv'de yok")
     for cv_id, by_annotator in labels.items():
-        expected, adjudicator = assignment(cv_id)
+        expected, _ = assignment(cv_id)
         unexpected = set(by_annotator) - set(expected)
         if unexpected:
             report.warn(f"{cv_id}: atama tablosuna göre etiketleyiciler {', '.join(expected)}; fazladan: {', '.join(sorted(unexpected))}")

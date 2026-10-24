@@ -12,10 +12,10 @@ import pytest
 EVAL_DIR = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(EVAL_DIR / "scripts"))
 
-import _common  # noqa: E402
-import agreement  # noqa: E402
-import check_labels  # noqa: E402
-from _common import Report, load_labels, load_skill_names  # noqa: E402
+import _common
+import agreement
+import check_labels
+from _common import Report, load_labels, load_skill_names
 
 EXAMPLES = EVAL_DIR / "examples"
 SKILLS = EVAL_DIR / "dataset" / "skills_provisional.json"
