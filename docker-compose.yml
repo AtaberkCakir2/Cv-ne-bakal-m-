@@ -45,7 +45,8 @@ services:
     restart: unless-stopped
 
   ollama:
-    image: ollama/ollama
+    # Sürüm sabit: herkes aynı Ollama ile çalışsın. Yükseltme PR ile yapılır.
+    image: ollama/ollama:0.40.10
     ports:
       - "127.0.0.1:11434:11434"
     volumes:
