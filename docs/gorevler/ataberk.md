@@ -83,12 +83,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-012 · SQLAlchemy 2.0 modelleri + Alembic migration
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 26.10.2026 – 01.11.2026 · **Öncelik:** P0 · **Efor:** 8 saat · **Alan:** Veri Tabanı
 - **Bağımlılık:** T-011
 - **Destek:** Anıl
 - **Çıktı:** Migration dosyaları
 - **Kabul kriteri:** Tüm tablolar model olarak yazıldı; ilk migration; upgrade/downgrade test edildi; CI'da migration kontrolü.
+- **Not:** 17 model + `0001_ilk_sema` migration `backend/app/db/` altında (25.10). upgrade → downgrade → upgrade ve `alembic check` yerelde geçti; `tests/db` (6 test, `TEST_DATABASE_URL` ile) hazır. Bağlı işler: (1) Anıl `backend/pyproject.toml`'a `sqlalchemy`, `alembic`, `pgvector` ekleyecek; (2) CI'da migration kontrolü T-008'de bağlanacak.
 
 ### T-015 · Açık veri setiyle başlangıç ilan havuzu
 
