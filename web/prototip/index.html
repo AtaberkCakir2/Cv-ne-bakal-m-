@@ -1,0 +1,420 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CareerAI Wireframe</title>
+<style>
+  :root {
+    --bg: #f4f4f2; --panel: #ffffff; --ink: #222; --muted: #6b6b6b; --line: #c9c9c4;
+    --soft: #e9e9e5; --accent: #333; --note: #fff8d6; --note-line: #e2cf7a; --bad: #9b2c2c; --good: #2f6b3a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #1b1b1a; --panel: #242423; --ink: #e8e8e4; --muted: #a3a39d; --line: #4a4a46;
+      --soft: #2f2f2d; --accent: #e8e8e4; --note: #3a3520; --note-line: #7a6a2c; --bad: #e08a8a; --good: #8fcf9a;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #1b1b1a; --panel: #242423; --ink: #e8e8e4; --muted: #a3a39d; --line: #4a4a46;
+    --soft: #2f2f2d; --accent: #e8e8e4; --note: #3a3520; --note-line: #7a6a2c; --bad: #e08a8a; --good: #8fcf9a;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Arial, sans-serif; }
+  a { color: inherit; }
+  header.top { display: flex; align-items: center; gap: 16px; padding: 10px 16px; border-bottom: 1px solid var(--line); background: var(--panel); position: sticky; top: 0; z-index: 5; flex-wrap: wrap; }
+  .logo { font-weight: 700; letter-spacing: .3px; }
+  .logo span { border: 2px solid var(--ink); padding: 0 6px; margin-right: 6px; }
+  nav.app { display: flex; gap: 4px; flex-wrap: wrap; }
+  nav.app a { text-decoration: none; padding: 4px 10px; border-radius: 4px; color: var(--muted); }
+  nav.app a.on { background: var(--soft); color: var(--ink); font-weight: 600; }
+  .spacer { flex: 1; }
+  .wf-tag { font-size: 12px; color: var(--muted); border: 1px dashed var(--line); padding: 2px 8px; border-radius: 10px; }
+  .layout { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 20px; max-width: 1180px; margin: 20px auto; padding: 0 16px; }
+  @media (max-width: 900px) { .layout { grid-template-columns: 1fr; } }
+  main { min-width: 0; }
+  .screen-title { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin: 0 0 8px; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 20px; margin-bottom: 16px; }
+  .card.narrow { max-width: 440px; margin-left: auto; margin-right: auto; }
+  h1 { font-size: 24px; margin: 0 0 6px; } h2 { font-size: 18px; margin: 0 0 12px; } h3 { font-size: 15px; margin: 0 0 8px; }
+  p.sub { color: var(--muted); margin: 0 0 16px; }
+  label { display: block; font-size: 13px; color: var(--muted); margin: 12px 0 4px; }
+  .input { width: 100%; height: 38px; border: 1px solid var(--line); border-radius: 6px; background: var(--soft); padding: 0 10px; color: var(--ink); font: inherit; }
+  .btn { display: inline-block; border: 2px solid var(--accent); background: var(--accent); color: var(--panel); font-weight: 600; padding: 8px 16px; border-radius: 6px; cursor: pointer; text-decoration: none; font: inherit; }
+  .btn.ghost { background: transparent; color: var(--ink); }
+  .btn.danger { border-color: var(--bad); background: var(--bad); color: #fff; }
+  .btn.block { width: 100%; text-align: center; margin-top: 16px; }
+  .btn[disabled] { opacity: .45; cursor: not-allowed; }
+  .tabs { display: flex; border-bottom: 1px solid var(--line); margin-bottom: 12px; }
+  .tabs button { flex: 1; background: none; border: 0; border-bottom: 3px solid transparent; padding: 8px; font: inherit; color: var(--muted); cursor: pointer; }
+  .tabs button.on { border-color: var(--ink); color: var(--ink); font-weight: 600; }
+  .check { display: flex; gap: 10px; align-items: flex-start; margin: 12px 0; }
+  .check input { margin-top: 4px; width: 16px; height: 16px; flex: none; }
+  .scroll-box { height: 150px; overflow: auto; border: 1px solid var(--line); border-radius: 6px; padding: 10px; background: var(--soft); font-size: 13px; color: var(--muted); }
+  .grid { display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); }
+  .role { border: 1px solid var(--line); border-radius: 8px; padding: 12px; cursor: pointer; background: var(--panel); text-align: left; font: inherit; color: var(--ink); }
+  .role.on { border: 2px solid var(--ink); background: var(--soft); }
+  .role small { display: block; color: var(--muted); font-size: 12px; margin-top: 4px; }
+  .drop { border: 2px dashed var(--line); border-radius: 10px; padding: 36px 16px; text-align: center; background: var(--soft); }
+  .drop .ico { font-size: 34px; }
+  .rules { font-size: 13px; color: var(--muted); margin-top: 8px; }
+  .alert { border-left: 4px solid var(--bad); background: var(--soft); padding: 10px 12px; border-radius: 4px; margin-top: 12px; font-size: 14px; }
+  .alert.info { border-color: var(--muted); }
+  .steps { list-style: none; padding: 0; margin: 16px 0; }
+  .steps li { display: flex; gap: 10px; align-items: center; padding: 8px 0; border-bottom: 1px dashed var(--line); color: var(--muted); }
+  .steps li .dot { width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--line); flex: none; display: grid; place-items: center; font-size: 11px; }
+  .steps li.done { color: var(--ink); } .steps li.done .dot { background: var(--ink); border-color: var(--ink); color: var(--panel); }
+  .steps li.now { color: var(--ink); font-weight: 600; } .steps li.now .dot { border-color: var(--ink); animation: pulse 1s infinite; }
+  @keyframes pulse { 50% { opacity: .3; } }
+  .bar { height: 10px; background: var(--soft); border-radius: 5px; overflow: hidden; border: 1px solid var(--line); }
+  .bar i { display: block; height: 100%; background: var(--ink); }
+  .score { display: flex; gap: 20px; align-items: center; flex-wrap: wrap; }
+  .gauge { width: 120px; height: 120px; border-radius: 50%; display: grid; place-items: center; font-size: 28px; font-weight: 700; flex: none; }
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 640px) { .cols { grid-template-columns: 1fr; } }
+  .chip { display: inline-block; border: 1px solid var(--line); border-radius: 14px; padding: 2px 10px; margin: 3px 3px 0 0; font-size: 13px; background: var(--soft); }
+  .chip em { font-style: normal; color: var(--muted); font-size: 11px; }
+  .missing { border: 1px solid var(--line); border-radius: 8px; padding: 12px; margin-bottom: 10px; }
+  .missing-head { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; flex-wrap: wrap; }
+  .res { display: flex; gap: 10px; align-items: center; border: 1px dashed var(--line); border-radius: 6px; padding: 8px; margin-top: 8px; cursor: pointer; background: var(--panel); width: 100%; text-align: left; font: inherit; color: var(--ink); }
+  .thumb { width: 64px; height: 40px; background: var(--soft); border: 1px solid var(--line); flex: none; display: grid; place-items: center; font-size: 11px; color: var(--muted); }
+  .muted { color: var(--muted); font-size: 13px; }
+  table.list { width: 100%; border-collapse: collapse; }
+  table.list th, table.list td { text-align: left; padding: 10px 6px; border-bottom: 1px solid var(--line); }
+  table.list th { font-size: 12px; color: var(--muted); font-weight: 600; }
+  .row-actions a { margin-right: 10px; }
+  aside.notes { position: sticky; top: 70px; align-self: start; }
+  .note { background: var(--note); border: 1px solid var(--note-line); border-radius: 6px; padding: 12px 14px; font-size: 13px; }
+  .note h4 { margin: 0 0 6px; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; }
+  .note ul { margin: 0; padding-left: 18px; } .note li { margin: 3px 0; }
+  .note code { font-size: 12px; }
+  .state-switch { display: flex; gap: 6px; flex-wrap: wrap; margin: 10px 0 0; }
+  .state-switch button { font: inherit; font-size: 12px; border: 1px dashed var(--note-line); background: transparent; color: var(--ink); border-radius: 12px; padding: 2px 10px; cursor: pointer; }
+  .state-switch button.on { background: var(--note-line); color: #000; }
+  .modal-back { position: fixed; inset: 0; background: rgba(0,0,0,.45); display: none; align-items: center; justify-content: center; padding: 16px; z-index: 20; }
+  .modal-back.open { display: flex; }
+  .modal { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; max-width: 520px; width: 100%; padding: 20px; }
+  .modal .video { height: 180px; background: var(--soft); border: 1px solid var(--line); display: grid; place-items: center; color: var(--muted); margin: 12px 0; }
+  dl.meta { display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; font-size: 14px; margin: 0; }
+  dl.meta dt { color: var(--muted); }
+  .map { display: grid; gap: 10px; }
+  .map a { display: flex; gap: 10px; align-items: center; text-decoration: none; border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; background: var(--panel); }
+  .map a b { width: 26px; height: 26px; border-radius: 50%; border: 2px solid var(--ink); display: grid; place-items: center; font-size: 12px; flex: none; }
+  .flow { font-size: 13px; color: var(--muted); line-height: 2; }
+  .flow span { border: 1px solid var(--line); border-radius: 4px; padding: 2px 6px; background: var(--panel); color: var(--ink); white-space: nowrap; }
+  .theme-btn { font: inherit; font-size: 12px; background: none; border: 1px solid var(--line); border-radius: 12px; padding: 2px 10px; color: var(--muted); cursor: pointer; }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="logo"><span>CA</span>CareerAI</div>
+  <nav class="app" id="appnav">
+    <a href="#harita" data-r="harita">Ekran haritası</a>
+    <a href="#yukle" data-r="yukle">Yeni analiz</a>
+    <a href="#gecmis" data-r="gecmis">Geçmiş</a>
+    <a href="#profil" data-r="profil">Profil</a>
+  </nav>
+  <div class="spacer"></div>
+  <button class="theme-btn" id="themeBtn" type="button">Tema</button>
+  <span class="wf-tag">Wireframe · T-021 · örnek veri</span>
+</header>
+
+<div class="layout">
+  <main id="screen"></main>
+  <aside class="notes"><div class="note" id="note"></div></aside>
+</div>
+
+<div class="modal-back" id="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <div class="modal" id="modalBody"></div>
+</div>
+
+<script>
+// Örnek veri: contracts/examples/analysis_result.example.json ile aynı yapıda (uydurma).
+const ROLES = [
+  ['backend-developer', 'Backend Developer', 412], ['frontend-developer', 'Frontend Developer', 388],
+  ['full-stack-developer', 'Full-Stack Developer', 356], ['mobile-developer', 'Mobil Geliştirici', 190],
+  ['data-scientist', 'Veri Bilimci', 164], ['ml-engineer', 'ML Mühendisi', 121],
+  ['devops-engineer', 'DevOps Mühendisi', 143], ['qa-engineer', 'QA / Test Mühendisi', 98],
+  ['security-engineer', 'Siber Güvenlik', 76], ['game-developer', 'Oyun Geliştirici', 41],
+];
+const RESULT = {
+  analysis_id: '3f6c2a9e-8d1b-4c7a-9e2f-1a2b3c4d5e6f', target_role: 'Backend Developer', postings_analyzed: 150, match_score: 62.5,
+  present: [['Python', 'advanced'], ['SQL', 'beginner'], ['Git', 'intermediate'], ['REST API', 'intermediate'], ['Java', 'intermediate'], ['Linux', 'unknown']],
+  missing: [
+    { skill: 'Docker', ratio: .75, res: [
+      { id: 101, title: "Örnek: Docker'a Giriş (Türkçe)", provider: 'youtube', lang: 'tr', level: 'beginner', min: 90, free: true, reason: "İncelenen 150 Backend Developer ilanının %75'i Docker istiyor; CV'nde Docker bulunamadı." },
+      { id: 102, title: 'Örnek: Docker ile Uygulama Paketleme', provider: 'btk_akademi', lang: 'tr', level: 'beginner', min: 240, free: true, reason: 'Kendi projeni container olarak çalıştırmayı adım adım gösteriyor.' },
+      { id: 103, title: 'Örnek: Docker Docs — Get Started', provider: 'docs', lang: 'en', level: 'beginner', min: 60, free: true, reason: 'Resmi doküman; kısa ve güncel.' }] },
+    { skill: 'PostgreSQL', ratio: .62, res: [
+      { id: 205, title: 'Örnek: PostgreSQL Temelleri', provider: 'docs', lang: 'en', level: 'beginner', min: 120, free: true, reason: "İlanların %62'si PostgreSQL istiyor; temel SQL bilgin bu konuya hızlı geçmeni sağlar." }] },
+    { skill: 'Kubernetes', ratio: .41, res: [
+      { id: 310, title: 'Örnek: Kubernetes 101', provider: 'youtube', lang: 'tr', level: 'beginner', min: 75, free: true, reason: 'Docker’dan sonra öğrenilmesi önerilir.' }] },
+    { skill: 'CI/CD', ratio: .38, res: [
+      { id: 402, title: 'Örnek: GitHub Actions ile CI/CD', provider: 'udemy', lang: 'tr', level: 'intermediate', min: 180, free: false, reason: 'Git bilgin var; otomatik test ve deploy bir sonraki adım.' }] },
+  ],
+};
+const HISTORY = [
+  ['24.10.2026 14:20', 'Backend Developer', 62.5, 'done'], ['20.10.2026 09:05', 'Full-Stack Developer', 48.0, 'done'],
+  ['18.10.2026 21:40', 'Backend Developer', null, 'failed'],
+];
+const LEVEL = { beginner: 'başlangıç', intermediate: 'orta', advanced: 'ileri', unknown: 'seviye belirsiz' };
+const PROVIDER = { youtube: 'YouTube', udemy: 'Udemy', coursera: 'Coursera', btk_akademi: 'BTK Akademi', docs: 'Resmi doküman', blog: 'Blog', other: 'Diğer' };
+const pct = (r) => Math.round(r * 100) + '%';
+let selectedRole = 'backend-developer';
+
+// --- Ekranlar: her biri { title, html(state), note, states?, mount? } ---
+const S = {};
+
+S.harita = {
+  title: 'Ekran haritası',
+  html: () => `
+    <div class="card"><h1>CareerAI — ekran taslakları</h1>
+      <p class="sub">Görsel tasarım değil, ekranların içeriği ve akışı. Renk ve tipografi T-022'de (tasarım sistemi) belirlenecek.</p>
+      <div class="flow">Akış: <span>Giriş/Kayıt</span> → <span>KVKK onayı</span> → <span>Hedef pozisyon</span> → <span>CV yükleme</span> → <span>Analiz bekleme</span> → <span>Sonuç panosu</span> → <span>Kaynak detayı</span></div>
+    </div>
+    <div class="map">
+      ${[['giris', 'Giriş / Kayıt'], ['kvkk', 'KVKK onayı'], ['pozisyon', 'Hedef pozisyon seçimi'], ['yukle', 'CV yükleme'], ['bekleme', 'Analiz bekleme'],
+         ['sonuc', 'Sonuç panosu'], ['sonuc?kaynak=101', 'Kaynak detayı (pop-up)'], ['gecmis', 'Geçmiş analizler'], ['profil', 'Profil / ayarlar'], ['hesap-sil', 'Hesap silme']]
+        .map(([r, t], i) => `<a href="#${r}"><b>${i + 1}</b>${t}</a>`).join('')}
+    </div>`,
+  note: `<h4>Bu taslak hakkında</h4><ul>
+    <li>Kabul kriterindeki 10 ekranın hepsi burada; kenardaki sarı notlar her ekranın kullandığı API'yi ve hata durumlarını gösterir.</li>
+    <li>Veriler örnektir; formatı <code>contracts/examples/analysis_result.example.json</code> ile aynıdır.</li>
+    <li>Aynı akış web, Electron ve mobilde kullanılır; ekranı daraltarak mobil görünümü deneyin.</li>
+    <li>Figma'ya aktarmak isteğe bağlıdır.</li></ul>`,
+};
+
+S.giris = {
+  title: '1 · Giriş / Kayıt',
+  states: ['giris', 'kayit', 'hata'],
+  html: (st) => `
+    <div class="card narrow">
+      <h1>CareerAI</h1><p class="sub">CV'ni yükle, hedef pozisyonunda eksik olanı ve nereden öğreneceğini gör.</p>
+      <div class="tabs"><button class="${st !== 'kayit' ? 'on' : ''}" data-state="giris">Giriş yap</button><button class="${st === 'kayit' ? 'on' : ''}" data-state="kayit">Kayıt ol</button></div>
+      ${st === 'kayit' ? `
+        <label for="ad">Ad soyad (isteğe bağlı)</label><input id="ad" class="input">
+        <label for="ep">E-posta</label><input id="ep" class="input" type="email">
+        <label for="pw">Şifre (en az 8 karakter)</label><input id="pw" class="input" type="password">
+        <a class="btn block" href="#kvkk">Devam et</a>
+        <p class="muted">Kayıttan sonra e-postana doğrulama bağlantısı gönderilir.</p>` : `
+        <label for="ep">E-posta</label><input id="ep" class="input" type="email">
+        <label for="pw">Şifre</label><input id="pw" class="input" type="password">
+        ${st === 'hata' ? '<div class="alert">E-posta veya şifre hatalı.</div>' : ''}
+        <a class="btn block" href="#yukle">Giriş yap</a>
+        <p class="muted"><a href="#giris">Şifremi unuttum</a></p>`}
+    </div>`,
+  note: `<h4>API</h4><ul><li><code>POST /auth/login</code>, <code>POST /auth/register</code></li><li><code>POST /auth/forgot-password</code></li></ul>
+    <h4 style="margin-top:10px">Kurallar</h4><ul><li>Hata mesajı e-postanın kayıtlı olup olmadığını belli etmez.</li><li>10 hatalı denemeden sonra 1 dk bekleme (rate limit, 429).</li><li>Misafir analiz yok (kapsam açık soru 4).</li></ul>`,
+};
+
+S.kvkk = {
+  title: '2 · KVKK onayı',
+  html: () => `
+    <div class="card narrow">
+      <h2>Verilerin nasıl kullanılıyor?</h2>
+      <div class="scroll-box">Aydınlatma metni burada (T-065). Özet: CV dosyan ve CV metnin saklanmaz; sadece analizden çıkan yetkinlikler hesabında tutulur. CV'n yalnızca kendi sunucumuzdaki yerel yapay zeka modeliyle işlenir, dış yapay zeka servislerine gönderilmez. Hesabını ve tüm verilerini istediğin zaman silebilirsin…</div>
+      <div class="check"><input type="checkbox" id="c1"><label for="c1" style="margin:0;color:var(--ink)">Aydınlatma metnini okudum. <span class="muted">(zorunlu)</span></label></div>
+      <div class="check"><input type="checkbox" id="c2"><label for="c2" style="margin:0;color:var(--ink)">CV'mdeki yetkinliklerin analiz edilmesine açık rıza veriyorum. <span class="muted">(zorunlu)</span></label></div>
+      <div class="check"><input type="checkbox" id="c3"><label for="c3" style="margin:0;color:var(--ink)">Kullanım koşullarını kabul ediyorum. <span class="muted">(zorunlu)</span></label></div>
+      <a class="btn block" id="kvkkBtn" href="#pozisyon" aria-disabled="true" style="pointer-events:none;opacity:.45">Onayla ve devam et</a>
+    </div>`,
+  mount: () => {
+    const boxes = ['c1', 'c2', 'c3'].map((id) => document.getElementById(id));
+    const btn = document.getElementById('kvkkBtn');
+    const upd = () => { const ok = boxes.every((b) => b.checked); btn.style.pointerEvents = ok ? '' : 'none'; btn.style.opacity = ok ? '' : '.45'; btn.setAttribute('aria-disabled', String(!ok)); };
+    boxes.forEach((b) => b.addEventListener('change', upd));
+  },
+  note: `<h4>API</h4><ul><li><code>POST /auth/register</code> içinde <code>consents[]</code> (tür + metin sürümü)</li></ul>
+    <h4 style="margin-top:10px">Kurallar</h4><ul><li>Üç kutu da işaretlenmeden devam edilemez.</li><li>Metin sürümü değişirse girişte bu ekran tekrar gösterilir (<code>POST /users/me/consents</code>).</li><li>Metin: T-065 (Anıl + Burak).</li></ul>`,
+};
+
+S.pozisyon = {
+  title: '3 · Hedef pozisyon seçimi',
+  html: () => `
+    <div class="card"><h2>Hangi pozisyonu hedefliyorsun?</h2>
+      <p class="sub">CV'n bu pozisyonun güncel ilanlarıyla karşılaştırılacak. Sonra profilinden değiştirebilirsin.</p>
+      <label for="ara">Pozisyon ara</label><input id="ara" class="input" placeholder="ör. backend">
+      <div class="grid" style="margin-top:14px">${ROLES.map(([slug, name, n]) => `
+        <button class="role ${slug === selectedRole ? 'on' : ''}" data-role="${slug}" type="button">${name}<small>${n} güncel ilan${n < 50 ? ' · düşük veri' : ''}</small></button>`).join('')}</div>
+      <a class="btn block" href="#yukle">Bu pozisyonla devam et</a>
+    </div>`,
+  mount: () => {
+    document.querySelectorAll('[data-role]').forEach((b) => b.addEventListener('click', () => { selectedRole = b.dataset.role; render(); }));
+    document.getElementById('ara').addEventListener('input', (e) => {
+      const q = e.target.value.toLocaleLowerCase('tr');
+      document.querySelectorAll('[data-role]').forEach((b) => { b.style.display = b.textContent.toLocaleLowerCase('tr').includes(q) ? '' : 'none'; });
+    });
+  },
+  note: `<h4>API</h4><ul><li><code>GET /roles</code> → ad + ilan sayısı</li><li><code>PATCH /users/me</code> (<code>target_role_id</code>)</li></ul>
+    <h4 style="margin-top:10px">Kurallar</h4><ul><li>İlan sayısı 50'nin altındaysa "düşük veri" uyarısı (risk R-11).</li><li>Pozisyon listesi kick-off'ta kesinleşecek (kapsam açık soru 2).</li></ul>`,
+};
+
+S.yukle = {
+  title: '4 · CV yükleme',
+  states: ['normal', 'secildi', 'pdf-degil', 'buyuk', 'limit'],
+  html: (st) => {
+    const role = ROLES.find((r) => r[0] === selectedRole)[1];
+    const err = { 'pdf-degil': 'Sadece PDF dosyası yükleyebilirsin.', buyuk: 'Dosya 5 MB veya 5 sayfadan büyük olamaz.', limit: 'Saatte en fazla 5 analiz yapabilirsin. 38 dakika sonra tekrar dene.' }[st];
+    return `
+    <div class="card"><h2>CV'ni yükle</h2>
+      <p class="sub">Hedef pozisyon: <b>${role}</b> · <a href="#pozisyon">değiştir</a></p>
+      <div class="drop"><div class="ico">⬆</div>
+        ${st === 'secildi' ? '<b>ozgecmis.pdf</b><div class="muted">1,2 MB · 2 sayfa</div>' : '<b>PDF dosyanı buraya sürükle</b><div class="muted">veya</div><button class="btn ghost" type="button" style="margin-top:6px">Dosya seç</button>'}
+      </div>
+      <div class="rules">Sadece PDF · en fazla 5 MB ve 5 sayfa · Türkçe veya İngilizce · taranmış CV'ler de okunur</div>
+      ${err ? `<div class="alert">${err}</div>` : ''}
+      <a class="btn block" href="#bekleme" ${st === 'secildi' ? '' : 'style="pointer-events:none;opacity:.45" aria-disabled="true"'}>Analizi başlat</a>
+      <div class="alert info">🔒 CV dosyan saklanmaz; analizden sonra sadece çıkan yetkinlikler hesabında kalır.</div>
+    </div>`;
+  },
+  note: `<h4>API</h4><ul><li><code>POST /analyses</code> (multipart: dosya + <code>target_role_id</code>) → <code>202 {analysis_id}</code></li></ul>
+    <h4 style="margin-top:10px">Hata durumları</h4><ul><li>PDF değil / 5 MB ya da 5 sayfadan büyük → istemcide de kontrol edilir.</li><li>Saatte 5 analiz sınırı → 429 + kalan süre.</li></ul>
+    <p class="muted" style="margin:8px 0 0">Üstteki düğmelerle durumları deneyin.</p>`,
+};
+
+S.bekleme = {
+  title: '5 · Analiz bekleme',
+  states: ['ilerliyor', 'kuyruk', 'zaman-asimi'],
+  html: (st) => {
+    const steps = ['CV okunuyor', 'Kişisel bilgiler gizleniyor', 'Yetkinlikler çıkarılıyor', '150 ilanla karşılaştırılıyor', 'Kaynaklar seçiliyor'];
+    if (st === 'zaman-asimi') return `<div class="card narrow"><h2>Analiz tamamlanamadı</h2><p class="sub">Sistem şu an yoğun ya da CV'n okunamadı. Hakkından düşülmedi.</p><a class="btn block" href="#yukle">Tekrar dene</a><p class="muted">Sorun sürerse: destek e-postası</p></div>`;
+    const now = st === 'kuyruk' ? -1 : 2;
+    return `<div class="card narrow"><h2>CV'n analiz ediliyor</h2>
+      <p class="sub">${st === 'kuyruk' ? 'Sıradasın: önünde 3 analiz var. Tahmini süre ~4 dk.' : 'Bu işlem genelde 1-2 dakika sürer. Sayfayı kapatabilirsin; sonuç Geçmiş\'te olur.'}</p>
+      <ul class="steps">${steps.map((s, i) => `<li class="${i < now ? 'done' : i === now ? 'now' : ''}"><span class="dot">${i < now ? '✓' : ''}</span>${s}</li>`).join('')}</ul>
+      <div class="bar"><i style="width:${st === 'kuyruk' ? 5 : 48}%"></i></div>
+      <a class="btn ghost block" href="#sonuc">(Prototip) Sonucu göster →</a></div>`;
+  },
+  note: `<h4>API</h4><ul><li><code>GET /analyses/{id}/events</code> (SSE) → <code>{stage, percent}</code></li><li>SSE yoksa 3 sn'de bir <code>GET /analyses/{id}</code></li></ul>
+    <h4 style="margin-top:10px">Durumlar</h4><ul><li>Kuyrukta: sıra ve tahmini süre (CPU'da analiz 1-2 dk, karar #11).</li><li>Zaman aşımı (180 sn) ve hata → kullanıcıdan analiz hakkı düşülmez.</li></ul>`,
+};
+
+S.sonuc = {
+  title: '6 · Sonuç panosu',
+  states: ['normal', 'dusuk-veri'],
+  html: (st) => `
+    ${st === 'dusuk-veri' ? '<div class="alert">Bu pozisyon için sadece 41 güncel ilan var; oranlar daha az güvenilir.</div><br>' : ''}
+    <div class="card"><div class="score">
+      <div class="gauge" style="background:conic-gradient(var(--ink) ${RESULT.match_score}%, var(--soft) 0)"><div class="gauge" style="width:92px;height:92px;background:var(--panel);font-size:24px">${Math.round(RESULT.match_score)}</div></div>
+      <div><h1>${RESULT.target_role} için uyumun: ${RESULT.match_score}/100</h1>
+        <p class="sub" style="margin:0">${st === 'dusuk-veri' ? 41 : RESULT.postings_analyzed} güncel ilanla karşılaştırıldı · 24.10.2026</p>
+        <p class="muted" style="margin:6px 0 0">Eksik ilk 2 yetkinliği kapatırsan tahmini uyum: <b>~78</b></p></div></div></div>
+    <div class="cols">
+      <div class="card"><h3>CV'nde bulunanlar (${RESULT.present.length})</h3>
+        ${RESULT.present.map(([s, l]) => `<span class="chip">${s} <em>${LEVEL[l]}</em></span>`).join('')}
+        <p class="muted" style="margin-top:12px">Eksik ya da yanlış bulunan var mı? <a href="#sonuc">Bildir</a></p></div>
+      <div class="card"><h3>Eksik yetkinlikler — önem sırasına göre</h3>
+        ${RESULT.missing.map((m, i) => `
+          <div class="missing"><div class="missing-head"><b>${i + 1}. ${m.skill}</b><span class="muted">ilanların ${pct(m.ratio)}'i istiyor</span></div>
+            <div class="bar" style="margin:6px 0"><i style="width:${pct(m.ratio)}"></i></div>
+            ${m.res.slice(0, i === 0 ? 3 : 1).map((r) => `<button class="res" type="button" data-res="${r.id}"><span class="thumb">${PROVIDER[r.provider]}</span><span><b>${r.title}</b><br><span class="muted">${LEVEL[r.level]} · ${r.min} dk · ${r.free ? 'ücretsiz' : 'ücretli'} · ${r.lang.toUpperCase()}</span></span></button>`).join('')}
+          </div>`).join('')}
+      </div>
+    </div>
+    <div class="card"><h3>Bu analiz işine yaradı mı?</h3><div style="font-size:24px;letter-spacing:6px">☆☆☆☆☆</div><input class="input" placeholder="Yorum (isteğe bağlı)" style="margin-top:8px"></div>`,
+  mount: () => document.querySelectorAll('[data-res]').forEach((b) => b.addEventListener('click', () => openResource(+b.dataset.res))),
+  note: `<h4>API</h4><ul><li><code>GET /analyses/{id}</code> → <code>analysis_result.schema.json</code></li><li><code>POST /analyses/{id}/feedback</code></li></ul>
+    <h4 style="margin-top:10px">Kurallar</h4><ul><li>Eksikler <code>priority</code> sırasıyla; oran <code>demand_ratio</code>'dan.</li><li>Kaynaklar sadece veritabanından (karar #10).</li><li>Kaynak kartına tıklayınca pop-up (ekran 7).</li><li>"Tahmini uyum" ve "Bildir" Should/Could adayı.</li></ul>`,
+};
+
+S['hesap-sil'] = {
+  title: '10 · Hesap silme',
+  html: () => `
+    <div class="card narrow"><h2>Hesabını sil</h2>
+      <p class="sub">Bu işlem geri alınamaz.</p>
+      <ul><li>Profilin ve tüm analiz sonuçların silinir.</li><li>Hesabın hemen kapatılır; veriler 30 gün içinde kalıcı olarak silinir.</li><li>Önce verilerini indirmek ister misin? <a href="#profil">Verilerimi indir</a></li></ul>
+      <label for="silpw">Onaylamak için şifreni gir</label><input id="silpw" class="input" type="password">
+      <label for="silyaz">Onaylamak için <b>SİL</b> yaz</label><input id="silyaz" class="input">
+      <button class="btn danger block" type="button" disabled>Hesabımı kalıcı olarak sil</button>
+      <a class="btn ghost block" href="#profil">Vazgeç</a></div>`,
+  mount: () => {
+    const pw = document.getElementById('silpw'), yz = document.getElementById('silyaz'), b = document.querySelector('.btn.danger');
+    const upd = () => { b.disabled = !(pw.value.length > 0 && yz.value.trim().toLocaleUpperCase('tr') === 'SİL'); };
+    pw.addEventListener('input', upd); yz.addEventListener('input', upd);
+  },
+  note: `<h4>API</h4><ul><li><code>DELETE /users/me</code> (<code>{password}</code>) → 204</li></ul>
+    <h4 style="margin-top:10px">Kurallar</h4><ul><li>Anında anonimleştirme, 30 gün içinde kalıcı silme (KVKK, T-049).</li><li>Silme sonrası giriş ekranına yönlendirilir, bilgi e-postası gider.</li></ul>`,
+};
+
+S.gecmis = {
+  title: '8 · Geçmiş analizler',
+  states: ['dolu', 'bos'],
+  html: (st) => `
+    <div class="card"><h2>Geçmiş analizler</h2>
+      ${st === 'bos' ? '<p class="sub">Henüz analizin yok.</p><a class="btn" href="#yukle">İlk analizini yap</a>' : `
+      <table class="list"><thead><tr><th>Tarih</th><th>Pozisyon</th><th>Uyum</th><th></th></tr></thead><tbody>
+        ${HISTORY.map(([d, r, s, status]) => `<tr><td>${d}</td><td>${r}</td><td>${s == null ? '<span class="muted">tamamlanamadı</span>' : s}</td>
+          <td class="row-actions">${status === 'done' ? '<a href="#sonuc">Aç</a>' : '<a href="#yukle">Tekrar dene</a>'}<a href="#gecmis">Sil</a></td></tr>`).join('')}
+      </tbody></table>
+      <p class="muted">Aynı pozisyon için skorun zaman içinde nasıl değiştiğini görmek ilerideki bir sürüm için not edildi.</p>`}
+    </div>`,
+  note: `<h4>API</h4><ul><li><code>GET /analyses?page=&size=</code></li><li><code>DELETE /analyses/{id}</code></li></ul>
+    <h4 style="margin-top:10px">Kurallar</h4><ul><li>Kullanıcı sadece kendi analizlerini görür (IDOR testi).</li><li>Başarısız analizler de listelenir.</li></ul>`,
+};
+
+S.profil = {
+  title: '9 · Profil / ayarlar',
+  html: () => `
+    <div class="card"><h2>Profil</h2>
+      <label for="pad">Ad soyad</label><input id="pad" class="input" value="">
+      <label>E-posta</label><input class="input" value="ornek@ogrenci.edu.tr" disabled>
+      <label for="phedef">Hedef pozisyon</label><select id="phedef" class="input">${ROLES.map(([s, n]) => `<option ${s === selectedRole ? 'selected' : ''}>${n}</option>`).join('')}</select>
+      <button class="btn block" type="button">Kaydet</button></div>
+    <div class="card"><h2>Güvenlik</h2><a class="btn ghost" href="#profil">Şifreyi değiştir</a> <a class="btn ghost" href="#giris">Çıkış yap</a></div>
+    <div class="card"><h2>Verilerim (KVKK)</h2>
+      <p class="sub">Hangi verilerinin tutulduğunu görmek ve hesabını silmek senin hakkın.</p>
+      <a class="btn ghost" href="#profil">Verilerimi indir (JSON)</a>
+      <a class="btn ghost" href="#kvkk">Aydınlatma metni</a>
+      <p style="margin-top:16px"><a href="#hesap-sil" style="color:var(--bad)">Hesabımı sil</a></p></div>`,
+  note: `<h4>API</h4><ul><li><code>GET /users/me</code>, <code>PATCH /users/me</code></li><li><code>GET /users/me/export</code> (günde 2)</li></ul>
+    <h4 style="margin-top:10px">Kurallar</h4><ul><li>E-posta değiştirilemez (v1.0).</li><li>Hesap silme bilerek ayrı ekranda ve kırmızı bağlantıyla (yanlışlıkla tıklanmasın).</li></ul>`,
+};
+
+// Kaynak detayı (ekran 7) — sonuç panosu üzerinde pop-up
+function openResource(id) {
+  const all = RESULT.missing.flatMap((m) => m.res.map((r) => ({ ...r, skill: m.skill, ratio: m.ratio })));
+  const r = all.find((x) => x.id === id); if (!r) return;
+  document.getElementById('modalBody').innerHTML = `
+    <p class="screen-title">7 · Kaynak detayı (pop-up)</p>
+    <h2 id="modalTitle">${r.title}</h2>
+    <div class="video">${PROVIDER[r.provider]} önizleme</div>
+    <dl class="meta"><dt>Yetkinlik</dt><dd>${r.skill} (ilanların ${pct(r.ratio)}'i)</dd><dt>Seviye</dt><dd>${LEVEL[r.level]}</dd>
+      <dt>Süre</dt><dd>${r.min} dk</dd><dt>Dil</dt><dd>${r.lang === 'tr' ? 'Türkçe' : 'İngilizce'}</dd><dt>Ücret</dt><dd>${r.free ? 'Ücretsiz' : 'Ücretli'}</dd></dl>
+    <div class="note" style="margin-top:12px"><b>Neden önerildi?</b> ${r.reason}</div>
+    <div style="display:flex;gap:8px;margin-top:16px;flex-wrap:wrap"><a class="btn" href="#sonuc">Kaynağa git ↗</a><button class="btn ghost" type="button" id="closeModal">Kapat</button></div>
+    <p class="muted" style="margin-top:10px">Link dış sitede yeni sekmede açılır. Not: API — <code>resources[]</code> öğesi; bağlantı veritabanından gelir.</p>`;
+  const m = document.getElementById('modal'); m.classList.add('open');
+  document.getElementById('closeModal').onclick = closeModal; document.getElementById('closeModal').focus();
+}
+function closeModal() { document.getElementById('modal').classList.remove('open'); if (location.hash.includes('kaynak=')) history.replaceState(null, '', '#sonuc'); }
+document.getElementById('modal').addEventListener('click', (e) => { if (e.target.id === 'modal') closeModal(); });
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+
+// --- Yönlendirme ---
+const stateOf = {};
+function render() {
+  const [route, query] = (location.hash.slice(1) || 'harita').split('?');
+  const scr = S[route] || S.harita;
+  const key = S[route] ? route : 'harita';
+  const st = stateOf[key] || (scr.states ? scr.states[0] : null);
+  document.getElementById('screen').innerHTML = `<p class="screen-title">${scr.title}</p>${scr.html(st)}`;
+  document.getElementById('note').innerHTML = scr.note + (scr.states ? `<h4 style="margin-top:10px">Durumu dene</h4><div class="state-switch">${scr.states.map((s) => `<button type="button" data-state="${s}" class="${s === st ? 'on' : ''}">${s}</button>`).join('')}</div>` : '');
+  document.querySelectorAll('[data-state]').forEach((b) => b.addEventListener('click', () => { stateOf[key] = b.dataset.state; render(); }));
+  if (scr.mount) scr.mount();
+  document.querySelectorAll('#appnav a').forEach((a) => a.classList.toggle('on', a.dataset.r === key));
+  closeModal();
+  if (query && query.startsWith('kaynak=')) openResource(+query.split('=')[1]);
+  window.scrollTo(0, 0);
+}
+window.addEventListener('hashchange', render);
+render();
+
+// Tema düğmesi (sadece bu oturum)
+document.getElementById('themeBtn').addEventListener('click', () => {
+  const root = document.documentElement;
+  const dark = root.dataset.theme ? root.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+  root.dataset.theme = dark ? 'light' : 'dark';
+});
+</script>
+</body>
+</html>
