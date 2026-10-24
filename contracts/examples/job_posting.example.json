@@ -1,0 +1,20 @@
+{
+  "id": 1,
+  "source": "kaggle-dataset",
+  "external_id": "ornek-0001",
+  "url": null,
+  "title_raw": "Back-end Geliştirici (Python)",
+  "role_slug": "backend-developer",
+  "company": "Örnek Teknoloji A.Ş.",
+  "location": "İstanbul (Hibrit)",
+  "description_clean": "Python ve FastAPI ile REST servisleri geliştirecek, PostgreSQL ve Docker deneyimi olan takım arkadaşı arıyoruz. Kubernetes bilgisi tercih sebebidir.",
+  "language": "tr",
+  "posted_at": "2026-10-01",
+  "skills": [
+    { "skill": "Python", "importance": "required" },
+    { "skill": "FastAPI", "importance": "required" },
+    { "skill": "PostgreSQL", "importance": "required" },
+    { "skill": "Docker", "importance": "required" },
+    { "skill": "Kubernetes", "importance": "preferred" }
+  ]
+}

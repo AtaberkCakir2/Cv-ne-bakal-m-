@@ -1,0 +1,42 @@
+# Sırlar
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Kişisel veri — gerçek CV'ler ASLA repoya girmez
+cv_samples_real/
+**/real_cvs/
+*.cv.pdf
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Node
+node_modules/
+dist/
+build/
+.expo/
+*.log
+
+# Büyük dosyalar (model ve veri setleri ayrı depolamada tutulur)
+*.gguf
+*.bin
+*.safetensors
+data/raw/
+data/large/
+
+# Editör / işletim sistemi
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

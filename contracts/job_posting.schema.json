@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "careerai/job_posting",
+  "title": "Temizlenmiş iş ilanı (Ataberk → Burak)",
+  "type": "object",
+  "required": ["id", "source", "title_raw", "role_slug", "description_clean", "language", "skills"],
+  "properties": {
+    "id": { "type": "integer" },
+    "source": { "type": "string", "description": "Kaynak adı (ör. kaggle-dataset, adzuna-api)" },
+    "external_id": { "type": "string" },
+    "url": { "type": ["string", "null"], "format": "uri" },
+    "title_raw": { "type": "string", "description": "İlandaki orijinal başlık" },
+    "role_slug": { "type": "string", "description": "Normalize edilmiş pozisyon (ör. backend-developer)" },
+    "company": { "type": ["string", "null"] },
+    "location": { "type": ["string", "null"] },
+    "description_clean": { "type": "string", "description": "HTML'den temizlenmiş ilan metni" },
+    "language": { "enum": ["tr", "en"] },
+    "posted_at": { "type": ["string", "null"], "format": "date" },
+    "skills": {
+      "type": "array",
+      "description": "İlanda geçen, taksonomiye eşlenmiş yetkinlikler",
+      "items": {
+        "type": "object",
+        "required": ["skill", "importance"],
+        "properties": {
+          "skill": { "type": "string", "description": "Taksonomideki standart ad" },
+          "importance": { "enum": ["required", "preferred"] }
+        }
+      }
+    }
+  }
+}

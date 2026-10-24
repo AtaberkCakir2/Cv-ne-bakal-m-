@@ -1,0 +1,83 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "careerai/analysis_result",
+  "title": "CV analiz sonucu (Burak → Anıl)",
+  "type": "object",
+  "required": ["analysis_id", "status", "target_role", "created_at"],
+  "properties": {
+    "analysis_id": { "type": "string", "format": "uuid" },
+    "status": { "enum": ["queued", "processing", "done", "failed"] },
+    "target_role": {
+      "type": "object",
+      "required": ["slug", "name"],
+      "properties": {
+        "slug": { "type": "string", "examples": ["backend-developer"] },
+        "name": { "type": "string", "examples": ["Backend Developer"] }
+      }
+    },
+    "postings_analyzed": { "type": "integer", "minimum": 0, "description": "Karşılaştırmada kullanılan ilan sayısı" },
+    "match_score": { "type": "number", "minimum": 0, "maximum": 100, "description": "Hedef pozisyona uyum skoru" },
+    "present_skills": {
+      "type": "array",
+      "description": "CV'de bulunan yetkinlikler",
+      "items": {
+        "type": "object",
+        "required": ["skill", "level", "confidence"],
+        "properties": {
+          "skill": { "type": "string", "description": "Taksonomideki standart ad" },
+          "level": { "enum": ["beginner", "intermediate", "advanced", "unknown"] },
+          "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+          "verified": { "type": "boolean", "description": "false ise yetkinlik taksonomide yok (LLM tahmini)" }
+        }
+      }
+    },
+    "missing_skills": {
+      "type": "array",
+      "description": "Pozisyonda istenen ama CV'de olmayan yetkinlikler, önem sırasına göre",
+      "items": {
+        "type": "object",
+        "required": ["skill", "demand_ratio", "priority", "resources"],
+        "properties": {
+          "skill": { "type": "string" },
+          "demand_ratio": { "type": "number", "minimum": 0, "maximum": 1, "description": "Bu yetkinliği isteyen ilanların oranı (0.75 = %75)" },
+          "priority": { "type": "integer", "minimum": 1 },
+          "resources": {
+            "type": "array",
+            "description": "Sadece veri tabanındaki kaynaklar; LLM link üretmez",
+            "items": {
+              "type": "object",
+              "required": ["resource_id", "title", "url", "provider", "level", "is_free"],
+              "properties": {
+                "resource_id": { "type": "integer" },
+                "title": { "type": "string" },
+                "url": { "type": "string", "format": "uri" },
+                "provider": { "enum": ["youtube", "udemy", "coursera", "btk_akademi", "docs", "blog", "other"] },
+                "language": { "enum": ["tr", "en"] },
+                "level": { "enum": ["beginner", "intermediate", "advanced"] },
+                "duration_min": { "type": "integer" },
+                "is_free": { "type": "boolean" },
+                "reason": { "type": "string", "description": "LLM'in Türkçe gerekçesi" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "model": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "prompt_version": { "type": "string" }
+      }
+    },
+    "error": {
+      "type": ["object", "null"],
+      "properties": {
+        "code": { "enum": ["PDF_UNREADABLE", "PDF_TOO_LARGE", "NO_TEXT_FOUND", "LLM_TIMEOUT", "INTERNAL"] },
+        "message": { "type": "string" }
+      }
+    },
+    "created_at": { "type": "string", "format": "date-time" },
+    "completed_at": { "type": ["string", "null"], "format": "date-time" }
+  }
+}
