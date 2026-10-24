@@ -15,10 +15,14 @@ request_id_var: ContextVar[str | None] = ContextVar("request_id", default=None)
 
 _EMAIL = re.compile(r"[\w.+-]+@[\w-]+\.[\w.-]+")
 _PHONE = re.compile(r"(?<!\d)(?:\+?90[\s-]?)?0?5\d{2}[\s-]?\d{3}[\s-]?\d{2}[\s-]?\d{2}(?!\d)")
+# TC kimlik no: 11 hane, ilk hane 0 değil. Telefondan sonra uygulanır (05xx… 11 haneli telefonlar 0 ile başlar).
+_TCKN = re.compile(r"(?<!\d)[1-9]\d{10}(?!\d)")
 
 
 def mask_pii(text: str) -> str:
-    return _PHONE.sub("[TELEFON]", _EMAIL.sub("[E-POSTA]", text))
+    text = _EMAIL.sub("[E-POSTA]", text)
+    text = _PHONE.sub("[TELEFON]", text)
+    return _TCKN.sub("[TCKN]", text)
 
 
 class JsonFormatter(logging.Formatter):
