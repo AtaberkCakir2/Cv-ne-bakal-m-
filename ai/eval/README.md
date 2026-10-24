@@ -27,7 +27,12 @@ Yetkinlik çıkarımının doğruluğunu ölçmek için elle etiketlenmiş "alt�
 
 ## Süreç
 
-1. **CV topla.** Gerçek CV için önce izin formu imzalatılır. CV'deki ad, telefon, e-posta, adres, TCKN, doğum tarihi, fotoğraf ve sosyal medya linkleri **elle** karartılır (PII modülü T-030 henüz yok). Dosya ortak klasöre `cv-NNN.pdf` adıyla konur; dosya adında kişinin adı geçmez.
+1. **CV topla.** Gerçek CV için önce izin formu imzalatılır. CV'deki ad, telefon, e-posta, adres, TCKN, doğum tarihi, fotoğraf ve sosyal medya linkleri **elle** anonimleştirilir (PII modülü T-030 henüz yok). Dosya ortak klasöre `cv-NNN.pdf` adıyla konur; dosya adında kişinin adı geçmez.
+
+   **Üstüne siyah kutu çizmek yetmez.** PDF düzenleyicide çizilen kutu alttaki metni silmez; kopyala-yapıştır veya `pdftotext` ile bilgiler geri gelir. Bu yüzden:
+   - **Gerçek redaksiyon aracı** kullanın (ör. Acrobat "Redact" / "Karart" ve ardından "Uygula"), ya da PDF'i önce görüntüye çevirip yeniden PDF yapın. İkinci yol metin katmanını tamamen siler; bu dosya `scanned=true` olarak işaretlenir.
+   - **PDF metadata'sını temizleyin:** Yazar (Author), Başlık (Title), Konu, Oluşturan uygulama alanlarında kişinin adı kalabilir (ör. Acrobat "Gizli bilgileri kaldır", ya da `exiftool -all= cv-NNN.pdf`).
+   - **Kontrol edin:** `pdftotext cv-NNN.pdf -` çıktısında ad, telefon, e-posta, TCKN geçmemeli; dosya özelliklerinde (Author/Title) kişinin adı olmamalı. Kontrolden geçmeyen dosya ortak klasöre konmaz.
 2. **Manifest'e satır ekle** (`dataset/manifest.csv`). Sütunlar aşağıda.
 3. **Etiketle.** İki kişi CV'yi birbirinin etiketine bakmadan [etiketleme-kilavuzu.md](etiketleme-kilavuzu.md)'ye göre etiketler; her biri kendi dosyasını yazar.
 4. **Uyumu ölç:** `python ai/eval/scripts/agreement.py` → CV bazında anlaşmazlık listesi ve genel uyum skoru.

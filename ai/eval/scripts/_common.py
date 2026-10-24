@@ -50,9 +50,26 @@ class Report:
         self.warnings.append(msg)
 
 
-def load_skill_names(path: Path) -> set[str]:
+@dataclass
+class Skills:
+    names: set[str]
+    by_alias: dict[str, str]  # küçük harfli ad/eş anlamlı → standart ad
+
+    def __contains__(self, name: object) -> bool:
+        return name in self.names
+
+    def suggest(self, name: str) -> str | None:
+        return self.by_alias.get(name.strip().lower())
+
+
+def load_skill_names(path: Path) -> Skills:
     data = json.loads(path.read_text(encoding="utf-8"))
-    return {s["canonical_name"] for s in data["skills"]}
+    names = {s["canonical_name"] for s in data["skills"]}
+    by_alias: dict[str, str] = {}
+    for s in data["skills"]:
+        for alias in [s["canonical_name"], *s.get("synonyms", [])]:
+            by_alias.setdefault(alias.lower(), s["canonical_name"])
+    return Skills(names, by_alias)
 
 
 def load_manifest(dataset: Path, report: Report) -> dict[str, dict[str, str]]:
@@ -112,7 +129,7 @@ def read_json(path: Path, report: Report) -> dict[str, Any] | None:
     return data
 
 
-def validate_skills(path: Path, items: Any, skill_names: set[str], report: Report) -> list[dict[str, Any]]:
+def validate_skills(path: Path, items: Any, skill_names: Skills, report: Report) -> list[dict[str, Any]]:
     """Yetkinlik listesini doğrular; geçerli öğeleri döner."""
     if not isinstance(items, list):
         report.error(f"{path}: 'skills' liste olmalı")
@@ -124,9 +141,19 @@ def validate_skills(path: Path, items: Any, skill_names: set[str], report: Repor
         if not isinstance(item, dict) or not isinstance(item.get("skill"), str):
             report.error(f"{where}: {{skill, level, years}} nesnesi olmalı")
             continue
-        name = item["skill"].strip()
-        if not name.startswith("?") and name not in skill_names:
-            report.error(f"{where}: '{name}' listede yok (yeni ise başına ? koyun)")
+        name = item["skill"]
+        if name != name.strip():
+            report.error(f"{where}: '{name}' başında/sonunda boşluk var")
+        elif name.startswith("?"):
+            suggestion = skill_names.suggest(name[1:])
+            if suggestion:
+                report.error(f"{where}: '{name}' listede var → '{suggestion}' yazın")
+        elif name not in skill_names:
+            suggestion = skill_names.suggest(name)
+            if suggestion:
+                report.error(f"{where}: '{name}' standart ad değil → '{suggestion}' yazın")
+            else:
+                report.error(f"{where}: '{name}' listede yok (yeni ise başına ? koyun)")
         if name in seen:
             report.error(f"{where}: '{name}' iki kez yazılmış")
         seen.add(name)
@@ -139,7 +166,7 @@ def validate_skills(path: Path, items: Any, skill_names: set[str], report: Repor
     return valid
 
 
-def load_labels(dataset: Path, skill_names: set[str], report: Report) -> dict[str, dict[str, list[dict[str, Any]]]]:
+def load_labels(dataset: Path, skill_names: Skills, report: Report) -> dict[str, dict[str, list[dict[str, Any]]]]:
     """{cv_id: {etiketleyici: skills}} döner."""
     labels: dict[str, dict[str, list[dict[str, Any]]]] = {}
     root = dataset / "labels"
@@ -162,7 +189,7 @@ def load_labels(dataset: Path, skill_names: set[str], report: Report) -> dict[st
     return labels
 
 
-def load_gold(dataset: Path, skill_names: set[str], report: Report) -> dict[str, list[dict[str, Any]]]:
+def load_gold(dataset: Path, skill_names: Skills, report: Report) -> dict[str, list[dict[str, Any]]]:
     gold: dict[str, list[dict[str, Any]]] = {}
     root = dataset / "gold"
     if not root.exists():

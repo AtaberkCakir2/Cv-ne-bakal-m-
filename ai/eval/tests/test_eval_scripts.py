@@ -12,6 +12,7 @@ import pytest
 EVAL_DIR = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(EVAL_DIR / "scripts"))
 
+import _common  # noqa: E402
 import agreement  # noqa: E402
 import check_labels  # noqa: E402
 from _common import Report, load_labels, load_skill_names  # noqa: E402
@@ -43,7 +44,7 @@ def test_compare_example_pair() -> None:
     result = agreement.compare("syn-001", a, labels["syn-001"][a], b, labels["syn-001"][b])
 
     assert (a, b) == ("ataberk", "burak")
-    assert result.only_a == ["?GitHub Actions", "Kubernetes"]
+    assert result.only_a == ["?Swagger", "Kubernetes"]
     assert result.only_b == ["CI/CD"]
     assert result.both == 16
     assert result.f1 == pytest.approx(32 / 35)
@@ -56,6 +57,23 @@ def test_unknown_skill_without_question_mark_is_error(dataset: Path) -> None:
     data["skills"].append({"skill": "Apache Kafka", "level": "unknown", "years": None})
     path.write_text(json.dumps(data), encoding="utf-8")
     assert check_labels.main(["--dataset", str(dataset), "--skills", str(SKILLS)]) == 1
+
+
+@pytest.mark.parametrize(
+    ("skill", "message"),
+    [
+        (" Docker", "boşluk"),
+        ("Postgres", "→ 'PostgreSQL' yazın"),
+        ("?k8s", "→ 'Kubernetes' yazın"),
+    ],
+)
+def test_bad_skill_names_are_reported(skill: str, message: str) -> None:
+    report = Report()
+    _common.validate_skills(
+        Path("x.json"), [{"skill": skill, "level": "unknown", "years": None}], load_skill_names(SKILLS), report
+    )
+    assert len(report.errors) == 1
+    assert message in report.errors[0]
 
 
 def test_real_cv_requires_consent(dataset: Path) -> None:
@@ -71,7 +89,7 @@ def test_write_gold_creates_draft_and_keeps_existing(dataset: Path) -> None:
 
     assert draft["adjudicator"] == "ataberk"  # syn-001: 1 mod 3 → hakem ataberk
     assert len(draft["skills"]) == 14
-    assert {p["skill"] for p in draft["_karar_bekleyen"]} == {"Docker", "FastAPI", "Kubernetes", "?GitHub Actions", "CI/CD"}
+    assert {p["skill"] for p in draft["_karar_bekleyen"]} == {"Docker", "FastAPI", "Kubernetes", "?Swagger", "CI/CD"}
     # Çözülmemiş taslak doğrulamadan geçmemeli.
     assert check_labels.main(["--dataset", str(dataset), "--skills", str(SKILLS)]) == 1
 

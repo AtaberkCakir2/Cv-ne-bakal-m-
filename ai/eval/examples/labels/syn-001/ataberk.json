@@ -19,7 +19,7 @@
     { "skill": "Linux", "level": "unknown", "years": null },
     { "skill": "Postman", "level": "unknown", "years": null },
     { "skill": "İngilizce", "level": "intermediate", "years": null },
-    { "skill": "?GitHub Actions", "level": "unknown", "years": null }
+    { "skill": "?Swagger", "level": "unknown", "years": null }
   ],
-  "notes": "ÖRNEK etiket (sentetik CV). Kasıtlı anlaşmazlıklar içerir: Kubernetes (kılavuza göre etiketlenmemeli), FastAPI ve Docker seviyesi, CI/CD yerine listede olmayan ad."
+  "notes": "ÖRNEK etiket (sentetik CV). Kasıtlı anlaşmazlıklar içerir: Kubernetes (kılavuza göre etiketlenmemeli), FastAPI ve Docker seviyesi, CI/CD yok, listede olmayan ?Swagger var."
 }
