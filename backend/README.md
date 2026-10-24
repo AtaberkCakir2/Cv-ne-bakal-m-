@@ -56,6 +56,28 @@ Kurallar:
 - Her yanıtta `X-Request-ID` başlığı vardır; hata bildirirken bu kimliği isteyin, loglarda aynı kimlikle aranır.
 - Loglara e-posta, telefon veya CV içeriği yazılmaz (karar #9). Maskeleme filtresi ikinci güvenlik katmanıdır, ilk katman değil.
 
+## Endpoint'ler
+
+| Metot | Yol | Durum |
+|---|---|---|
+| GET | `/api/v1/health` | ✅ |
+| GET | `/api/v1/health/ready` | ✅ |
+| POST | `/api/v1/analyses` | ✅ CV doğrulama (≤ 5 MB, ≤ 5 sayfa, PDF imzası, şifreli/bozuk PDF), SHA-256 · kimlik doğrulama yok (T-037) |
+| GET | `/api/v1/analyses/{id}` | ✅ sonuç · liste/silme/geri bildirim T-048 |
+
+**Geliştirme modu (geçici):** Analizler bellekte tutulur (sunucu kapanınca silinir) ve kuyruk hemen `contracts/examples/analysis_result.example.json` örnek sonucunu döner. Böylece web ve mobil ekranlar AI modülünü beklemeden geliştirilebilir. Gerçek veritabanı deposu T-012 (Ataberk), gerçek kuyruk T-039 ile gelecek.
+
+Örnek:
+
+```bash
+curl -F "file=@ozgecmis.pdf;type=application/pdf" -F target_role_id=1 http://localhost:8000/api/v1/analyses
+curl http://localhost:8000/api/v1/analyses/<analysis_id>
+```
+
+### CV diske yazılmaz
+
+Starlette, 1 MB'ı aşan yüklemeleri varsayılan olarak geçici disk dosyasına yazar. `app/core/uploads.py` bu eşiği izin verilen en büyük istek boyutunun üstüne çeker ve 5 MB + 64 KB'tan büyük istekleri gövde okunmadan reddeder (`Content-Length` zorunlu). `tests/test_analyses_upload.py::test_upload_is_never_written_to_disk` bunu doğrular. Production'da Caddy'de de istek gövdesi sınırı (`request_body max_size 6MB`) olmalı (T-075, Ataberk).
+
 ## Sıradaki işler
 
-T-038 CV yükleme endpoint'i · T-037 kimlik doğrulama · T-039 analiz kuyruğu. AI modülü hazır olana kadar analiz sonucu olarak `contracts/examples/analysis_result.example.json` döndürülür.
+T-037 kimlik doğrulama · T-039 analiz kuyruğu (Celery + Redis) · T-048 sonuç ve katalog endpoint'leri.

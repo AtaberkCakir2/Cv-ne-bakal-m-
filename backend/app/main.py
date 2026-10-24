@@ -7,16 +7,21 @@ OpenAPI dokümanı: http://localhost:8000/docs
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api.routers import health
+from app.api.routers import analyses, health
 from app.core.config import Settings, get_settings
 from app.core.errors import register_exception_handlers
 from app.core.logging import configure_logging
 from app.core.middleware import RequestContextMiddleware
+from app.core.uploads import UploadSizeLimitMiddleware, keep_uploads_in_memory
+from app.repositories.analyses import InMemoryAnalysisRepository
+from app.services.analyses import AnalysisService
+from app.services.analysis_queue import ExampleResultQueue
 
 
 def create_app(settings: Settings | None = None) -> FastAPI:
     settings = settings or get_settings()
     configure_logging(settings.log_level)
+    keep_uploads_in_memory()
 
     app = FastAPI(
         title=settings.app_name,
@@ -35,10 +40,16 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         allow_headers=["*"],
         expose_headers=["X-Request-ID"],
     )
+    # Büyük yüklemeler gövde okunmadan reddedilir (bellek koruması).
+    app.add_middleware(UploadSizeLimitMiddleware, paths=(f"{settings.api_prefix}/analyses",))
     # En dışta: istek kimliği her yanıta (hatalar dahil) eklenir.
     app.add_middleware(RequestContextMiddleware)
 
+    # GEÇİCİ: bellek içi depo ve örnek sonuç kuyruğu (T-012 ve T-039 gelince değişecek).
+    app.state.analysis_service = AnalysisService(InMemoryAnalysisRepository(), ExampleResultQueue())
+
     app.include_router(health.router, prefix=settings.api_prefix)
+    app.include_router(analyses.router, prefix=settings.api_prefix)
     return app
 
 
