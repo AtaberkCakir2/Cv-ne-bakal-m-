@@ -101,7 +101,7 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 - **Destek:** Ataberk
 - **Çıktı:** backend/ iskeleti
 - **Kabul kriteri:** Katmanlı yapı (routers / services / repositories / schemas), pydantic-settings, yapılandırılmış JSON log, /health ve /health/ready, otomatik OpenAPI, global hata formatı.
-- **Not:** 24.10.2026: Ataberk'in compose ortamıyla (PR #10) gerçek Postgres/Redis/Ollama üzerinde doğrulandı: konteynerde ve Windows'ta /health/ready 200; Redis durdurulunca 503, geri gelince 200. Windows'ta servis adresleri `localhost` değil `127.0.0.1` olmalı (IPv6 sorunu, PR #11).
+- **Not:** 24.10.2026: Ataberk'in compose ortamıyla (PR #10) gerçek Postgres/Redis/Ollama üzerinde doğrulandı: konteynerde ve Windows'ta /health/ready 200; Redis durdurulunca 503, geri gelince 200. Windows'ta servis adresleri `localhost` değil `127.0.0.1` olmalı (IPv6 sorunu, PR #12).
 
 ---
 
