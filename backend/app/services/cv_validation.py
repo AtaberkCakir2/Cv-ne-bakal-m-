@@ -8,7 +8,7 @@ import hashlib
 import io
 from dataclasses import dataclass
 
-from pypdf import PdfReader
+from pypdf import PasswordType, PdfReader
 from pypdf.errors import PdfReadError
 
 from app.core.uploads import MAX_PDF_BYTES, MAX_PDF_PAGES
@@ -45,7 +45,9 @@ def validate_cv(content: bytes, content_type: str | None) -> ValidatedCv:
 
     try:
         reader = PdfReader(io.BytesIO(content))
-        if reader.is_encrypted:
+        # Sadece "düzenleme kısıtlı" PDF'ler (boş kullanıcı şifresi) açılabilir; onları reddetme.
+        # ai/parsing (T-020) da aynı kuralı kullanır: needs_pass and not authenticate("").
+        if reader.is_encrypted and reader.decrypt("") == PasswordType.NOT_DECRYPTED:
             raise CvRejected(422, "PDF_UNREADABLE", "Şifreli PDF okunamıyor. Lütfen şifresiz bir kopya yükleyin.")
         pages = len(reader.pages)
     except CvRejected:

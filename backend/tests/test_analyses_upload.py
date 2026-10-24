@@ -15,12 +15,12 @@ URL = "/api/v1/analyses"
 PROBLEM = "application/problem+json"
 
 
-def make_pdf(pages: int = 1, password: str | None = None) -> bytes:
+def make_pdf(pages: int = 1, password: str | None = None, owner_only: bool = False) -> bytes:
     writer = PdfWriter()
     for _ in range(pages):
         writer.add_blank_page(width=595, height=842)
     if password:
-        writer.encrypt(password)
+        writer.encrypt(user_password="" if owner_only else password, owner_password=password)
     buffer = io.BytesIO()
     writer.write(buffer)
     return buffer.getvalue()
@@ -108,6 +108,11 @@ def test_encrypted_pdf_is_rejected(client: TestClient) -> None:
     response = upload(client, make_pdf(1, password="gizli"))
     assert_problem(response, 422, "PDF_UNREADABLE")
     assert "Şifreli" in response.json()["detail"]  # kod sözleşmedeki gibi genel, mesaj nedeni söylüyor
+
+
+def test_edit_restricted_pdf_without_open_password_is_accepted(client: TestClient) -> None:
+    # Boş kullanıcı şifreli ("sadece düzenleme kısıtlı") PDF herkesçe açılabilir; reddedilmemeli.
+    assert upload(client, make_pdf(1, password="sahip", owner_only=True)).status_code == 202
 
 
 @pytest.mark.parametrize("content", [b"%PDF-1.4\nbozuk dosya", b""])
