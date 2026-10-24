@@ -54,12 +54,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-011 · Veri tabanı şeması v1 (ERD)
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 19.10.2026 – 25.10.2026 · **Öncelik:** P0 · **Efor:** 8 saat · **Alan:** Veri Tabanı
 - **Bağımlılık:** T-004 (Anıl)
 - **Destek:** Burak
 - **Çıktı:** ERD (dbdiagram.io) + şema dokümanı
 - **Kabul kriteri:** "Veritabanı Şeması" sayfasındaki tablolar; 3NF, UUID PK, created_at/updated_at, soft delete (deleted_at). CV içeriği ASLA saklanmaz, sadece hash ve metadata.
+- **Not:** ERD `backend/app/db/erd.dbml` + `erd.svg`, kararlar `docs/veritabani.md` (25.10). DBML → SQL geçici Postgres'te test edildi (17 tablo, 20 FK; silme/benzersizlik/CV-yok testleri geçti). UUID PK sadece kişisel tablolarda: contracts'taki job_posting.id ve resource_id integer. Onay bekleyen öneriler: `user_tokens` (Anıl, T-037), `analysis_unverified_skills` (Burak).
 
 ### T-014 · Veri kaynağı ve hukuki uygunluk analizi
 

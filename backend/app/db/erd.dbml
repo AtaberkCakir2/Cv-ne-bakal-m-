@@ -1,0 +1,419 @@
+// CareerAI veritabanı şeması v1 (T-011)
+// Görsel: https://dbdiagram.io → Import → DBML ile bu dosyayı yapıştırın. Render: erd.svg
+// Açıklamalar ve kararlar: docs/veritabani.md · Modeller ve migration'lar: T-012 (bu klasör)
+//
+// Kurallar:
+// - PK: kullanıcıya ait / dışarıya id'si açılan kişisel tablolar uuid; katalog ve yüksek hacimli
+//   tablolar identity (contracts/ içindeki job_posting.id ve resource_id integer olduğu için).
+// - Her tabloda created_at / updated_at (audit_logs sadece created_at: değiştirilemez kayıt).
+// - Soft delete: users ve analyses deleted_at (30 gün sonra kalıcı silme işi). Katalog tabloları is_active.
+// - CV dosyası ve ham CV metni hiçbir tabloda yok; sadece cv_sha256 ve cv_pages.
+// - role_skill_stats tablo değil materialized view (3NF); tanımı docs/veritabani.md içinde.
+
+Project careerai {
+  database_type: 'PostgreSQL'
+  Note: 'PostgreSQL 16 + pgvector + citext. CV içeriği ASLA saklanmaz.'
+}
+
+// ---------- Enum'lar ----------
+
+Enum user_role {
+  user
+  admin
+}
+
+Enum consent_type {
+  kvkk_aydinlatma
+  acik_riza
+  kullanim_kosullari
+}
+
+Enum token_purpose {
+  verify_email
+  reset_password
+}
+
+Enum skill_category {
+  dil
+  framework
+  veritabani
+  bulut
+  devops
+  arac
+  metodoloji
+  soft
+}
+
+Enum source_type {
+  api
+  scrape
+  dataset
+}
+
+Enum lang_code {
+  tr
+  en
+}
+
+Enum skill_importance {
+  required
+  preferred
+}
+
+Enum scrape_status {
+  running
+  success
+  partial
+  failed
+}
+
+Enum resource_provider {
+  youtube
+  udemy
+  coursera
+  btk_akademi
+  docs
+  blog
+  other
+}
+
+Enum resource_level {
+  beginner
+  intermediate
+  advanced
+}
+
+Enum skill_level {
+  beginner
+  intermediate
+  advanced
+  unknown
+}
+
+Enum analysis_status {
+  queued
+  processing
+  done
+  failed
+}
+
+Enum analysis_error_code {
+  PDF_UNREADABLE
+  PDF_TOO_LARGE
+  NO_TEXT_FOUND
+  LLM_TIMEOUT
+  INTERNAL
+}
+
+Enum skill_kind {
+  present
+  missing
+}
+
+// ---------- Kullanıcı ve KVKK ----------
+
+Table users {
+  id uuid [pk, default: `gen_random_uuid()`]
+  email citext [not null, unique, note: 'Giriş e-postası (büyük/küçük harf duyarsız)']
+  password_hash text [not null, note: 'argon2']
+  full_name varchar(120)
+  role user_role [not null, default: 'user']
+  target_role_id int [note: 'Güncel hedef pozisyon tercihi']
+  is_verified boolean [not null, default: false]
+  created_at timestamptz [not null, default: `now()`]
+  updated_at timestamptz [not null, default: `now()`]
+  deleted_at timestamptz [note: 'Soft delete; 30 gün sonra kalıcı silinir']
+}
+
+Table refresh_tokens {
+  id uuid [pk, default: `gen_random_uuid()`]
+  user_id uuid [not null]
+  token_hash text [not null, unique, note: 'SHA-256; token kendisi saklanmaz']
+  expires_at timestamptz [not null]
+  revoked_at timestamptz
+  user_agent text
+  created_at timestamptz [not null, default: `now()`]
+  updated_at timestamptz [not null, default: `now()`]
+
+  indexes {
+    user_id
+  }
+}
+
+Table user_tokens {
+  id uuid [pk, default: `gen_random_uuid()`]
+  user_id uuid [not null]
+  purpose token_purpose [not null]
+  token_hash text [not null, unique, note: 'Tek kullanımlık e-posta doğrulama / şifre sıfırlama; SHA-256']
+  expires_at timestamptz [not null]
+  used_at timestamptz
+  created_at timestamptz [not null, default: `now()`]
+  updated_at timestamptz [not null, default: `now()`]
+
+  indexes {
+    (user_id, purpose)
+  }
+  Note: 'Öneri (T-037, Anıl onayı bekliyor): /auth/verify-email ve /auth/reset-password için.'
+}
+
+Table consents {
+  id uuid [pk, default: `gen_random_uuid()`]
+  user_id uuid [not null]
+  consent_type consent_type [not null]
+  version varchar(20) [not null, note: 'Metin sürümü, ör. 2026-12']
+  accepted_at timestamptz [not null]
+  ip_hash text [note: 'Tuzlu hash; açık IP saklanmaz']
+  created_at timestamptz [not null, default: `now()`]
+  updated_at timestamptz [not null, default: `now()`]
+
+  indexes {
+    (user_id, consent_type, version) [unique]
+  }
+}
+
+// ---------- Katalog: pozisyonlar, yetkinlikler, kaynaklar ----------
+
+Table roles {
+  id int [pk, increment]
+  name varchar(100) [not null]
+  slug varchar(100) [not null, unique, note: 'contracts: role_slug, target_role.slug']
+  synonyms "text[]" [not null, default: `'{}'`, note: 'GIN indeks (migration)']
+  description text
+  is_active boolean [not null, default: true]
+  created_at timestamptz [not null, default: `now()`]
+  updated_at timestamptz [not null, default: `now()`]
+}
+
+Table skills {
+  id int [pk, increment]
+  canonical_name varchar(100) [not null, unique, note: 'contracts: skills[].skill']
+  slug varchar(100) [not null, unique]
+  category skill_category [not null]
+  synonyms "text[]" [not null, default: `'{}'`, note: 'GIN indeks (migration)']
+  esco_uri text
+  embedding "vector(384)" [note: 'HNSW vector_cosine_ops (T-013)']
+  is_active boolean [not null, default: true]
+  created_at timestamptz [not null, default: `now()`]
+  updated_at timestamptz [not null, default: `now()`]
+
+  indexes {
+    category
+  }
+}
+
+Table resources {
+  id int [pk, increment, note: 'contracts: resource_id']
+  skill_id int [not null]
+  title text [not null]
+  url text [not null, unique]
+  provider resource_provider [not null]
+  language lang_code [not null]
+  level resource_level [not null]
+  duration_min int
+  is_free boolean [not null]
+  is_alive boolean [not null, default: true, note: 'Haftalık link kontrolü']
+  last_checked_at timestamptz
+  created_at timestamptz [not null, default: `now()`]
+  updated_at timestamptz [not null, default: `now()`]
+
+  indexes {
+    skill_id
+  }
+}
+
+// ---------- İlan toplama ----------
+
+Table job_sources {
+  id int [pk, increment]
+  name varchar(100) [not null, unique, note: 'contracts: source']
+  type source_type [not null]
+  base_url text
+  tos_checked boolean [not null, default: false, note: 'scraper/kaynak-uygunluk.md satırı güncel mi']
+  rate_limit_sec "numeric(4,1)" [not null, default: 4]
+  is_active boolean [not null, default: false, note: 'Sadece uygunluk tablosunda ✅ olanlar true']
+  created_at timestamptz [not null, default: `now()`]
+  updated_at timestamptz [not null, default: `now()`]
+}
+
+Table job_postings {
+  id bigint [pk, increment, note: 'contracts: id']
+  source_id int [not null]
+  external_id text [not null]
+  url text
+  title_raw text [not null]
+  role_id int [note: 'Normalize pozisyon; ETL eşleyemezse null']
+  company text
+  location text
+  description_clean text [not null, note: 'İK kişisinin adı / e-posta / telefon silinmiş']
+  language lang_code [not null]
+  posted_at date
+  content_hash char(64) [not null, unique, note: 'Tekrar kayıt engeli']
+  embedding "vector(384)" [note: 'HNSW (T-013)']
+  is_active boolean [not null, default: true]
+  created_at timestamptz [not null, default: `now()`]
+  updated_at timestamptz [not null, default: `now()`]
+
+  indexes {
+    (source_id, external_id) [unique]
+    role_id
+    posted_at
+  }
+}
+
+Table job_posting_skills {
+  posting_id bigint [not null]
+  skill_id int [not null]
+  importance skill_importance [not null]
+  created_at timestamptz [not null, default: `now()`]
+  updated_at timestamptz [not null, default: `now()`]
+
+  indexes {
+    (posting_id, skill_id) [pk]
+    skill_id
+  }
+}
+
+Table scrape_runs {
+  id bigint [pk, increment]
+  source_id int [not null]
+  started_at timestamptz [not null]
+  finished_at timestamptz
+  status scrape_status [not null]
+  fetched int [not null, default: 0]
+  inserted int [not null, default: 0]
+  duplicates int [not null, default: 0]
+  errors int [not null, default: 0]
+  error_log text
+  created_at timestamptz [not null, default: `now()`]
+  updated_at timestamptz [not null, default: `now()`]
+
+  indexes {
+    (source_id, started_at)
+    status
+  }
+}
+
+// ---------- Analizler ----------
+
+Table analyses {
+  id uuid [pk, default: `gen_random_uuid()`, note: 'contracts: analysis_id']
+  user_id uuid [not null]
+  target_role_id int [not null, note: 'Analiz anındaki hedef (users.target_role_id değişebilir)']
+  status analysis_status [not null, default: 'queued']
+  cv_sha256 char(64) [not null, note: 'Önbellek anahtarı; dosya ve metin SAKLANMAZ']
+  cv_pages smallint
+  match_score "numeric(5,2)" [note: '0-100']
+  postings_analyzed int
+  model_name varchar(60)
+  prompt_version varchar(60)
+  duration_ms int
+  error_code analysis_error_code [note: 'Mesaj API tarafında koddan üretilir; ham hata saklanmaz']
+  completed_at timestamptz
+  created_at timestamptz [not null, default: `now()`]
+  updated_at timestamptz [not null, default: `now()`]
+  deleted_at timestamptz [note: 'Soft delete; 30 gün sonra kalıcı silinir']
+
+  indexes {
+    (user_id, created_at)
+    status
+    cv_sha256
+  }
+}
+
+Table analysis_skills {
+  analysis_id uuid [not null]
+  skill_id int [not null]
+  kind skill_kind [not null]
+  level skill_level [not null, default: 'unknown']
+  confidence "numeric(3,2)" [note: '0-1; present için dolu']
+  demand_ratio "numeric(5,4)" [note: 'Analiz anındaki talep oranı (anlık görüntü, bilinçli)']
+  priority smallint [note: 'contracts: missing_skills[].priority; sadece missing']
+  created_at timestamptz [not null, default: `now()`]
+  updated_at timestamptz [not null, default: `now()`]
+
+  indexes {
+    (analysis_id, skill_id) [pk]
+    skill_id
+  }
+}
+
+Table analysis_unverified_skills {
+  id bigint [pk, increment]
+  analysis_id uuid [not null]
+  name varchar(100) [not null, note: 'Taksonomide olmayan, LLM tahmini yetkinlik adı']
+  level skill_level [not null, default: 'unknown']
+  confidence "numeric(3,2)"
+  created_at timestamptz [not null, default: `now()`]
+  updated_at timestamptz [not null, default: `now()`]
+
+  indexes {
+    (analysis_id, name) [unique]
+  }
+  Note: 'contracts: present_skills[].verified = false olanlar. Öneri (Burak onayı bekliyor).'
+}
+
+Table analysis_recommendations {
+  id bigint [pk, increment]
+  analysis_id uuid [not null]
+  skill_id int [not null]
+  resource_id int [not null, note: 'Sadece DB kaynakları; uydurma link yok (karar #10)']
+  rank smallint [not null]
+  reason_text text [note: "LLM'in Türkçe gerekçesi"]
+  created_at timestamptz [not null, default: `now()`]
+  updated_at timestamptz [not null, default: `now()`]
+
+  indexes {
+    (analysis_id, skill_id, rank) [unique]
+  }
+}
+
+Table feedback {
+  id bigint [pk, increment]
+  analysis_id uuid [not null, unique, note: 'Analiz başına 1 geri bildirim']
+  rating smallint [not null, note: 'CHECK 1-5 (migration)']
+  comment text
+  created_at timestamptz [not null, default: `now()`]
+  updated_at timestamptz [not null, default: `now()`]
+}
+
+Table audit_logs {
+  id bigint [pk, increment]
+  user_id uuid [note: 'Kullanıcı silinince null (kayıt kalır, kişi bağı kopar)']
+  action varchar(60) [not null, note: 'login, analysis.create, account.delete, data.export…']
+  entity text
+  entity_id text
+  ip_hash text
+  created_at timestamptz [not null, default: `now()`, note: '180 gün saklanır; değiştirilemez, updated_at yok']
+
+  indexes {
+    user_id
+    created_at
+  }
+}
+
+// ---------- İlişkiler ----------
+
+Ref: users.target_role_id > roles.id [delete: set null]
+Ref: refresh_tokens.user_id > users.id [delete: cascade]
+Ref: user_tokens.user_id > users.id [delete: cascade]
+Ref: consents.user_id > users.id [delete: cascade]
+
+Ref: resources.skill_id > skills.id [delete: restrict]
+
+Ref: job_postings.source_id > job_sources.id [delete: cascade]
+Ref: job_postings.role_id > roles.id [delete: set null]
+Ref: job_posting_skills.posting_id > job_postings.id [delete: cascade]
+Ref: job_posting_skills.skill_id > skills.id [delete: restrict]
+Ref: scrape_runs.source_id > job_sources.id [delete: cascade]
+
+Ref: analyses.user_id > users.id [delete: cascade]
+Ref: analyses.target_role_id > roles.id [delete: restrict]
+Ref: analysis_skills.analysis_id > analyses.id [delete: cascade]
+Ref: analysis_skills.skill_id > skills.id [delete: restrict]
+Ref: analysis_unverified_skills.analysis_id > analyses.id [delete: cascade]
+Ref: analysis_recommendations.analysis_id > analyses.id [delete: cascade]
+Ref: analysis_recommendations.skill_id > skills.id [delete: restrict]
+Ref: analysis_recommendations.resource_id > resources.id [delete: restrict]
+// 1:1 — feedback.analysis_id unique olduğu için analiz başına tek kayıt. ('-' gösterimi FK'yi ters yönde üretiyor.)
+Ref: feedback.analysis_id > analyses.id [delete: cascade]
+Ref: audit_logs.user_id > users.id [delete: set null]
