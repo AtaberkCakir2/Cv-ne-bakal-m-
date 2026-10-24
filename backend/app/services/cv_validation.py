@@ -39,14 +39,14 @@ def validate_cv(content: bytes, content_type: str | None) -> ValidatedCv:
         raise CvRejected(413, "PDF_TOO_LARGE", "Dosya en fazla 5 MB olabilir.")
     # Önce istemcinin bildirdiği tür, sonra dosyanın gerçek imzası (uzantı/MIME kandırılabilir).
     if (content_type or "").split(";")[0].strip().lower() not in ALLOWED_CONTENT_TYPES:
-        raise CvRejected(415, "NOT_PDF", "Sadece PDF dosyası yüklenebilir.")
+        raise CvRejected(415, "PDF_UNREADABLE", "Sadece PDF dosyası yüklenebilir.")
     if not content.startswith(PDF_MAGIC):
-        raise CvRejected(415, "NOT_PDF", "Sadece PDF dosyası yüklenebilir.")
+        raise CvRejected(415, "PDF_UNREADABLE", "Sadece PDF dosyası yüklenebilir.")
 
     try:
         reader = PdfReader(io.BytesIO(content))
         if reader.is_encrypted:
-            raise CvRejected(422, "PDF_ENCRYPTED", "Şifreli PDF okunamıyor. Lütfen şifresiz bir kopya yükleyin.")
+            raise CvRejected(422, "PDF_UNREADABLE", "Şifreli PDF okunamıyor. Lütfen şifresiz bir kopya yükleyin.")
         pages = len(reader.pages)
     except CvRejected:
         raise
@@ -56,6 +56,6 @@ def validate_cv(content: bytes, content_type: str | None) -> ValidatedCv:
     if pages == 0:
         raise CvRejected(422, "PDF_UNREADABLE", "PDF dosyasında sayfa yok.")
     if pages > MAX_PDF_PAGES:
-        raise CvRejected(422, "PDF_TOO_MANY_PAGES", f"CV en fazla {MAX_PDF_PAGES} sayfa olabilir ({pages} sayfa).")
+        raise CvRejected(422, "PDF_TOO_LARGE", f"CV en fazla {MAX_PDF_PAGES} sayfa olabilir ({pages} sayfa).")
 
     return ValidatedCv(content=content, sha256=hashlib.sha256(content).hexdigest(), pages=pages)

@@ -89,7 +89,7 @@ def test_upload_is_never_written_to_disk(client: TestClient, monkeypatch: pytest
     ],
 )
 def test_non_pdf_is_rejected(client: TestClient, content: bytes, content_type: str) -> None:
-    assert_problem(upload(client, content, content_type), 415, "NOT_PDF")
+    assert_problem(upload(client, content, content_type), 415, "PDF_UNREADABLE")
 
 
 def test_octet_stream_pdf_is_accepted(client: TestClient) -> None:
@@ -99,11 +99,15 @@ def test_octet_stream_pdf_is_accepted(client: TestClient) -> None:
 
 def test_more_than_five_pages_is_rejected(client: TestClient) -> None:
     assert upload(client, make_pdf(5)).status_code == 202
-    assert_problem(upload(client, make_pdf(6)), 422, "PDF_TOO_MANY_PAGES")
+    response = upload(client, make_pdf(6))
+    assert_problem(response, 422, "PDF_TOO_LARGE")
+    assert "5 sayfa" in response.json()["detail"]
 
 
 def test_encrypted_pdf_is_rejected(client: TestClient) -> None:
-    assert_problem(upload(client, make_pdf(1, password="gizli")), 422, "PDF_ENCRYPTED")
+    response = upload(client, make_pdf(1, password="gizli"))
+    assert_problem(response, 422, "PDF_UNREADABLE")
+    assert "Şifreli" in response.json()["detail"]  # kod sözleşmedeki gibi genel, mesaj nedeni söylüyor
 
 
 @pytest.mark.parametrize("content", [b"%PDF-1.4\nbozuk dosya", b""])

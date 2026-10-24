@@ -31,8 +31,11 @@ def get_analysis_service(request: Request) -> AnalysisService:
     responses={
         411: {"description": "Content-Length yok", **_PROBLEM},
         413: {"description": "Dosya 5 MB'tan büyük (PDF_TOO_LARGE)", **_PROBLEM},
-        415: {"description": "PDF değil (NOT_PDF)", **_PROBLEM},
-        422: {"description": "Bozuk/şifreli PDF, 5 sayfadan uzun veya eksik alan", **_PROBLEM},
+        415: {"description": "PDF değil (PDF_UNREADABLE)", **_PROBLEM},
+        422: {
+            "description": "Bozuk/şifreli PDF (PDF_UNREADABLE), 5 sayfadan uzun (PDF_TOO_LARGE) veya eksik alan",
+            **_PROBLEM,
+        },
     },
 )
 async def create_analysis(
