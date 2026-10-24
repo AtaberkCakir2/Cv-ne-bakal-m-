@@ -1,0 +1,48 @@
+[project]
+name = "careerai-ai"
+version = "0.1.0"
+description = "CareerAI AI worker: PDF ayrıştırma, kişisel veri maskeleme, yetkinlik çıkarımı, eşleştirme, öneri"
+requires-python = ">=3.12"
+dependencies = [
+    "pdfplumber>=0.11",
+    # AGPL lisanslı; proje açık kaynak/akademik olduğu sürece uygun. Ticari kullanımda lisans gözden geçirilmeli.
+    "pymupdf>=1.24",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.3",
+    "ruff>=0.8",
+    "mypy>=1.13",
+]
+
+[build-system]
+requires = ["setuptools>=75"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["parsing*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests", "eval/tests"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "S"]
+ignore = ["S101"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+
+[[tool.mypy.overrides]]
+module = ["pdfplumber", "pdfplumber.*", "pdfminer.*"]
+ignore_missing_imports = true
+
+# PyMuPDF'in tip bilgisi eksik; onu çağıran modüllerde "tipsiz çağrı" uyarısı kapalı.
+[[tool.mypy.overrides]]
+module = ["parsing.backends", "tests.parsing.*"]
+disallow_untyped_calls = false

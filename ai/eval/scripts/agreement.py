@@ -102,9 +102,13 @@ def gold_draft(result: PairResult, skills_a: list[dict[str, Any]], skills_b: lis
         else:
             pending.append({"skill": skill, "sorun": "seviye farklı", result.a: lv_a, result.b: lv_b})
     for skill in result.only_a:
-        pending.append({"skill": skill, "sorun": f"sadece {result.a} buldu", result.a: by_a[skill]["level"], result.b: None})
+        pending.append(
+            {"skill": skill, "sorun": f"sadece {result.a} buldu", result.a: by_a[skill]["level"], result.b: None}
+        )
     for skill in result.only_b:
-        pending.append({"skill": skill, "sorun": f"sadece {result.b} buldu", result.a: None, result.b: by_b[skill]["level"]})
+        pending.append(
+            {"skill": skill, "sorun": f"sadece {result.b} buldu", result.a: None, result.b: by_b[skill]["level"]}
+        )
     _, adjudicator = assignment(result.cv_id)
     return {
         "cv_id": result.cv_id,
