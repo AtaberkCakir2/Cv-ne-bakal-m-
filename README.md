@@ -4,41 +4,51 @@ Yapay zeka destekli kariyer ve eğitim yönlendirme sistemi. Öğrencinin CV'sin
 
 **Ekip:** Ataberk (veri, veri tabanı, DevOps) · Burak (yapay zeka / NLP, mobil) · Anıl (backend API, web/masaüstü)
 
-## Kurulum
+## Kurulum (yaklaşık 10 dakika + model indirme)
 
-Gerekenler: Git, Docker Desktop, Python 3.12, Node.js 20+.
+**1. Gerekenler** (Windows'ta PowerShell'e yapıştırın; kuruluysa geçin):
+
+```powershell
+winget install Git.Git Docker.DockerDesktop Python.Python.3.12 OpenJS.NodeJS.LTS ezwinports.make
+```
+
+Docker Desktop'ı bir kez açın, lisansı kabul edin ve sol altta "Engine running" yazana kadar bekleyin (ilk açılışta WSL kurulumu ve yeniden başlatma isteyebilir). macOS'ta aynı araçları Homebrew ile kurun; `make` zaten vardır.
+
+**2. Repo ve ortam değişkenleri:**
 
 ```bash
-git clone https://github.com/AtaberkCakir2/Cv-ne-bakal-m-.git
+git clone -c core.longpaths=true https://github.com/AtaberkCakir2/Cv-ne-bakal-m-.git
 cd Cv-ne-bakal-m-
-# .env dosyasını aşağıdaki "Ortam değişkenleri" bölümüne göre oluşturun
-docker compose up -d        # Postgres, Redis ve Ollama'yı başlatır
-docker compose exec ollama ollama pull llama3.1:8b
+cp .env.example .env        # PowerShell: Copy-Item .env.example .env
 ```
 
-### Ortam değişkenleri
+`.env` içindeki `POSTGRES_PASSWORD` (iki yerde: kendisi ve `DATABASE_URL`) ile `JWT_SECRET` değerlerini değiştirin. Lokal ortamda herkes kendi şifresini seçer, paylaşmaya gerek yoktur. **`.env` repoya yüklenmez** (`.gitignore` engeller); sunucu şifreleri WhatsApp grubunda değil, özel mesajla paylaşılır.
 
-Proje kök dizininde `.env` adında bir dosya oluşturup aşağıdakileri kendi değerlerinizle doldurun. **`.env` repoya yüklenmez** (`.gitignore` engeller); şifreleri WhatsApp grubunda değil, birbirinize özel mesajla paylaşın.
+**3. Servisleri başlatın:**
 
-```
-POSTGRES_USER=careerai
-POSTGRES_PASSWORD=degistir-bunu
-POSTGRES_DB=careerai
-DATABASE_URL=postgresql+psycopg://careerai:degistir-bunu@localhost:5432/careerai
-REDIS_URL=redis://localhost:6379/0
-OLLAMA_URL=http://localhost:11434
-OLLAMA_MODEL=llama3.1:8b
-JWT_SECRET=uzun-rastgele-bir-deger
-YOUTUBE_API_KEY=
+```bash
+make up       # Postgres, Redis, Ollama başlar; hepsi sağlıklı olana kadar bekler
+make model    # LLM modelini indirir (ilk seferde ~5 GB, bir kez yapılır)
+make ps       # Hepsinin durumu "healthy" olmalı
 ```
 
-Servisler:
+`make help` tüm komutları listeler. `make` kurmadıysanız her komutun karşılığı `Makefile` içinde yazılı (ör. `make up` = `docker compose up -d --wait`).
 
-| Servis | Adres |
-|---|---|
-| PostgreSQL | `localhost:5432` |
-| Redis | `localhost:6379` |
-| Ollama | `localhost:11434` |
+`backend/Dockerfile` ve `ai/Dockerfile` eklendiğinde `make up` API'yi ve AI worker'ını da otomatik başlatır.
+
+| Servis | Adres | Not |
+|---|---|---|
+| PostgreSQL 16 + pgvector | `localhost:5432` | `make psql` ile konsol |
+| Redis 7 | `localhost:6379` | `make redis-cli` ile konsol |
+| Ollama | `localhost:11434` | Model: `.env` içindeki `OLLAMA_MODEL` |
+| API | `localhost:8000` | `backend/Dockerfile` gelince |
+
+Portlar sadece kendi bilgisayarınıza açıktır. Veriler Docker volume'larında durur; `make down` silmez, `make reset` her şeyi siler.
+
+**Sık sorunlar:**
+- `.env dosyasında POSTGRES_USER yok` hatası: 2. adımı yapmadınız.
+- `port is already allocated`: Bilgisayarınızda zaten çalışan bir PostgreSQL/Redis var. Onu durdurun.
+- `make model` çok yavaş: Model ~5 GB, bir kez indirilir; `make reset` yapmadıkça tekrar inmez.
 
 ## Klasörler
 

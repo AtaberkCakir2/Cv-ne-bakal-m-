@@ -26,12 +26,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-007 · Lokal geliştirme ortamı (docker-compose)
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 19.10.2026 – 25.10.2026 · **Öncelik:** P0 · **Efor:** 8 saat · **Alan:** DevOps / Altyapı
 - **Bağımlılık:** T-006
 - **Destek:** —
 - **Çıktı:** docker-compose.yml + Makefile
 - **Kabul kriteri:** Servisler: postgres(+pgvector), redis, ollama, api, worker. Tek komutla ayağa kalkar (make up). .env.example dolu, gerçek sır yok. README'de 10 dakikada kurulum.
+- **Not:** postgres/redis/ollama `make up` ile Windows'ta test edildi (healthy, pgvector çalışıyor, veri kalıcı). api ve worker compose'da `api`/`worker` profillerinde tanımlı; `backend/Dockerfile` (Anıl, T-023, port 8000) ve `ai/Dockerfile` (Burak, Celery worker) eklenince `make up` onları otomatik başlatır.
 
 ### T-009 · VPS tedariki ve sunucu sertleştirme
 
