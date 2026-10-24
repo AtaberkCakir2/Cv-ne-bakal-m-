@@ -32,6 +32,33 @@ Akış: İstemci (web / Electron / React Native) → FastAPI → Redis kuyruğu 
 6. **Dış yapay zeka API'si kullanılmaz** (OpenAI, Claude API vb.). Tüm LLM çağrıları yerel Ollama üzerinden yapılır.
 7. **`main` dalına doğrudan commit yok.** Her iş ayrı branch'te (`isim/kisa-aciklama`, ör. `anil/auth-endpoint`) yapılır ve PR ile birleştirilir.
 8. Commit mesajları Türkçe ve kısa olabilir; conventional commits öneki kullan: `feat:`, `fix:`, `docs:`, `test:`, `refactor:`, `chore:`.
+9. Kullanıcıyla Türkçe konuş.
+
+## Kim çalışıyor?
+
+Oturumun başında kullanıcının kim olduğunu belirle: `git config user.name` ve `git config user.email` değerlerinde "Ataberk", "Burak" veya "Anıl/Anil" geçiyorsa (büyük/küçük harf ve Türkçe karakter farkını yok say) o kişidir. Belirlenemezse kullanıcıya sor. Kişinin görev dosyası:
+
+| Kişi | Görev dosyası |
+|---|---|
+| Ataberk | `docs/gorevler/ataberk.md` |
+| Burak | `docs/gorevler/burak.md` |
+| Anıl | `docs/gorevler/anil.md` |
+
+Görev durumlarının tek doğru kaynağı bu dosyalardır. `docs/plan/` altındaki Excel ve PDF başlangıç planıdır, referans olarak okunur, güncellenmez. Kullanıcının Claude'u sadece kullanıcının kendi görev dosyasını değiştirir.
+
+## "Başlıyorum" rutini
+
+Kullanıcı "başlıyorum", "başlayalım" veya "işe başlıyorum" dediğinde sırayla:
+
+1. **Repoyu güncelle:** `git checkout main && git pull`. Commit'lenmemiş değişiklik varsa önce göster ve ne yapılacağını sor; kullanıcının işini silme veya üzerine yazma.
+2. **Ekipte ne değişti:** son çalışmadan bu yana gelen commit'leri yazarına ve konusuna göre kısaca özetle. `contracts/` değiştiyse bunu ayrıca vurgula ve kullanıcının kodunu nasıl etkilediğini söyle.
+3. **Ekip durumu:** üç görev dosyasındaki `Engellendi` görevleri ve kullanıcının görevlerini bekleten (bağımlılığı bitmemiş) görevleri listele.
+4. **Bugünün görevi:** kullanıcının görev dosyasından bugünün tarihini kapsayan veya bitiş tarihi geçmiş ve `Tamamlandı` olmayan görevleri listele (ID, başlık, bitiş, öncelik, bağımlılık durumu). Önce P0 ve bitişi en yakın olanı, bağımlılıkları bitmiş olanlar arasından öner.
+5. **Branch aç:** kullanıcı görevi seçince `isim/kisa-aciklama` adıyla branch aç; görev dosyasında durumu `Devam Ediyor` yap.
+6. **Görevi birlikte yap:** görevin "Kabul kriteri" satırı iş tanımıdır. Diğer modüller hazır değilse `contracts/examples/` sahte verileriyle çalış. Sadece kullanıcının kendi klasörlerinde değişiklik yap.
+7. **Bitirirken:** kabul kriterlerini tek tek kontrol et; görev dosyasında durumu `Tamamlandı` yap (PR birleşince geçerli olur) ve işle aynı commit'e ekle. **Push ve PR açmadan önce yapılanların özetini göster ve kullanıcıdan onay al.** Onaydan sonra push et ve PR aç; `gh` girişi yoksa GitHub'daki PR oluşturma linkini ver.
+
+Görev engellenirse durumu `Engellendi` yap, sebebini görevin **Not** satırına yaz ve kullanıcıya ekibe haber vermesini hatırlat.
 
 ## Teknoloji
 
