@@ -167,5 +167,5 @@ erDiagram
 ## Notlar
 
 - **Kullanıcı silinince** (`ON DELETE CASCADE`): oturumlar, rızalar, analizler ve analizlere bağlı yetkinlik / öneri / puan kayıtları silinir. `audit_logs` bağımsız denetim kaydıdır (`user_id` boş olabilir, 180 gün saklanır); silmede ne olacağı T-011'de netleşmeli.
-- **İki ayrı dünya:** üst yarı kullanıcı ve analizler (Anıl + Burak yazar), alt yarı ilanlar ve istatistikler (Ataberk'in toplayıcısı yazar). İkisi `skills` ve `roles` tablolarında buluşur.
+- **İki ayrı dünya:** kullanıcı ve analiz tablolarına API ve AI worker yazar (Anıl + Burak); ilan ve istatistik tablolarına toplayıcı yazar (Ataberk). İkisi `skills` ve `roles` tablolarında buluşur.
 - **Tip kısaltmaları** (Mermaid sınırı): `text_array` = `text[]`, `vector384` = `vector(384)`, `char64` = `char(64)`, `char2` = `char(2)`.

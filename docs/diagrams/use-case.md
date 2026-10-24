@@ -1,6 +1,6 @@
 # Use Case diyagramı
 
-Mermaid'de UML use case diyagramı türü yoktur; aynı gösterim akış şemasıyla çizildi: solda aktörler, ortada sistem sınırı içinde kullanım durumları. Kesikli oklar `<<include>>` (her zaman dahil) ve `<<extend>>` (koşullu) ilişkileridir.
+Mermaid'de UML use case diyagramı türü yoktur; aynı gösterim akış şemasıyla çizildi: solda aktörler, ortada sistem sınırı içinde kullanım durumları. Kesikli oklar «include» (her zaman dahil) ve «extend» (koşullu) ilişkileridir.
 
 ```mermaid
 flowchart LR
@@ -44,12 +44,12 @@ flowchart LR
 
     zaman --- UC15
 
-    UC1 -. "&lt;&lt;include&gt;&gt;" .-> UC2
-    UC4 -. "&lt;&lt;include&gt;&gt;" .-> UC10
-    UC4 -. "&lt;&lt;include&gt;&gt;" .-> UC11
-    UC12 -. "&lt;&lt;extend&gt;&gt;<br/>taranmış CV" .-> UC10
-    UC5 -. "&lt;&lt;include&gt;&gt;" .-> UC6
-    UC15 -. "&lt;&lt;include&gt;&gt;" .-> UC16
+    UC1 -. "«include»" .-> UC2
+    UC4 -. "«include»" .-> UC10
+    UC4 -. "«include»" .-> UC11
+    UC12 -. "«extend»<br/>taranmış CV" .-> UC10
+    UC5 -. "«include»" .-> UC6
+    UC15 -. "«include»" .-> UC16
 ```
 
 ## Kullanım durumları
