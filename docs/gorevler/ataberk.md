@@ -62,12 +62,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-014 · Veri kaynağı ve hukuki uygunluk analizi
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 19.10.2026 – 25.10.2026 · **Öncelik:** P0 · **Efor:** 6 saat · **Alan:** Veri Toplama
 - **Bağımlılık:** —
 - **Destek:** —
 - **Çıktı:** Kaynak uygunluk tablosu
 - **Kabul kriteri:** Her kaynak için robots.txt ve kullanım koşulları incelendi. Öncelik sırası: resmi API'ler > açık veri setleri (Kaggle) > izin veren siteler. Kullanım koşulları scraping'i yasaklayan sitelerden (ör. LinkedIn) veri ÇEKİLMEZ.
+- **Not:** Tablo: `scraper/kaynak-uygunluk.md` (25.10). Kullanılabilir: Remotive, Himalayas, Remote OK, Hacker News API'leri + EMSCAD (CC0). Türk sitelerinin hiçbiri izinsiz kullanılamıyor; Secretcv/Techcareer/İŞKUR için izin e-postası şablonu hazır. Açık: LinkedIn kaynaklı Kaggle setleri için ekip/danışman kararı, Adzuna ve Arbeitnow yazılı teyidi.
 
 ### T-008 · CI pipeline (GitHub Actions)
 
