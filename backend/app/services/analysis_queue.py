@@ -12,12 +12,14 @@ bitmez silinmeli (karar #9).
 import json
 from datetime import UTC, datetime
 from functools import lru_cache
+from pathlib import Path
 from typing import Any, Protocol
 
-from app.core.config import REPO_ROOT
 from app.repositories.analyses import AnalysisRecord
 
-EXAMPLE_RESULT = REPO_ROOT / "contracts" / "examples" / "analysis_result.example.json"
+# contracts/examples/analysis_result.example.json'ın kopyası: Docker imajı sadece backend/ klasöründen
+# derlendiği için contracts/ imajda yok. İki dosyanın aynı kaldığını tests/test_dev_example.py denetler.
+EXAMPLE_RESULT = Path(__file__).resolve().parents[1] / "dev" / "example_result.json"
 
 
 class AnalysisQueue(Protocol):
