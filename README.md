@@ -38,10 +38,10 @@ make ps       # Hepsinin durumu "healthy" olmalı
 
 | Servis | Adres | Not |
 |---|---|---|
-| PostgreSQL 16 + pgvector | `localhost:5432` | `make psql` ile konsol |
-| Redis 7 | `localhost:6379` | `make redis-cli` ile konsol |
-| Ollama | `localhost:11434` | Model: `.env` içindeki `OLLAMA_MODEL` |
-| API | `localhost:8000` | `backend/Dockerfile` gelince |
+| PostgreSQL 16 + pgvector | `127.0.0.1:5432` | `make psql` ile konsol |
+| Redis 7 | `127.0.0.1:6379` | `make redis-cli` ile konsol |
+| Ollama | `127.0.0.1:11434` | Model: `.env` içindeki `OLLAMA_MODEL` |
+| API | `127.0.0.1:8000` | `/docs` ile API dokümanı |
 
 Portlar sadece kendi bilgisayarınıza açıktır. Veriler Docker volume'larında durur; `make down` silmez, `make reset` her şeyi siler.
 
@@ -49,6 +49,7 @@ Portlar sadece kendi bilgisayarınıza açıktır. Veriler Docker volume'larınd
 - `.env dosyasında POSTGRES_USER yok` hatası: 2. adımı yapmadınız.
 - `port is already allocated`: Bilgisayarınızda zaten çalışan bir PostgreSQL/Redis var. Onu durdurun.
 - `make model` çok yavaş: Model ~5 GB, bir kez indirilir; `make reset` yapmadıkça tekrar inmez.
+- Windows'ta veritabanına her bağlantı ~2 dakika sürüyor: `.env`'deki adreslerde `localhost` yerine `127.0.0.1` yazın (eski `.env.example`'dan kopyaladıysanız). `localhost` önce IPv6'yı dener.
 
 ## Klasörler
 

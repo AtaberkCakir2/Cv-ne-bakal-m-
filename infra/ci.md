@@ -8,6 +8,7 @@ Tanım: [`.github/workflows/ci.yml`](../.github/workflows/ci.yml). Her PR'da ve 
 |---|---|---|
 | Modülleri bul | Her zaman | Hangi modüllerin kurulu olduğuna bakar (`ai/pyproject.toml`, `web/package.json` vb.) |
 | Backend | Her zaman | `ruff check`, `ruff format --check`, `mypy app tests`, `pytest`. Postgres + pgvector servisiyle `tests/db` de çalışır: migration upgrade → downgrade → upgrade ve `alembic check` |
+| Scraper | `scraper/pyproject.toml` varsa | `ruff`, `mypy collector tests`, `pytest`; Postgres servisiyle içe aktarma testleri (şema backend migration'larıyla kurulur) |
 | AI | `ai/pyproject.toml` varsa | `ruff`, `mypy parsing tests eval/scripts`, `pytest` (ai/README.md'deki komutlar) |
 | Web | `web/package.json` varsa | `npm ci`, `npm run lint` (eslint), `npx tsc -b` |
 | Mobil | `mobile/package.json` varsa | `npm ci`, `npm run lint` (varsa), `npx tsc --noEmit` |
