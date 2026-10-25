@@ -24,7 +24,7 @@ Yeni modül eklemek için workflow'a dokunmak gerekmez: dosyası repoya girdiği
    - "DB bağımlılıkları kurulu mu" → `backend/pyproject.toml`'a `sqlalchemy`, `alembic`, `pgvector` eklenmemiş.
    - `alembic check` → model değişmiş ama migration yazılmamış (`backend/app/db/README.md`).
    - `npm ci` → `package-lock.json` commit'lenmemiş.
-   - **Yerelde geçiyor, CI'da düşüyor** → büyük ihtimalle araç sürümü farkı. CI her seferinde en güncel `ruff`/`mypy`'yi kurar (`pyproject.toml`'da `ruff>=0.8` yazıyor). Örnek: ruff 0.8 Markdown dosyalarını biçimlendirmez, 0.17 README'lerdeki Python kod bloklarını da kontrol eder. Çözüm: modül sahibi `pyproject.toml`'da sürümü sabitler (ör. `"ruff==0.17.2"`, `"mypy==<sürüm>"`) ve herkes `pip install -e ".[dev]"` ile günceller.
+   - **Yerelde geçiyor, CI'da düşüyor** → büyük ihtimalle araç sürümü farkı. CI her seferinde en güncel `ruff`/`mypy`'yi kurar (`pyproject.toml`'da `ruff>=0.8` yazıyor). Örnek: ruff 0.8 Markdown dosyalarını biçimlendirmez, 0.17 README'lerdeki Python kod bloklarını da kontrol eder. Çözüm: modül sahibi `pyproject.toml`'da sürümü sabitler (ör. `"ruff==0.17.2"`, `"mypy==<sürüm>"`) ve herkes `pip install -e ".[dev]"` ile günceller. Backend'de sabitlendi (#17: `ruff==0.17.2`, `mypy==2.4.0`); `ai/` için henüz açık uçlu.
 
 ## "Kırmızı CI ile merge yok" kuralı (T-006, repo sahibi yapar)
 
