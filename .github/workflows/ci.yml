@@ -124,7 +124,7 @@ jobs:
       - run: pip install -e ../backend -e ".[dev]"
       - run: ruff check .
       - run: ruff format --check .
-      - run: mypy collector tests
+      - run: mypy collector etl tests
       - run: pytest -rs
 
   ai:
