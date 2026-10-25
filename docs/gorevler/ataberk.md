@@ -94,12 +94,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-015 · Açık veri setiyle başlangıç ilan havuzu
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 26.10.2026 – 01.11.2026 · **Öncelik:** P0 · **Efor:** 6 saat · **Alan:** Veri Toplama
 - **Bağımlılık:** T-014, T-012
 - **Destek:** —
 - **Çıktı:** job_postings tablosunda ≥ 2.000 kayıt
 - **Kabul kriteri:** Kaggle vb. setlerden en az 2.000 yazılım ilanı içe aktarıldı (scraping çalışmasa bile sistem çalışır = yedek plan).
+- **Not:** `scraper/collector` (25.10): izinli kaynaklardan (T-014) **2.048 aktif** güncel yazılım ilanı (Hacker News 1.443, Himalayas 565, Remote OK 30, Remotive 10; Mayıs–Ekim 2026) + yedek plan olarak **EMSCAD 4.374** (CC0, 2012–14, pasif; `--active` ile açılır). Scraping yok, hepsi API/veri seti. E-posta, telefon ve profil linkleri maskeleniyor; iş arayan yorumları ve TR/EN dışı ilanlar alınmıyor. Açık: ilan metnindeki kişi adları (ör. işe alımcı) isim tanıma ister → Burak'ın T-030 maskeleyicisi T-033'te uygulanmalı. `role_id` ve yetkinlik etiketleri T-033'te.
 
 ---
 
