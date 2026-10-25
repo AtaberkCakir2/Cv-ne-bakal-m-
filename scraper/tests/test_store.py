@@ -13,11 +13,12 @@ from alembic import command
 from alembic.config import Config
 from app.db.enums import ScrapeStatus
 from app.db.models import JobPosting, ScrapeRun
-from sqlalchemy import Engine, create_engine, select
+from sqlalchemy import Engine, create_engine, func, select, text
+from sqlalchemy.exc import StatementError
 from sqlalchemy.orm import Session
 
 from collector.posting import Posting, SourceInfo
-from collector.store import run_import, source_counts
+from collector.store import BATCH_SIZE, error_summary, run_import, source_counts
 
 TEST_DATABASE_URL = os.environ.get("TEST_DATABASE_URL")
 ALEMBIC_INI = Path(__file__).resolve().parents[2] / "backend" / "app" / "db" / "alembic.ini"
@@ -86,3 +87,29 @@ def test_failed_source_is_recorded(session: Session) -> None:
     assert run.status == ScrapeStatus.FAILED
     assert run.error_log == "RuntimeError: kaynak 403 döndü"
     assert run.finished_at is not None
+
+
+def test_source_failing_midway_is_partial_with_counts(session: Session) -> None:
+    # İnceleme #18 (Anıl): ilk parti yazıldıktan sonra kaynak hata verirse kayıt "failed, 0" değil "partial" olmalı.
+    def first_batch_then_error() -> Iterator[Posting]:
+        for i in range(BATCH_SIZE):
+            yield posting(str(i), f"Backend role number {i} with Python")
+        raise RuntimeError("ikinci sayfa 500 döndü")
+
+    with pytest.raises(RuntimeError):
+        run_import(session, SOURCE, first_batch_then_error())
+
+    run = session.scalars(select(ScrapeRun)).one()
+    assert (run.status, run.fetched, run.inserted, run.duplicates) == (ScrapeStatus.PARTIAL, BATCH_SIZE, BATCH_SIZE, 0)
+    assert session.scalar(select(func.count(JobPosting.id))) == BATCH_SIZE
+
+
+def test_sql_errors_never_log_posting_text(session: Session) -> None:
+    posting_text = "ilan metni jane@example.com"
+    try:
+        session.execute(text("SELECT CAST(:v AS integer)"), {"v": posting_text})
+    except StatementError as exc:
+        summary = error_summary(exc)
+    session.rollback()
+    assert summary == "DataError: InvalidTextRepresentation"
+    assert posting_text not in summary

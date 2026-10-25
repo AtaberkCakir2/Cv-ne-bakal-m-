@@ -11,7 +11,8 @@ from app.core.config import get_settings
 @lru_cache
 def get_engine() -> Engine:
     # pool_pre_ping: Postgres yeniden başlarsa kopmuş bağlantı ilk sorguda fark edilip yenilenir.
-    return create_engine(get_settings().database_url, pool_pre_ping=True)
+    # hide_parameters: hata mesajlarına ve loglara SQL parametreleri (ilan metni, e-posta vb.) girmez (karar #9).
+    return create_engine(get_settings().database_url, pool_pre_ping=True, hide_parameters=True)
 
 
 @lru_cache

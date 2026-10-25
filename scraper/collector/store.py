@@ -14,6 +14,7 @@ from app.db.enums import LangCode, ScrapeStatus, SourceType
 from app.db.models import JobPosting, JobSource, ScrapeRun
 from sqlalchemy import func, select
 from sqlalchemy.dialects.postgresql import insert
+from sqlalchemy.exc import StatementError
 from sqlalchemy.orm import Session
 
 from collector.posting import Posting, SourceInfo
@@ -44,14 +45,32 @@ def ensure_source(session: Session, info: SourceInfo) -> JobSource:
     return source
 
 
+def error_summary(exc: Exception) -> str:
+    """scrape_runs.error_log için kısa özet. İlan metni (kişisel veri içerebilir) asla yazılmaz.
+
+    SQLAlchemy hatalarının metni SQL'i ve parametreleri (ilan metni dahil) içerir; onlarda sadece hata türleri yazılır.
+    """
+    if isinstance(exc, StatementError):
+        return f"{type(exc).__name__}: {type(exc.orig).__name__}"[:MAX_ERROR_LOG]
+    return f"{type(exc).__name__}: {exc}"[:MAX_ERROR_LOG]
+
+
 def _batches(postings: Iterable[Posting]) -> Iterator[list[Posting]]:
     it = iter(postings)
     while batch := list(islice(it, BATCH_SIZE)):
         yield batch
 
 
-def save_postings(session: Session, source_id: int, postings: Iterable[Posting], *, active: bool = True) -> RunResult:
-    result = RunResult()
+def save_postings(
+    session: Session,
+    source_id: int,
+    postings: Iterable[Posting],
+    *,
+    active: bool = True,
+    result: RunResult | None = None,
+) -> RunResult:
+    # Sonuç yerinde güncellenir: kaynak yarıda hata verirse çağıran, o ana kadar yazılanları bilir.
+    result = result if result is not None else RunResult()
     for batch in _batches(postings):
         rows = [
             {
@@ -86,14 +105,14 @@ def run_import(session: Session, info: SourceInfo, postings: Iterable[Posting], 
     session.commit()
     result = RunResult()
     try:
-        result = save_postings(session, source.id, postings, active=active)
+        save_postings(session, source.id, postings, active=active, result=result)
         run.status = ScrapeStatus.SUCCESS
     except Exception as exc:
         session.rollback()
-        run.status = ScrapeStatus.PARTIAL if result.inserted else ScrapeStatus.FAILED
+        # Önceki partiler commit'lendi: bir kısmı yazıldıysa partial, hiç yazılmadıysa failed.
+        run.status = ScrapeStatus.PARTIAL if result.fetched else ScrapeStatus.FAILED
         run.errors = 1
-        # Sadece hata türü ve mesajı; ilan metni (kişisel veri içerebilir) loglanmaz.
-        run.error_log = f"{type(exc).__name__}: {exc}"[:MAX_ERROR_LOG]
+        run.error_log = error_summary(exc)
         raise
     finally:
         run.fetched, run.inserted, run.duplicates = result.fetched, result.inserted, result.duplicates
