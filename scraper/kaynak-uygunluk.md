@@ -44,7 +44,7 @@ Durum değerleri: ✅ **Kullanılır** (şartlara uyarak) · 🟡 **Teyit / izin
 | asaniczka setleri ([Software Engineering](https://www.kaggle.com/datasets/asaniczka/software-engineer-job-postings-linkedin), [1.3M Jobs & Skills](https://www.kaggle.com/datasets/asaniczka/1-3m-linkedin-jobs-and-skills-2024) vb.) | ODC-By (yükleyen seçti) | Yazılım/veri ilanları + yetkinlik alanı | **LinkedIn kazıma** | ⛔* | Aynı sebep |
 | Glassdoor / Indeed / Monster kaynaklı setler (thedevastator, andrewmvd, PromptCloud vb.) | CC0 / CC BY-SA / "Other" | Çeşitli | Glassdoor / Indeed / Monster kazıma | ⛔* | Aynı sebep |
 | [Job Description Dataset (ravindrasinghrana)](https://www.kaggle.com/datasets/ravindrasinghrana/job-description-dataset) ve benzeri "synthetic" setler | CC0 | 1,6M ilan | **Sentetik** (açıklamada yazıyor) | ⛔ | Gerçek piyasa verisi değil; talep istatistiği için kullanılamaz. İstenirse sadece birim testlerinde kullanılır |
-| [ESCO](https://esco.ec.europa.eu/en/use-esco/download) | AB, ücretsiz (lisans/atıf metni T-017'de teyit edilecek) | Meslek ve yetkinlik taksonomisi (ilan değil) | Avrupa Komisyonu | ✅ | T-017 taksonomi kaynağı |
+| [ESCO](https://esco.ec.europa.eu/en/use-esco/download) | 2011/833/EU: her amaçla ücretsiz, kaynak gösterilerek ([SSS](https://esco.ec.europa.eu/en/about-esco/faq), 26.10.2026'da doğrulandı) | Meslek ve yetkinlik taksonomisi (ilan değil) | Avrupa Komisyonu | ✅ | T-017: 61 yetkinlik ESCO'ya bağlı. Uygulamada atıf: "This service uses the ESCO classification of the European Commission." |
 
 ## 3. Türk iş siteleri
 

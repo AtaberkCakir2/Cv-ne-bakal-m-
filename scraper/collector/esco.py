@@ -1,9 +1,13 @@
 """ESCO eşlemesi: taksonomideki yetkinliklere ESCO kavram URI'si (`esco_uri`) yazar.
 
 Kaynak: ESCO indirme sayfasındaki sınıflandırma CSV'si, İngilizce `skills_en.csv`
-(https://esco.ec.europa.eu/en/use-esco/download). Sadece birebir eşleşme kabul edilir: yetkinliğin adı veya bir
-eş anlamlısı, ESCO'daki tercih edilen ad, alternatif ad veya "<ad> (computer programming)" biçimiyle aynı olmalı.
-Belirsiz (birden fazla ESCO kavramına giden) terimler atlanır; yanlış URI yazmaktansa boş bırakılır.
+(https://esco.ec.europa.eu/en/use-esco/download, ESCO v1.2.1).
+
+Sadece ESCO'nun **tercih edilen adı** ile birebir eşleşme kabul edilir (sondaki parantezli açıklama yok sayılır:
+"Jenkins (tools for software configuration management)" → "jenkins"). Alternatif adlar kullanılmaz: ESCO onları
+geniş kavramlara toplar ("computer programming" kavramının alternatifleri arasında bash, OCaml, OpenCV; "computer
+vision"ınkiler arasında tensorflow, keras var), bunlarla eşlemek yanlış URI yazar. Birden fazla kavrama giden terim
+atlanır; yanlış URI yazmaktansa boş bırakılır.
 """
 
 import csv
@@ -14,7 +18,12 @@ from pathlib import Path
 
 from collector.taxonomy import SKILLS_CSV, SkillRow
 
-_PROGRAMMING_SUFFIX = re.compile(r"\s*\((computer programming|programming language)\)$")
+_TRAILING_NOTE = re.compile(r"\s*\([^)]*\)$")
+
+# Adı aynı ama başka bir şey olan ESCO kavramları (elle incelendi, v1.2.1).
+HOMONYMS = {
+    "spark": "ESCO'daki SPARK, Java micro framework'ü; Apache Spark değil",
+}
 
 
 def _norm(term: str) -> str:
@@ -22,17 +31,15 @@ def _norm(term: str) -> str:
 
 
 def load_esco_index(esco_csv: Path) -> dict[str, set[str]]:
-    """terim → o terimi taşıyan ESCO kavram URI'leri."""
+    """Tercih edilen ad (parantezli not çıkarılmış) → o adı taşıyan ESCO kavram URI'leri."""
     index: dict[str, set[str]] = {}
     with esco_csv.open(encoding="utf-8", newline="") as f:
         for row in csv.DictReader(f):
             if row.get("status", "released") != "released":
                 continue
-            labels = [row.get("preferredLabel", ""), *row.get("altLabels", "").splitlines()]
-            for label in labels:
-                if not label.strip():
-                    continue
-                for term in {_norm(label), _norm(_PROGRAMMING_SUFFIX.sub("", label))}:
+            label = row.get("preferredLabel", "")
+            for term in {_norm(label), _norm(_TRAILING_NOTE.sub("", label))}:
+                if term:
                     index.setdefault(term, set()).add(row["conceptUri"])
     return index
 
@@ -40,7 +47,7 @@ def load_esco_index(esco_csv: Path) -> dict[str, set[str]]:
 def map_skills(skills: Iterable[SkillRow], index: dict[str, set[str]]) -> list[SkillRow]:
     mapped: list[SkillRow] = []
     for skill in skills:
-        if skill.esco_uri:  # elle girilmiş URI'ye dokunulmaz
+        if skill.esco_uri or skill.slug in HOMONYMS:  # elle girilmiş URI'ye dokunulmaz
             mapped.append(skill)
             continue
         candidates: set[str] = set()
