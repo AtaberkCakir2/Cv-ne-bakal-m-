@@ -45,6 +45,16 @@ Her çalışma `scrape_runs`'a yazılır (okunan / eklenen / tekrar / hata). Ayn
 
 Pozisyon eşleme (`role_id`) ve yetkinlik etiketleme T-033'te (ETL) yapılır; T-015 sadece temiz ham ilanları yükler.
 
+## Yetkinlik taksonomisi (T-017)
+
+```bash
+python -m collector seed-taxonomy                       # taxonomy/*.csv → skills, roles
+python -m collector export-taxonomy --out taxonomy.json # ai/eval biçiminde JSON
+python -m collector map-esco --csv skills_en.csv        # ESCO URI eşlemesi (ESCO indirme dosyası)
+```
+
+374 yetkinlik, 12 pozisyon; kurallar ve kapsam analizi: [taxonomy/README.md](taxonomy/README.md).
+
 ## Test ve kod kalitesi
 
 ```bash
