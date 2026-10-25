@@ -10,13 +10,19 @@ dependencies = [
     "httpx>=0.27",
     "redis>=5.2",
     "psycopg[binary]>=3.2",
+    # Veritabanı (app/db, T-012 — Ataberk)
+    "sqlalchemy>=2.0.36,<2.1",
+    "alembic>=1.14",
+    "pgvector>=0.3.6",
 ]
 
 [project.optional-dependencies]
 dev = [
     "pytest>=8.3",
-    "ruff>=0.8",
-    "mypy>=1.13",
+    # Sabit sürüm: CI ve herkesin bilgisayarı aynı kuralları uygulasın (infra/ci.md, "yerelde geçiyor CI'da düşüyor").
+    # Güncellerken: sürümü burada artır, `ruff format .` + `mypy app tests` çalıştır, aynı PR'da gönder.
+    "ruff==0.17.2",
+    "mypy==2.4.0",
 ]
 
 [build-system]
