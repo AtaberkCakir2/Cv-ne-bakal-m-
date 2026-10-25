@@ -74,12 +74,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-008 · CI pipeline (GitHub Actions)
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 26.10.2026 – 01.11.2026 · **Öncelik:** P0 · **Efor:** 8 saat · **Alan:** DevOps / Altyapı
 - **Bağımlılık:** T-006
 - **Destek:** —
 - **Çıktı:** .github/workflows/ci.yml
 - **Kabul kriteri:** Her PR'da: ruff + mypy (Python), eslint + tsc (TS), pytest, docker build. Kırmızı CI ile merge yapılamaz.
+- **Not:** `.github/workflows/ci.yml` + `infra/ci.md` (25.10). İşler: backend (Postgres servisiyle migration testleri dahil), ai, web, mobil (dosyaları gelince otomatik), docker (compose + imaj build + health smoke test). Adımlar yerelde CI ile aynı komutlarla denendi, actionlint temiz. GitHub'da #16 yeşil (25.10, Backend migration testleri dahil; #17 ile DB bağımlılıkları ve sabit ruff/mypy geldi). "Kırmızı CI ile merge yok" kuralının GitHub tarafından zorlanması branch protection'a bağlı: T-006 (Student Pack sonrası, adımlar `infra/ci.md`'de).
 
 ### T-012 · SQLAlchemy 2.0 modelleri + Alembic migration
 

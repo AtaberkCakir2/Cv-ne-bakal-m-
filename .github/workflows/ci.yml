@@ -1,0 +1,170 @@
+# CI (T-008, sahibi: Ataberk). Her PR'da ve main/develop'a her push'ta çalışır.
+# Her modülde, sahibinin README'sinde yazan komutlar birebir çalıştırılır: CI'da geçen, yerelde de geçer.
+# Henüz kurulmamış modüller (web, mobile, ai worker imajı) dosyaları eklendiği anda otomatik devreye girer.
+# "Kırmızı CI ile merge yok" kuralı GitHub'daki branch protection ile zorunlu kılınır (infra/ci.md).
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main, develop]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  detect:
+    name: Modülleri bul
+    runs-on: ubuntu-24.04
+    outputs:
+      db: ${{ steps.find.outputs.db }}
+      ai: ${{ steps.find.outputs.ai }}
+      ai_docker: ${{ steps.find.outputs.ai_docker }}
+      web: ${{ steps.find.outputs.web }}
+      mobile: ${{ steps.find.outputs.mobile }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: find
+        run: |
+          has() { if [ -e "$1" ]; then echo true; else echo false; fi; }
+          {
+            echo "db=$(has backend/app/db/alembic.ini)"
+            echo "ai=$(has ai/pyproject.toml)"
+            echo "ai_docker=$(has ai/Dockerfile)"
+            echo "web=$(has web/package.json)"
+            echo "mobile=$(has mobile/package.json)"
+          } | tee -a "$GITHUB_OUTPUT"
+
+  backend:
+    name: Backend (ruff, mypy, pytest + migration)
+    needs: detect
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: backend
+    services:
+      postgres:
+        image: pgvector/pgvector:pg16
+        env:
+          # Sadece bu iş için açılan, iş bitince silinen test veritabanı; sır değildir.
+          POSTGRES_PASSWORD: ci
+          POSTGRES_DB: careerai_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 10
+    env:
+      # tests/db bu adres verilince çalışır: upgrade → downgrade → upgrade ve `alembic check` (T-012).
+      TEST_DATABASE_URL: postgresql+psycopg://postgres:ci@127.0.0.1:5432/careerai_test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: backend/pyproject.toml
+      - run: pip install -e ".[dev]"
+      - name: DB bağımlılıkları kurulu mu
+        if: needs.detect.outputs.db == 'true'
+        # Bu adım olmazsa eksik bağımlılıkta tests/db sessizce atlanır ve migration kontrolü hiç çalışmaz.
+        run: |
+          python -c "import sqlalchemy, alembic, pgvector" || {
+            echo "::error::backend/pyproject.toml dependencies içine sqlalchemy, alembic ve pgvector eklenmeli (app/db/README.md)"
+            exit 1
+          }
+      - run: ruff check .
+      - run: ruff format --check .
+      - run: mypy app tests
+      - name: pytest (migration testleri dahil)
+        run: pytest -rs
+
+  ai:
+    name: AI (ruff, mypy, pytest)
+    needs: detect
+    if: needs.detect.outputs.ai == 'true'
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: ai
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: ai/pyproject.toml
+      - run: pip install -e ".[dev]"
+      - run: ruff check .
+      - run: ruff format --check .
+      # Yollar ai/README.md'deki komutla aynı; orası değişirse burası da değişir.
+      - run: mypy parsing tests eval/scripts
+      - run: pytest -rs
+
+  web:
+    name: Web (eslint, tsc)
+    needs: detect
+    if: needs.detect.outputs.web == 'true'
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - run: npm ci
+      - run: npm run lint
+      # Vite + TS şablonundaki proje referanslarını derler (tsconfig.app.json / tsconfig.node.json).
+      - run: npx tsc -b
+
+  mobile:
+    name: Mobil (eslint, tsc)
+    needs: detect
+    if: needs.detect.outputs.mobile == 'true'
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: mobile
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+          cache-dependency-path: mobile/package-lock.json
+      - run: npm ci
+      - run: npm run lint --if-present
+      - run: npx tsc --noEmit
+
+  docker:
+    name: Docker (compose + imaj build)
+    needs: detect
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: docker-compose.yml geçerli mi
+        run: cp .env.example .env && docker compose --profile api --profile worker config --quiet
+      - name: API imajı
+        run: docker build -t careerai/api:ci backend
+      - name: API imajı açılıyor mu (smoke test)
+        run: |
+          docker run -d --name api-smoke -p 127.0.0.1:8000:8000 careerai/api:ci
+          for _ in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:8000/api/v1/health; then echo; exit 0; fi
+            sleep 1
+          done
+          docker logs api-smoke
+          exit 1
+      - name: AI worker imajı
+        if: needs.detect.outputs.ai_docker == 'true'
+        run: docker build -t careerai/worker:ci ai
