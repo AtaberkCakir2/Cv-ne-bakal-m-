@@ -126,12 +126,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-017 · Yetkinlik taksonomisi ve pozisyon seed verisi
 
-- **Durum:** Yapılacak
+- **Durum:** Devam Ediyor
 - **Tarih:** 02.11.2026 – 08.11.2026 · **Öncelik:** P0 · **Efor:** 12 saat · **Alan:** Veri Tabanı
 - **Bağımlılık:** T-012
 - **Destek:** Burak
 - **Çıktı:** seed script + CSV
 - **Kabul kriteri:** ESCO + elle derlenmiş en az 300 teknoloji; kategori ve eş anlamlılar ("JS", "Javascript" → JavaScript); en az 10 hedef pozisyon (Backend, Frontend, Full-Stack, Mobil, Veri Bilimci, DevOps, QA, ML Mühendisi, Siber Güvenlik, Oyun).
+- **Not:** `scraper/taxonomy/` (25.10): 374 yetkinlik (8 kategori, TR+EN eş anlamlılar, 46'sı `case_sensitive`) + 12 pozisyon; `python -m collector seed-taxonomy`. Burak'ın 82 geçici yetkinliği ad/slug/kategoriyle korundu. 2.048 ilanla kapsam %85,9. Kalan: ESCO URI eşlemesi — ESCO API kapalıydı, toplu indirme e-posta ister; `map-esco` komutu hazır, `skills_en.csv` gelince çalıştırılacak.
 
 ### T-033 · İlan normalizasyonu (ETL)
 
