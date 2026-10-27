@@ -26,12 +26,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-007 · Lokal geliştirme ortamı (docker-compose)
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 19.10.2026 – 25.10.2026 · **Öncelik:** P0 · **Efor:** 8 saat · **Alan:** DevOps / Altyapı
 - **Bağımlılık:** T-006
 - **Destek:** —
 - **Çıktı:** docker-compose.yml + Makefile
 - **Kabul kriteri:** Servisler: postgres(+pgvector), redis, ollama, api, worker. Tek komutla ayağa kalkar (make up). .env.example dolu, gerçek sır yok. README'de 10 dakikada kurulum.
+- **Not:** postgres/redis/ollama `make up` ile Windows'ta test edildi (healthy, pgvector çalışıyor, veri kalıcı). api ve worker compose'da `api`/`worker` profillerinde tanımlı; `backend/Dockerfile` (Anıl, T-023, port 8000) ve `ai/Dockerfile` (Burak, Celery worker) eklenince `make up` onları otomatik başlatır.
 
 ### T-009 · VPS tedariki ve sunucu sertleştirme
 
@@ -53,48 +54,53 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-011 · Veri tabanı şeması v1 (ERD)
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 19.10.2026 – 25.10.2026 · **Öncelik:** P0 · **Efor:** 8 saat · **Alan:** Veri Tabanı
 - **Bağımlılık:** T-004 (Anıl)
 - **Destek:** Burak
 - **Çıktı:** ERD (dbdiagram.io) + şema dokümanı
 - **Kabul kriteri:** "Veritabanı Şeması" sayfasındaki tablolar; 3NF, UUID PK, created_at/updated_at, soft delete (deleted_at). CV içeriği ASLA saklanmaz, sadece hash ve metadata.
+- **Not:** ERD `backend/app/db/erd.dbml` + `erd.svg`, kararlar `docs/veritabani.md` (25.10). DBML → SQL geçici Postgres'te test edildi (17 tablo, 20 FK; silme/benzersizlik/CV-yok testleri geçti). UUID PK sadece kişisel tablolarda: contracts'taki job_posting.id ve resource_id integer. Onay bekleyen öneriler: `user_tokens` (Anıl, T-037), `analysis_unverified_skills` (Burak).
 
 ### T-014 · Veri kaynağı ve hukuki uygunluk analizi
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 19.10.2026 – 25.10.2026 · **Öncelik:** P0 · **Efor:** 6 saat · **Alan:** Veri Toplama
 - **Bağımlılık:** —
 - **Destek:** —
 - **Çıktı:** Kaynak uygunluk tablosu
 - **Kabul kriteri:** Her kaynak için robots.txt ve kullanım koşulları incelendi. Öncelik sırası: resmi API'ler > açık veri setleri (Kaggle) > izin veren siteler. Kullanım koşulları scraping'i yasaklayan sitelerden (ör. LinkedIn) veri ÇEKİLMEZ.
+- **Not:** Tablo: `scraper/kaynak-uygunluk.md` (25.10). Kullanılabilir: Remotive, Himalayas, Remote OK, Hacker News API'leri + EMSCAD (CC0). Türk sitelerinin hiçbiri izinsiz kullanılamıyor; Secretcv/Techcareer/İŞKUR için izin e-postası şablonu hazır. Açık: LinkedIn kaynaklı Kaggle setleri için ekip/danışman kararı, Adzuna ve Arbeitnow yazılı teyidi.
 
 ### T-008 · CI pipeline (GitHub Actions)
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 26.10.2026 – 01.11.2026 · **Öncelik:** P0 · **Efor:** 8 saat · **Alan:** DevOps / Altyapı
 - **Bağımlılık:** T-006
 - **Destek:** —
 - **Çıktı:** .github/workflows/ci.yml
 - **Kabul kriteri:** Her PR'da: ruff + mypy (Python), eslint + tsc (TS), pytest, docker build. Kırmızı CI ile merge yapılamaz.
+- **Not:** `.github/workflows/ci.yml` + `infra/ci.md` (25.10). İşler: backend (Postgres servisiyle migration testleri dahil), ai, web, mobil (dosyaları gelince otomatik), docker (compose + imaj build + health smoke test). Adımlar yerelde CI ile aynı komutlarla denendi, actionlint temiz. GitHub'da #16 yeşil (25.10, Backend migration testleri dahil; #17 ile DB bağımlılıkları ve sabit ruff/mypy geldi). "Kırmızı CI ile merge yok" kuralının GitHub tarafından zorlanması branch protection'a bağlı: T-006 (Student Pack sonrası, adımlar `infra/ci.md`'de).
 
 ### T-012 · SQLAlchemy 2.0 modelleri + Alembic migration
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 26.10.2026 – 01.11.2026 · **Öncelik:** P0 · **Efor:** 8 saat · **Alan:** Veri Tabanı
 - **Bağımlılık:** T-011
 - **Destek:** Anıl
 - **Çıktı:** Migration dosyaları
 - **Kabul kriteri:** Tüm tablolar model olarak yazıldı; ilk migration; upgrade/downgrade test edildi; CI'da migration kontrolü.
+- **Not:** 17 model + `0001_ilk_sema` migration `backend/app/db/` altında (25.10). upgrade → downgrade → upgrade ve `alembic check` yerelde geçti; `tests/db` (6 test, `TEST_DATABASE_URL` ile) hazır. Bağlı işler: (1) Anıl `backend/pyproject.toml`'a `sqlalchemy`, `alembic`, `pgvector` ekleyecek; (2) CI'da migration kontrolü T-008'de bağlanacak.
 
 ### T-015 · Açık veri setiyle başlangıç ilan havuzu
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 26.10.2026 – 01.11.2026 · **Öncelik:** P0 · **Efor:** 6 saat · **Alan:** Veri Toplama
 - **Bağımlılık:** T-014, T-012
 - **Destek:** —
 - **Çıktı:** job_postings tablosunda ≥ 2.000 kayıt
 - **Kabul kriteri:** Kaggle vb. setlerden en az 2.000 yazılım ilanı içe aktarıldı (scraping çalışmasa bile sistem çalışır = yedek plan).
+- **Not:** `scraper/collector` (25.10): izinli kaynaklardan (T-014) **2.048 aktif** güncel yazılım ilanı (Hacker News 1.443, Himalayas 565, Remote OK 30, Remotive 10; Mayıs–Ekim 2026) + yedek plan olarak **EMSCAD 4.374** (CC0, 2012–14, pasif; `--active` ile açılır). Scraping yok, hepsi API/veri seti. E-posta, telefon ve profil linkleri maskeleniyor; iş arayan yorumları ve TR/EN dışı ilanlar alınmıyor. Açık: ilan metnindeki kişi adları (ör. işe alımcı) isim tanıma ister → Burak'ın T-030 maskeleyicisi T-033'te uygulanmalı. `role_id` ve yetkinlik etiketleri T-033'te.
 
 ---
 
@@ -120,12 +126,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-017 · Yetkinlik taksonomisi ve pozisyon seed verisi
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 02.11.2026 – 08.11.2026 · **Öncelik:** P0 · **Efor:** 12 saat · **Alan:** Veri Tabanı
 - **Bağımlılık:** T-012
 - **Destek:** Burak
 - **Çıktı:** seed script + CSV
 - **Kabul kriteri:** ESCO + elle derlenmiş en az 300 teknoloji; kategori ve eş anlamlılar ("JS", "Javascript" → JavaScript); en az 10 hedef pozisyon (Backend, Frontend, Full-Stack, Mobil, Veri Bilimci, DevOps, QA, ML Mühendisi, Siber Güvenlik, Oyun).
+- **Not:** `scraper/taxonomy/` (25.10): 374 yetkinlik (8 kategori, TR+EN eş anlamlılar, 46'sı `case_sensitive`) + 12 pozisyon; `python -m collector seed-taxonomy`. Burak'ın 82 geçici yetkinliği ad/slug/kategoriyle korundu. 2.048 ilanla kapsam %85,9. ESCO v1.2.1 (26.10): 61 yetkinlik ESCO kavramına bağlı (sadece tercih edilen adla birebir, elle gözden geçirildi); lisans doğrulandı, uygulamada atıf cümlesi gerekiyor (`scraper/taxonomy/README.md`).
 
 ### T-033 · İlan normalizasyonu (ETL)
 
