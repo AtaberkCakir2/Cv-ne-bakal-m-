@@ -17,7 +17,7 @@ from dataclasses import dataclass
 from typing import Literal
 
 from collector.clean import Lang
-from collector.taxonomy import SkillRow
+from collector.taxonomy_rows import SkillRow
 from etl.text import fold, fold_variants
 
 Importance = Literal["required", "preferred"]

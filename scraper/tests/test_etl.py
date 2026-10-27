@@ -1,12 +1,14 @@
 """T-033 normalizasyonu: pozisyon eşleme, yetkinlik etiketleme ve benzer ilan tespiti (veritabanı gerekmez)."""
 
 import json
+import subprocess
+import sys
 from datetime import date
 from pathlib import Path
 
 import pytest
 
-from collector.taxonomy import load_roles, load_skills
+from collector.taxonomy_rows import load_roles, load_skills
 from etl.dedup import DedupItem, near_duplicates
 from etl.roles import RoleMatcher
 from etl.skills import SkillTagger
@@ -17,6 +19,17 @@ EXAMPLE = Path(__file__).resolve().parents[2] / "contracts" / "examples" / "job_
 SKILLS = load_skills()
 MATCHER = RoleMatcher(load_roles(), SKILLS)
 TAGGER = SkillTagger(SKILLS)
+
+
+def test_matchers_do_not_import_the_database_layer() -> None:
+    # Burak'ın AI worker'ı (T-031) eşleyiciyi backend paketi ve SQLAlchemy olmadan kullanabilmeli (#20 incelemesi).
+    code = (
+        "import sys\n"
+        "import collector.taxonomy_rows, etl.dedup, etl.roles, etl.skills, etl.text\n"
+        "print(sorted(m for m in sys.modules if m.split('.')[0] in {'app', 'sqlalchemy', 'alembic'}))"
+    )
+    out = subprocess.run([sys.executable, "-c", code], capture_output=True, text=True, check=True)  # noqa: S603
+    assert out.stdout.strip() == "[]"
 
 
 def test_fold_handles_turkish_dotted_capital() -> None:
