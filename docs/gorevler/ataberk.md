@@ -136,12 +136,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-033 · İlan normalizasyonu (ETL)
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 02.11.2026 – 15.11.2026 · **Öncelik:** P0 · **Efor:** 14 saat · **Alan:** Veri Toplama
 - **Bağımlılık:** T-015, T-017
 - **Destek:** Burak
 - **Çıktı:** scraper/etl modülü
 - **Kabul kriteri:** HTML temizleme, dil tespiti, pozisyon başlığı normalizasyonu ("Back-end Geliştirici" = Backend Developer), tekrar kayıt temizleme (hash + benzerlik), yetkinlik etiketleme (Burak'ın v1 modülü).
+- **Not:** `scraper/etl/` + `python -m collector normalize` / `export-postings` (26.10). HTML temizleme ve dil tespiti T-015'ten (`collector/clean.py`). Pozisyon sadece başlıktan (ekip kararı 26.10: yetkinlikten tahmin yok, istatistik döngüsel olmasın); genel başlıklar ("Software Engineer") `role_id = NULL`. Benzer ilan: aynı şirket + pozisyonda Jaccard ≥ 0,9 → eski kopya pasif. 2.002 aktif ilanda pozisyonu belli **%39,6 (792)**, yetkinlik bulunan %88 (ilan başına 7,5), 46 benzer ilan pasife alındı; 30 ilanlık elle kontrolde pozisyon ataması doğru. Burak'ın T-031'i başlamadığı için ilan etiketleyicisi sözlük tabanlı olarak burada yazıldı (`etl/skills.py`, arayüz `tag(text, lang)`); T-031 ile ortaklaştırılacak. Açık: kişi adı maskeleme `mask_names` bağlantı noktasında, T-030 (Burak) gelince bağlanacak; ince pozisyonlar (oyun 4, veri analisti 5 ilan) Türkçe kaynaklar gelince artar.
 
 ### T-035 · Staging ortamı
 

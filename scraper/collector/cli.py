@@ -8,9 +8,12 @@ python -m collector import emscad --csv data/fake_job_postings.csv [--active]
 python -m collector stats
 python -m collector seed-taxonomy
 python -m collector export-taxonomy --out taxonomy.json
+python -m collector normalize
+python -m collector export-postings --out postings.jsonl [--limit 100]
 """
 
 import argparse
+import json
 import sys
 from collections.abc import Callable, Iterable
 from pathlib import Path
@@ -22,6 +25,7 @@ from collector.http import PoliteClient
 from collector.posting import Posting, SourceInfo
 from collector.sources import emscad, himalayas, hn, remoteok, remotive
 from collector.store import run_import, source_counts
+from etl.pipeline import iter_contract, normalize
 
 
 def _api(info: SourceInfo, fetch: Callable[[PoliteClient], Iterable[Posting]]) -> tuple[SourceInfo, Iterable[Posting]]:
@@ -48,6 +52,10 @@ def build_parser() -> argparse.ArgumentParser:
     exp.add_argument("--out", type=Path, required=True)
     esc = sub.add_parser("map-esco", help="ESCO skills_en.csv ile taxonomy/skills.csv'ye esco_uri yaz")
     esc.add_argument("--csv", type=Path, required=True)
+    sub.add_parser("normalize", help="İlanlara pozisyon ve yetkinlik ata, benzer ilanları pasife al (T-033)")
+    out = sub.add_parser("export-postings", help="Normalize ilanları sözleşme biçiminde JSONL'e yaz")
+    out.add_argument("--out", type=Path, required=True)
+    out.add_argument("--limit", type=int)
     return parser
 
 
@@ -77,6 +85,25 @@ def main(argv: list[str] | None = None) -> int:
             f"yetkinlik: +{r.skills_added} ~{r.skills_updated} pasif {r.skills_deactivated} | "
             f"pozisyon: +{r.roles_added} ~{r.roles_updated} pasif {r.roles_deactivated}"
         )
+        return 0
+
+    if args.command == "normalize":
+        with session_factory() as session:
+            n = normalize(session, taxonomy.load_skills(), taxonomy.load_roles())
+        print(
+            f"{n.postings} ilan: pozisyonu belli {n.with_role} (%{100 * n.with_role / max(n.postings, 1):.1f}), "
+            f"yetkinlikli {n.with_skills} (%{100 * n.with_skills / max(n.postings, 1):.1f}), "
+            f"{n.skill_links} yetkinlik bağı, {n.deactivated} benzer ilan pasife alındı"
+        )
+        return 0
+
+    if args.command == "export-postings":
+        with session_factory() as session, args.out.open("w", encoding="utf-8") as f:
+            count = 0
+            for item in iter_contract(session, limit=args.limit):
+                f.write(json.dumps(item, ensure_ascii=False) + "\n")
+                count += 1
+        print(f"{count} ilan yazıldı: {args.out}")
         return 0
 
     if args.command == "stats":

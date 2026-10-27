@@ -45,6 +45,26 @@ Her çalışma `scrape_runs`'a yazılır (okunan / eklenen / tekrar / hata). Ayn
 
 Pozisyon eşleme (`role_id`) ve yetkinlik etiketleme T-033'te (ETL) yapılır; T-015 sadece temiz ham ilanları yükler.
 
+## Normalizasyon / ETL (T-033)
+
+```bash
+python -m collector normalize                                   # role_id, job_posting_skills, benzer ilanlar
+python -m collector export-postings --out postings.jsonl        # contracts/job_posting.schema.json biçimi
+```
+
+İçe aktarmadan veya `seed-taxonomy`'den sonra çalıştırılır; tekrar çalıştırmak aynı sonucu verir. Kod `etl/` altında:
+
+| Adım | Dosya | Kural |
+|---|---|---|
+| Pozisyon | `etl/roles.py` | Başlık parçalanır (`Şirket \| Pozisyon \| Yer`), kıdem/teknoloji adları atılır, `roles.csv` eş anlamlılarıyla eşlenir. "Software Engineer" gibi genel başlıklar `role_id = NULL` kalır ve pozisyon istatistiğine girmez. |
+| Yetkinlik | `etl/skills.py` | Taksonomi + eş anlamlılar, kelime sınırıyla; `case_sensitive` adlar sadece o yazımla. "Nice to have" / "tercih sebebi" bölüm ve cümlelerindekiler `preferred`. |
+| Benzer ilan | `etl/dedup.py` | Aynı şirket + pozisyonda metni %90 benzeyenlerden en yenisi kalır, diğerleri `is_active=false` (silinmez). |
+| Kişi adı | `etl/pipeline.py` | `mask_names` bağlantı noktası; Burak'ın T-030 maskeleyicisi bağlanacak. |
+
+Türkçe büyük harf: "İ" → "i", Türkçe metinde "I" hem "ı" hem "i" olarak denenir ("PROGRAMCISI", "FastAPI").
+
+26.10.2026, 2.002 aktif ilan: pozisyonu belli %39,6 (792), yetkinlik bulunan %88 (ilan başına 7,5), 46 benzer ilan pasife alındı.
+
 ## Yetkinlik taksonomisi (T-017)
 
 ```bash
@@ -60,7 +80,7 @@ python -m collector map-esco --csv skills_en.csv        # ESCO URI eşlemesi (ES
 ```bash
 pytest                      # DB testleri sadece TEST_DATABASE_URL ile (backend/app/db/README.md)
 ruff check . && ruff format --check .
-mypy collector tests
+mypy .
 ```
 
 Testler ağa çıkmaz; kaynaklar uydurma JSON ile denenir.
