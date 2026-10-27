@@ -1,6 +1,6 @@
 # Burak — Görevler
 
-**Alan:** AI / NLP + Mobil · **29 görev · 276 saat**
+**Alan:** AI / NLP + Mobil · **28 görev · 260 saat**
 
 Bu dosya Burak'ın görev listesidir ve görev durumlarının tek doğru kaynağıdır. Sadece Burak (veya onun Claude'u) günceller.
 
@@ -53,16 +53,6 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 ---
 
 ## Sprint 1
-
-### T-028 · TÜBİTAK 2209-A başvuru dosyası
-
-- **Durum:** Yapılacak
-- **Tarih:** 02.11.2026 – 15.11.2026 · **Öncelik:** P0 · **Efor:** 16 saat · **Alan:** Kongre / TÜBİTAK
-- **Bağımlılık:** T-000 (Anıl)
-- **Destek:** Ataberk, Anıl
-- **Çıktı:** Başvuru dosyası
-- **Kabul kriteri:** Özgün değer, yöntem, iş-zaman planı, risk yönetimi, bütçe ve yaygın etki bölümleri; danışman onayı ve sisteme yükleme. Son tarihi güncel çağrı takviminden doğrulayın.
-- **Not:** Son tarih çağrı duyurusuna göre güncellenmeli.
 
 ### T-029 · OCR yedek akışı (Tesseract)
 
