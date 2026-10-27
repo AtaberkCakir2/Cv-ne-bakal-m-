@@ -109,7 +109,7 @@ R = yapan · A = son onay · C = danışılan · I = bilgilendirilen
 | Güvenlik incelemesi | A/R | R | R | I |
 | KVKK metinleri ve uyum | C | A/R | R | C |
 | Kongre posteri ve sunumu | R | R | A/R | C |
-| TÜBİTAK 2209-A başvurusu | R | A/R | R | A |
+| TÜBİTAK 2209-A başvurusu | A/R | R | R | A |
 | Final raporu | R | A/R | R | C |
 | Final sunumu | R | R | A/R | I |
 | Sprint yönetimi ve takip | I | I | A/R | I |

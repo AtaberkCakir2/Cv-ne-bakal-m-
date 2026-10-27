@@ -1,6 +1,6 @@
 # Ataberk — Görevler
 
-**Alan:** Veri, Veri Tabanı ve DevOps · **35 görev · 267 saat**
+**Alan:** Veri, Veri Tabanı ve DevOps · **36 görev · 283 saat**
 
 Bu dosya Ataberk'in görev listesidir ve görev durumlarının tek doğru kaynağıdır. Sadece Ataberk (veya onun Claude'u) günceller.
 
@@ -160,6 +160,17 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 - **Destek:** —
 - **Çıktı:** .github/workflows/deploy.yml
 - **Kabul kriteri:** Image'lar GHCR'a push; SSH ile deploy; alembic upgrade; smoke test; başarısızsa önceki image'a dönüş.
+
+### T-028 · TÜBİTAK 2209-A başvuru dosyası
+
+- **Durum:** Yapılacak
+- **Tarih:** 02.11.2026 – 15.11.2026 · **Öncelik:** P0 · **Efor:** 16 saat · **Alan:** Kongre / TÜBİTAK
+- **Bağımlılık:** T-000 (Anıl)
+- **Destek:** Burak, Anıl
+- **Çıktı:** Başvuru dosyası
+- **Kabul kriteri:** Özgün değer, yöntem, iş-zaman planı, risk yönetimi, bütçe ve yaygın etki bölümleri; danışman onayı ve sisteme yükleme. Son tarihi güncel çağrı takviminden doğrulayın.
+- **Not:** Son tarih çağrı duyurusuna göre güncellenmeli.
+- **Devir:** 27.10.2026'da Burak'tan devredildi (karar #18).
 
 ---
 
