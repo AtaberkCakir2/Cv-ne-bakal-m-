@@ -12,6 +12,7 @@ import argparse
 import sys
 from collections import Counter
 from pathlib import Path
+from typing import Any
 
 from _common import (
     DEFAULT_DATASET,
@@ -49,7 +50,10 @@ def main(argv: list[str] | None = None) -> int:
         expected, _ = assignment(cv_id)
         unexpected = set(by_annotator) - set(expected)
         if unexpected:
-            report.warn(f"{cv_id}: atama tablosuna göre etiketleyiciler {', '.join(expected)}; fazladan: {', '.join(sorted(unexpected))}")
+            report.warn(
+                f"{cv_id}: atama tablosuna göre etiketleyiciler {', '.join(expected)}; "
+                f"fazladan: {', '.join(sorted(unexpected))}"
+            )
 
     unknown = Counter(
         item["skill"]
@@ -71,7 +75,9 @@ def main(argv: list[str] | None = None) -> int:
     return 1 if report.errors else 0
 
 
-def print_progress(manifest: dict[str, dict[str, str]], labels: dict[str, dict[str, list]], gold: dict[str, list]) -> None:
+def print_progress(
+    manifest: dict[str, dict[str, str]], labels: dict[str, dict[str, list[Any]]], gold: dict[str, list[Any]]
+) -> None:
     rows = manifest.values()
     total = len(manifest)
     real = sum(r["source"] == "real" for r in rows)
