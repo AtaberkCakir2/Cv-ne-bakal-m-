@@ -35,15 +35,15 @@ Testler gerçek CV kullanmaz; PDF'ler test sırasında bellekte üretilir.
 from parsing import PdfError, extract_text
 
 try:
-    result = extract_text(pdf_bytes)   # bytes; dosya diske yazılmaz
+    result = extract_text(pdf_bytes)  # bytes; dosya diske yazılmaz
 except PdfError as err:
-    err.code      # sözleşmedeki kod: PDF_UNREADABLE / PDF_TOO_LARGE
-    err.message   # kullanıcıya gösterilecek Türkçe mesaj
+    err.code  # sözleşmedeki kod: PDF_UNREADABLE / PDF_TOO_LARGE
+    err.message  # kullanıcıya gösterilecek Türkçe mesaj
 else:
-    result.text                 # okuma sırasına dizilmiş metin
-    result.needs_ocr            # < 200 karakter → OCR'a (T-029) gönder
-    result.backend              # "pdfplumber" veya yedek "pymupdf"
-    result.multi_column_pages   # sütunlu düzen algılanan sayfa sayısı
+    result.text  # okuma sırasına dizilmiş metin
+    result.needs_ocr  # < 200 karakter → OCR'a (T-029) gönder
+    result.backend  # "pdfplumber" veya yedek "pymupdf"
+    result.multi_column_pages  # sütunlu düzen algılanan sayfa sayısı
 ```
 
 - **Kütüphaneler:** önce pdfplumber; hata verirse veya az metin çıkarsa PyMuPDF denenir, uzun sonuç alınır. İki kütüphane de kelimeleri koordinatlarıyla verir, okuma sırası tek yerde (`parsing/layout.py`) hesaplanır.
