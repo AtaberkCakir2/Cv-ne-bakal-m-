@@ -155,12 +155,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-040 · Web arayüzü altyapısı (Electron ile ortak)
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 09.11.2026 – 15.11.2026 · **Öncelik:** P0 · **Efor:** 8 saat · **Alan:** Web / Masaüstü
 - **Bağımlılık:** T-023, T-022
 - **Destek:** —
 - **Çıktı:** web/ iskeleti
 - **Kabul kriteri:** React + Vite + TypeScript, TanStack Query, React Router; OpenAPI'den otomatik TS istemci (openapi-typescript); ortam değişkenleri.
+- **Not:** Vite 6 + React 18 + TS (strict), React Router 6, TanStack Query 5, openapi-fetch + openapi-typescript (`npm run gen:api`), `VITE_API_URL`. Sayfalar yer tutucu; `/durum` backend sağlığını tipli istemciyle gösterir. CORS için #12 gerekli (127.0.0.1:5173).
 
 ---
 

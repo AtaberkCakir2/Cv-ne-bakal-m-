@@ -1,0 +1,50 @@
+/* Geçici sade stil; renk ve tipografi T-022 (tasarım sistemi) ile gelecek. */
+:root {
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  line-height: 1.5;
+  color: #1f2328;
+  background: #ffffff;
+}
+
+body {
+  margin: 0;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #d0d7de;
+}
+
+.topbar nav {
+  display: flex;
+  flex: 1;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.topbar a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.topbar a.active {
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+.brand {
+  font-weight: 700;
+}
+
+.content {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 1.5rem 1rem;
+}
+
+.muted {
+  color: #656d76;
+}
