@@ -1,31 +1,92 @@
-# Lokal geliştirme altyapısı. API ve worker servisleri ilerleyen sprintlerde eklenecek.
+# Lokal geliştirme ortamı (T-007). Sadece geliştirme içindir; production ayarları (kaynak limitleri,
+# şifreli Redis, iç ağ) T-075'te ayrı profil olarak eklenecek.
+#
+# Başlatma: `make up` (ya da make yoksa `docker compose up -d --wait`). Ayrıntı: README.md
+#
+# api ve worker servisleri kendi profillerindedir; `backend/Dockerfile` ve `ai/Dockerfile` eklenince
+# `make up` onları otomatik olarak da başlatır. Portlar sadece bu bilgisayara (127.0.0.1) açılır.
+name: careerai
+
+x-app-env: &app-env
+  # Konteyner içinden servislere localhost ile değil servis adıyla erişilir.
+  # (Eksik değişken hatasını postgres servisi verir; burada tekrar uyarı basılmasın diye :- kullanılır.)
+  DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-}:${POSTGRES_PASSWORD:-}@postgres:5432/${POSTGRES_DB:-}
+  REDIS_URL: redis://redis:6379/0
+  OLLAMA_URL: http://ollama:11434
+
 services:
   postgres:
     image: pgvector/pgvector:pg16
     environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER:?.env dosyasında POSTGRES_USER yok}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?.env dosyasında POSTGRES_PASSWORD yok}
+      POSTGRES_DB: ${POSTGRES_DB:?.env dosyasında POSTGRES_DB yok}
+      TZ: Europe/Istanbul
     ports:
-      - "5432:5432"
+      - "127.0.0.1:5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
-      interval: 10s
-      retries: 5
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    restart: unless-stopped
 
   redis:
     image: redis:7
     ports:
-      - "6379:6379"
+      - "127.0.0.1:6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    restart: unless-stopped
 
   ollama:
-    image: ollama/ollama
+    # Sürüm sabit: herkes aynı Ollama ile çalışsın. Yükseltme PR ile yapılır.
+    image: ollama/ollama:0.40.10
     ports:
-      - "11434:11434"
+      - "127.0.0.1:11434:11434"
     volumes:
       - ollama:/root/.ollama
+    healthcheck:
+      test: ["CMD", "ollama", "list"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+  # FastAPI (sahibi: Anıl). backend/Dockerfile eklenince aktif olur.
+  api:
+    profiles: ["api"]
+    build: ./backend
+    image: careerai/api:dev
+    env_file: .env
+    environment: *app-env
+    ports:
+      - "127.0.0.1:8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  # Celery AI worker'ı (sahibi: Burak). ai/Dockerfile eklenince aktif olur.
+  worker:
+    profiles: ["worker"]
+    build: ./ai
+    image: careerai/worker:dev
+    env_file: .env
+    environment: *app-env
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      ollama:
+        condition: service_healthy
 
 volumes:
   pgdata:
