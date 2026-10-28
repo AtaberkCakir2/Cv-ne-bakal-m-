@@ -3,7 +3,8 @@ import logging
 
 import pytest
 
-from app.core.logging import JsonFormatter, mask_pii, request_id_var
+from app.core.config import Settings
+from app.core.logging import JsonFormatter, configure_logging, mask_pii, request_id_var
 
 
 @pytest.mark.parametrize(
@@ -24,6 +25,18 @@ from app.core.logging import JsonFormatter, mask_pii, request_id_var
 )
 def test_mask_pii(raw: str, expected: str) -> None:
     assert mask_pii(raw) == expected
+
+
+def test_noisy_library_loggers_are_quiet() -> None:
+    configure_logging("INFO")
+    assert logging.getLogger("httpx").getEffectiveLevel() == logging.WARNING
+
+
+def test_default_service_urls_use_ipv4_not_localhost() -> None:
+    # Windows'ta localhost → ::1; compose portları 127.0.0.1'de. localhost kullanılırsa Redis zaman aşımına uğrar.
+    settings = Settings(_env_file=None)
+    for url in (settings.database_url, settings.redis_url, settings.ollama_url):
+        assert "localhost" not in url and "127.0.0.1" in url
 
 
 def test_json_formatter_includes_request_id_and_fields_and_masks() -> None:

@@ -21,6 +21,8 @@ uvicorn app.main:app --reload
 
 Ayarlar repo kökündeki `.env` dosyasından okunur (değişkenler kök `README.md`'de). `.env` yoksa yerel geliştirme varsayılanları kullanılır.
 
+> **Windows:** `.env`'deki servis adreslerinde `localhost` değil **`127.0.0.1`** yazın (`DATABASE_URL`, `REDIS_URL`, `OLLAMA_URL`). Windows'ta `localhost` önce IPv6'ya (`::1`) çözülür, docker-compose portları ise sadece `127.0.0.1`'e açıktır; her bağlantı ~2 sn bekler ve `/health/ready` Redis için zaman aşımı verir. (24.10.2026'da gerçek servislerle doğrulandı.)
+
 > Windows'ta "Filename too long" veya benzeri yol hatası alırsanız sanal ortamı kısa bir yolda oluşturun (ör. `python -m venv C:\venv\careerai`).
 
 ## Test ve kod kalitesi

@@ -17,14 +17,16 @@ class Settings(BaseSettings):
     api_prefix: str = "/api/v1"
     log_level: str = "INFO"
 
-    database_url: str = "postgresql+psycopg://careerai:careerai@localhost:5432/careerai"
-    redis_url: str = "redis://localhost:6379/0"
-    ollama_url: str = "http://localhost:11434"
+    # "localhost" değil 127.0.0.1: Windows'ta localhost önce IPv6'ya (::1) çözülür, docker-compose portları
+    # ise sadece 127.0.0.1'e açık. localhost ile her bağlantı ~2 sn bekleyip IPv4'e düşer, Redis zaman aşımına uğrar.
+    database_url: str = "postgresql+psycopg://careerai:careerai@127.0.0.1:5432/careerai"
+    redis_url: str = "redis://127.0.0.1:6379/0"
+    ollama_url: str = "http://127.0.0.1:11434"
 
     # /health/ready içindeki her bağımlılık kontrolü için zaman aşımı (saniye)
     readiness_timeout_s: float = 2.0
     # Sadece kendi alan adlarımıza izin verilir (karar: güvenlik incelemesi, T-064)
-    cors_origins: list[str] = ["http://localhost:5173"]
+    cors_origins: list[str] = ["http://localhost:5173", "http://127.0.0.1:5173"]
 
     @property
     def is_production(self) -> bool:
