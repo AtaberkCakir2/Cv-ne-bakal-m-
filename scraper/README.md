@@ -61,6 +61,8 @@ python -m collector export-postings --out postings.jsonl        # contracts/job_
 | Benzer ilan | `etl/dedup.py` | Aynı şirket + pozisyonda metni %90 benzeyenlerden en yenisi kalır, diğerleri `is_active=false` (silinmez). |
 | Kişi adı | `etl/pipeline.py` | `mask_names` bağlantı noktası; Burak'ın T-030 maskeleyicisi bağlanacak. |
 
+Eşleyiciler (`etl/text.py`, `etl/skills.py`, `etl/roles.py`, `etl/dedup.py`) veritabanı kullanmaz: taksonomiyi `collector/taxonomy_rows.py`'den okur, backend paketi ve SQLAlchemy olmadan çalışır (AI worker T-031'de kullanacak; test: `test_matchers_do_not_import_the_database_layer`).
+
 Türkçe büyük harf: "İ" → "i", Türkçe metinde "I" hem "ı" hem "i" olarak denenir ("PROGRAMCISI", "FastAPI").
 
 26.10.2026, 2.002 aktif ilan: pozisyonu belli %39,6 (792), yetkinlik bulunan %88 (ilan başına 7,5), 46 benzer ilan pasife alındı.

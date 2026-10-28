@@ -16,7 +16,7 @@ from collections.abc import Iterable
 from dataclasses import replace
 from pathlib import Path
 
-from collector.taxonomy import SKILLS_CSV, SkillRow
+from collector.taxonomy_rows import SKILLS_CSV, SkillRow
 
 _TRAILING_NOTE = re.compile(r"\s*\([^)]*\)$")
 
