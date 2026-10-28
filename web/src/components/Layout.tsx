@@ -1,10 +1,13 @@
 import { NavLink, Outlet } from "react-router-dom";
 
+import { ThemeToggle } from "../ui";
+
 const LINKS = [
   { to: "/yukle", label: "CV yükle" },
   { to: "/gecmis", label: "Geçmiş" },
   { to: "/profil", label: "Profil" },
   { to: "/durum", label: "Durum" },
+  { to: "/tasarim", label: "Tasarım" },
 ];
 
 export function Layout() {
@@ -21,6 +24,7 @@ export function Layout() {
             </NavLink>
           ))}
         </nav>
+        <ThemeToggle />
         <NavLink to="/giris">Giriş</NavLink>
       </header>
       <main className="content">

@@ -1,0 +1,113 @@
+/*
+ * CareerAI tasarım değerleri (T-022). Bileşenler renkleri sadece bu değişkenlerden alır; yeni renk gerekirse buraya eklenir.
+ * Kontrast: metin/arka plan çiftleri WCAG AA (normal metin ≥ 4.5:1, büyük metin ve kenarlık/grafik ≥ 3:1).
+ * `npm run check:contrast` bu dosyadaki çiftleri her iki temada kontrol eder.
+ * Tema: varsayılan sistem tercihi; <html data-theme="light|dark"> ile elle seçilir (ThemeToggle).
+ */
+:root {
+  color-scheme: light;
+
+  /* Yüzeyler */
+  --bg: #f4f4f2;
+  --surface: #ffffff;
+  --surface-muted: #ecece8;
+  --border: #c9c9c4;
+  --border-strong: #7f7f79;
+
+  /* Metin */
+  --text: #1f1f1d;
+  --text-muted: #5c5c57;
+  --text-on-accent: #ffffff;
+
+  /* Vurgu ve durum renkleri */
+  --accent: #1f5fbf;
+  --accent-hover: #184c99;
+  --focus: #1f5fbf;
+  --danger: #a32626;
+  --danger-surface: #fbeaea;
+  --success: #276638;
+  --success-surface: #e7f3ea;
+  --warning: #855d00;
+  --warning-surface: #fdf3d8;
+  --info-surface: #e8eef9;
+
+  /* Grafik: veri çubukları ve skor halkası */
+  --chart-fill: #1f5fbf;
+  --chart-track: #dcdcd6;
+
+  /* Tipografi */
+  --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  --font-mono: ui-monospace, "Cascadia Mono", Consolas, monospace;
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-md: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.5rem;
+  --text-2xl: 2rem;
+  --leading: 1.5;
+
+  /* Boşluk (4px tabanlı), köşe, gölge */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --radius-sm: 4px;
+  --radius: 8px;
+  --radius-pill: 999px;
+  --shadow: 0 1px 2px rgb(0 0 0 / 0.06), 0 2px 8px rgb(0 0 0 / 0.04);
+}
+
+/* Koyu tema iki yerde: sistem tercihi (elle açık seçilmediyse) ve elle seçim. Değerler aynı tutulmalı. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg: #18181a;
+    --surface: #222224;
+    --surface-muted: #2c2c2f;
+    --border: #46464a;
+    --border-strong: #7c7c82;
+    --text: #ececea;
+    --text-muted: #a8a8a3;
+    --text-on-accent: #0f1a2e;
+    --accent: #7eaaf2;
+    --accent-hover: #a2c2f6;
+    --focus: #7eaaf2;
+    --danger: #f08b8b;
+    --danger-surface: #3a2224;
+    --success: #86cf97;
+    --success-surface: #1f3324;
+    --warning: #e6c065;
+    --warning-surface: #3a321c;
+    --info-surface: #1f2a3d;
+    --chart-fill: #7eaaf2;
+    --chart-track: #3a3a3e;
+    --shadow: none;
+  }
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #18181a;
+  --surface: #222224;
+  --surface-muted: #2c2c2f;
+  --border: #46464a;
+  --border-strong: #7c7c82;
+  --text: #ececea;
+  --text-muted: #a8a8a3;
+  --text-on-accent: #0f1a2e;
+  --accent: #7eaaf2;
+  --accent-hover: #a2c2f6;
+  --focus: #7eaaf2;
+  --danger: #f08b8b;
+  --danger-surface: #3a2224;
+  --success: #86cf97;
+  --success-surface: #1f3324;
+  --warning: #e6c065;
+  --warning-surface: #3a321c;
+  --info-surface: #1f2a3d;
+  --chart-fill: #7eaaf2;
+  --chart-track: #3a3a3e;
+  --shadow: none;
+}

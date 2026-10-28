@@ -1,50 +1,77 @@
-/* Geçici sade stil; renk ve tipografi T-022 (tasarım sistemi) ile gelecek. */
-:root {
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  line-height: 1.5;
-  color: #1f2328;
-  background: #ffffff;
+/* Sayfa düzeni. Renk ve ölçüler ui/tokens.css'ten, bileşenler ui/components.css'ten gelir. */
+@import "./ui/tokens.css";
+@import "./ui/components.css";
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
 body {
   margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: var(--text-md);
+  line-height: var(--leading);
 }
+
+h1 { font-size: var(--text-2xl); line-height: 1.2; margin: 0 0 var(--space-4); }
+h2 { font-size: var(--text-xl); line-height: 1.25; margin: 0 0 var(--space-3); }
+h3 { font-size: var(--text-lg); margin: 0 0 var(--space-2); }
+p { margin: 0 0 var(--space-4); }
+a { color: var(--accent); }
+code { font-family: var(--font-mono); font-size: 0.9em; }
 
 .topbar {
   display: flex;
   align-items: center;
-  gap: 1.5rem;
-  padding: 0.75rem 1rem;
-  border-bottom: 1px solid #d0d7de;
+  gap: var(--space-6);
+  padding: var(--space-3) var(--space-4);
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
 }
 
 .topbar nav {
   display: flex;
   flex: 1;
-  gap: 1rem;
+  gap: var(--space-1);
   flex-wrap: wrap;
 }
 
 .topbar a {
-  color: inherit;
+  color: var(--text-muted);
   text-decoration: none;
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-sm);
 }
+
+.topbar a:hover { color: var(--text); }
 
 .topbar a.active {
+  background: var(--surface-muted);
+  color: var(--text);
   font-weight: 600;
-  text-decoration: underline;
 }
 
-.brand {
+.topbar .brand {
+  color: var(--text);
   font-weight: 700;
+  padding-left: 0;
 }
 
 .content {
   max-width: 960px;
   margin: 0 auto;
-  padding: 1.5rem 1rem;
+  padding: var(--space-6) var(--space-4);
 }
 
-.muted {
-  color: #656d76;
-}
+.muted { color: var(--text-muted); }
+
+.stack { display: grid; gap: var(--space-4); }
+.row { display: flex; flex-wrap: wrap; gap: var(--space-3); align-items: center; }
+
+/* Tasarım sayfasındaki başlık örnekleri: başlık gibi görünür, sayfa başlık sırasına girmez. */
+.demo-heading { font-weight: 700; line-height: 1.2; margin: 0 0 var(--space-3); }

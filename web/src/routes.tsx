@@ -3,6 +3,7 @@ import { createBrowserRouter } from "react-router-dom";
 import { Layout } from "./components/Layout";
 import { NotFoundPage } from "./pages/NotFoundPage";
 import { PlaceholderPage } from "./pages/PlaceholderPage";
+import { DesignSystemPage } from "./pages/DesignSystemPage";
 import { StatusPage } from "./pages/StatusPage";
 
 /**
@@ -23,6 +24,7 @@ export const router = createBrowserRouter([
       { path: "gecmis", element: <PlaceholderPage title="Geçmiş analizler" /> },
       { path: "profil", element: <PlaceholderPage title="Profil" /> },
       { path: "durum", element: <StatusPage /> },
+      { path: "tasarim", element: <DesignSystemPage /> },
       { path: "*", element: <NotFoundPage /> },
     ],
   },
