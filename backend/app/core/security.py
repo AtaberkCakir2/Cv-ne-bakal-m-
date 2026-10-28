@@ -62,7 +62,17 @@ class AccessClaims:
     role: str
 
 
+class AuthNotConfiguredError(RuntimeError):
+    """JWT_SECRET verilmemiş ve ENVIRONMENT=local/test açıkça yazılmamış: geliştirme anahtarıyla token üretilmez."""
+
+
+def _require_auth_ready(settings: Settings) -> None:
+    if not settings.auth_ready:
+        raise AuthNotConfiguredError("JWT_SECRET ayarlanmamış (veya .env'de ENVIRONMENT=local yazılmamış).")
+
+
 def create_access_token(user_id: uuid.UUID, role: str, settings: Settings, now: datetime | None = None) -> str:
+    _require_auth_ready(settings)
     now = now or datetime.now(UTC)
     payload = {
         "sub": str(user_id),
@@ -79,6 +89,8 @@ class InvalidTokenError(Exception):
 
 
 def decode_access_token(token: str, settings: Settings) -> AccessClaims:
+    if not settings.auth_ready:
+        raise InvalidTokenError("auth yapılandırılmamış")  # geliştirme anahtarıyla imzalı token kabul edilmez
     try:
         payload = jwt.decode(
             token,

@@ -40,7 +40,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.add_middleware(RequestContextMiddleware)
 
     # GEÇİCİ: gerçek e-posta servisi seçilene kadar iletiler bellekte; bağlantı sadece local'de loglanır.
-    app.state.email_sender = OutboxEmailSender(log_links=settings.environment == "local")
+    app.state.email_sender = OutboxEmailSender(log_links=settings.is_explicit_dev and settings.environment == "local")
 
     app.include_router(health.router, prefix=settings.api_prefix)
     app.include_router(auth.router, prefix=settings.api_prefix)

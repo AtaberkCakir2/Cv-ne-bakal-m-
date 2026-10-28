@@ -43,6 +43,16 @@ class Settings(BaseSettings):
     def is_production(self) -> bool:
         return self.environment == "production"
 
+    @property
+    def is_explicit_dev(self) -> bool:
+        """ENVIRONMENT=local/test açıkça verilmiş mi? Varsayılan değer sayılmaz (unutulan ayar dev'e düşmesin)."""
+        return "environment" in self.model_fields_set and self.environment in ("local", "test")
+
+    @property
+    def auth_ready(self) -> bool:
+        """Token üretilebilir mi: gerçek JWT_SECRET verilmiş ya da açıkça local/test ortamı."""
+        return self.jwt_secret != DEV_JWT_SECRET or self.is_explicit_dev
+
     @model_validator(mode="after")
     def _secret_must_be_set_outside_local(self) -> "Settings":
         if self.environment not in ("local", "test") and self.jwt_secret == DEV_JWT_SECRET:
