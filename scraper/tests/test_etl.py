@@ -28,7 +28,11 @@ def test_matchers_do_not_import_the_database_layer() -> None:
         "import collector.taxonomy_rows, etl.dedup, etl.roles, etl.skills, etl.text\n"
         "print(sorted(m for m in sys.modules if m.split('.')[0] in {'app', 'sqlalchemy', 'alembic'}))"
     )
-    out = subprocess.run([sys.executable, "-c", code], capture_output=True, text=True, check=True)  # noqa: S603
+    # cwd: pytest scraper/ dışından çalıştırılsa da collector ve etl bulunsun.
+    scraper_dir = Path(__file__).resolve().parents[1]
+    out = subprocess.run(  # noqa: S603
+        [sys.executable, "-c", code], capture_output=True, text=True, check=True, cwd=scraper_dir
+    )
     assert out.stdout.strip() == "[]"
 
 
