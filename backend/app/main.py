@@ -7,11 +7,12 @@ OpenAPI dokümanı: http://localhost:8000/docs
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api.routers import health
+from app.api.routers import auth, health, users
 from app.core.config import Settings, get_settings
 from app.core.errors import register_exception_handlers
 from app.core.logging import configure_logging
 from app.core.middleware import RequestContextMiddleware
+from app.services.email import OutboxEmailSender
 
 
 def create_app(settings: Settings | None = None) -> FastAPI:
@@ -38,7 +39,12 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     # En dışta: istek kimliği her yanıta (hatalar dahil) eklenir.
     app.add_middleware(RequestContextMiddleware)
 
+    # GEÇİCİ: gerçek e-posta servisi seçilene kadar iletiler bellekte; bağlantı sadece local'de loglanır.
+    app.state.email_sender = OutboxEmailSender(log_links=settings.environment == "local")
+
     app.include_router(health.router, prefix=settings.api_prefix)
+    app.include_router(auth.router, prefix=settings.api_prefix)
+    app.include_router(users.router, prefix=settings.api_prefix)
     return app
 
 

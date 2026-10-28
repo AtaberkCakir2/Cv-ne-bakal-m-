@@ -109,7 +109,7 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-037 · Kimlik doğrulama ve yetkilendirme
 
-- **Durum:** Yapılacak
+- **Durum:** Devam Ediyor
 - **Tarih:** 02.11.2026 – 15.11.2026 · **Öncelik:** P0 · **Efor:** 16 saat · **Alan:** Backend API
 - **Bağımlılık:** T-023, T-012 (Ataberk)
 - **Destek:** —
