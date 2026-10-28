@@ -53,7 +53,9 @@ def hash_ip(ip: str | None, settings: Settings) -> str | None:
     """KVKK rızası için IP'nin anahtarlı hash'i; açık IP saklanmaz (docs/veritabani.md, consents)."""
     if not ip:
         return None
-    return hmac.new(settings.jwt_secret.encode(), ip.encode(), hashlib.sha256).hexdigest()
+    # Ayrı anahtar: JWT anahtarı değişince (ör. sızıntı sonrası) eski rıza kayıtlarının IP hash'i geçersiz olmasın.
+    key = settings.ip_hash_secret or settings.jwt_secret
+    return hmac.new(key.encode(), ip.encode(), hashlib.sha256).hexdigest()
 
 
 @dataclass(frozen=True)

@@ -109,12 +109,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-037 · Kimlik doğrulama ve yetkilendirme
 
-- **Durum:** Devam Ediyor
+- **Durum:** Tamamlandı
 - **Tarih:** 02.11.2026 – 15.11.2026 · **Öncelik:** P0 · **Efor:** 16 saat · **Alan:** Backend API
 - **Bağımlılık:** T-023, T-012 (Ataberk)
 - **Destek:** —
 - **Çıktı:** /auth endpoint'leri + testler
 - **Kabul kriteri:** Kayıt/giriş, argon2 parola hash, JWT access (15 dk) + refresh (7 gün, rotasyonlu, DB'de hash), e-posta doğrulama, şifre sıfırlama, user/admin rolleri.
+- **Not:** 28.10.2026: 17 kimlik doğrulama testi (gerçek Postgres) + 5 güvenlik testi, toplam 50 geçti. code-reviewer incelemesindeki 7 bulgunun 5'i düzeltildi, 2'si (eşzamanlı yenileme, şifremi unuttum yanıt süresi) belgelendi. Ekip: `.env`'e `ENVIRONMENT=local` gerekli.
 
 ### T-038 · CV yükleme endpoint'i
 

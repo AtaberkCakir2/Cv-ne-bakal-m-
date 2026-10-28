@@ -32,6 +32,8 @@ class Settings(BaseSettings):
     # Kimlik doğrulama (T-037). JWT_SECRET production'da mutlaka .env'den gelir (uzun, rastgele).
     jwt_secret: str = Field(default=DEV_JWT_SECRET, min_length=32)
     jwt_algorithm: str = "HS256"
+    # KVKK rızasındaki IP hash'inin anahtarı; production'da JWT_SECRET'tan ayrı verin (yoksa JWT_SECRET kullanılır).
+    ip_hash_secret: str | None = Field(default=None, min_length=32)
     access_token_ttl_minutes: int = 15
     refresh_token_ttl_days: int = 7
     verify_email_ttl_hours: int = 24

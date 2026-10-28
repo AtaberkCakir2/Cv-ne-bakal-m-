@@ -13,10 +13,10 @@ from sqlalchemy import select, update
 from sqlalchemy.orm import Session, sessionmaker
 
 from app.api.deps import AdminUser
-from app.core.security import create_access_token
+from app.core.security import create_access_token, hash_ip
 from app.db.enums import UserRole
 from app.db.models import Consent, RefreshToken, User
-from app.services.email import OutboxEmailSender
+from app.services.email import EmailMessage, OutboxEmailSender
 from tests.conftest import TEST_SETTINGS
 
 API = "/api/v1"
@@ -75,7 +75,8 @@ def test_register_stores_argon2_hash_consents_and_sends_verification(
         assert user.is_verified is False and user.role == UserRole.USER
         consents = s.scalars(select(Consent)).all()
         assert {c.consent_type.value for c in consents} == {c["consent_type"] for c in CONSENTS}
-        assert all(c.ip_hash and "testclient" not in c.ip_hash for c in consents)  # açık IP saklanmaz
+        expected_ip_hash = hash_ip("testclient", TEST_SETTINGS)  # TestClient istemci adresi
+        assert expected_ip_hash and all(c.ip_hash == expected_ip_hash for c in consents)  # açık IP saklanmaz
     mail = outbox(auth_app).outbox[-1]
     assert mail.to == EMAIL and "/e-posta-dogrula?token=" in mail.link
 
@@ -265,3 +266,21 @@ def test_soft_deleted_user_cannot_log_in_or_use_token(
     assert client.post(f"{API}/auth/login", json={"email": EMAIL, "password": PASSWORD}).status_code == 401
     assert client.get(f"{API}/users/me", headers=bearer(tokens["access_token"])).status_code == 401
     assert client.post(f"{API}/auth/refresh", json={"refresh_token": tokens["refresh_token"]}).status_code == 401
+
+
+def test_email_is_sent_only_after_data_is_committed(
+    client: TestClient, auth_app: FastAPI, db_sessionmaker: sessionmaker[Session]
+) -> None:
+    # Gönderim anında başka bir oturumdan bakınca kayıt görünmeli (commit'ten önce gönderilmiyor).
+    seen: list[bool] = []
+
+    class SpySender(OutboxEmailSender):
+        def send(self, message: EmailMessage) -> None:
+            with db_sessionmaker() as s:
+                seen.append(s.scalar(select(User).where(User.email == message.to)) is not None)
+            super().send(message)
+
+    auth_app.state.email_sender = SpySender()
+    register(client)
+    client.post(f"{API}/auth/forgot-password", json={"email": EMAIL})
+    assert seen == [True, True]

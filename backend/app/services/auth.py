@@ -5,6 +5,13 @@ Kurallar:
 - Refresh token tek kullanımlıktır (rotasyon). Daha önce kullanılmış / iptal edilmiş bir token tekrar gelirse
   token çalınmış olabilir: kullanıcının bütün oturumları kapatılır.
 - Şifre sıfırlanınca bütün oturumlar kapatılır.
+
+Bilinen ve kabul edilen sınırlar (kod incelemesi, T-037):
+- Aynı refresh token'la aynı anda iki istek gelirse (ör. iki sekme) ikincisi "tekrar kullanım" sayılır ve
+  oturumlar kapanır. İstemciler (web/mobil) token yenilemeyi tek seferde yapmalı (tek uçuşlu yenileme).
+- "Şifremi unuttum" kayıtlı e-postada veritabanına yazdığı için biraz daha uzun sürer; yanıt süresinden
+  e-postanın kayıtlı olduğu tahmin edilebilir. Rate limit (T-050) bunu pratikte zorlaştırır; gerekirse iş
+  arka plan görevine taşınır.
 """
 
 from dataclasses import dataclass
@@ -32,9 +39,18 @@ class AuthError(Exception):
         self.detail = detail
 
 
-INVALID_CREDENTIALS = AuthError(401, "E-posta veya şifre hatalı.")
-INVALID_REFRESH = AuthError(401, "Oturum geçersiz veya süresi dolmuş. Lütfen tekrar giriş yapın.")
-INVALID_LINK = AuthError(400, "Bağlantı geçersiz, kullanılmış veya süresi dolmuş.")
+# Her raise'da yeni nesne: ortak bir istisna nesnesine eşzamanlı isteklerin traceback'i (ve yerel değişkenleri,
+# ör. düz metin parola) yazılmasın.
+def invalid_credentials() -> AuthError:
+    return AuthError(401, "E-posta veya şifre hatalı.")
+
+
+def invalid_refresh() -> AuthError:
+    return AuthError(401, "Oturum geçersiz veya süresi dolmuş. Lütfen tekrar giriş yapın.")
+
+
+def invalid_link() -> AuthError:
+    return AuthError(400, "Bağlantı geçersiz, kullanılmış veya süresi dolmuş.")
 
 
 @dataclass(frozen=True)
@@ -84,32 +100,32 @@ class AuthService:
                 for c in consents
             ]
         )
-        self._send_verification(user, now)
+        message = self._verification_email(user, now)
         self.session.commit()
+        # E-posta ancak kayıt kalıcı olunca gider: commit düşerse elde karşılıksız bağlantı kalmasın.
+        self.email.send(message)
         return user
 
-    def _send_verification(self, user: User, now: datetime) -> None:
+    def _verification_email(self, user: User, now: datetime) -> EmailMessage:
         token = self._issue_user_token(
             user, TokenPurpose.VERIFY_EMAIL, now + timedelta(hours=self.settings.verify_email_ttl_hours), now
         )
         link = f"{self.settings.frontend_url}/e-posta-dogrula?token={token}"
-        self.email.send(
-            EmailMessage(
-                to=user.email,
-                subject="CareerAI: e-posta adresini doğrula",
-                body=(
-                    f"Hesabını doğrulamak için bağlantıyı aç: {link}\n"
-                    f"Bağlantı {self.settings.verify_email_ttl_hours} saat geçerlidir."
-                ),
-                link=link,
-            )
+        return EmailMessage(
+            to=user.email,
+            subject="CareerAI: e-posta adresini doğrula",
+            body=(
+                f"Hesabını doğrulamak için bağlantıyı aç: {link}\n"
+                f"Bağlantı {self.settings.verify_email_ttl_hours} saat geçerlidir."
+            ),
+            link=link,
         )
 
     def verify_email(self, token: str) -> None:
         user_token = self._consume_user_token(token, TokenPurpose.VERIFY_EMAIL)
         user = self.repo.get_active_by_id(user_token.user_id)
         if user is None:
-            raise INVALID_LINK
+            raise invalid_link()
         user.is_verified = True
         self.session.commit()
 
@@ -118,7 +134,7 @@ class AuthService:
         user = self.repo.get_active_by_email(email)
         # Kullanıcı yoksa da parola doğrulaması çalışır (zamanlama eşitleme, security._DUMMY_HASH).
         if not security.verify_password(user.password_hash if user else None, password) or user is None:
-            raise INVALID_CREDENTIALS
+            raise invalid_credentials()
         if security.password_needs_rehash(user.password_hash):
             user.password_hash = security.hash_password(password)
         pair = self._issue_pair(user, user_agent)
@@ -129,17 +145,17 @@ class AuthService:
         now = datetime.now(UTC)
         stored = self.repo.get_refresh_token_for_update(security.hash_token(refresh_token))
         if stored is None:
-            raise INVALID_REFRESH
+            raise invalid_refresh()
         if stored.revoked_at is not None:
             # Kullanılmış token tekrar geldi: çalınmış olabilir, bütün oturumları kapat.
             self.repo.revoke_all_refresh_tokens(stored.user_id, now)
             self.session.commit()
-            raise INVALID_REFRESH
+            raise invalid_refresh()
         if stored.expires_at <= now:
-            raise INVALID_REFRESH
+            raise invalid_refresh()
         user = self.repo.get_active_by_id(stored.user_id)
         if user is None:
-            raise INVALID_REFRESH
+            raise invalid_refresh()
         stored.revoked_at = now
         pair = self._issue_pair(user, user_agent, now)
         self.session.commit()
@@ -183,25 +199,24 @@ class AuthService:
             now,
         )
         link = f"{self.settings.frontend_url}/sifre-sifirla?token={token}"
-        self.email.send(
-            EmailMessage(
-                to=user.email,
-                subject="CareerAI: şifre sıfırlama",
-                body=(
-                    f"Şifreni sıfırlamak için bağlantıyı aç: {link}\n"
-                    f"Bağlantı {self.settings.reset_password_ttl_minutes} dakika geçerlidir. "
-                    "Bu isteği sen yapmadıysan bu e-postayı yok sayabilirsin."
-                ),
-                link=link,
-            )
+        message = EmailMessage(
+            to=user.email,
+            subject="CareerAI: şifre sıfırlama",
+            body=(
+                f"Şifreni sıfırlamak için bağlantıyı aç: {link}\n"
+                f"Bağlantı {self.settings.reset_password_ttl_minutes} dakika geçerlidir. "
+                "Bu isteği sen yapmadıysan bu e-postayı yok sayabilirsin."
+            ),
+            link=link,
         )
         self.session.commit()
+        self.email.send(message)
 
     def reset_password(self, *, token: str, new_password: str) -> None:
         user_token = self._consume_user_token(token, TokenPurpose.RESET_PASSWORD)
         user = self.repo.get_active_by_id(user_token.user_id)
         if user is None:
-            raise INVALID_LINK
+            raise invalid_link()
         now = datetime.now(UTC)
         user.password_hash = security.hash_password(new_password)
         # Sıfırlama bağlantısını açabilen kişi e-postaya sahiptir; doğrulanmış sayılır.
@@ -222,6 +237,6 @@ class AuthService:
         now = datetime.now(UTC)
         user_token = self.repo.get_user_token_for_update(security.hash_token(token), purpose)
         if user_token is None or user_token.used_at is not None or user_token.expires_at <= now:
-            raise INVALID_LINK
+            raise invalid_link()
         user_token.used_at = now
         return user_token
