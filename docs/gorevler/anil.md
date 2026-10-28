@@ -96,12 +96,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-023 · FastAPI proje iskeleti
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 26.10.2026 – 01.11.2026 · **Öncelik:** P0 · **Efor:** 8 saat · **Alan:** Backend API
 - **Bağımlılık:** T-007 (Ataberk)
 - **Destek:** Ataberk
 - **Çıktı:** backend/ iskeleti
 - **Kabul kriteri:** Katmanlı yapı (routers / services / repositories / schemas), pydantic-settings, yapılandırılmış JSON log, /health ve /health/ready, otomatik OpenAPI, global hata formatı.
+- **Not:** 24.10.2026: 19 test, ruff, mypy (strict) temiz. /health/ready gerçek Postgres/Redis/Ollama ile henüz denenmedi (Docker bu bilgisayarda çalışmıyor; T-007 ile birlikte doğrulanacak).
 
 ---
 

@@ -40,3 +40,6 @@ data/large/
 .idea/
 .DS_Store
 Thumbs.db
+
+# Python paket yapımı
+*.egg-info/
