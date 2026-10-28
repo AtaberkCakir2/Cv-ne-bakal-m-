@@ -235,12 +235,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-065 · KVKK aydınlatma metni, açık rıza, gizlilik politikası, kullanım koşulları
 
-- **Durum:** Yapılacak
+- **Durum:** Devam Ediyor
 - **Tarih:** 30.11.2026 – 06.12.2026 · **Öncelik:** P0 · **Efor:** 8 saat · **Alan:** Güvenlik & KVKK
 - **Bağımlılık:** T-030 (Burak)
 - **Destek:** Burak
 - **Çıktı:** Yasal metinler (web sayfası)
 - **Kabul kriteri:** Danışman/hukuk birimi kontrolü; uygulama içi onay; consents tablosuna sürüm kaydı; gizlilik politikası URL'si (mağazalar için zorunlu); VERBİS yükümlülüğü değerlendirildi.
+- **Devam notu (29.10.2026):** Yapılan: dört metnin taslağı ve açık noktalar listesi `docs/yasal/` (hukuk inceleme ajanının 15 bulgusu işlendi). · Sıradaki adım: README'deki açık noktaları danışmana götürmek (veri sorumlusu, hukuki sebep, yurt dışı aktarım, VERBİS); karar çıkınca web'de `/yasal/*` sayfaları ve kayıt ekranındaki onayları buna göre değiştirmek. · Açık sorular / engeller: T-030 maskeleme listesi (Burak), sunucu/sağlayıcı ülkeleri (Ataberk). · Branch: anil/kvkk-metinleri
 
 ### T-069 · API entegrasyon testleri
 
