@@ -75,3 +75,16 @@ code { font-family: var(--font-mono); font-size: 0.9em; }
 
 /* Tasarım sayfasındaki başlık örnekleri: başlık gibi görünür, sayfa başlık sırasına girmez. */
 .demo-heading { font-weight: 700; line-height: 1.2; margin: 0 0 var(--space-3); }
+
+/* Giriş ve kayıt ekranları */
+.auth-card { max-width: 28rem; margin: 0 auto; }
+.auth-links { display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--space-3); margin: var(--space-4) 0 0; font-size: var(--text-sm); }
+.consents { border: 0; padding: 0; margin: 0 0 var(--space-4); }
+.consents legend { font-size: var(--text-sm); font-weight: 600; margin-bottom: var(--space-2); }
+
+.link-button { background: none; border: 0; padding: var(--space-1) var(--space-3); color: var(--text-muted); font: inherit; cursor: pointer; }
+.link-button:hover { color: var(--text); }
+
+.details { display: grid; grid-template-columns: max-content 1fr; gap: var(--space-2) var(--space-6); margin: 0; }
+.details dt { color: var(--text-muted); }
+.details dd { margin: 0; }

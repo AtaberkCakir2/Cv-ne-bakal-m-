@@ -179,12 +179,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-051 · Giriş, kayıt, şifre sıfırlama ve KVKK onay ekranları
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 16.11.2026 – 22.11.2026 · **Öncelik:** P0 · **Efor:** 10 saat · **Alan:** Web / Masaüstü
 - **Bağımlılık:** T-040, T-037
 - **Destek:** —
 - **Çıktı:** Auth ekranları
 - **Kabul kriteri:** Form doğrulama, hata mesajları, token yenileme (otomatik), KVKK/açık rıza onay kutuları zorunlu.
+- **Not:** Ekranlar: giriş, kayıt (3 zorunlu onay), şifremi unuttum, şifre sıfırlama, e-posta doğrulama; korumalı sayfalar girişe yönlendirir (`?sonra=`). Token otomatik yenilenir (`web/src/auth/session.ts`: süresi bitmeden ve 401 gelince, tek seferde). Gerçek backend (#24) ile uçtan uca denendi. Onay metni sürümü şimdilik `2026-10-taslak`; metinler T-065 ile kesinleşince değişecek.
 
 ### T-052 · CV yükleme ve analiz bekleme ekranı
 
