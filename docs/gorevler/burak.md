@@ -1,6 +1,6 @@
 # Burak — Görevler
 
-**Alan:** AI / NLP + Mobil · **29 görev · 276 saat**
+**Alan:** AI / NLP + Mobil · **28 görev · 260 saat**
 
 Bu dosya Burak'ın görev listesidir ve görev durumlarının tek doğru kaynağıdır. Sadece Burak (veya onun Claude'u) günceller.
 
@@ -34,35 +34,27 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-024 · UML diyagramları
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 19.10.2026 – 25.10.2026 · **Öncelik:** P0 · **Efor:** 6 saat · **Alan:** Dokümantasyon
 - **Bağımlılık:** T-011 (Ataberk)
 - **Destek:** Ataberk, Anıl
 - **Çıktı:** docs/diagrams
 - **Kabul kriteri:** Use Case, Sequence (CV yükleme → sonuç), Component/Deployment ve ERD diyagramları. Poster ve final raporda kullanılacak.
+- **Not:** ERD `docs/veritabani.md`'den çizildi; T-011 (Ataberk) kesinleşince karşılaştırılıp güncellenecek.
 
 ### T-020 · PDF metin çıkarma modülü
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 26.10.2026 – 01.11.2026 · **Öncelik:** P0 · **Efor:** 10 saat · **Alan:** AI / NLP
 - **Bağımlılık:** T-007 (Ataberk)
 - **Destek:** —
 - **Çıktı:** ai/parsing modülü + testler
 - **Kabul kriteri:** pdfplumber + PyMuPDF yedeği; çok sütunlu CV düzeni; tamamen bellek içi (BytesIO), diske yazma yok. Bozuk/şifreli PDF için anlamlı hata kodu.
+- **Not:** Testler bellekte üretilen sentetik PDF'lerle (tek sütun, iki sütun, tablo, taranmış, şifreli, bozuk). Gerçek CV düzenleri (Word/Canva çıktıları) T-019 veri setiyle ayrıca denenmeli. T-007 (Docker) gerekmedi; modül saf Python.
 
 ---
 
 ## Sprint 1
-
-### T-028 · TÜBİTAK 2209-A başvuru dosyası
-
-- **Durum:** Yapılacak
-- **Tarih:** 02.11.2026 – 15.11.2026 · **Öncelik:** P0 · **Efor:** 16 saat · **Alan:** Kongre / TÜBİTAK
-- **Bağımlılık:** T-000 (Anıl)
-- **Destek:** Ataberk, Anıl
-- **Çıktı:** Başvuru dosyası
-- **Kabul kriteri:** Özgün değer, yöntem, iş-zaman planı, risk yönetimi, bütçe ve yaygın etki bölümleri; danışman onayı ve sisteme yükleme. Son tarihi güncel çağrı takviminden doğrulayın.
-- **Not:** Son tarih çağrı duyurusuna göre güncellenmeli.
 
 ### T-029 · OCR yedek akışı (Tesseract)
 

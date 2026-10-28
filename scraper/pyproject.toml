@@ -1,0 +1,44 @@
+[project]
+name = "careerai-scraper"
+version = "0.1.0"
+description = "CareerAI ilan toplayıcı: izinli API'ler ve açık veri setlerinden ilan havuzu"
+requires-python = ">=3.12"
+# Veritabanı modelleri backend paketinden gelir (app.db); kurulum: pip install -e ../backend -e ".[dev]"
+dependencies = [
+    "httpx>=0.27",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.3",
+    # Sürümler backend ile aynı sabit (infra/ci.md, "yerelde geçiyor CI'da düşüyor").
+    "ruff==0.17.2",
+    "mypy==2.4.0",
+]
+
+[project.scripts]
+careerai-collect = "collector.cli:main"
+
+[build-system]
+requires = ["setuptools>=75"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["collector*", "etl*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "S"]
+ignore = ["S101"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+# app.db modelleri backend'den gelir; editable kurulumu mypy takip etmediği için yolu açıkça verilir.
+mypy_path = "$MYPY_CONFIG_FILE_DIR/../backend"
