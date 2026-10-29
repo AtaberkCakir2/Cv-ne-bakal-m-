@@ -31,7 +31,7 @@ Plan: #30'da Ataberk'le kararlaştırıldı (29.10.2026). Görev durumu: `docs/g
 
 ## Süreç
 
-1. **CV üret.** Şablon betiği `template_input.json`'dan CV iskeletini kurar (ad, okul, pozisyon, yetkinlik listesi, düzen); proje ve deneyim metinlerini insan yazar. Yetkinlikler metinde açık liste olarak, proje açıklaması içinde ve kısaltma/yazım farklılıklarıyla ("JS", "k8s", "Postgres", yazım hatası, TR-EN karışık) geçer. Taranmış olacak CV'ler PDF'ten görüntüye çevrilip yeniden PDF yapılır (`scanned=true`).
+1. **CV üret.** Her CV için `dataset/cv_specs/<cv_id>.json` tanımı yazılır (iskelet `template_input.json`'daki pozisyon × yetkinlik listesinden; proje ve deneyim metinlerini insan yazar). Yetkinlikler metinde açık liste olarak, proje açıklaması içinde ve kısaltma/yazım farklılıklarıyla ("JS", "k8s", "Postgres", yazım hatası, TR-EN karışık) geçer. PDF ve manifest satırı `generate_cvs.py` ile üretilir (aşağıda); `scanned: true` olan CV görüntüye çevrilip yeniden PDF yapılır.
    - **Şablonun yetkinlik listesi cevap anahtarı değildir.** Etiketler metinde gerçekten geçene göre, sıfırdan ve elle verilir; bir eşleyicinin (ör. `scraper/etl/skills.py`) çıktısı ön etiket olarak kullanılmaz. Aksi halde TÜBİTAK İP3'teki yöntem karşılaştırması geçersizleşir.
 2. **Manifest'e satır ekle** (`dataset/manifest.csv`). Sütunlar aşağıda.
 3. **Etiketle.** Her CV'yi bir kişi [etiketleme-kilavuzu.md](etiketleme-kilavuzu.md)'ye göre etiketler. Çift etiket için seçilen 20 CV'yi ikinci kişi de, birinci kişinin etiketine bakmadan etiketler; her biri kendi dosyasını yazar.
