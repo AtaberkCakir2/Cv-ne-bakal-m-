@@ -195,7 +195,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: docker-compose.yml geçerli mi
-        run: cp .env.example .env && docker compose --profile api --profile worker config --quiet
+        run: cp .env.example .env && docker compose --profile api --profile worker --profile data config --quiet
       - name: API imajı
         run: docker build -t careerai/api:ci backend
       - name: API imajı açılıyor mu (smoke test)
@@ -207,6 +207,11 @@ jobs:
           done
           docker logs api-smoke
           exit 1
+      - name: Veri işçisi imajı (worker-data)
+        run: |
+          docker build -t careerai/worker-data:ci -f scraper/Dockerfile .
+          # Celery uygulaması ve gece görevi yükleniyor mu (broker'a bağlanmadan)
+          docker run --rm careerai/worker-data:ci python -c             "from collector.tasks import app; assert 'collector.nightly' in app.tasks; print(app.conf.beat_schedule)"
       - name: AI worker imajı
         if: needs.detect.outputs.ai_docker == 'true'
         run: docker build -t careerai/worker:ci ai

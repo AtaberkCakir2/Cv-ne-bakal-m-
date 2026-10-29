@@ -5,7 +5,7 @@ Atıf: kaynak "Hacker News" + yorum linki (scraper/kaynak-uygunluk.md).
 """
 
 import re
-from collections.abc import Iterator
+from collections.abc import Collection, Iterator
 from datetime import UTC, datetime
 from typing import Any
 
@@ -64,9 +64,12 @@ def parse_comment(item: dict[str, Any]) -> Posting | None:
     )
 
 
-def fetch(client: PoliteClient, months: int = 6) -> Iterator[Posting]:
+def fetch(client: PoliteClient, months: int = 6, skip_ids: Collection[str] = ()) -> Iterator[Posting]:
+    """`skip_ids`: veritabanında zaten olan yorumlar; gece toplamasında sadece yeni yorumlar istenir."""
     for thread in hiring_threads(client, months):
         for comment_id in thread.get("kids", []):
+            if str(comment_id) in skip_ids:
+                continue
             posting = parse_comment(client.get_json(f"{API}/item/{comment_id}.json") or {})
             if posting:
                 yield posting
