@@ -186,6 +186,56 @@ export interface paths {
         get: operations["me_api_v1_users_me_get"];
         put?: never;
         post?: never;
+        /**
+         * Hesabımı sil
+         * @description Şifre tekrar istenir. Kişisel bilgiler hemen anonimleştirilir, oturumlar kapanır; hesap 30 gün sonra kalıcı
+         *     olarak silinir.
+         */
+        delete: operations["delete_me_api_v1_users_me_delete"];
+        options?: never;
+        head?: never;
+        /**
+         * Profil / hedef pozisyon güncelleme
+         * @description Sadece gönderilen alanlar değişir. `target_role_id: null` hedef pozisyonu temizler.
+         */
+        patch: operations["update_me_api_v1_users_me_patch"];
+        trace?: never;
+    };
+    "/api/v1/users/me/consents": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Onay kayıtlarım (sürümlü) */
+        get: operations["my_consents_api_v1_users_me_consents_get"];
+        put?: never;
+        /**
+         * Metnin yeni sürümünü onayla
+         * @description Yasal metin değişince istemci yeni sürümü burada onaylatır. Eski onay kayıtları silinmez.
+         */
+        post: operations["accept_consents_api_v1_users_me_consents_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/users/me/export": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Verilerimi indir (JSON)
+         * @description KVKK md. 11: hesaba bağlı bütün kişisel veriler. CV dosyası ve metni saklanmadığı için yoktur.
+         */
+        get: operations["export_me_api_v1_users_me_export_get"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -196,6 +246,11 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /**
+         * AnalysisStatus
+         * @enum {string}
+         */
+        AnalysisStatus: "queued" | "processing" | "done" | "failed";
         /** ConsentIn */
         ConsentIn: {
             consent_type: components["schemas"]["ConsentType"];
@@ -205,11 +260,38 @@ export interface components {
              */
             version: string;
         };
+        /** ConsentOut */
+        ConsentOut: {
+            consent_type: components["schemas"]["ConsentType"];
+            /** Version */
+            version: string;
+            /**
+             * Accepted At
+             * Format: date-time
+             */
+            accepted_at: string;
+        };
         /**
          * ConsentType
          * @enum {string}
          */
         ConsentType: "kvkk_aydinlatma" | "acik_riza" | "kullanim_kosullari";
+        /**
+         * ConsentsIn
+         * @description Metnin yeni sürümü onaylanınca gönderilir. Aynı sürüm daha önce onaylandıysa tekrar kaydedilmez.
+         */
+        ConsentsIn: {
+            /** Consents */
+            consents: components["schemas"]["ConsentIn"][];
+        };
+        /**
+         * DeleteAccountIn
+         * @description Çalınmış bir oturumla hesap silinemesin diye şifre tekrar istenir.
+         */
+        DeleteAccountIn: {
+            /** Password */
+            password: string;
+        };
         /** DependencyStatus */
         DependencyStatus: {
             /** Ok */
@@ -232,6 +314,136 @@ export interface components {
              * Format: email
              */
             email: string;
+        };
+        /** ExportActivity */
+        ExportActivity: {
+            /** Action */
+            action: string;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+        };
+        /** ExportAnalysis */
+        ExportAnalysis: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Target Role */
+            target_role: string;
+            status: components["schemas"]["AnalysisStatus"];
+            /** Cv Sha256 */
+            cv_sha256: string;
+            /** Cv Pages */
+            cv_pages: number | null;
+            /** Match Score */
+            match_score: string | null;
+            /** Postings Analyzed */
+            postings_analyzed: number | null;
+            /** Completed At */
+            completed_at: string | null;
+            /** Deleted At */
+            deleted_at: string | null;
+            /** Duration Ms */
+            duration_ms: number | null;
+            /** Error Code */
+            error_code: string | null;
+            /** Model Name */
+            model_name: string | null;
+            /** Prompt Version */
+            prompt_version: string | null;
+            /** Skills */
+            skills: components["schemas"]["ExportSkill"][];
+            /** Unverified Skills */
+            unverified_skills: {
+                [key: string]: unknown;
+            }[];
+            /** Recommendations */
+            recommendations: components["schemas"]["ExportRecommendation"][];
+            /** Feedback */
+            feedback: {
+                [key: string]: unknown;
+            } | null;
+        };
+        /** ExportOut */
+        ExportOut: {
+            /**
+             * Exported At
+             * Format: date-time
+             */
+            exported_at: string;
+            profile: components["schemas"]["ProfileOut"];
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Consents */
+            consents: components["schemas"]["ConsentOut"][];
+            /** Sessions */
+            sessions: components["schemas"]["ExportSession"][];
+            /** Analyses */
+            analyses: components["schemas"]["ExportAnalysis"][];
+            /** Activity */
+            activity: components["schemas"]["ExportActivity"][];
+            /**
+             * Note
+             * @default CV dosyanız ve CV metniniz saklanmadığı için bu dosyada yoktur. cv_sha256, dosyanın parmak izidir; içerik bundan geri elde edilemez.
+             */
+            note: string;
+        };
+        /** ExportRecommendation */
+        ExportRecommendation: {
+            /** Skill */
+            skill: string;
+            /** Title */
+            title: string;
+            /** Url */
+            url: string;
+            /** Rank */
+            rank: number;
+            /** Reason Text */
+            reason_text: string | null;
+        };
+        /** ExportSession */
+        ExportSession: {
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /**
+             * Expires At
+             * Format: date-time
+             */
+            expires_at: string;
+            /** Revoked At */
+            revoked_at: string | null;
+            /** User Agent */
+            user_agent: string | null;
+        };
+        /** ExportSkill */
+        ExportSkill: {
+            /** Skill */
+            skill: string;
+            /** Kind */
+            kind: string;
+            /** Level */
+            level: string;
+            /** Confidence */
+            confidence: string | null;
+            /** Demand Ratio */
+            demand_ratio: string | null;
+            /** Priority */
+            priority: number | null;
         };
         /** HTTPValidationError */
         HTTPValidationError: {
@@ -257,8 +469,8 @@ export interface components {
             /** Password */
             password: string;
         };
-        /** MeOut */
-        MeOut: {
+        /** ProfileOut */
+        ProfileOut: {
             /**
              * Id
              * Format: uuid
@@ -271,6 +483,20 @@ export interface components {
             role: components["schemas"]["UserRole"];
             /** Is Verified */
             is_verified: boolean;
+            target_role: components["schemas"]["RoleRef"] | null;
+        };
+        /**
+         * ProfileUpdateIn
+         * @description Sadece gönderilen alanlar değişir; `null` göndermek alanı temizler. Bilinmeyen alan 422 verir.
+         */
+        ProfileUpdateIn: {
+            /** Full Name */
+            full_name?: string | null;
+            /**
+             * Target Role Id
+             * @description GET /roles listesindeki pozisyonun id'si
+             */
+            target_role_id?: number | null;
         };
         /** ReadinessResponse */
         ReadinessResponse: {
@@ -323,6 +549,15 @@ export interface components {
             token: string;
             /** New Password */
             new_password: string;
+        };
+        /** RoleRef */
+        RoleRef: {
+            /** Id */
+            id: number;
+            /** Slug */
+            slug: string;
+            /** Name */
+            name: string;
         };
         /** TokenIn */
         TokenIn: {
@@ -712,7 +947,153 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["MeOut"];
+                    "application/json": components["schemas"]["ProfileOut"];
+                };
+            };
+        };
+    };
+    delete_me_api_v1_users_me_delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DeleteAccountIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Şifre hatalı */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_me_api_v1_users_me_patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ProfileUpdateIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProfileOut"];
+                };
+            };
+            /** @description Pozisyon bulunamadı */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": unknown;
+                };
+            };
+        };
+    };
+    my_consents_api_v1_users_me_consents_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ConsentOut"][];
+                };
+            };
+        };
+    };
+    accept_consents_api_v1_users_me_consents_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ConsentsIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ConsentOut"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    export_me_api_v1_users_me_export_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ExportOut"];
                 };
             };
         };
