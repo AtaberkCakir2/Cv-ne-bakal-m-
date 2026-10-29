@@ -33,7 +33,7 @@ ruff check . && ruff format --check .
 mypy app tests
 ```
 
-Testler hiçbir servis (Postgres, Redis, Ollama) çalışmadan geçer.
+Testler hiçbir servis (Postgres, Redis, Ollama) çalışmadan geçer. Veritabanı isteyen testler (`tests/db`, `tests/auth`) sadece `TEST_DATABASE_URL` verilince çalışır; boş test veritabanı için `app/db/README.md` → "Testler". CI bunları her PR'da çalıştırır.
 
 ## Yapı
 
@@ -58,6 +58,34 @@ Kurallar:
 - Her yanıtta `X-Request-ID` başlığı vardır; hata bildirirken bu kimliği isteyin, loglarda aynı kimlikle aranır.
 - Loglara e-posta, telefon veya CV içeriği yazılmaz (karar #9). Maskeleme filtresi ikinci güvenlik katmanıdır, ilk katman değil.
 
+## Kimlik doğrulama (T-037)
+
+| Metot | Yol | Not |
+|---|---|---|
+| POST | `/api/v1/auth/register` | Üç KVKK onayı zorunlu; doğrulama e-postası gider |
+| POST | `/api/v1/auth/login` | `{access_token, refresh_token, token_type, expires_in}` |
+| POST | `/api/v1/auth/refresh` | Refresh token tek kullanımlık; kullanılmış token tekrar gelirse bütün oturumlar kapanır |
+| POST | `/api/v1/auth/logout` | Refresh token iptali |
+| POST | `/api/v1/auth/verify-email` · `/forgot-password` · `/reset-password` | Tek kullanımlık bağlantılar; şifre sıfırlanınca bütün oturumlar kapanır |
+| GET | `/api/v1/users/me` | `Authorization: Bearer <access_token>` |
+
+- Parolalar argon2id; access token 15 dk (JWT, HS256), refresh token 7 gün (veritabanında sadece SHA-256 hash'i).
+- Korumalı uç yazarken: `user: CurrentUser` (oturum açmış kullanıcı) veya `user: AdminUser` (yönetici) — `app/api/deps.py`. Rol her istekte veritabanından okunur.
+- **Lokal geliştirmede `.env`'e `ENVIRONMENT=local` yazın.** Ortam açıkça `local`/`test` yazılmazsa ve `JWT_SECRET` verilmezse giriş/kayıt çalışmaz (repodaki geliştirme anahtarıyla token üretilmez); `/health` açık kalır. `ENVIRONMENT=production` iken `JWT_SECRET` verilmezse uygulama hiç açılmaz.
+- Production'da `.env`: `JWT_SECRET` ve `IP_HASH_SECRET` (ikisi de en az 32 karakter, farklı, rastgele).
+- Bilinen sınırlar: aynı refresh token'la eşzamanlı iki yenileme oturumları kapatır (istemci yenilemeyi tek seferde yapmalı); ayrıntı `app/services/auth.py` başında.
+- **E-posta:** Gerçek e-posta servisi henüz yok. İletiler bellekte tutulur (`OutboxEmailSender`); `ENVIRONMENT=local` iken doğrulama ve sıfırlama bağlantıları API loguna yazılır.
+
+### Kalıcı test kullanıcısı
+
+Uçtan uca testlerde her seferinde kayıt olmamak için, `.env`'e `E2E_TEST_EMAIL` (`@example.com` ile bitmeli) ve `E2E_TEST_PASSWORD` ekleyip:
+
+```bash
+python scripts/seed_test_user.py
+```
+
+Kullanıcı doğrulanmış ve KVKK onayları verilmiş olarak oluşturulur; tekrar çalıştırmak şifreyi günceller. Sadece local/test ortamında çalışır. Yüklenecek CV her zaman `contracts/examples/` altındaki sahte CV'dir.
+
 ## Sıradaki işler
 
-T-038 CV yükleme endpoint'i · T-037 kimlik doğrulama · T-039 analiz kuyruğu. AI modülü hazır olana kadar analiz sonucu olarak `contracts/examples/analysis_result.example.json` döndürülür.
+T-039 analiz kuyruğu · T-048 sonuç ve katalog endpoint'leri · T-049 profil ve KVKK endpoint'leri · T-050 rate limit (giriş/kayıt uçları için).
