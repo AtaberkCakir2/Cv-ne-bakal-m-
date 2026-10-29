@@ -8,6 +8,9 @@ Ad-soyadın yapısı belli olmadığı için kurallar birleştirilir:
 4. Bilinen bir ilk adla başlayan, büyük harfle devam eden kelime grubu ("… ekip lideri Ayşe Kaya ile …").
 5. Bulunan adın kelimeleri metnin geri kalanında büyük harfle geçtiği her yerde de maskelenir ("Mert'in …").
 
+Yetkinlik taksonomisinin kelimeleri ve unvan kelimeleri ("Python Django Developer", "Kıdemli Backend Geliştirici")
+başlık satırında ad sayılmaz ve yayılmaz; yoksa unvan satırındaki yetkinlikler bütün CV'de silinir.
+
 Yerel varlık tanıma (NER) modeli `detector` parametresiyle eklenir (`pii.ner.default_detector()`, karar #24);
 sonuçları kurallarınkiyle birleştirilir.
 """
@@ -20,6 +23,7 @@ from typing import Literal
 
 from pii.kinds import Kind
 from pii.patterns import Span
+from pii.taxonomy import skill_words
 
 Lang = Literal["tr", "en"]
 NameDetector = Callable[[str, Lang], list[tuple[int, int]]]
@@ -46,6 +50,14 @@ NOT_A_NAME = re.compile(
     re.IGNORECASE,
 )
 HEADER_LINES = 3
+# Başlıktaki unvan satırının kelimeleri (taksonomide olmayanlar); küçük harf.
+TITLE_WORDS = frozenset(
+    """
+    geliştirici geliştiricisi developer engineer mühendis mühendisi uzman uzmanı specialist kıdemli senior junior
+    stajyer intern analist analyst bilimci scientist tasarımcı designer yönetici manager lead lider mimar architect
+    danışman consultant öğrenci öğrencisi student backend frontend full stack yazılım software programcı programmer
+    """.split()
+)
 
 # Sık görülen ilk adlar (Türkçe + birkaç İngilizce). Teknoloji adıyla aynı olanlar bilinçli olarak yok (Ada, Ruby).
 FIRST_NAMES = frozenset(
@@ -62,26 +74,51 @@ FIRST_NAMES = frozenset(
     """.split()
 )
 _FIRST_NAME_PHRASE = re.compile(rf"\b({_WORD})((?:{_SP}{_NAME_TOKEN}){{1,2}})")
+_FIRST_NAME_START = re.compile(rf"(?<![\w-]){_WORD}")
 _MIN_PROPAGATE_LEN = 3
 
 
-def find_names(text: str, lang: Lang = "tr", detector: NameDetector | None = None) -> list[Span]:
+def find_names(
+    text: str,
+    lang: Lang = "tr",
+    detector: NameDetector | None = None,
+    *,
+    header: bool = True,
+    skip_words: frozenset[str] | None = None,
+) -> list[Span]:
+    """`header=False`: başlık kuralı (2) uygulanmaz; ilk satırı ad olmayan belgeler için (ilan metni).
+    `skip_words`: ad sayılmayacak kelimeler (küçük harf); verilmezse taksonomi + unvan kelimeleri."""
+    skip = (skill_words() if skip_words is None else skip_words) | TITLE_WORDS
     spans: list[Span] = []
     for m in LABELED.finditer(text):
         value = m.group(1).rstrip()
         if value:
             spans.append(Span(m.start(1), m.start(1) + len(value), Kind.NAME))
-    spans += _header_name(text)
+    if header:
+        spans += _header_name(text, skip)
     spans += [Span(m.start(1), m.end(1), Kind.NAME) for m in HONORIFIC.finditer(text)]
-    for m in _FIRST_NAME_PHRASE.finditer(text):
-        if m.group(1) in FIRST_NAMES:
-            spans.append(Span(m.start(), m.end(), Kind.NAME))
+    # Her ilk ad kendi konumundan denenir: "Contact Ayşe Kaya" grubunda önceki büyük harfli kelime ("Contact")
+    # eşleşmeyi yutup ilk adı atlatmasın.
+    for w in _FIRST_NAME_START.finditer(text):
+        if w.group() in FIRST_NAMES and (phrase := _FIRST_NAME_PHRASE.match(text, w.start())):
+            # Addan sonra gelen yetkinlik/unvan kelimesi ada katılmaz ("Mert Python ile …").
+            end = w.end()
+            for tok in re.finditer(r"\S+", phrase.group(2)):
+                if _is_skipped(tok.group(), skip):
+                    break
+                end = phrase.start(2) + tok.end()
+            if end > w.end():
+                spans.append(Span(phrase.start(), end, Kind.NAME))
     if detector is not None:
         spans += [Span(start, end, Kind.NAME) for start, end in detector(text, lang)]
-    return spans + _propagate(text, spans)
+    return spans + _propagate(text, spans, skip)
 
 
-def _header_name(text: str) -> list[Span]:
+def _is_skipped(word: str, skip: frozenset[str]) -> bool:
+    return tr_lower(word) in skip or word.lower() in skip
+
+
+def _header_name(text: str, skip: frozenset[str]) -> list[Span]:
     offset = 0
     seen = 0
     for line in text.splitlines(keepends=True):
@@ -90,7 +127,11 @@ def _header_name(text: str) -> list[Span]:
             seen += 1
             if seen > HEADER_LINES:
                 break
-            if not NOT_A_NAME.match(content) and HEADER_LINE.match(content):
+            if (
+                not NOT_A_NAME.match(content)
+                and HEADER_LINE.match(content)
+                and not any(_is_skipped(w, skip) for w in content.split())
+            ):
                 start = offset + line.index(content)
                 return [Span(start, start + len(content), Kind.NAME)]
         offset += len(line)
@@ -111,13 +152,13 @@ def tr_title(s: str) -> str:
     return tr_upper(s[:1]) + tr_lower(s[1:]) if s else s
 
 
-def _propagate(text: str, spans: list[Span]) -> list[Span]:
+def _propagate(text: str, spans: list[Span], skip: frozenset[str]) -> list[Span]:
     """Bulunan adların kelimeleri metnin başka yerlerinde de (büyük harfle, kelime olarak) maskelenir."""
     tokens = {
         token
         for s in spans
         for token in re.findall(rf"[{_UPPER}{_LOWER}]+", text[s.start : s.end])
-        if len(token) >= _MIN_PROPAGATE_LEN and token[0].isupper()
+        if len(token) >= _MIN_PROPAGATE_LEN and token[0].isupper() and not _is_skipped(token, skip)
     }
     if not tokens:
         return []

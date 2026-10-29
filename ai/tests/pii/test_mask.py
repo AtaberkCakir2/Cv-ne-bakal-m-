@@ -164,3 +164,65 @@ def test_synthetic_cv_has_no_personal_data_after_masking(spec: dict[str, object]
     assert not re.search(r"[\w.+-]+@[\w-]+\.", masked)
     # Yetkinlik bölümü yerinde kalmalı
     assert "Python" in masked or "Java" in masked or "React" in masked or "C#" in masked or "Linux" in masked
+
+
+# --- PR #37 incelemesi (Ataberk): yetkinlikler ad veya adres sanılmamalı ------------------------------------------
+
+
+def test_title_line_with_skills_is_not_a_name_and_skills_are_not_propagated() -> None:
+    text = (
+        "ÖZGEÇMİŞ\nPython Django Developer\nAyşe Kaya · ayse@example.com\n"
+        "Yetenekler: Python, Django, PostgreSQL\n4 yıl Python deneyimi; Django REST ile API geliştirdim."
+    )
+    out = mask(text).text
+    assert out == (
+        "ÖZGEÇMİŞ\nPython Django Developer\n[AD SOYAD] · [E-POSTA]\n"
+        "Yetenekler: Python, Django, PostgreSQL\n4 yıl Python deneyimi; Django REST ile API geliştirdim."
+    )
+
+
+def test_title_line_without_taxonomy_words_is_not_a_name() -> None:
+    out = mask("Kıdemli Backend Geliştirici\nAyşe Kaya\nBackend servislerinde Go kullandım.").text
+    assert out == "Kıdemli Backend Geliştirici\n[AD SOYAD]\nBackend servislerinde Go kullandım."
+
+
+@pytest.mark.parametrize(
+    "text",
+    [
+        "Experience with Spring Boot, Apache Kafka and Redis. Worked at Acme Street Labs.",
+        "Built a delivery app for Road Runner Logistics using Kotlin, Room and Retrofit in 2023 with a team of four.",
+        "Bağdat Caddesi'ndeki mağazalar için stok takip sistemi geliştirdim (Flutter, Firebase).",
+    ],
+)
+def test_address_hint_alone_is_not_an_address(text: str) -> None:
+    assert Kind.ADDRESS not in mask(text).counts
+
+
+def test_address_fields_split_by_separator_are_masked() -> None:
+    out = mask("Atatürk Mah. Cumhuriyet Cad. · Kadıköy/İstanbul").text
+    assert "Atatürk" not in out and "Cumhuriyet" not in out
+
+
+@pytest.mark.parametrize(
+    "address",
+    ["Atatürk Cad. No: 12 Kadıköy/İstanbul", "221B Baker Street, London NW1 6XE"],
+)
+def test_real_addresses_are_still_masked(address: str) -> None:
+    out = mask(f"İletişim\n{address}\nPython, Django").text
+    assert Kind.ADDRESS in mask(address).counts
+    for word in ("Atatürk", "Kadıköy", "Baker", "NW1"):
+        assert word not in out
+    assert out.endswith("Python, Django")
+
+
+@pytest.mark.parametrize(
+    ("text", "expected"),
+    [
+        ("Yöneticim Ayşe Kaya ile çalıştım.", "Yöneticim [AD SOYAD] ile çalıştım."),
+        ("Referans Mert Aydın, Lead Engineer", "Referans [AD SOYAD], Lead Engineer"),
+        ("Stajda Mert Python ile otomasyon yazdı.", "Stajda Mert Python ile otomasyon yazdı."),
+    ],
+)
+def test_first_name_after_capitalized_word(text: str, expected: str) -> None:
+    # Önceki büyük harfli kelime ilk adı atlatmamalı; addan sonra gelen yetkinlik ada katılmamalı.
+    assert mask(text).text == expected

@@ -12,9 +12,10 @@ dependencies = [
 [project.optional-dependencies]
 # Ad tespiti için yerel NER modeli (pii/ner.py). Yoksa ad tespiti sadece kurallarla yapılır.
 # Sunucuda torch'un CPU sürümü kurulmalı: --index-url https://download.pytorch.org/whl/cpu
+# Sürümler T-030 ölçümündeki (karar #24) gibi sabit; değiştirirken ölçümü tekrarla.
 ner = [
-    "torch>=2.4",
-    "transformers>=4.44",
+    "torch==2.15.0",
+    "transformers==5.22.0",
 ]
 dev = [
     "pytest>=8.3",

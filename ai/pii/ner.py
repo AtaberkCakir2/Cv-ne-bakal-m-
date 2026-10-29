@@ -17,16 +17,14 @@ Model bilgisayarda çalışır; metin dışarı gönderilmez (karar #1). Kuralla
 
 from __future__ import annotations
 
-import csv
 import logging
-import os
 import re
 from collections.abc import Callable, Iterable
 from functools import cache
-from pathlib import Path
 from typing import Any
 
 from pii.names import Lang, NameDetector
+from pii.taxonomy import skill_words
 
 log = logging.getLogger(__name__)
 
@@ -37,24 +35,11 @@ MIN_SCORE = 0.5
 # BERT en fazla 512 parça görür; metin satır sınırından bu uzunlukta parçalara bölünür.
 CHUNK_CHARS = 1000
 PERSON_LABELS = frozenset({"PER", "PERSON"})
-TAXONOMY_ENV = "CAREERAI_TAXONOMY"
-DEFAULT_TAXONOMY = Path(__file__).resolve().parents[2] / "scraper" / "taxonomy" / "skills.csv"
 
 # transformers pipeline'ının ihtiyacımız olan kısmı: metin → [{"entity_group", "score", "start", "end"}, ...]
 Pipeline = Callable[[str], list[dict[str, Any]]]
 
 _WORD = re.compile(r"\w+")
-
-
-def load_skill_words(path: Path) -> frozenset[str]:
-    """Taksonomideki yetkinlik adı ve eş anlamlılarının kelimeleri (küçük harf)."""
-    words: set[str] = set()
-    with path.open(encoding="utf-8", newline="") as f:
-        for row in csv.DictReader(f):
-            names = [row["canonical_name"], *row.get("synonyms", "").split("|")]
-            for name in names:
-                words.update(w.lower() for w in _WORD.findall(name))
-    return frozenset(words)
 
 
 class BertNerDetector:
@@ -130,10 +115,4 @@ def default_detector() -> NameDetector | None:
     except ImportError:
         log.warning("transformers/torch kurulu değil; ad tespiti sadece kurallarla yapılacak")
         return None
-    taxonomy = Path(os.environ.get(TAXONOMY_ENV, DEFAULT_TAXONOMY))
-    skip: frozenset[str] = frozenset()
-    if taxonomy.is_file():
-        skip = load_skill_words(taxonomy)
-    else:
-        log.warning("yetkinlik taksonomisi bulunamadı (%s); NER filtresiz çalışacak", taxonomy)
-    return BertNerDetector(skip)
+    return BertNerDetector(skill_words())

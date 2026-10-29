@@ -2,7 +2,8 @@
 
 Kullanım:
     result = mask(text, "tr")       # MaskResult(text=..., counts={Kind.EMAIL: 1, ...})
-    masked = mask_text(text, "tr")  # sadece metin; scraper/etl/pipeline.py NameMasker imzasıyla uyumlu
+    masked = mask_text(text, "tr")  # sadece metin
+    posting = mask_posting(text, "tr")  # ilan metni; scraper/etl/pipeline.py NameMasker imzasıyla uyumlu
 
 Maskelenen metin LLM'e, maskelenmemiş metin hiçbir yere gitmez. `counts` loglanabilir (kişisel veri içermez);
 metnin kendisi loglanmaz.
@@ -23,8 +24,26 @@ class MaskResult:
     counts: dict[Kind, int] = field(default_factory=dict)
 
 
+# İlanda kişiye ulaştıran veriler maskelenir; başvuru bağlantısı, şirket adresi ve tarihler iş bilgisidir, kalır.
+POSTING_KINDS = frozenset({Kind.NAME, Kind.EMAIL, Kind.PHONE, Kind.TCKN, Kind.IBAN})
+
+
 def mask(text: str, lang: Lang = "tr", *, detector: NameDetector | None = None) -> MaskResult:
-    spans = _merge(find_structured(text) + find_names(text, lang, detector))
+    return _apply(text, _merge(find_structured(text) + find_names(text, lang, detector)))
+
+
+def mask_text(text: str, lang: Lang = "tr") -> str:
+    return mask(text, lang).text
+
+
+def mask_posting(text: str, lang: Lang = "tr", *, detector: NameDetector | None = None) -> str:
+    """İş ilanı metni için: ad, e-posta, telefon, TCKN, IBAN. CV'deki başlık kuralı uygulanmaz (ilk satır ilan
+    başlığıdır, ad değil); URL, adres ve tarih maskelenmez."""
+    structured = [s for s in find_structured(text) if s.kind in POSTING_KINDS]
+    return _apply(text, _merge(structured + find_names(text, lang, detector, header=False))).text
+
+
+def _apply(text: str, spans: list[Span]) -> MaskResult:
     counts: dict[Kind, int] = {}
     parts: list[str] = []
     last = 0
@@ -35,10 +54,6 @@ def mask(text: str, lang: Lang = "tr", *, detector: NameDetector | None = None) 
         last = span.end
     parts.append(text[last:])
     return MaskResult("".join(parts), counts)
-
-
-def mask_text(text: str, lang: Lang = "tr") -> str:
-    return mask(text, lang).text
 
 
 def _merge(spans: list[Span]) -> list[Span]:

@@ -73,8 +73,8 @@ mask_text(text, "en")  # sadece metin, sadece kurallar; scraper/etl/pipeline.py 
 | IBAN | `[IBAN]` | TR IBAN |
 | Bağlantı | `[BAĞLANTI]` | http/www ve küçük harfli alan adları; "Node.js", "ASP.NET", "socket.io" dokunulmaz |
 | Doğum tarihi | `[DOĞUM TARİHİ]` | "Doğum Tarihi:", "D.T.", "Date of birth" sonrası; ayrıca yılı 1950–2012 olan her tam tarih |
-| Adres | `[ADRES]` | "Adres:" etiketi; Mah./Sok./Cad./Bulvarı/Street… içeren alan; posta kodu + il |
-| Ad soyad | `[AD SOYAD]` | kurallar (etiketli alan, belgenin ilk satırları, unvanlı adlar, bilinen ilk adla başlayan grup) + yerel BERTurk NER; bulunan adın kelimeleri metnin her yerinde (ör. "Mert'in") |
+| Adres | `[ADRES]` | "Adres:" etiketi; Mah./Sok./Cad./Bulvarı/Street… ipucu ancak yanında kapı numarası, il veya posta kodu varsa ("Acme Street Labs" adres değil); posta kodu + il |
+| Ad soyad | `[AD SOYAD]` | kurallar (etiketli alan, belgenin ilk satırları, unvanlı adlar, bilinen ilk adla başlayan grup) + yerel BERTurk NER; bulunan adın kelimeleri metnin her yerinde (ör. "Mert'in"). Taksonomi ve unvan kelimeleri (Python, Backend, Developer, Kıdemli…) ad sayılmaz ve yayılmaz |
 
 - **Kabul kriteri:** telefon, e-posta, TCKN %100. Testler 12 telefon biçimi × 6 bağlam, 4 e-posta × 6 bağlam ve 500 rastgele TCKN × 4 bağlamla bunu doğrular; ayrıca yetkinlik metninin bozulmadığını (`KEEP` örnekleri) ve sentetik CV'lerde ad/iletişim kalmadığını (PDF → metin → maske) test eder.
 - **Ad tespiti: kurallar + NER (karar #24).** `pii/ner.py` yerel `akdeniz27/bert-base-turkish-cased-ner` modelini (MIT, sürüm sabit) kullanır. Modelin parçaladığı kelimeler ("Post" + "##man") tam kelimeye genişletilir; yetkinlik taksonomisindeki kelimeler (`scraper/taxonomy/skills.csv`, başka yol için `CAREERAI_TAXONOMY`) ad sayılmaz. Uzun metin satır sınırlarından 1000 karakterlik parçalara bölünür.

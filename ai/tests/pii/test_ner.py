@@ -8,7 +8,8 @@ from typing import Any
 import pytest
 
 from pii import Kind, mask, ner
-from pii.ner import DEFAULT_TAXONOMY, BertNerDetector, Pipeline, load_skill_words
+from pii.ner import BertNerDetector, Pipeline
+from pii.taxonomy import DEFAULT_TAXONOMY, load_skill_words
 
 # --- Model olmadan: sahte pipeline ile birleştirme, filtre ve parçalama mantığı ------------------------------------
 
