@@ -120,8 +120,9 @@ jobs:
           cache-dependency-path: |
             scraper/pyproject.toml
             backend/pyproject.toml
-      # Modeller backend paketinden gelir (scraper/README.md'deki kurulumla aynı).
-      - run: pip install -e ../backend -e ".[dev]"
+            ai/pyproject.toml
+      # Modeller backend, ilan maskeleme (pii) ai paketinden gelir (scraper/README.md kurulumu).
+      - run: pip install -e ../backend -e ../ai -e ".[dev]"
       - run: ruff check .
       - run: ruff format --check .
       - run: mypy collector etl tests
@@ -146,7 +147,7 @@ jobs:
       - run: ruff check .
       - run: ruff format --check .
       # Yollar ai/README.md'deki komutla aynı; orası değişirse burası da değişir.
-      - run: mypy parsing tests eval/scripts
+      - run: mypy parsing pii tests eval/scripts
       - run: pytest -rs
 
   web:
