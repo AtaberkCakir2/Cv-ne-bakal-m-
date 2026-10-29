@@ -276,6 +276,7 @@ Kurallara uygunluk: Toplam süre 12 ay; hiçbir iş paketi 12 aydan uzun değil.
 | Eğitim/kurumsal | Üniversite kariyer merkezi ve bölümler için pozisyon bazlı yetkinlik talebi raporu | Proje sonunda 1 rapor; müfredat-sektör uyumu tartışmalarına girdi |
 | Teknolojik | Kişisel veriyi dışarı göndermeyen yerel model mimarisinin uygulanabilirliği | Grafik işlemcisiz sunucuda p95 < 120 sn; dış yapay zekâ servisi maliyeti 0 TL |
 | Ekonomik | Ücretli kariyer danışmanlığına erişemeyen öğrenciler için ücretsiz alternatif | Kullanıcı başına aylık sunucu maliyeti < 10 TL (100 kullanıcıda) |
+| Yeni proje | Proje sonuçlarına dayanan yeni proje önerisi (v1.1: akademik transkript analizi, mülakat hazırlığı ve öğrenme ilerleme takibi; Türkçe ilan kaynaklarının genişletilmesi) | ≥ 1 yeni proje başvurusu (ör. TÜBİTAK 1512 Bireysel Genç Girişim, üniversite BAP veya lisansüstü tez önerisi) |
 
 ## 5. BELİRTMEK İSTEDİĞİNİZ DİĞER KONULAR
 
