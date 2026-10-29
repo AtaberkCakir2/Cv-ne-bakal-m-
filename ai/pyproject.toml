@@ -45,5 +45,5 @@ ignore_missing_imports = true
 
 # PyMuPDF'in tip bilgisi eksik; onu çağıran modüllerde "tipsiz çağrı" uyarısı kapalı.
 [[tool.mypy.overrides]]
-module = ["parsing.backends", "tests.parsing.*"]
+module = ["parsing.backends", "tests.parsing.*", "generate_cvs"]
 disallow_untyped_calls = false

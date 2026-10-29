@@ -18,8 +18,9 @@ Plan: #30'da Ataberk'le kararlaştırıldı (29.10.2026). Görev durumu: `docs/g
 
 | Ne | Nerede | Repoda mı? |
 |---|---|---|
-| Sentetik CV metinleri (kaynak) | `dataset/synthetic/<cv_id>.md` | Evet |
-| Sentetik CV PDF'leri | `dataset/synthetic/<cv_id>.pdf` (şablon betiği üretir) | Evet |
+| CV tanım dosyaları (kaynak) | `dataset/cv_specs/<cv_id>.json` | Evet |
+| Sentetik CV PDF'leri | `dataset/synthetic/<cv_id>.pdf` (`generate_cvs.py` üretir; elle düzenlenmez) | Evet |
+| İlk 3 örnek CV (sadece metin, PDF'i yok) | `dataset/synthetic/syn-001..003.md` | Evet |
 | Şablon girdisi (pozisyon × yetkinlik × eş anlamlı) | `dataset/template_input.json` (Ataberk, `scraper/`'dan) | Evet |
 | CV listesi (kimlik içermez) | `dataset/manifest.csv` | Evet |
 | Etiketler | `dataset/labels/<cv_id>/<etiketleyici>.json` | Evet |
@@ -47,6 +48,34 @@ Yükü dengelemek için CV numarasına göre dönüşümlü. Tek etiketli CV'yi 
 | 0 | burak | ataberk | anil |
 | 1 | burak | anil | ataberk |
 | 2 | ataberk | anil | burak |
+
+## CV tanım dosyası
+
+Her sentetik CV `dataset/cv_specs/<cv_id>.json` dosyasıdır; PDF ve manifest satırı bundan üretilir:
+
+```bash
+python ai/eval/scripts/generate_cvs.py              # hepsi
+python ai/eval/scripts/generate_cvs.py --only syn-014
+```
+
+```json
+{
+  "cv_id": "syn-014", "language": "tr", "layout": "multi_column", "scanned": false,
+  "target_role": "backend-developer", "experience": "intern", "double": false,
+  "header": {"name": "Ad Soyad", "title": "Unvan", "contact": ["ad@example.com", "0532 000 00 00", "Şehir"]},
+  "sidebar": [{"title": "Beceriler", "list": ["Python — ileri", "Docker"]}],
+  "main": [
+    {"title": "Hakkımda", "text": ["Paragraf..."]},
+    {"title": "Deneyim", "items": [{"heading": "Pozisyon — Şirket (örnek)", "meta": "2025 – halen", "bullets": ["..."]}]}
+  ]
+}
+```
+
+- `layout`: `single_column` veya `multi_column` (sol kenar çubuğu = `sidebar`; ilk sayfaya sığmalı, sığmazsa script hata verir).
+- `scanned: true` → sayfalar 150 DPI gri tonlu görüntüye çevrilir, metin katmanı kalmaz (OCR testi, T-029).
+- Bölüm türleri: `text` (paragraflar), `items` (başlık + `meta` + `text`/`bullets`), `list` (madde listesi).
+- **Kişisel veri:** ad uydurma; e-posta sadece `example.com/org/net`; telefon `05xx 000 xx xx` (000 bloklu); şirket adlarında "örnek/Ornek"; web adresleri `*.example.com`. T-030 (kişisel veri maskeleme) bu alanları maskelemeyi test eder.
+- **Çeşitlilik:** yetkinlikler hem listede hem cümle içinde; kısaltmalar (JS, TS, k8s, Postgres, sklearn), seviye ifadeleri ("ileri düzey", ★★★☆☆, B2, "3 yıl"), istek cümleleri ("öğrenmek istiyorum"), sadece ders adı geçen konular; bunlar etiketleme kılavuzunun kurallarını sınar.
 
 ## `manifest.csv` sütunları
 
