@@ -86,7 +86,7 @@ Proje süresince üç hipotez test edilecektir:
 2. Önerilerin doğrulanmış kaynak veritabanıyla sınırlandırılması, uydurma bağlantı oranını %0'da tutarken alakalılığı 5 üzerinden ≥ 4,0 düzeyinde sağlar.
 3. Grafik işlemci kullanmayan bir sunucuda analiz süresi p95 < 120 saniyedir.
 
-Yöntem; elle etiketlenmiş en az 50 sentetik özgeçmişle karşılaştırmalı deney, üç uzmanla öneri değerlendirmesi, yük testleri ve 20–30 öğrenciyle anketli kullanılabilirlik çalışmasından (SUS ≥ 70) oluşur. Proje süresince her gece toplanan ilanlarla 12 aylık yetkinlik talebi eğilimi de analiz edilecektir.
+Yöntem; elle etiketlenmiş en az 50 sentetik özgeçmişle karşılaştırmalı deney, üç uzmanla öneri değerlendirmesi, yük testleri ve 20–30 öğrenciyle anketli kullanılabilirlik çalışmasından (ortalama SUS ≥ 70) oluşur. Proje süresince her gece toplanan ilanlarla 12 aylık yetkinlik talebi eğilimi de analiz edilecektir.
 
 Proje altı iş paketiyle 12 ayda, üç kişilik ekip ve danışman tarafından yürütülecek; riskler için B planları tanımlanmıştır.
 
@@ -142,7 +142,7 @@ Büyük dil modelleri metinden yapılandırılmış bilgi çıkarmada güçlü o
 | H-4 | Öneri kalitesi | 3 uzmanın 1–5 alakalılık puanı ortalaması; uydurma bağlantı oranı | ≥ 4,0; %0 |
 | H-5 | Kaynak havuzu | Doğrulanmış eğitim kaynağı; yetkinlik başına kaynak | ≥ 900; her yetkinlik için ≥ 3 (Türkçe öncelikli) |
 | H-6 | Performans ve güvenilirlik | Analiz süresi p95; analiz başarı oranı; aylık erişilebilirlik | < 120 sn; ≥ %95; ≥ %99 |
-| H-7 | Kullanılabilirlik | 20–30 öğrenciyle Sistem Kullanılabilirlik Ölçeği (SUS); görev tamamlama oranı | ≥ 70; ≥ %90 |
+| H-7 | Kullanılabilirlik | 20–30 öğrenciyle Sistem Kullanılabilirlik Ölçeği (SUS) ortalaması; 6 görev senaryosunda görev tamamlama oranı | Ortalama SUS ≥ 70; ≥ %90 |
 | H-8 | Kişisel veri | Maskeleme testinde telefon, e-posta ve kimlik numarası yakalama; saklanan özgeçmiş/ham metin | %100; 0 |
 
 ---
@@ -196,9 +196,16 @@ Yetkinliklerin metinde açık liste olarak, proje açıklaması içinde ve kısa
 - **Güvenlik:** Bağımlılık açığı taraması, imaj taraması ve sır taraması yapılır.
 
 **2.6. Kullanılabilirlik çalışması (İP6).**
-- **Katılımcılar ve onam:** 20–30 gönüllü öğrenci, bilgilendirilmiş onam verdikten sonra sistemi görev senaryolarıyla kullanır: hesap açma, özgeçmiş yükleme, sonucu yorumlama, kaynak açma.
-- **Veri gizliliği:** Katılımcılar kendi özgeçmişlerini veya ekibin sağladığı örnek özgeçmişi kullanabilir. Özgeçmiş içeriği ve analiz sonuçları araştırma verisi olarak kaydedilmez; sistem de özgeçmiş dosyasını ve ham metni saklamaz. Araştırma verisi olarak yalnızca anonim anket yanıtları, görev tamamlama oranı ve süresi toplanır.
-- **Ölçüm:** SUS (Brooke, 1996) uygulanır; yorumlama Bangor vd. (2008) ölçeğine göre yapılır. Ankette ek olarak katılımcının kendi sonucundaki yetkinliklerin doğruluğunu 1–5 ölçekle değerlendirmesi istenir. Bu soru, sentetik setteki sonucun gerçek kullanımdaki karşılığı hakkında tamamlayıcı bir gösterge sağlar.
+- **Katılımcılar ve onam:** 20–30 gönüllü öğrenci, oturum başında aydınlatma metnini okuyup bilgilendirilmiş onam verdikten sonra sistemi altı görev senaryosuyla kullanır:
+  1. hesap açma ve e-posta doğrulama
+  2. hedef pozisyon seçme
+  3. özgeçmiş yükleme ve analizi bekleme
+  4. sonucu yorumlama
+  5. bir eksik yetkinlik için kaynak açma
+  6. geçmiş analizi bulma veya verilerini indirme/silme (kişisel veri denetimlerinin kullanılabilirliğini ölçer)
+- **Görev başarı ölçütleri:** Her senaryo için tamamlanma koşulu önceden tanımlanır. Örneğin "sonucu yorumlama" görevinde katılımcıdan (a) uyum skorunu, (b) en öncelikli eksik yetkinliği ve (c) bu yetkinliğin ilanların yüzde kaçında istendiğini söylemesi istenir; üçü de doğruysa görev tamamlanmış sayılır.
+- **Veri gizliliği:** Katılımcılar kendi özgeçmişlerini veya ekibin sağladığı örnek özgeçmişi kullanabilir. Özgeçmiş içeriği ve analiz sonuçları araştırma verisi olarak kaydedilmez; sistem de özgeçmiş dosyasını ve ham metni saklamaz. Araştırma verisi olarak yalnızca anonim anket yanıtları, görev tamamlama oranı ve süresi toplanır. Görev süresi ölçülürken analizin bekleme süresi ayrı kaydedilir; böylece sistemin işlem süresi (İP5) ile kullanıcının etkileşim süresi (İP6) birbirine karışmaz.
+- **Ölçüm:** SUS (Brooke, 1996) uygulanır; hedef ortalama SUS puanının ≥ 70 olmasıdır (literatürdeki ortalama yaklaşık 68'dir) ve yorumlama Bangor vd. (2008) ölçeğine göre yapılır. Ankette ek olarak katılımcının kendi sonucundaki yetkinliklerin doğruluğunu 1–5 ölçekle değerlendirmesi istenir. Bu soru, sentetik setteki sonucun gerçek kullanımdaki karşılığı hakkında tamamlayıcı bir gösterge sağlar.
 - **Etik:** Çalışma, etik kurul onayı veya muafiyet belgesi alındıktan sonra başlar.
 
 **2.7. Ön çalışma (fizibilite).** Proje öncesinde, bitirme projesi kapsamında aşağıdakiler tamamlanmıştır (29.10.2026 itibarıyla):
@@ -226,7 +233,7 @@ Sistemin ilk sürümünün Ocak 2027'de kullanıma açılması planlanmaktadır;
 | İP3 | Yetkinlik çıkarım yöntemlerinin (sözlük, yerel model, hibrit) ve en az iki modelin karşılaştırmalı deneyi | Burak (destek: Ataberk) | Ay 3–6 | Hibrit yöntemde micro-F1 ≥ 0,80; H1 testinin sonuçlanması; şema uyumlu çıktı ≥ %98; maskeleme %100 | 25 |
 | İP4 | Öneri kalitesinin kör uzman değerlendirmesi ve Türkçe kaynak havuzunun genişletilmesi | Burak, Ataberk (destek: Anıl) | Ay 5–8 | ≥ 900 doğrulanmış kaynak; uydurma bağlantı %0; alakalılık ≥ 4,0/5 | 15 |
 | İP5 | Canlı sistemde performans, güvenilirlik ve güvenlik ölçümleri | Ataberk (destek: Anıl) | Ay 6–9 | Analiz p95 < 120 sn; başarı oranı ≥ %95; erişilebilirlik ≥ %99; kritik güvenlik bulgusu 0 | 10 |
-| İP6 | Anketli kullanılabilirlik çalışması (etik kurul onaylı) ve bulgulara göre iyileştirmeler | Anıl (destek: Burak, Ataberk) | Ay 8–12 | 20–30 katılımcı; SUS ≥ 70; görev tamamlama ≥ %90; kritik bulguların giderilmesi | 20 |
+| İP6 | Anketli kullanılabilirlik çalışması (etik kurul onaylı) ve bulgulara göre iyileştirmeler | Anıl (destek: Burak, Ataberk) | Ay 8–12 | 20–30 katılımcı; ortalama SUS ≥ 70; 6 senaryoda görev tamamlama ≥ %90; kritik bulguların giderilmesi | 20 |
 | | | | | **Toplam** | **100** |
 
 Kurallara uygunluk: Toplam süre 12 ay; hiçbir iş paketi 12 aydan uzun değil. Literatür taraması, rapor yazımı, sonuç paylaşımı ve malzeme alımı ayrı adım olarak yazılmadı.
@@ -241,7 +248,7 @@ Kurallara uygunluk: Toplam süre 12 ay; hiçbir iş paketi 12 aydan uzun değil.
 | R4 | Farklı biçimdeki ve Türkçe özgeçmişlerde düşük çıkarım doğruluğu (F1 < 0,80) | Çok sütunlu PDF desteği, optik karakter tanıma yedeği, eş anlamlı sözlüğünün genişletilmesi. Sapmada hata analizi yapılır, kullanıcının yetkinlikleri elle düzeltebildiği ekran öne alınır. Hedeften sapma alt gruplara göre raporlanır. |
 | R5 | Sentetik test setinin gerçek özgeçmişleri yeterince temsil etmemesi | Set, belge düzeni, dil, deneyim düzeyi ve yazım farklılıklarına göre bir dağılım planıyla üretilir. Kullanılabilirlik anketinde katılımcıların kendi sonuçlarının doğruluğunu değerlendirmesi tamamlayıcı gösterge olarak kullanılır (özgeçmiş kaydedilmeden). Sapma sınırlılık olarak raporlanır. |
 | R6 | Kişisel veri sızıntısı | Özgeçmiş ve ham metin saklanmaz; modele gitmeden maskeleme; günlük kayıtlarında maskeleme; şifreli yedek; en az yetki ilkesi. İhlal şüphesinde olay prosedürü uygulanır: izole etme, etki analizi, mevzuattaki sürede bildirim. |
-| R7 | Etik kurul onayının gecikmesi veya kullanılabilirlik çalışmasına yeterli katılımcı bulunamaması | Etik kurul başvurusu proje başında (Ay 1) yapılır. Katılımcılar bölüm öğrencilerinden ve duyurularla toplanır. Sapmada çalışma İP6 süresi içinde uzatılır, gerekirse çevrim içi oturumlarla yürütülür. |
+| R7 | Etik kurul onayının gecikmesi veya kullanılabilirlik çalışmasına yeterli katılımcı bulunamaması | Etik kurul başvurusu proje başında (Ay 1) yapılır. Katılımcılar bölüm öğrencilerinden ve duyurularla toplanır. Kariyer merkeziyle proje başında danışman aracılığıyla temas kurulur (katılımcı duyurusu ve talep raporunun paylaşımı için). Sapmada çalışma İP6 süresi içinde uzatılır, gerekirse çevrim içi oturumlarla yürütülür. |
 | R8 | Sunucu veya veri toplama kesintisi (eğilim analizinde boşluk) | Günlük şifreli yedek, uptime izleme, art arda başarısız toplamada uyarı. Kesinti olursa eksik günler analizde işaretlenir; eğilim analizi aylık toplulaştırılmış veriyle yapıldığı için birkaç günlük boşluk sonucu bozmaz. |
 | R9 | Sınav dönemlerinde ekip kapasitesinin düşmesi | Sınav haftaları takvime işlenmiştir. Her modül belgelenmiştir ve sürekli entegrasyonla test edilmektedir; ekip üyeleri birbirinin işini yürütebilir. |
 
@@ -249,7 +256,7 @@ Kurallara uygunluk: Toplam süre 12 ay; hiçbir iş paketi 12 aydan uzun değil.
 
 | Olanak | Açıklama | Projedeki kullanımı |
 |---|---|---|
-| Ekip bilgisayarları | Bir adet 6 çekirdekli / 32 GB RAM / 4 GB ekran kartlı dizüstü bilgisayar ile diğer iki ekip üyesinin kişisel bilgisayarları `[Burak ve Anıl'ın bilgisayar özellikleri eklenecek]` | Geliştirme, yerel model denemeleri, deneyler, testler |
+| Ekip bilgisayarları | 6 çekirdekli / 32 GB RAM / 4 GB ekran kartlı bir dizüstü bilgisayar; 6 çekirdekli / 16 GB RAM / 8 GB ekran kartlı bir masaüstü bilgisayar; üçüncü ekip üyesinin bilgisayarı `[Burak'ın bilgisayar özellikleri eklenecek]` | Geliştirme, yerel model denemeleri, deneyler, testler |
 | Kiralık sanal sunucu | 8 vCPU / 16 GB RAM Linux sunucu (bütçeden, hizmet alımı) | Canlı sistem, dil modeli sunucusu, veritabanı, gece veri toplama |
 | Saatlik grafik işlemcili sunucu | Gerektiğinde kiralanır (bütçeden) | Model karşılaştırma deneyleri ve demo günleri |
 | Açık kaynak yazılımlar | Açık kaynak dil modelleri, ilişkisel veritabanı ve vektör arama eklentisi, web çatıları, optik karakter tanıma | Lisans maliyeti yok |
@@ -265,7 +272,7 @@ Kurallara uygunluk: Toplam süre 12 ay; hiçbir iş paketi 12 aydan uzun değil.
 | Bilimsel/akademik | Yöntem karşılaştırması, öneri kalitesi ve kullanılabilirlik sonuçlarını içeren bildiri | ≥ 1 ulusal hakemli kongrede bildiri |
 | Bilimsel/akademik | 12 aylık yetkinlik talebi eğilim analizi | 10 pozisyon için eğilim raporu; ≥ 1 bildiri veya makale taslağı |
 | Veri/yöntem | İki dilli yetkinlik taksonomisi, etiketleme kılavuzu ve sentetik değerlendirme seti | Açık lisansla (CC BY 4.0) yayımlanması; ≥ 300 yetkinlik, ≥ 50 etiketli sentetik özgeçmiş |
-| Toplumsal | Öğrencilerin ücretsiz kullanabileceği web, masaüstü ve mobil uygulama | Proje süresince ≥ 100 kayıtlı öğrenci kullanıcı |
+| Toplumsal | Öğrencilerin ücretsiz kullanabileceği web, masaüstü ve mobil uygulama | Proje süresince kayıt olup en az bir analizini tamamlamış ≥ 100 öğrenci |
 | Eğitim/kurumsal | Üniversite kariyer merkezi ve bölümler için pozisyon bazlı yetkinlik talebi raporu | Proje sonunda 1 rapor; müfredat-sektör uyumu tartışmalarına girdi |
 | Teknolojik | Kişisel veriyi dışarı göndermeyen yerel model mimarisinin uygulanabilirliği | Grafik işlemcisiz sunucuda p95 < 120 sn; dış yapay zekâ servisi maliyeti 0 TL |
 | Ekonomik | Ücretli kariyer danışmanlığına erişemeyen öğrenciler için ücretsiz alternatif | Kullanıcı başına aylık sunucu maliyeti < 10 TL (100 kullanıcıda) |
@@ -279,7 +286,7 @@ Kurallara uygunluk: Toplam süre 12 ay; hiçbir iş paketi 12 aydan uzun değil.
 
 ## 6. EKLER
 
-1. Bilgilendirilmiş onam formu (kullanılabilirlik çalışması) `[Burak hazırlıyor — B1 #5]`
+1. Bilgilendirilmiş onam formu (kullanılabilirlik çalışması); "Özgeçmişiniz kaydedilmez, yalnızca anonim anket yanıtlarınız alınır" ifadesini içerir `[Burak ve Anıl hazırlıyor — B1 #5]`
 2. Sistem Kullanılabilirlik Ölçeği (10 madde, Türkçe) ve ek sorular `[Burak/Anıl — B1 #5]`
 3. Sistem mimarisi diyagramı (marka/ürün adı içermeyen sürüm) `[isteğe bağlı]`
 
