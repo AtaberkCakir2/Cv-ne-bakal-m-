@@ -15,7 +15,7 @@ from sqlalchemy import delete, insert, select, update
 from sqlalchemy.orm import Session
 
 from collector.clean import Lang
-from collector.taxonomy import RoleRow, SkillRow
+from collector.taxonomy_rows import RoleRow, SkillRow
 from etl.dedup import DedupItem, near_duplicates
 from etl.roles import RoleMatcher
 from etl.skills import SkillTagger

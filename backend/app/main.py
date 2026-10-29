@@ -7,7 +7,7 @@ OpenAPI dokümanı: http://localhost:8000/docs
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api.routers import analyses, health
+from app.api.routers import analyses, auth, health, users
 from app.core.config import Settings, get_settings
 from app.core.errors import register_exception_handlers
 from app.core.logging import configure_logging
@@ -16,6 +16,7 @@ from app.core.uploads import UploadSizeLimitMiddleware, keep_uploads_in_memory
 from app.repositories.analyses import InMemoryAnalysisRepository
 from app.services.analyses import AnalysisService
 from app.services.analysis_queue import ExampleResultQueue
+from app.services.email import OutboxEmailSender
 
 
 def create_app(settings: Settings | None = None) -> FastAPI:
@@ -47,8 +48,12 @@ def create_app(settings: Settings | None = None) -> FastAPI:
 
     # GEÇİCİ: bellek içi depo ve örnek sonuç kuyruğu (T-012 ve T-039 gelince değişecek).
     app.state.analysis_service = AnalysisService(InMemoryAnalysisRepository(), ExampleResultQueue())
+    # GEÇİCİ: gerçek e-posta servisi seçilene kadar iletiler bellekte; bağlantı sadece local'de loglanır.
+    app.state.email_sender = OutboxEmailSender(log_links=settings.is_explicit_dev and settings.environment == "local")
 
     app.include_router(health.router, prefix=settings.api_prefix)
+    app.include_router(auth.router, prefix=settings.api_prefix)
+    app.include_router(users.router, prefix=settings.api_prefix)
     app.include_router(analyses.router, prefix=settings.api_prefix)
     return app
 

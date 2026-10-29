@@ -14,7 +14,7 @@ import re
 from collections.abc import Iterable
 
 from collector.clean import Lang
-from collector.taxonomy import RoleRow, SkillRow
+from collector.taxonomy_rows import RoleRow, SkillRow
 from etl.text import fold_phrase
 
 _SEGMENT_SPLIT = re.compile(r"\||\s[—–-]\s|\n")

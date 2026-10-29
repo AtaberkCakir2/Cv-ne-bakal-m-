@@ -21,6 +21,8 @@ uvicorn app.main:app --reload
 
 Ayarlar repo kökündeki `.env` dosyasından okunur (değişkenler kök `README.md`'de). `.env` yoksa yerel geliştirme varsayılanları kullanılır.
 
+> **Windows:** `.env`'deki servis adreslerinde `localhost` değil **`127.0.0.1`** yazın (`DATABASE_URL`, `REDIS_URL`, `OLLAMA_URL`). Windows'ta `localhost` önce IPv6'ya (`::1`) çözülür, docker-compose portları ise sadece `127.0.0.1`'e açıktır; her bağlantı ~2 sn bekler ve `/health/ready` Redis için zaman aşımı verir. (24.10.2026'da gerçek servislerle doğrulandı.)
+
 > Windows'ta "Filename too long" veya benzeri yol hatası alırsanız sanal ortamı kısa bir yolda oluşturun (ör. `python -m venv C:\venv\careerai`).
 
 ## Test ve kod kalitesi
@@ -31,7 +33,7 @@ ruff check . && ruff format --check .
 mypy app tests
 ```
 
-Testler hiçbir servis (Postgres, Redis, Ollama) çalışmadan geçer.
+Testler hiçbir servis (Postgres, Redis, Ollama) çalışmadan geçer. Veritabanı isteyen testler (`tests/db`, `tests/auth`) sadece `TEST_DATABASE_URL` verilince çalışır; boş test veritabanı için `app/db/README.md` → "Testler". CI bunları her PR'da çalıştırır.
 
 ## Yapı
 
@@ -62,7 +64,7 @@ Kurallar:
 |---|---|---|
 | GET | `/api/v1/health` | ✅ |
 | GET | `/api/v1/health/ready` | ✅ |
-| POST | `/api/v1/analyses` | ✅ CV doğrulama (≤ 5 MB, ≤ 5 sayfa, PDF imzası, şifreli/bozuk PDF), SHA-256 · kimlik doğrulama yok (T-037) |
+| POST | `/api/v1/analyses` | ✅ CV doğrulama (≤ 5 MB, ≤ 5 sayfa, PDF imzası, şifreli/bozuk PDF), SHA-256 · kimlik doğrulama henüz yok (T-048 ile eklenecek) |
 | GET | `/api/v1/analyses/{id}` | ✅ sonuç · liste/silme/geri bildirim T-048 |
 
 **Geliştirme modu (geçici):** Analizler bellekte tutulur (sunucu kapanınca silinir) ve kuyruk hemen `contracts/examples/analysis_result.example.json` örnek sonucunu döner. Böylece web ve mobil ekranlar AI modülünü beklemeden geliştirilebilir. Gerçek veritabanı deposu T-012 (Ataberk), gerçek kuyruk T-039 ile gelecek.
@@ -78,6 +80,34 @@ curl http://localhost:8000/api/v1/analyses/<analysis_id>
 
 Starlette, 1 MB'ı aşan yüklemeleri varsayılan olarak geçici disk dosyasına yazar. `app/core/uploads.py` bu eşiği izin verilen en büyük istek boyutunun üstüne çeker ve 5 MB + 64 KB'tan büyük istekleri gövde okunmadan reddeder (`Content-Length` zorunlu). `tests/test_analyses_upload.py::test_upload_is_never_written_to_disk` bunu doğrular. Production'da Caddy'de de istek gövdesi sınırı (`request_body max_size 6MB`) olmalı (T-075, Ataberk).
 
+## Kimlik doğrulama (T-037)
+
+| Metot | Yol | Not |
+|---|---|---|
+| POST | `/api/v1/auth/register` | Üç KVKK onayı zorunlu; doğrulama e-postası gider |
+| POST | `/api/v1/auth/login` | `{access_token, refresh_token, token_type, expires_in}` |
+| POST | `/api/v1/auth/refresh` | Refresh token tek kullanımlık; kullanılmış token tekrar gelirse bütün oturumlar kapanır |
+| POST | `/api/v1/auth/logout` | Refresh token iptali |
+| POST | `/api/v1/auth/verify-email` · `/forgot-password` · `/reset-password` | Tek kullanımlık bağlantılar; şifre sıfırlanınca bütün oturumlar kapanır |
+| GET | `/api/v1/users/me` | `Authorization: Bearer <access_token>` |
+
+- Parolalar argon2id; access token 15 dk (JWT, HS256), refresh token 7 gün (veritabanında sadece SHA-256 hash'i).
+- Korumalı uç yazarken: `user: CurrentUser` (oturum açmış kullanıcı) veya `user: AdminUser` (yönetici) — `app/api/deps.py`. Rol her istekte veritabanından okunur.
+- **Lokal geliştirmede `.env`'e `ENVIRONMENT=local` yazın.** Ortam açıkça `local`/`test` yazılmazsa ve `JWT_SECRET` verilmezse giriş/kayıt çalışmaz (repodaki geliştirme anahtarıyla token üretilmez); `/health` açık kalır. `ENVIRONMENT=production` iken `JWT_SECRET` verilmezse uygulama hiç açılmaz.
+- Production'da `.env`: `JWT_SECRET` ve `IP_HASH_SECRET` (ikisi de en az 32 karakter, farklı, rastgele).
+- Bilinen sınırlar: aynı refresh token'la eşzamanlı iki yenileme oturumları kapatır (istemci yenilemeyi tek seferde yapmalı); ayrıntı `app/services/auth.py` başında.
+- **E-posta:** Gerçek e-posta servisi henüz yok. İletiler bellekte tutulur (`OutboxEmailSender`); `ENVIRONMENT=local` iken doğrulama ve sıfırlama bağlantıları API loguna yazılır.
+
+### Kalıcı test kullanıcısı
+
+Uçtan uca testlerde her seferinde kayıt olmamak için, `.env`'e `E2E_TEST_EMAIL` (`@example.com` ile bitmeli) ve `E2E_TEST_PASSWORD` ekleyip:
+
+```bash
+python scripts/seed_test_user.py
+```
+
+Kullanıcı doğrulanmış ve KVKK onayları verilmiş olarak oluşturulur; tekrar çalıştırmak şifreyi günceller. Sadece local/test ortamında çalışır. Yüklenecek CV her zaman `contracts/examples/` altındaki sahte CV'dir.
+
 ## Sıradaki işler
 
-T-037 kimlik doğrulama · T-039 analiz kuyruğu (Celery + Redis) · T-048 sonuç ve katalog endpoint'leri.
+T-039 analiz kuyruğu · T-048 sonuç ve katalog endpoint'leri (analiz uçlarına kimlik doğrulama bununla gelir) · T-050 rate limit (giriş/kayıt uçları için).

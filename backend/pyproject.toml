@@ -17,6 +17,10 @@ dependencies = [
     "sqlalchemy>=2.0.36,<2.1",
     "alembic>=1.14",
     "pgvector>=0.3.6",
+    # Kimlik doğrulama (T-037)
+    "argon2-cffi>=23.1",
+    "pyjwt>=2.9",
+    "email-validator>=2.2",
 ]
 
 [project.optional-dependencies]
@@ -47,7 +51,7 @@ select = ["E", "F", "I", "B", "UP", "S"]
 ignore = ["S101"]
 
 [tool.ruff.lint.per-file-ignores]
-# Testlerde sahte şifreler (ör. şifreli PDF örneği) bilinçli
+# Testlerde sahte şifreler (ör. şifreli PDF örneği, test parolaları) bilinçli
 "tests/**" = ["S105", "S106"]
 
 [tool.mypy]

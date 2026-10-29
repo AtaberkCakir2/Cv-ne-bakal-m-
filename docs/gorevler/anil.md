@@ -67,12 +67,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-021 · Wireframe ve kullanıcı akışları (Figma)
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 19.10.2026 – 25.10.2026 · **Öncelik:** P0 · **Efor:** 10 saat · **Alan:** UI / UX
 - **Bağımlılık:** T-003
 - **Destek:** —
 - **Çıktı:** Figma linki
 - **Kabul kriteri:** Ekranlar: giriş/kayıt, KVKK onayı, hedef pozisyon seçimi, CV yükleme, analiz bekleme, sonuç panosu, kaynak detayı (pop-up), geçmiş analizler, profil/ayarlar, hesap silme.
+- **Not:** Figma yerine tıklanabilir HTML wireframe: `web/prototip/index.html` (10 ekran, API notları ve hata durumlarıyla). Figma'ya aktarmak isteğe bağlı.
 
 ### T-025 · Bilişim Kongresi posteri
 
@@ -86,12 +87,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-022 · Tasarım sistemi
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 26.10.2026 – 01.11.2026 · **Öncelik:** P1 · **Efor:** 6 saat · **Alan:** UI / UX
 - **Bağımlılık:** T-021
 - **Destek:** —
 - **Çıktı:** Figma bileşen kütüphanesi
 - **Kabul kriteri:** Renk paleti, tipografi, buton/kart/grafik bileşenleri, açık/koyu tema, erişilebilirlik (kontrast AA).
+- **Not:** Figma yerine doğrudan kodda yapıldı (tek kaynak kod; Figma kütüphanesi istenirse buradan çıkarılabilir): `web/src/ui/` — renk/tipografi/boşluk değerleri (`tokens.css`), açık/koyu tema (sistem tercihi + elle seçim), buton, kart, form alanı, onay kutusu, uyarı, etiket, ilerleme çubuğu, skor halkası ve talep çubuk grafiği. AA kontrastı `npm run check:contrast` ile iki temada ölçülüyor. Canlı örnekler: `/tasarim` sayfası.
 
 ### T-023 · FastAPI proje iskeleti
 
@@ -101,7 +103,7 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 - **Destek:** Ataberk
 - **Çıktı:** backend/ iskeleti
 - **Kabul kriteri:** Katmanlı yapı (routers / services / repositories / schemas), pydantic-settings, yapılandırılmış JSON log, /health ve /health/ready, otomatik OpenAPI, global hata formatı.
-- **Not:** 24.10.2026: 19 test, ruff, mypy (strict) temiz. /health/ready gerçek Postgres/Redis/Ollama ile henüz denenmedi (Docker bu bilgisayarda çalışmıyor; T-007 ile birlikte doğrulanacak).
+- **Not:** 24.10.2026: Ataberk'in compose ortamıyla (PR #10) gerçek Postgres/Redis/Ollama üzerinde doğrulandı: konteynerde ve Windows'ta /health/ready 200; Redis durdurulunca 503, geri gelince 200. Windows'ta servis adresleri `localhost` değil `127.0.0.1` olmalı (IPv6 sorunu, PR #12).
 
 ---
 
@@ -109,12 +111,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-037 · Kimlik doğrulama ve yetkilendirme
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 02.11.2026 – 15.11.2026 · **Öncelik:** P0 · **Efor:** 16 saat · **Alan:** Backend API
 - **Bağımlılık:** T-023, T-012 (Ataberk)
 - **Destek:** —
 - **Çıktı:** /auth endpoint'leri + testler
 - **Kabul kriteri:** Kayıt/giriş, argon2 parola hash, JWT access (15 dk) + refresh (7 gün, rotasyonlu, DB'de hash), e-posta doğrulama, şifre sıfırlama, user/admin rolleri.
+- **Not:** 28.10.2026: 17 kimlik doğrulama testi (gerçek Postgres) + 5 güvenlik testi, toplam 50 geçti. code-reviewer incelemesindeki 7 bulgunun 5'i düzeltildi, 2'si (eşzamanlı yenileme, şifremi unuttum yanıt süresi) belgelendi. Ekip: `.env`'e `ENVIRONMENT=local` gerekli.
 
 ### T-038 · CV yükleme endpoint'i
 
@@ -155,12 +158,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-040 · Web arayüzü altyapısı (Electron ile ortak)
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 09.11.2026 – 15.11.2026 · **Öncelik:** P0 · **Efor:** 8 saat · **Alan:** Web / Masaüstü
 - **Bağımlılık:** T-023, T-022
 - **Destek:** —
 - **Çıktı:** web/ iskeleti
 - **Kabul kriteri:** React + Vite + TypeScript, TanStack Query, React Router; OpenAPI'den otomatik TS istemci (openapi-typescript); ortam değişkenleri.
+- **Not:** Vite 6 + React 18 + TS (strict), React Router 6, TanStack Query 5, openapi-fetch + openapi-typescript (`npm run gen:api`), `VITE_API_URL`. Sayfalar yer tutucu; `/durum` backend sağlığını tipli istemciyle gösterir. CORS için #12 gerekli (127.0.0.1:5173).
 
 ---
 
@@ -177,12 +181,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-051 · Giriş, kayıt, şifre sıfırlama ve KVKK onay ekranları
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 16.11.2026 – 22.11.2026 · **Öncelik:** P0 · **Efor:** 10 saat · **Alan:** Web / Masaüstü
 - **Bağımlılık:** T-040, T-037
 - **Destek:** —
 - **Çıktı:** Auth ekranları
 - **Kabul kriteri:** Form doğrulama, hata mesajları, token yenileme (otomatik), KVKK/açık rıza onay kutuları zorunlu.
+- **Not:** Ekranlar: giriş, kayıt (3 zorunlu onay), şifremi unuttum, şifre sıfırlama, e-posta doğrulama; korumalı sayfalar girişe yönlendirir (`?sonra=`). Token otomatik yenilenir (`web/src/auth/session.ts`: süresi bitmeden ve 401 gelince, tek seferde). Gerçek backend (#24) ile uçtan uca denendi. Onay metni sürümü şimdilik `2026-10-taslak`; metinler T-065 ile kesinleşince değişecek.
 
 ### T-052 · CV yükleme ve analiz bekleme ekranı
 
