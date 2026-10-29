@@ -86,6 +86,19 @@ python scripts/seed_test_user.py
 
 Kullanıcı doğrulanmış ve KVKK onayları verilmiş olarak oluşturulur; tekrar çalıştırmak şifreyi günceller. Sadece local/test ortamında çalışır. Yüklenecek CV her zaman `contracts/examples/` altındaki sahte CV'dir.
 
+## İstek sınırları (T-050)
+
+| Sınır | Varsayılan | Anahtar | Ayar |
+|---|---|---|---|
+| Genel (sadece `/health` hariç; `/health/ready` dahil) | 100 / dk | IP | `RATE_LIMIT_GENERAL_PER_MINUTE` |
+| Giriş, kayıt, e-posta doğrulama, şifremi unuttum, şifre sıfırlama (ortak sayaç) | 10 / dk | IP | `RATE_LIMIT_AUTH_PER_MINUTE` |
+| Analiz oluşturma | 5 / saat | kullanıcı | `RATE_LIMIT_ANALYSES_PER_HOUR` |
+
+- Aşılınca `429` + `Retry-After` (saniye), gövde RFC 7807. Sayaçlar Redis'te (`REDIS_URL`); IP açık yazılmaz, tuzlu özeti anahtar olur.
+- Redis'e ulaşılamazsa sınır uygulanmaz, `rate_limit_store_unavailable` uyarısı loglanır ve 30 sn Redis denenmez. Tamamen kapatmak için `RATE_LIMIT_ENABLED=false`.
+- **Production (T-075):** Caddy arkasında uvicorn'a `FORWARDED_ALLOW_IPS=<Caddy'nin IP'si veya alt ağı>` verilmeli; verilmezse bütün kullanıcılar Caddy'nin IP'siyle tek sayacı paylaşır. Redis ≥ 7 gerekli.
+- Analiz sınırı (`AnalysesRateLimit`, `app/api/rate_limits.py`) analiz oluşturma ucu kimlik doğrulamaya bağlanınca o uca eklenir.
+
 ## Sıradaki işler
 
-T-039 analiz kuyruğu · T-048 sonuç ve katalog endpoint'leri · T-049 profil ve KVKK endpoint'leri · T-050 rate limit (giriş/kayıt uçları için).
+T-039 analiz kuyruğu · T-048 sonuç ve katalog endpoint'leri (analiz uçlarına kimlik doğrulama ve analiz sınırı bununla gelir).

@@ -12,6 +12,7 @@ from app.core.config import Settings, get_settings
 from app.core.errors import register_exception_handlers
 from app.core.logging import configure_logging
 from app.core.middleware import RequestContextMiddleware
+from app.core.rate_limit import GeneralRateLimitMiddleware, Limit, MemoryCounterStore, RateLimiter, redis_lifespan
 from app.services.email import OutboxEmailSender
 
 
@@ -19,7 +20,11 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     settings = settings or get_settings()
     configure_logging(settings.log_level)
 
+    # Redis istemcisi lifespan'de açılır (event loop'a bağlı); o zamana kadar sayaçlar bellekte.
+    limiter = RateLimiter(MemoryCounterStore(), settings) if settings.rate_limit_enabled else None
+
     app = FastAPI(
+        lifespan=redis_lifespan(limiter, settings.redis_url) if limiter else None,
         title=settings.app_name,
         version="0.1.0",
         description="CareerAI REST API. Sözleşme: contracts/api.md · Hatalar RFC 7807 (application/problem+json).",
@@ -28,6 +33,15 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         redoc_url=None,
     )
     register_exception_handlers(app)
+    if limiter is not None:
+        # CORS'tan önce eklenir, yani onun içinde çalışır: 429 yanıtı da CORS başlıklarını alır.
+        app.state.rate_limiter = limiter
+        app.add_middleware(
+            GeneralRateLimitMiddleware,
+            limiter=limiter,
+            limit=Limit("general", settings.rate_limit_general_per_minute, 60),
+            exempt_paths=frozenset({f"{settings.api_prefix}/health"}),
+        )
     app.add_middleware(
         CORSMiddleware,
         allow_origins=settings.cors_origins,

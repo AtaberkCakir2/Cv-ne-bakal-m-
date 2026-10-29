@@ -15,6 +15,7 @@ TEST_SETTINGS = Settings(
     redis_url="redis://127.0.0.1:1/0",
     ollama_url="http://127.0.0.1:1",
     readiness_timeout_s=0.5,
+    rate_limit_enabled=False,  # sınır testleri tests/test_rate_limit.py'de
 )
 
 
