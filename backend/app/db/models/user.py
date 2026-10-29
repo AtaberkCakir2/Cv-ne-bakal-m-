@@ -4,7 +4,7 @@ import uuid
 from datetime import datetime
 from typing import TYPE_CHECKING
 
-from sqlalchemy import ForeignKey, Index, String, Text, UniqueConstraint, text
+from sqlalchemy import ForeignKey, Index, String, Text, text
 from sqlalchemy.dialects.postgresql import CITEXT
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -62,13 +62,27 @@ class UserToken(TimestampMixin, Base):
 
 class Consent(TimestampMixin, Base):
     __tablename__ = "consents"
-    __table_args__ = (UniqueConstraint("user_id", "consent_type", "version"),)
+    # Aynı metin sürümünün yürürlükteki tek onayı olur. Geri alınan onay satırı silinmez (ispat için kalır);
+    # kullanıcı aynı sürümü yeniden onaylarsa yeni satır eklenir.
+    __table_args__ = (
+        Index(
+            "uq_consents_active_version",
+            "user_id",
+            "consent_type",
+            "version",
+            unique=True,
+            postgresql_where=text("withdrawn_at IS NULL"),
+        ),
+    )
 
     id: Mapped[uuid.UUID] = mapped_column(primary_key=True, server_default=UUID_DEFAULT)
-    user_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"))
+    # Kısmi tekillik indeksi geri alınmış satırları kapsamaz; kullanıcının bütün onayları (export, CASCADE) için ayrı.
+    user_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), index=True)
     consent_type: Mapped[ConsentType] = mapped_column(pg_enum(ConsentType, "consent_type"))
     version: Mapped[str] = mapped_column(String(20))  # metin sürümü, ör. 2026-12
     accepted_at: Mapped[datetime]
     ip_hash: Mapped[str | None] = mapped_column(Text)  # tuzlu hash; açık IP saklanmaz
+    # KVKK md. 11: rıza her zaman geri alınabilir. Dolu ise bu onay artık geçerli değil.
+    withdrawn_at: Mapped[datetime | None]
 
     user: Mapped[User] = relationship(back_populates="consents")

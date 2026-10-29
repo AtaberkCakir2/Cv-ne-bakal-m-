@@ -81,8 +81,9 @@ audit_logs (denetim kaydı; user_id kullanıcı silinince NULL)
 | version | varchar(20) | NOT NULL | Metnin sürümü (ör. 2026-12) |
 | accepted_at | timestamptz | NOT NULL | Onay zamanı |
 | ip_hash | text |  | IP'nin tuzlu hash'i (ispat için, açık IP değil) |
+| withdrawn_at | timestamptz | NULL | Rıza geri alındıysa geri alma zamanı (KVKK md. 11). Satır silinmez: verilip geri alındığının ispatı |
 
-UNIQUE(user_id, consent_type, version): aynı metin sürümü iki kez onaylanmaz; metin sürümü değişince yeni satır eklenir.
+UNIQUE(user_id, consent_type, version) WHERE withdrawn_at IS NULL (`uq_consents_active_version`, migration 0002): bir metin sürümünün yürürlükte tek onayı olur; metin sürümü değişince yeni satır eklenir. Geri alınan sürüm yeniden onaylanırsa geri alınmış satır kalır ve yeni satır eklenir. **Geçerli rıza** = o türün en son sürümüne ait, `withdrawn_at IS NULL` olan satır.
 
 ### `roles`
 
