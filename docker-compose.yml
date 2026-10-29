@@ -88,6 +88,23 @@ services:
       ollama:
         condition: service_healthy
 
+  # Veri işçisi: Celery beat + gece ilan toplama 03:00 (sahibi: Ataberk, T-034).
+  worker-data:
+    profiles: ["data"]
+    build:
+      context: .
+      dockerfile: scraper/Dockerfile
+    image: careerai/worker-data:dev
+    env_file: .env
+    environment: *app-env
+    mem_limit: 1536m  # docs/mimari.md: 1,5 GB (Playwright gelince)
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
 volumes:
   pgdata:
   ollama:

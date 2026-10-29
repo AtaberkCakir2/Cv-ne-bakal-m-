@@ -108,12 +108,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-013 · pgvector eklentisi ve vektör indeksleri
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 02.11.2026 – 08.11.2026 · **Öncelik:** P1 · **Efor:** 3 saat · **Alan:** Veri Tabanı
 - **Bağımlılık:** T-012
 - **Destek:** Burak
 - **Çıktı:** Migration + benchmark notu
 - **Kabul kriteri:** skills.embedding ve job_postings.embedding için vector(384) + HNSW indeks (cosine). Örnek sorgu < 50 ms.
+- **Not:** Migration `0003_vektor_indeksleri` (m=16, ef_construction=64, `vector_cosine_ops`), modellerde `hnsw_index()`; upgrade/downgrade, `alembic check` ve planlayıcının indeksi seçtiğini doğrulayan test geçti (29.10). Ölçüm `docs/veritabani.md` "Vektör indeksleri": sentetik vektörlerle 6.422 ilanda p95 12 ms, 50.000 ilanda p95 6 ms, recall@10 ≥ 0,99. Gerçek embedding yok (Burak'ın T-031/T-042'si); gelince ölçüm tekrarlanmalı. Burak için: sorgu `ORDER BY embedding <=> :v LIMIT k` biçiminde, `WHERE` süzmesinde `hnsw.iterative_scan`.
 
 ### T-016 · Playwright scraper PoC (1 kaynak)
 
@@ -164,7 +165,7 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-028 · TÜBİTAK 2209-A başvuru dosyası
 
-- **Durum:** Yapılacak
+- **Durum:** Devam Ediyor
 - **Tarih:** 27.10.2026 – 11.11.2026 · **Öncelik:** P0 · **Efor:** 16 saat · **Alan:** Kongre / TÜBİTAK
 - **Bağımlılık:** T-000 (Anıl)
 - **Destek:** Burak, Anıl
@@ -179,12 +180,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-034 · Zamanlanmış veri toplama (Celery beat)
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 16.11.2026 – 22.11.2026 · **Öncelik:** P1 · **Efor:** 10 saat · **Alan:** Veri Toplama
 - **Bağımlılık:** T-016, T-033
 - **Destek:** —
 - **Çıktı:** Zamanlanmış görevler
 - **Kabul kriteri:** Her gece 03:00; kaynak başına 3-5 sn rastgele gecikme, üstel geri çekilme ile tekrar deneme, dönüşümlü User-Agent. Her çalışma scrape_runs tablosuna yazılır.
+- **Not:** `collector/nightly.py` (zincir: HN/Himalayas/Remote OK/Remotive → normalize → role_skill_stats) + `collector/tasks.py` (Celery beat 03:00 Europe/Istanbul, `data` kuyruğu, Redis kilidi, 3 sa sınır) + `python -m collector nightly`; `worker-data` compose servisi (`--profile data`, `scraper/Dockerfile`), CI'da imaj derleniyor (29.10). İstekler arası 3-5 sn rastgele bekleme, 429/5xx/ağ hatasında 5→40 sn üstel geri çekilme; bir kaynak düşerse diğerleri devam eder, 403/kalıcı 429 alan kaynak pasife alınır (kaynak-uygunluk kural 3). **Dönüşümlü User-Agent yapılmadı:** kaynak-uygunluk kural 3-4 UA sahteciliğini yasaklıyor, kimlik belirten tek UA kullanılıyor (karar önerisi). Gerçek deneme (Celery üzerinden, 29.10): 12,5 dk, +210 ilan (Himalayas 206), 4 kaynak `success`, istatistik 1.574 satır. T-016 (Playwright) bitmediği için şimdilik sadece API kaynakları; HTML kaynak gelince robots.txt kontrolü (kural 2) o adaptörde. Bilinen: HN'de alınmayan yorumlar (iş arayan, TR/EN dışı) her gece yeniden okunuyor (~150 istek, ~10 dk).
 
 ### T-045 · Pozisyon-yetkinlik istatistikleri
 

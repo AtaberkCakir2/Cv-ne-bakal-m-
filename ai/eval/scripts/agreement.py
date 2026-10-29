@@ -5,8 +5,8 @@ Kullanım:
 
 --write-gold: gold/ dosyası olmayan her etiketli CV için gold yazar. 2 etiketi olan CV'de
 anlaşılan yetkinlikler 'skills'e, anlaşmazlıklar '_karar_bekleyen'e girer; hakem sadece
-'_karar_bekleyen'i çözer. Tek etiketli CV'de etiket olduğu gibi kopyalanır. Var olan gold
-dosyalarına dokunulmaz.
+'_karar_bekleyen'i çözer. Tek etiketli CV'de etiket olduğu gibi kopyalanır; ama sadece manifest'te
+double=false ise (double=true olan CV ikinci etiketi bekler). Var olan gold dosyalarına dokunulmaz.
 """
 
 from __future__ import annotations
@@ -27,6 +27,7 @@ from _common import (
     Report,
     assignment,
     load_labels,
+    load_manifest,
     load_skill_names,
     use_utf8_stdout,
 )
@@ -142,6 +143,7 @@ def main(argv: list[str] | None = None) -> int:
 
     report = Report()
     labels = load_labels(args.dataset, load_skill_names(args.skills), report)
+    manifest = load_manifest(args.dataset, report)
     for e in report.errors:
         print(f"HATA: {e}")
     if report.errors:
@@ -153,7 +155,13 @@ def main(argv: list[str] | None = None) -> int:
         pair = pick_pair(by_annotator, cv_id)
         if pair is None:
             if args.write_gold and len(by_annotator) == 1:
-                write_single_gold(args.dataset, cv_id, by_annotator)
+                double = manifest.get(cv_id, {}).get("double")
+                if double == "false":
+                    write_single_gold(args.dataset, cv_id, by_annotator)
+                elif double == "true":
+                    print(f"{cv_id}: çift etiketli CV, ikinci etiket bekleniyor; gold yazılmadı")
+                else:
+                    print(f"{cv_id}: manifest'te yok; gold yazılmadı")
             continue
         a, b = pair
         result = compare(cv_id, a, by_annotator[a], b, by_annotator[b])

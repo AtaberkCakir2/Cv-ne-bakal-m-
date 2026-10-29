@@ -33,7 +33,7 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 - **Çıktı:** ai/eval/dataset (sentetik)
 - **Kabul kriteri:** 50 sentetik CV (karar #20: gerçek kişilere ait CV toplanmaz): 25 TR + 25 EN; 10 pozisyon × 5; tek ve çok sütunlu; en az 5 taranmış; yeni mezun / stajyer / deneyimli dengeli. Tamamı en az 1 kişi, 20'si 2 kişi tarafından bağımsız elle etiketlendi; anlaşmazlıklar 3. kişiyle çözüldü; çift etiketlenen alt kümede etiketleyiciler arası F1 ≥ 0,85. Çift etiketlenen 20 CV dengeli seçilir: en az 8 TR + 8 EN, en az 6 çok sütunlu, en az 2 taranmış, üç deneyim düzeyinden de. Etiketler sıfırdan verilir; şablonun yetkinlik listesi veya bir eşleyicinin çıktısı cevap anahtarı olarak kullanılmaz.
 - **Not:** Plan #30'da Ataberk'le kararlaştırıldı (29.10.2026). İlk 10 Türkçe CV T-018 benchmark'ı için öncelikli (hedef 03.11). Şablon betiği `ai/eval/`'de; girdi listesi (pozisyon × yetkinlik × eş anlamlı, `role_skill_stats` oranlarıyla) Ataberk'ten JSON olarak gelir. CV üretiminde ÜYZ kullanılırsa araç adı ve sürümü TÜBİTAK beyanına eklenir.
-- **Devam notu (29.10.2026):** Yapılan: plan güncellemesi (#34); `ai/eval/scripts/generate_cvs.py` (JSON → tek/çok sütunlu PDF, taranmış benzetimi, manifest); **ilk 10 TR CV** (`syn-004`…`syn-013`, 10 pozisyonun her birinden 1; 3 çok sütunlu, 2 taranmış) — metinleri Claude Opus 5.5 ile yazıldı (ÜYZ beyanına eklenecek), ekipçe gözden geçirilmeli. · Sıradaki adım: (1) 10 TR CV'yi etiketle → T-018 doğruluk ölçümü; (2) Ataberk'in `template_input.json`'u gelince kalan 37 CV (25 EN dahil); (3) çift etiketlenecek 20 CV'yi dengeli seç (`double: true`). · Açık sorular / engeller: #30 (karar #20) ve #34 birleşmeli; Ataberk'in girdi JSON'u. · Branch: `burak/sentetik-cv-uretimi` (#34'ün üstünde)
+- **Devam notu (30.10.2026):** Yapılan: plan ve `agreement.py --write-gold` düzeltmesi main'de (#34); Ataberk'in şablon girdisi main'de (#38, `scraper/exports/template_input.json`); `ai/eval/scripts/generate_cvs.py` (JSON → tek/çok sütunlu PDF, taranmış benzetimi, manifest) ve **ilk 10 TR CV** (`syn-004`…`syn-013`; metinleri Claude Opus 5.5 ile yazıldı, ÜYZ beyanında) bu branch'te (PR #35). · Sıradaki adım: (1) 10 TR CV'yi etiketle → T-018 referansını (`ai/eval/benchmark/reference_draft.json`) gerçek etiketle değiştir; (2) kalan 37 CV (25 EN dahil) `template_input.json`'dan; low_data pozisyonlarda (game-developer 4, data-analyst 5 ilan) yetkinlik listesi yakın pozisyonla tamamlanır; (3) çift etiketlenecek 20 CV'yi dengeli seç (`double: true`; bu 10 CV'nin hepsi şu an false, en az 8 TR gerekli); ilerleme: `.venv\Scripts\python ai/eval/scripts/check_labels.py`. · Açık sorular / engeller: Ataberk'in önerisi, kalan taranmış CV'lerde ±1–2° eğim ve hafif gürültü (T-029 için). · Branch: `burak/sentetik-cv-uretimi` (PR #35)
 
 ### T-024 · UML diyagramları
 
@@ -70,12 +70,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-030 · Kişisel veri anonimleştirme (PII maskeleme)
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 02.11.2026 – 08.11.2026 · **Öncelik:** P0 · **Efor:** 10 saat · **Alan:** Güvenlik & KVKK
 - **Bağımlılık:** T-020
 - **Destek:** —
 - **Çıktı:** ai/pii modülü + testler
 - **Kabul kriteri:** LLM'e gitmeden ÖNCE ad-soyad, telefon, e-posta, adres, TC kimlik no, doğum tarihi maskelenir (regex + NER). Test: telefon/e-posta/TCKN için %100 maskeleme.
+- **Not:** Ad tespiti kurallar + yerel BERTurk NER (karar #24). #37 incelemesi (Ataberk) düzeltildi: unvan satırındaki yetkinlikler ad sayılmıyor, adres ipucu tek başına adres değil, NER kütüphaneleri sabit sürümde. Ataberk'e devredilenler: worker-ai imajına `ai[ner]` (CPU torch) kurulup model derleme sırasında indirilmeli (`HF_HUB_OFFLINE=1`); CI'daki mypy komutuna `pii` eklenmeli; `scraper/etl/pipeline.py`'deki ad maskeleme `pii.mask_text` ile değiştirilebilir.
 
 ### T-031 · Yetkinlik çıkarımı v1 (sözlük + kural)
 

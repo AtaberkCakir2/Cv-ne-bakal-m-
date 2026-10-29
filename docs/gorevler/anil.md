@@ -199,12 +199,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-049 · Profil ve KVKK endpoint'leri
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 23.11.2026 – 29.11.2026 · **Öncelik:** P0 · **Efor:** 10 saat · **Alan:** Backend API
 - **Bağımlılık:** T-037
 - **Destek:** —
 - **Çıktı:** /users/me endpoint'leri
 - **Kabul kriteri:** Profil güncelleme, hedef pozisyon; rıza kaydı (sürümlü); verilerimi indir (JSON); hesabımı sil (anında anonimleştirme, 30 gün içinde kalıcı silme).
+- **Not:** 29.10.2026: `GET/PATCH /users/me` (hedef pozisyon dahil), `GET/POST /users/me/consents` (sürümlü, eski sürüm silinmez), `GET /users/me/export` (profil, onaylar, oturumlar, analizler, işlem kayıtları), `DELETE /users/me` (şifre tekrar istenir; e-posta/ad/şifre hemen anonimleşir, oturumlar kapanır) ve `scripts/purge_deleted_users.py` (30 günü geçen hesap ve analizleri kalıcı siler; Celery beat T-039'a bağlanana kadar cron). Açık rızanın geri alınması için `consents` tablosuna geri alma alanı gerekiyor (Ataberk).
 
 ### T-053 · Sonuç panosu
 
@@ -221,12 +222,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-050 · Rate limit ve hata yönetimi
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 30.11.2026 – 06.12.2026 · **Öncelik:** P1 · **Efor:** 6 saat · **Alan:** Backend API
 - **Bağımlılık:** T-037
 - **Destek:** —
 - **Çıktı:** Middleware
 - **Kabul kriteri:** Redis tabanlı sınır: analiz 5/saat/kullanıcı, giriş 10/dk/IP, genel 100/dk. RFC 7807 hata formatı; 429 için Retry-After başlığı.
+- **Not:** 29.10.2026: `app/core/rate_limit.py` (Redis sabit pencere, fail-open, IP özetli anahtar) ve `app/api/rate_limits.py`. Genel 100/dk/IP ve giriş-kayıt-sıfırlama 10/dk/IP uçlara bağlı; analiz 5/saat/kullanıcı (`AnalysesRateLimit`) hazır, analiz oluşturma ucu kimlik doğrulamaya bağlanınca (#9, T-048) eklenecek. Production'da `FORWARDED_ALLOW_IPS` (Caddy) şart (T-075, Ataberk).
 
 ### T-059 · Electron masaüstü uygulaması
 

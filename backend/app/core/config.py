@@ -43,6 +43,12 @@ class Settings(BaseSettings):
     # E-postadaki doğrulama / sıfırlama bağlantılarının açılacağı web arayüzü adresi
     frontend_url: str = "http://127.0.0.1:5173"
 
+    # İstek sınırları (T-050, app/core/rate_limit.py). Sayaçlar redis_url'deki Redis'te tutulur.
+    rate_limit_enabled: bool = True
+    rate_limit_general_per_minute: int = 100
+    rate_limit_auth_per_minute: int = 10
+    rate_limit_analyses_per_hour: int = 5
+
     @property
     def is_production(self) -> bool:
         return self.environment == "production"

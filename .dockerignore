@@ -1,0 +1,17 @@
+# Repo kökünü bağlam alan imajlar için (scraper/Dockerfile). Sadece gereken klasörler kopyalanır,
+# ama bağlam yine de daemon'a gönderildiği için büyük ve gizli dosyalar dışarıda kalır.
+.git
+.env
+.env.*
+**/node_modules
+**/__pycache__
+**/.mypy_cache
+**/.pytest_cache
+**/.ruff_cache
+**/*.egg-info
+**/.venv
+scraper/data
+docs
+web
+mobile
+ai
