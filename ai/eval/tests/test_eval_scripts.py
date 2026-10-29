@@ -76,10 +76,34 @@ def test_bad_skill_names_are_reported(skill: str, message: str) -> None:
     assert message in report.errors[0]
 
 
-def test_real_cv_requires_consent(dataset: Path) -> None:
+@pytest.mark.parametrize(
+    "row",
+    [
+        "cv-002,real,en,multi_column,true,2,backend-developer,experienced,false,IZN-1",  # karar #20: gerçek CV yok
+        "syn-002,synthetic,en,multi_column,true,2,backend-developer,senior,false,",  # bilinmeyen deneyim
+        "syn-002,synthetic,en,multi_column,true,2,backend-developer,intern,evet,",  # double true/false olmalı
+    ],
+    ids=["gercek", "deneyim", "double"],
+)
+def test_invalid_manifest_rows_are_errors(dataset: Path, row: str) -> None:
     with (dataset / "manifest.csv").open("a", encoding="utf-8") as f:
-        f.write("cv-002,real,en,multi_column,true,2,backend-developer,\n")
+        f.write(row + "\n")
     assert check_labels.main(["--dataset", str(dataset), "--skills", str(SKILLS)]) == 1
+
+
+def test_single_labeled_cv_is_copied_to_gold(dataset: Path) -> None:
+    with (dataset / "manifest.csv").open("a", encoding="utf-8") as f:
+        f.write("syn-002,synthetic,en,multi_column,false,1,frontend-developer,experienced,false,\n")
+    label_dir = dataset / "labels" / "syn-002"
+    label_dir.mkdir()
+    skills = [{"skill": "React", "level": "advanced", "years": 3}]
+    (label_dir / "ataberk.json").write_text(
+        json.dumps({"cv_id": "syn-002", "annotator": "ataberk", "skills": skills, "notes": ""}), encoding="utf-8"
+    )
+    assert agreement.main(["--dataset", str(dataset), "--skills", str(SKILLS), "--write-gold"]) == 0
+    gold = json.loads((dataset / "gold" / "syn-002.json").read_text(encoding="utf-8"))
+    assert (gold["adjudicator"], gold["skills"]) == ("ataberk", skills)
+    assert "_karar_bekleyen" not in gold
 
 
 def test_write_gold_creates_draft_and_keeps_existing(dataset: Path) -> None:
