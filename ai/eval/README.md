@@ -18,8 +18,9 @@ Plan: #30'da Ataberk'le kararlaştırıldı (29.10.2026). Görev durumu: `docs/g
 
 | Ne | Nerede | Repoda mı? |
 |---|---|---|
-| Sentetik CV metinleri (kaynak) | `dataset/synthetic/<cv_id>.md` | Evet |
-| Sentetik CV PDF'leri | `dataset/synthetic/<cv_id>.pdf` (şablon betiği üretir) | Evet |
+| CV tanım dosyaları (kaynak) | `dataset/cv_specs/<cv_id>.json` | Evet |
+| Sentetik CV PDF'leri | `dataset/synthetic/<cv_id>.pdf` (`generate_cvs.py` üretir; elle düzenlenmez) | Evet |
+| İlk 3 örnek CV (sadece metin, PDF'i yok) | `dataset/synthetic/syn-001..003.md` | Evet |
 | Şablon girdisi (pozisyon × yetkinlik × eş anlamlı) | `dataset/template_input.json` (Ataberk, `scraper/`'dan) | Evet |
 | CV listesi (kimlik içermez) | `dataset/manifest.csv` | Evet |
 | Etiketler | `dataset/labels/<cv_id>/<etiketleyici>.json` | Evet |
@@ -30,7 +31,7 @@ Plan: #30'da Ataberk'le kararlaştırıldı (29.10.2026). Görev durumu: `docs/g
 
 ## Süreç
 
-1. **CV üret.** Şablon betiği `template_input.json`'dan CV iskeletini kurar (ad, okul, pozisyon, yetkinlik listesi, düzen); proje ve deneyim metinlerini insan yazar. Yetkinlikler metinde açık liste olarak, proje açıklaması içinde ve kısaltma/yazım farklılıklarıyla ("JS", "k8s", "Postgres", yazım hatası, TR-EN karışık) geçer. Taranmış olacak CV'ler PDF'ten görüntüye çevrilip yeniden PDF yapılır (`scanned=true`).
+1. **CV üret.** Her CV için `dataset/cv_specs/<cv_id>.json` tanımı yazılır (iskelet `template_input.json`'daki pozisyon × yetkinlik listesinden; proje ve deneyim metinlerini insan yazar). Yetkinlikler metinde açık liste olarak, proje açıklaması içinde ve kısaltma/yazım farklılıklarıyla ("JS", "k8s", "Postgres", yazım hatası, TR-EN karışık) geçer. PDF ve manifest satırı `generate_cvs.py` ile üretilir (aşağıda); `scanned: true` olan CV görüntüye çevrilip yeniden PDF yapılır.
    - **Şablonun yetkinlik listesi cevap anahtarı değildir.** Etiketler metinde gerçekten geçene göre, sıfırdan ve elle verilir; bir eşleyicinin (ör. `scraper/etl/skills.py`) çıktısı ön etiket olarak kullanılmaz. Aksi halde TÜBİTAK İP3'teki yöntem karşılaştırması geçersizleşir.
 2. **Manifest'e satır ekle** (`dataset/manifest.csv`). Sütunlar aşağıda.
 3. **Etiketle.** Her CV'yi bir kişi [etiketleme-kilavuzu.md](etiketleme-kilavuzu.md)'ye göre etiketler. Çift etiket için seçilen 20 CV'yi ikinci kişi de, birinci kişinin etiketine bakmadan etiketler; her biri kendi dosyasını yazar.
@@ -47,6 +48,34 @@ Yükü dengelemek için CV numarasına göre dönüşümlü. Tek etiketli CV'yi 
 | 0 | burak | ataberk | anil |
 | 1 | burak | anil | ataberk |
 | 2 | ataberk | anil | burak |
+
+## CV tanım dosyası
+
+Her sentetik CV `dataset/cv_specs/<cv_id>.json` dosyasıdır; PDF ve manifest satırı bundan üretilir:
+
+```bash
+python ai/eval/scripts/generate_cvs.py              # hepsi
+python ai/eval/scripts/generate_cvs.py --only syn-014
+```
+
+```json
+{
+  "cv_id": "syn-014", "language": "tr", "layout": "multi_column", "scanned": false,
+  "target_role": "backend-developer", "experience": "intern", "double": false,
+  "header": {"name": "Ad Soyad", "title": "Unvan", "contact": ["ad@example.com", "0532 000 00 00", "Şehir"]},
+  "sidebar": [{"title": "Beceriler", "list": ["Python — ileri", "Docker"]}],
+  "main": [
+    {"title": "Hakkımda", "text": ["Paragraf..."]},
+    {"title": "Deneyim", "items": [{"heading": "Pozisyon — Şirket (örnek)", "meta": "2025 – halen", "bullets": ["..."]}]}
+  ]
+}
+```
+
+- `layout`: `single_column` veya `multi_column` (sol kenar çubuğu = `sidebar`; ilk sayfaya sığmalı, sığmazsa script hata verir).
+- `scanned: true` → sayfalar 150 DPI gri tonlu görüntüye çevrilir, metin katmanı kalmaz (OCR testi, T-029).
+- Bölüm türleri: `text` (paragraflar), `items` (başlık + `meta` + `text`/`bullets`), `list` (madde listesi).
+- **Kişisel veri:** ad uydurma; e-posta sadece `example.com/org/net`; telefon `05xx 000 xx xx` (000 bloklu); şirket adlarında "örnek/Ornek"; web adresleri `*.example.com`. T-030 (kişisel veri maskeleme) bu alanları maskelemeyi test eder.
+- **Çeşitlilik:** yetkinlikler hem listede hem cümle içinde; kısaltmalar (JS, TS, k8s, Postgres, sklearn), seviye ifadeleri ("ileri düzey", ★★★☆☆, B2, "3 yıl"), istek cümleleri ("öğrenmek istiyorum"), sadece ders adı geçen konular; bunlar etiketleme kılavuzunun kurallarını sınar.
 
 ## `manifest.csv` sütunları
 

@@ -2,10 +2,12 @@
 
 from __future__ import annotations
 
+import csv
 import json
 import shutil
 import sys
 from pathlib import Path
+from typing import Any
 
 import pytest
 
@@ -151,3 +153,75 @@ def test_cohen_kappa() -> None:
     assert agreement.cohen_kappa([]) is None
     assert agreement.cohen_kappa([("advanced", "advanced"), ("beginner", "beginner")]) == pytest.approx(1.0)
     assert agreement.cohen_kappa([("advanced", "beginner"), ("beginner", "advanced")]) == pytest.approx(-1.0)
+
+
+def _spec(cv_id: str, **overrides: Any) -> dict[str, Any]:
+    spec: dict[str, Any] = {
+        "cv_id": cv_id,
+        "language": "tr",
+        "layout": "single_column",
+        "scanned": False,
+        "target_role": "backend-developer",
+        "experience": "new_grad",
+        "double": False,
+        "header": {"name": "Deneme Kişi", "title": "Geliştirici", "contact": ["deneme@example.com", "0532 000 00 00"]},
+        "main": [
+            {"title": "Hakkımda", "text": ["Backend servisleri yazan, test yazmayı seven bir geliştiriciyim. " * 3]},
+            {"title": "Yetenekler", "list": ["Python (ileri düzey)", "PostgreSQL", "İngilizce: B2"]},
+        ],
+    }
+    spec.update(overrides)
+    return spec
+
+
+@pytest.mark.parametrize(
+    ("overrides", "multi", "scanned"),
+    [
+        ({}, 0, False),
+        (
+            {
+                "layout": "multi_column",
+                "sidebar": [{"title": "Araçlar", "list": [f"Araç {i}" for i in range(12)]}],
+                "main": [{"title": "Deneyim", "text": ["Uzun bir paragraf. " * 40]}],
+            },
+            1,
+            False,
+        ),
+        ({"scanned": True}, 0, True),
+    ],
+    ids=["tek-sutun", "cok-sutun", "taranmis"],
+)
+def test_generate_cvs_renders_readable_pdf(dataset: Path, overrides: dict[str, Any], multi: int, scanned: bool) -> None:
+    import generate_cvs
+
+    from parsing import extract_text
+
+    specs = dataset / "cv_specs"
+    specs.mkdir()
+    (specs / "syn-050.json").write_text(json.dumps(_spec("syn-050", **overrides)), encoding="utf-8")
+    assert generate_cvs.main(["--dataset", str(dataset)]) == 0
+
+    result = extract_text((dataset / "synthetic" / "syn-050.pdf").read_bytes())
+    assert result.needs_ocr is scanned
+    if not scanned:
+        assert "Python (ileri düzey)" in result.text or "Uzun bir paragraf" in result.text
+        assert "deneme@example.com" in result.text
+        assert result.multi_column_pages == multi
+    row = next(r for r in csv.DictReader((dataset / "manifest.csv").open(encoding="utf-8")) if r["cv_id"] == "syn-050")
+    assert (row["scanned"], row["layout"], row["source"]) == (
+        str(scanned).lower(),
+        _spec("syn-050", **overrides)["layout"],
+        "synthetic",
+    )
+    # Üretilen manifest doğrulamadan geçer; önceki satırlar (syn-001) korunur.
+    assert check_labels.main(["--dataset", str(dataset), "--skills", str(SKILLS)]) == 0
+
+
+def test_generate_cvs_rejects_invalid_spec(dataset: Path) -> None:
+    import generate_cvs
+
+    specs = dataset / "cv_specs"
+    specs.mkdir()
+    (specs / "syn-051.json").write_text(json.dumps(_spec("syn-099", layout="iki_sutun")), encoding="utf-8")
+    assert generate_cvs.main(["--dataset", str(dataset)]) == 1
+    assert not (dataset / "synthetic" / "syn-051.pdf").exists()
