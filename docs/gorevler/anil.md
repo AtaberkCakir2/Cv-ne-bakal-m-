@@ -126,6 +126,15 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 - **Çıktı:** POST /analyses
 - **Kabul kriteri:** Multipart, en fazla 5 MB ve 5 sayfa, MIME + magic byte kontrolü (sadece PDF). Dosya diske yazılmaz; bellekten kuyruğa aktarılır; SHA-256 hash kaydedilir.
 
+### T-028 (destek) · TÜBİTAK 2209-A başvurusu
+
+- **Durum:** Devam Ediyor
+- **Tarih:** 29.10.2026 – 11.11.2026 · **Öncelik:** P0 · **Alan:** Kongre / TÜBİTAK
+- **Bağımlılık:** T-028 (Ataberk, yürütücü)
+- **Kabul kriteri:** Proje ortağı olarak (karar #19) `docs/tubitak/2209a-basvuru-taslagi.md` B1'deki işlerim: ARBİS kaydı (03.11), bilgisayar özellikleri (03.11), kullanılabilirlik görev senaryoları ve yaygın etki hedeflerinin kontrolü (04.11), onam formu/SUS anketinde Burak'a destek (05.11), TYBS önizleme kontrolü (07.11).
+- **Proje süresince (B2):** İP6 kullanılabilirlik çalışması (sorumlu); İP5 performans/güvenlik ölçümleri (Ataberk'e destek); İP2 sentetik CV etiketleyici; İP4 destek.
+- **Not:** 29.10: Bilgisayar özellikleri, senaryo ve hedef önerileri #30'a inceleme yorumu olarak yazıldı, #30 onaylandı. Kalan: ARBİS, onam formu desteği, TYBS önizleme.
+
 ### T-026 · Poster baskı kontrolü ve teslim alma
 
 - **Durum:** Yapılacak
