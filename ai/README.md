@@ -25,7 +25,7 @@ Testler gerçek CV kullanmaz; PDF'ler test sırasında bellekte üretilir.
 |---|---|---|
 | `parsing/` | PDF → metin (T-020) | ✅ |
 | `ocr/` | Taranmış CV için OCR (T-029) | — |
-| `pii/` | Kişisel veri maskeleme (T-030) | Devam ediyor (kurallar hazır; NER modeli kararı açık) |
+| `pii/` | Kişisel veri maskeleme (T-030) | ✅ |
 | `extraction/` | Yetkinlik çıkarımı (T-031, T-032) | — |
 | `eval/` | Etiketli değerlendirme seti ve araçları (T-019) | Devam ediyor |
 
@@ -57,9 +57,11 @@ else:
 ```python
 from pii import mask, mask_text
 
-result = mask(cv_text, "tr")  # LLM'e sadece result.text gider
+from pii.ner import default_detector
+
+result = mask(cv_text, "tr", detector=default_detector())  # LLM'e sadece result.text gider
 result.counts  # {Kind.EMAIL: 1, Kind.PHONE: 1, Kind.NAME: 3, ...} — loglanabilir, kişisel veri içermez
-mask_text(text, "en")  # sadece metin; scraper/etl/pipeline.py NameMasker imzasıyla aynı
+mask_text(text, "en")  # sadece metin, sadece kurallar; scraper/etl/pipeline.py NameMasker imzasıyla aynı
 ```
 
 | Tür | Etiket | Nasıl |
@@ -71,7 +73,10 @@ mask_text(text, "en")  # sadece metin; scraper/etl/pipeline.py NameMasker imzas�
 | Bağlantı | `[BAĞLANTI]` | http/www ve küçük harfli alan adları; "Node.js", "ASP.NET", "socket.io" dokunulmaz |
 | Doğum tarihi | `[DOĞUM TARİHİ]` | "Doğum Tarihi:", "D.T.", "Date of birth" sonrası; ayrıca yılı 1950–2012 olan her tam tarih |
 | Adres | `[ADRES]` | "Adres:" etiketi; Mah./Sok./Cad./Bulvarı/Street… içeren alan; posta kodu + il |
-| Ad soyad | `[AD SOYAD]` | etiketli alan, belgenin ilk satırları, unvanlı adlar (Dr., Prof. Dr.…), bilinen ilk adla başlayan grup; bulunan adın kelimeleri metnin her yerinde (ör. "Mert'in") |
+| Ad soyad | `[AD SOYAD]` | kurallar (etiketli alan, belgenin ilk satırları, unvanlı adlar, bilinen ilk adla başlayan grup) + yerel BERTurk NER; bulunan adın kelimeleri metnin her yerinde (ör. "Mert'in") |
 
 - **Kabul kriteri:** telefon, e-posta, TCKN %100. Testler 12 telefon biçimi × 6 bağlam, 4 e-posta × 6 bağlam ve 500 rastgele TCKN × 4 bağlamla bunu doğrular; ayrıca yetkinlik metninin bozulmadığını (`KEEP` örnekleri) ve sentetik CV'lerde ad/iletişim kalmadığını (PDF → metin → maske) test eder.
-- **Ad tespiti şimdilik kurallarla.** Kabul kriterindeki NER için `mask(text, lang, detector=...)` bağlantı noktası hazır; hangi yerel modelin kullanılacağı (ör. Türkçe BERT NER) açık bir karar: bellek bütçesi (worker-ai 2 GB) ve CPU süresi ölçülerek verilecek.
+- **Ad tespiti: kurallar + NER (karar #24).** `pii/ner.py` yerel `akdeniz27/bert-base-turkish-cased-ner` modelini (MIT, sürüm sabit) kullanır. Modelin parçaladığı kelimeler ("Post" + "##man") tam kelimeye genişletilir; yetkinlik taksonomisindeki kelimeler (`scraper/taxonomy/skills.csv`, başka yol için `CAREERAI_TAXONOMY`) ad sayılmaz. Uzun metin satır sınırlarından 1000 karakterlik parçalara bölünür.
+  - Ölçüm (58 öğelik sentetik set, 63 ad kelimesi): kurallar %44 → kurallar + NER + filtre %100, gerçek yanlış pozitif 3. ~420 MB disk, ~760 MB bellek, CV başına ~170 ms (CPU).
+  - Kurulum isteğe bağlı: `pip install -e ".[ner]"` (sunucuda torch'un CPU sürümü). Kurulu değilse `default_detector()` None döner ve sadece kurallar çalışır; CI bu şekilde çalışır, gerçek model testi atlanır.
+  - Model ilk kullanımda Hugging Face'ten bir kez indirilir; sunucuda imaj derlenirken indirilip `HF_HUB_OFFLINE=1` ile çalıştırılmalı. Metin hiçbir zaman dışarı gönderilmez.

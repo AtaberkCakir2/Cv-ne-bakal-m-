@@ -8,8 +8,8 @@ Ad-soyadın yapısı belli olmadığı için kurallar birleştirilir:
 4. Bilinen bir ilk adla başlayan, büyük harfle devam eden kelime grubu ("… ekip lideri Ayşe Kaya ile …").
 5. Bulunan adın kelimeleri metnin geri kalanında büyük harfle geçtiği her yerde de maskelenir ("Mert'in …").
 
-İsteğe bağlı bir varlık tanıma (NER) modeli `detector` parametresiyle eklenebilir; sonuçları kurallarınkiyle
-birleştirilir. Hangi yerel modelin kullanılacağı (ör. Türkçe BERT NER) T-030 kapsamında açık bir karardır.
+Yerel varlık tanıma (NER) modeli `detector` parametresiyle eklenir (`pii.ner.default_detector()`, karar #24);
+sonuçları kurallarınkiyle birleştirilir.
 """
 
 from __future__ import annotations

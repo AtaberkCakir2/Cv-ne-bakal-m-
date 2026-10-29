@@ -10,6 +10,12 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
+# Ad tespiti için yerel NER modeli (pii/ner.py). Yoksa ad tespiti sadece kurallarla yapılır.
+# Sunucuda torch'un CPU sürümü kurulmalı: --index-url https://download.pytorch.org/whl/cpu
+ner = [
+    "torch>=2.4",
+    "transformers>=4.44",
+]
 dev = [
     "pytest>=8.3",
     # Sürümler backend ve scraper ile aynı sabit (infra/ci.md).
@@ -44,7 +50,7 @@ python_version = "3.12"
 strict = true
 
 [[tool.mypy.overrides]]
-module = ["pdfplumber", "pdfplumber.*", "pdfminer.*"]
+module = ["pdfplumber", "pdfplumber.*", "pdfminer.*", "torch", "torch.*", "transformers", "transformers.*"]
 ignore_missing_imports = true
 
 # PyMuPDF'in tip bilgisi eksik; onu çağıran modüllerde "tipsiz çağrı" uyarısı kapalı.
