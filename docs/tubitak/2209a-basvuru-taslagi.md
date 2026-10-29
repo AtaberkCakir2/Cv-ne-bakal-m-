@@ -162,7 +162,7 @@ Büyük dil modelleri metinden yapılandırılmış bilgi çıkarmada güçlü o
 - İlan başlığından pozisyon normalizasyonu. Pozisyon yalnızca başlıktan belirlenir; yetkinliklerden tahmin yapılmaz. Aksi hâlde pozisyonu belirlemekte kullanılan yetkinlikler, o pozisyonun talep oranlarını yapay olarak yükseltirdi.
 - Tekrar kayıtların temizlenmesi: birebir aynı metin için içerik özeti, benzer metinler için 5 kelimelik parçaların Jaccard benzerliği (Broder, 1997; eşik 0,9).
 
-İlanlar, Avrupa Komisyonu'nun açık lisanslı meslek ve beceri sınıflandırması ile elle derlenen teknoloji listesinden oluşturulan iki dilli taksonomiyle (374 yetkinlik, 8 kategori, Türkçe ve İngilizce eş anlamlılar) kelime sınırına duyarlı biçimde etiketlenir. "Tercih sebebi" ifadesiyle geçen yetkinlikler "tercih edilen", diğerleri "zorunlu" olarak işaretlenir. Her pozisyon × yetkinlik çifti için son 6 ayın aktif ilanlarından talep oranı hesaplanır: yetkinliği isteyen ilan sayısı / pozisyondaki toplam ilan. 50 ilandan az veriyle hesaplanan pozisyonlar kullanıcıya "düşük güven" uyarısıyla sunulur.
+İlanlar, Avrupa Komisyonu'nun açık lisanslı meslek ve beceri sınıflandırması (Avrupa Komisyonu, ESCO v1.2.1) ile elle derlenen teknoloji listesinden oluşturulan iki dilli taksonomiyle (374 yetkinlik, 8 kategori, Türkçe ve İngilizce eş anlamlılar) kelime sınırına duyarlı biçimde etiketlenir. "Tercih sebebi" ifadesiyle geçen yetkinlikler "tercih edilen", diğerleri "zorunlu" olarak işaretlenir. Her pozisyon × yetkinlik çifti için son 6 ayın aktif ilanlarından talep oranı hesaplanır: yetkinliği isteyen ilan sayısı / pozisyondaki toplam ilan. 50 ilandan az veriyle hesaplanan pozisyonlar kullanıcıya "düşük güven" uyarısıyla sunulur.
 
 **Eğilim analizi:** Talep oranları her ay anlık görüntü olarak saklanır. Pozisyon bazında ilk ve son çeyrek arasındaki değişim, iki oran farkı testiyle (α = 0,05; çoklu karşılaştırma için Benjamini-Hochberg düzeltmesi) sınanır. Talebi anlamlı biçimde artan ve azalan yetkinlikler raporlanır.
 
@@ -186,7 +186,7 @@ Yetkinliklerin metinde açık liste olarak, proje açıklaması içinde ve kısa
 - **Bağımlı değişkenler:** kesinlik, duyarlılık, F1; şema uyumlu çıktı oranı; özgeçmiş başına süre.
 - **İstatistik:** Özgeçmiş bazında ve toplamda micro-F1 raporlanır; %95 güven aralıkları bootstrap (10.000 yineleme) ile hesaplanır. H1, aynı özgeçmişler üzerinde Y3 ile Y1'in özgeçmiş bazındaki F1 farklarına uygulanan Wilcoxon işaretli sıralar testiyle sınanır (α = 0,05). Dil ve biçim alt gruplarında ayrıca raporlanır.
 
-**2.4. Öneri kalitesi (İP4).** Eksik yetkinlikler için aday kaynaklar doğrulanmış veritabanından getirilir (her yetkinlik için ≥ 3; seviye, süre, ücretsiz/ücretli bilgisi). Dil modeli yalnızca bu listeden seçim yapar ve Türkçe gerekçe yazar; bağlantı üretmez. Eşleşmede çok dilli cümle gömme modelleri (Reimers ve Gurevych, 2019; 2020) ve vektör benzerlik araması (Malkov ve Yashunin, 2020) kullanılır.
+**2.4. Öneri kalitesi (İP4).** Eksik yetkinlikler için aday kaynaklar doğrulanmış veritabanından getirilir (her yetkinlik için ≥ 3; seviye, süre, ücretsiz/ücretli bilgisi). Dil modeli yalnızca bu listeden seçim yapar ve Türkçe gerekçe yazar; bağlantı üretmez. Eşleşmede çok dilli cümle gömme modelleri (Reimers ve Gurevych, 2019, 2020) ve vektör benzerlik araması (Malkov ve Yashunin, 2020) kullanılır.
 - **Değerlendirme:** Test setinden 30 özgeçmiş için üretilen öneriler, alanında deneyimli üç değerlendirici tarafından 1–5 ölçekle puanlanır. Değerlendiriciler hangi yöntemin öneriyi ürettiğini bilmez.
 - **Analiz:** Değerlendiriciler arası uyum Krippendorff alfa ile raporlanır. Uydurma bağlantı oranı, tüm önerilerin veritabanıyla otomatik karşılaştırılmasıyla ölçülür. Haftalık bağlantı sağlık kontrolü yapılır; ölü bağlantı pasifleştirilir.
 
@@ -285,20 +285,31 @@ Kurallara uygunluk: Toplam süre 12 ay; hiçbir iş paketi 12 aydan uzun değil.
 
 ## KAYNAKLAR
 
-DOI'ler Crossref/DataCite üzerinden doğrulandı (29.10.2026). Her kaynağa metin içinde atıf vardır.
+Biçim: TÜBİTAK "Bibliyografik Verilerin Düzenlenmesi" duyurusu. Soyadına göre alfabetik; Yazar, A. Yıl. "Başlık", Yayın, Cilt (Sayı), sayfa. Birden fazla yazar virgülle ayrılır. DOI varsa sona eklenir. İnternet kaynağında son erişim tarihi. Künyeler ve DOI'ler Crossref/DataCite'tan alındı ve doğrulandı (29.10.2026).
 
-1. Bangor, A., Kortum, P. T. ve Miller, J. T. (2008). An empirical evaluation of the System Usability Scale. *International Journal of Human–Computer Interaction*, 24(6), 574–594. https://doi.org/10.1080/10447310802205776
-2. Broder, A. Z. (1997). On the resemblance and containment of documents. *Proceedings. Compression and Complexity of SEQUENCES 1997*, 21–29. https://doi.org/10.1109/SEQUEN.1997.666900
-3. Brooke, J. (1996). SUS: A "quick and dirty" usability scale. P. W. Jordan vd. (Ed.), *Usability Evaluation in Industry* içinde (s. 189–194). Taylor & Francis. https://doi.org/10.1201/9781498710411-35
-4. European Commission. (2024). *ESCO: European Skills, Competences, Qualifications and Occupations* (v1.2.1). https://esco.ec.europa.eu
-5. Ji, Z., Lee, N., Frieske, R., Yu, T., Su, D., Xu, Y., Ishii, E., Bang, Y. J., Madotto, A. ve Fung, P. (2023). Survey of hallucination in natural language generation. *ACM Computing Surveys*, 55(12), 1–38. https://doi.org/10.1145/3571730
-6. Khaouja, I., Kassou, I. ve Ghogho, M. (2021). A survey on skill identification from online job ads. *IEEE Access*, 9, 118134–118153. https://doi.org/10.1109/ACCESS.2021.3106120
-7. Lewis, P., Perez, E., Piktus, A., Petroni, F., Karpukhin, V., Goyal, N. vd. (2020). Retrieval-augmented generation for knowledge-intensive NLP tasks. *Advances in Neural Information Processing Systems 33*. https://doi.org/10.48550/arXiv.2005.11401
-8. Malkov, Y. A. ve Yashunin, D. A. (2020). Efficient and robust approximate nearest neighbor search using hierarchical navigable small world graphs. *IEEE Transactions on Pattern Analysis and Machine Intelligence*, 42(4), 824–836. https://doi.org/10.1109/TPAMI.2018.2889473
-9. Reimers, N. ve Gurevych, I. (2019). Sentence-BERT: Sentence embeddings using Siamese BERT-networks. *Proceedings of EMNLP-IJCNLP 2019*, 3982–3992. https://doi.org/10.18653/v1/D19-1410
-10. Reimers, N. ve Gurevych, I. (2020). Making monolingual sentence embeddings multilingual using knowledge distillation. *Proceedings of EMNLP 2020*, 4512–4525. https://doi.org/10.18653/v1/2020.emnlp-main.365
-11. Vidros, S., Kolias, C., Kambourakis, G. ve Akoglu, L. (2017). Automatic detection of online recruitment frauds: Characteristics, methods, and a public dataset. *Future Internet*, 9(1), 6. https://doi.org/10.3390/fi9010006
-12. Zhang, M., Jensen, K. N., Sonniks, S. D. ve Plank, B. (2022). SkillSpan: Hard and soft skill extraction from English job postings. *Proceedings of NAACL 2022*, 4962–4984. https://doi.org/10.18653/v1/2022.naacl-main.366
+Avrupa Komisyonu. "ESCO: European Skills, Competences, Qualifications and Occupations (sınıflandırma sürümü v1.2.1)". ESCO Portalı. https://esco.ec.europa.eu, Son erişim tarihi: 26 Ekim 2026.
+
+Bangor, A., Kortum, P. T., Miller, J. T. 2008. "An Empirical Evaluation of the System Usability Scale", International Journal of Human-Computer Interaction, 24 (6), 574-594. https://doi.org/10.1080/10447310802205776
+
+Broder, A. Z. 1997. "On the Resemblance and Containment of Documents", Proceedings. Compression and Complexity of SEQUENCES 1997, 21-29. Los Alamitos: IEEE Computer Society. https://doi.org/10.1109/SEQUEN.1997.666900
+
+Brooke, J. 1996. "SUS: A 'Quick and Dirty' Usability Scale", Sayfa 207-212. Usability Evaluation in Industry. Editör: Jordan, P. W., Thomas, B., McClelland, I. L., Weerdmeester, B. Boca Raton: CRC Press. https://doi.org/10.1201/9781498710411-35
+
+Ji, Z., Lee, N., Frieske, R., Yu, T., Su, D., Xu, Y., Ishii, E., Bang, Y. J., Madotto, A., Fung, P. 2023. "Survey of Hallucination in Natural Language Generation", ACM Computing Surveys, 55 (12), 1-38. https://doi.org/10.1145/3571730
+
+Khaouja, I., Kassou, I., Ghogho, M. 2021. "A Survey on Skill Identification From Online Job Ads", IEEE Access, 9, 118134-118153. https://doi.org/10.1109/ACCESS.2021.3106120
+
+Lewis, P., Perez, E., Piktus, A., Petroni, F., Karpukhin, V., Goyal, N., Küttler, H., Lewis, M., Yih, W., Rocktäschel, T., Riedel, S., Kiela, D. 2020. "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks", Advances in Neural Information Processing Systems, 33, 9459-9474. https://doi.org/10.48550/arXiv.2005.11401
+
+Malkov, Y. A., Yashunin, D. A. 2020. "Efficient and Robust Approximate Nearest Neighbor Search Using Hierarchical Navigable Small World Graphs", IEEE Transactions on Pattern Analysis and Machine Intelligence, 42 (4), 824-836. https://doi.org/10.1109/TPAMI.2018.2889473
+
+Reimers, N., Gurevych, I. 2019. "Sentence-BERT: Sentence Embeddings using Siamese BERT-Networks", Proceedings of the 2019 Conference on Empirical Methods in Natural Language Processing and the 9th International Joint Conference on Natural Language Processing (EMNLP-IJCNLP), 3980-3990. https://doi.org/10.18653/v1/D19-1410
+
+Reimers, N., Gurevych, I. 2020. "Making Monolingual Sentence Embeddings Multilingual using Knowledge Distillation", Proceedings of the 2020 Conference on Empirical Methods in Natural Language Processing (EMNLP), 4512-4525. https://doi.org/10.18653/v1/2020.emnlp-main.365
+
+Vidros, S., Kolias, C., Kambourakis, G., Akoglu, L. 2017. "Automatic Detection of Online Recruitment Frauds: Characteristics, Methods, and a Public Dataset", Future Internet, 9 (1), 6. https://doi.org/10.3390/fi9010006
+
+Zhang, M., Jensen, K. N., Sonniks, S. D., Plank, B. 2022. "SkillSpan: Hard and Soft Skill Extraction from English Job Postings", Proceedings of the 2022 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language Technologies, 4962-4984. https://doi.org/10.18653/v1/2022.naacl-main.366
 
 ---
 
