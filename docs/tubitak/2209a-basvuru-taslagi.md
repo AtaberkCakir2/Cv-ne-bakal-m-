@@ -4,7 +4,7 @@
 >
 > - Bölümler TYBS'deki form adımlarıyla aynı sırada. Yapıştırmaya hazır sürüm: [`2209a-basvuru-yapistir.html`](2209a-basvuru-yapistir.html). Tarayıcıda açıp her bölümü kopyalayın; tablolar TYBS editörüne tablo olarak geçer.
 > - Kaynak kurallar: TÜBİTAK 2209-A sayfası, 2026 Başvuru İçeriği Bilgi Notu, Öncelikli Alanlar listesi.
-> - Metnin ilk hali üretken yapay zekâ desteğiyle hazırlandı. TÜBİTAK ÜYZ rehberi gereği bu beyan edilecek (Bölüm C). İçeriğin doğruluğundan ekip ve danışman sorumlu.
+> - Metnin ilk hali üretken yapay zekâ desteğiyle hazırlandı. TÜBİTAK ÜYZ rehberi (Ocak 2026, v04, md. 1.2) gereği bu, TYBS'deki ÜYZ beyan bölümünde araç adı, sürümü ve kullanılan bölümlerle beyan edilecek (Bölüm C). İçeriğin doğruluğundan ekip ve danışman sorumlu.
 
 ---
 
@@ -40,7 +40,7 @@ Ekip onaylayınca `docs/kararlar.md`'ye eklenecek. Danışman farklı görüş b
 | 6 | Kullanılabilirlik çalışması görev senaryoları ve yaygın etki hedeflerinin kontrolü | **Anıl** | — | 04.11 |
 | 7 | Araştırma olanakları tablosuna Burak ve Anıl'ın bilgisayar bilgileri | **Burak, Anıl** | — | 03.11 |
 | 8 | Bütçe tekliflerinin kontrolü (sunucu, yedek, GPU); 32 GB sunucu kararı çıkarsa güncelleme | **Ataberk** | — | 05.11 |
-| 9 | TYBS'ye giriş; metinlerin yapıştırılması; ortakların ve danışmanın eklenmesi; IBAN; **"Proje Önerisini Önizle"** kontrolü | **Ataberk** | Anıl (önizleme kontrolü) | 07.11 |
+| 9 | TYBS'ye giriş; metinlerin yapıştırılması; ortakların ve danışmanın eklenmesi; IBAN; **ÜYZ beyan bölümünün doldurulması** (Bölüm C); **"Proje Önerisini Önizle"** kontrolü | **Ataberk** | Anıl (önizleme kontrolü) | 07.11 |
 | 10 | Danışmana onaya gönderme. Reddedilirse düzeltme için zaman kalsın. | **Ataberk** | — | **09.11** |
 | 11 | Danışman onayı (sistemde) | Danışman | — | **11.11 17:30** |
 | 12 | Kuruluş yetkilisi e-imzasının takibi (fakülte / TTO) | **Ataberk** | — | 16–23.11 |
@@ -71,7 +71,7 @@ Ekip onaylayınca `docs/kararlar.md`'ye eklenecek. Danışman farklı görüş b
 | Proje ortakları | Burak, Anıl |
 | Danışman | `[danışman adı: TYBS'de YÖKSİS/ARBİS'ten seçilecek]` |
 | Bütçe | 11.900 TL (Bölüm 7) |
-| ÜYZ beyanı (form istiyorsa veya "Diğer konular" altına) | "Bu araştırma önerisinin metin taslağının hazırlanmasında üretken yapay zekâ araçlarından dil desteği ve yapılandırma amacıyla yararlanılmıştır. Tüm içerik, veriler ve kaynaklar proje ekibi tarafından kontrol edilmiş ve doğrulanmıştır; içeriğin doğruluğu ve özgünlüğü proje ekibinin ve danışmanın sorumluluğundadır." |
+| ÜYZ kullanım beyanı (TYBS'de bu amaçla ayrılmış bölüme; rehber 1.2.2: araç adı ve sürümü, kullanılan bölümler, kullanımın niteliği) | "Bu araştırma önerisinin hazırlanmasında üretken yapay zekâ aracı Claude (Anthropic; model: Claude Opus 5.5, Claude Code arayüzü üzerinden) kullanılmıştır. Kullanım alanları: (1) Özet, bilimsel nitelik, amaç ve hedefler, yöntem, çalışma takvimi, risk yönetimi, araştırma olanakları, yaygın etki ve bütçe bölümlerinin ilk taslağının oluşturulması; (2) literatür kaynaklarının bulunması ve DOI bilgilerinin Crossref/DataCite üzerinden doğrulanması; (3) TÜBİTAK çağrı metni ve bilgi notundaki kuralların özetlenmesi; (4) dil ve biçim düzenlemesi. Kullanımın niteliği: ilk taslak oluşturma ve metin iyileştirme. Ön çalışma bölümündeki tüm sayısal sonuçlar (ilan sayıları, oranlar) proje ekibinin kendi yazılımı ve verisiyle üretilmiştir; yapay zekâ tarafından üretilmiş veri kullanılmamıştır. Taslak metinler proje ekibi tarafından gözden geçirilmiş, düzenlenmiş ve doğrulanmış; danışman tarafından kontrol edilmiştir. İçeriğin doğruluğu ve özgünlüğü proje ekibinin ve danışmanın sorumluluğundadır." `[Sentetik özgeçmişler bir ÜYZ aracıyla üretilirse araç adı ve sürümü buraya eklenecek — Burak]` |
 
 ---
 
@@ -173,7 +173,7 @@ Büyük dil modelleri metinden yapılandırılmış bilgi çıkarmada güçlü o
 - farklı deneyim düzeyleri (yeni mezun, stajyer, deneyimli)
 - 10 hedef pozisyonun tamamı
 
-Yetkinliklerin metinde açık liste olarak, proje açıklaması içinde ve kısaltma/yazım farklılıklarıyla geçmesi sağlanır. Her özgeçmiş iki kişi tarafından bağımsız etiketlenir, anlaşmazlıkları üçüncü kişi çözer. Etiketleyiciler arası F1 < 0,85 ise etiketleme kılavuzu güncellenip etiketleme tekrarlanır. Sentetik setin, gerçek özgeçmişlerdeki düzensizlikleri tam yansıtmayabilmesi sonuçlarda sınırlılık olarak tartışılır.
+Yetkinliklerin metinde açık liste olarak, proje açıklaması içinde ve kısaltma/yazım farklılıklarıyla geçmesi sağlanır. Sentetik özgeçmişlerin üretiminde bir üretken yapay zekâ aracından yararlanılırsa, aracın adı ve sürümü raporlanır; üretilen her özgeçmiş ekip tarafından elle gözden geçirilir ve gerçek bir kişiye ait bilgi içermediği kontrol edilir. Etiketler yapay zekâ ile değil, ekip üyelerince elle verilir. Her özgeçmiş iki kişi tarafından bağımsız etiketlenir, anlaşmazlıkları üçüncü kişi çözer. Etiketleyiciler arası F1 < 0,85 ise etiketleme kılavuzu güncellenip etiketleme tekrarlanır. Sentetik setin, gerçek özgeçmişlerdeki düzensizlikleri tam yansıtmayabilmesi sonuçlarda sınırlılık olarak tartışılır.
 
 **2.3. Yetkinlik çıkarımı deneyi (İP3).**
 - Ön işleme: PDF metin çıkarma; taranmış belgeler için optik karakter tanıma yedeği; kişisel verilerin (ad-soyad, telefon, e-posta, adres, kimlik numarası, doğum tarihi) düzenli ifadeler ve isim varlığı tanıma ile maskelenmesi.
@@ -275,7 +275,7 @@ Kurallara uygunluk: Toplam süre 12 ay; hiçbir iş paketi 12 aydan uzun değil.
 - **Ön çalışma ve proje dönemi ayrımı:** Sistemin ilk sürümü, bitirme projesi kapsamında proje başlangıcından önce geliştirilmektedir (Ocak 2027). TÜBİTAK desteği istenen 12 aylık dönem, bu sürüm üzerinde yapılacak araştırma, değerlendirme ve iyileştirme çalışmalarını kapsar.
 - **Ön çalışmadan örnek veri:** Pozisyon başına ilan sayıları ve en çok istenen yetkinlikler (Ekim 2026): tam yığın geliştirici 207 ilan (ilk yetkinlik %61), DevOps 122 ilan (%51), arka uç geliştirici 112 ilan (%43), makine öğrenmesi mühendisi 97 ilan (%56).
 - **Etik:** Gerçek kişilere ait özgeçmiş toplanmaz. İnsan katılımcı içeren tek çalışma anketli kullanılabilirlik çalışmasıdır (İP6); etik kurul onayı veya muafiyet belgesiyle yürütülür.
-- **Üretken yapay zekâ kullanım beyanı:** Bölüm C'deki metin.
+- **Üretken yapay zekâ kullanımı:** TYBS'deki ÜYZ beyan bölümünde ayrıntılı olarak beyan edilmiştir.
 
 ## 6. EKLER
 

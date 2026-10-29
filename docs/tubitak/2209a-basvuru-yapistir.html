@@ -35,7 +35,7 @@ button.done { background: var(--accent); color: var(--card); }
 <h1>TÜBİTAK 2209-A · Yapıştırmaya hazır metin</h1>
 <p class="lead">Her bloğun "Kopyala" düğmesine basıp TYBS'deki ilgili kutuya yapıştırın; ardından "Proje Önerisini Önizle" ile kontrol edin.
 Sarı işaretli yerler doldurulmadan gönderilmemeli. Kaynak: <code>2209a-basvuru-taslagi.md</code> (değişirse <code>python docs/tubitak/yapistir_uret.py</code>).</p>
-<section class="card"><header><div><h2>Genel bilgiler (TYBS alanları)</h2><p class="meta">TYBS: Başvurunun genel bilgi adımları · <span class="ok">1028 karakter</span></p></div><button type="button" data-target="b0">Kopyala</button></header><div class="body" id="b0"><table>
+<section class="card"><header><div><h2>Genel bilgiler (TYBS alanları)</h2><p class="meta">TYBS: Başvurunun genel bilgi adımları · <span class="ok">1878 karakter</span></p></div><button type="button" data-target="b0">Kopyala</button></header><div class="body" id="b0"><table>
 <thead>
 <tr>
 <th>Alan</th>
@@ -80,8 +80,8 @@ Sarı işaretli yerler doldurulmadan gönderilmemeli. Kaynak: <code>2209a-basvur
 <td>11.900 TL (Bölüm 7)</td>
 </tr>
 <tr>
-<td>ÜYZ beyanı (form istiyorsa veya "Diğer konular" altına)</td>
-<td>"Bu araştırma önerisinin metin taslağının hazırlanmasında üretken yapay zekâ araçlarından dil desteği ve yapılandırma amacıyla yararlanılmıştır. Tüm içerik, veriler ve kaynaklar proje ekibi tarafından kontrol edilmiş ve doğrulanmıştır; içeriğin doğruluğu ve özgünlüğü proje ekibinin ve danışmanın sorumluluğundadır."</td>
+<td>ÜYZ kullanım beyanı (TYBS'de bu amaçla ayrılmış bölüme; rehber 1.2.2: araç adı ve sürümü, kullanılan bölümler, kullanımın niteliği)</td>
+<td>"Bu araştırma önerisinin hazırlanmasında üretken yapay zekâ aracı Claude (Anthropic; model: Claude Opus 5.5, Claude Code arayüzü üzerinden) kullanılmıştır. Kullanım alanları: (1) Özet, bilimsel nitelik, amaç ve hedefler, yöntem, çalışma takvimi, risk yönetimi, araştırma olanakları, yaygın etki ve bütçe bölümlerinin ilk taslağının oluşturulması; (2) literatür kaynaklarının bulunması ve DOI bilgilerinin Crossref/DataCite üzerinden doğrulanması; (3) TÜBİTAK çağrı metni ve bilgi notundaki kuralların özetlenmesi; (4) dil ve biçim düzenlemesi. Kullanımın niteliği: ilk taslak oluşturma ve metin iyileştirme. Ön çalışma bölümündeki tüm sayısal sonuçlar (ilan sayıları, oranlar) proje ekibinin kendi yazılımı ve verisiyle üretilmiştir; yapay zekâ tarafından üretilmiş veri kullanılmamıştır. Taslak metinler proje ekibi tarafından gözden geçirilmiş, düzenlenmiş ve doğrulanmış; danışman tarafından kontrol edilmiştir. İçeriğin doğruluğu ve özgünlüğü proje ekibinin ve danışmanın sorumluluğundadır." <code>[Sentetik özgeçmişler bir ÜYZ aracıyla üretilirse araç adı ve sürümü buraya eklenecek — Burak]</code></td>
 </tr>
 </tbody>
 </table></div></section>
@@ -191,7 +191,7 @@ Sarı işaretli yerler doldurulmadan gönderilmemeli. Kaynak: <code>2209a-basvur
 </tr>
 </tbody>
 </table></div></section>
-<section class="card"><header><div><h2>2. Yöntem</h2><p class="meta">TYBS: 2 · <span class="ok">7877 karakter · en az 350</span></p></div><button type="button" data-target="b4">Kopyala</button></header><div class="body" id="b4"><p><strong>Araştırma tasarımı.</strong> Proje, ön çalışmada geliştirilen sistemin ilk sürümü üzerinde yürütülecek dört nicel çalışmadan ve bir boylamsal veri analizinden oluşur:</p>
+<section class="card"><header><div><h2>2. Yöntem</h2><p class="meta">TYBS: 2 · <span class="ok">8173 karakter · en az 350</span></p></div><button type="button" data-target="b4">Kopyala</button></header><div class="body" id="b4"><p><strong>Araştırma tasarımı.</strong> Proje, ön çalışmada geliştirilen sistemin ilk sürümü üzerinde yürütülecek dört nicel çalışmadan ve bir boylamsal veri analizinden oluşur:</p>
 <ul>
 <li>(a) etiketli sentetik test seti üzerinde yetkinlik çıkarım yöntemlerinin karşılaştırmalı deneyi (H1)</li>
 <li>(b) uzmanlarla öneri kalitesi değerlendirmesi (H2)</li>
@@ -216,7 +216,7 @@ Sarı işaretli yerler doldurulmadan gönderilmemeli. Kaynak: <code>2209a-basvur
 <li>farklı deneyim düzeyleri (yeni mezun, stajyer, deneyimli)</li>
 <li>10 hedef pozisyonun tamamı</li>
 </ul>
-<p>Yetkinliklerin metinde açık liste olarak, proje açıklaması içinde ve kısaltma/yazım farklılıklarıyla geçmesi sağlanır. Her özgeçmiş iki kişi tarafından bağımsız etiketlenir, anlaşmazlıkları üçüncü kişi çözer. Etiketleyiciler arası F1 &lt; 0,85 ise etiketleme kılavuzu güncellenip etiketleme tekrarlanır. Sentetik setin, gerçek özgeçmişlerdeki düzensizlikleri tam yansıtmayabilmesi sonuçlarda sınırlılık olarak tartışılır.</p>
+<p>Yetkinliklerin metinde açık liste olarak, proje açıklaması içinde ve kısaltma/yazım farklılıklarıyla geçmesi sağlanır. Sentetik özgeçmişlerin üretiminde bir üretken yapay zekâ aracından yararlanılırsa, aracın adı ve sürümü raporlanır; üretilen her özgeçmiş ekip tarafından elle gözden geçirilir ve gerçek bir kişiye ait bilgi içermediği kontrol edilir. Etiketler yapay zekâ ile değil, ekip üyelerince elle verilir. Her özgeçmiş iki kişi tarafından bağımsız etiketlenir, anlaşmazlıkları üçüncü kişi çözer. Etiketleyiciler arası F1 &lt; 0,85 ise etiketleme kılavuzu güncellenip etiketleme tekrarlanır. Sentetik setin, gerçek özgeçmişlerdeki düzensizlikleri tam yansıtmayabilmesi sonuçlarda sınırlılık olarak tartışılır.</p>
 <p><strong>2.3. Yetkinlik çıkarımı deneyi (İP3).</strong></p>
 <ul>
 <li>Ön işleme: PDF metin çıkarma; taranmış belgeler için optik karakter tanıma yedeği; kişisel verilerin (ad-soyad, telefon, e-posta, adres, kimlik numarası, doğum tarihi) düzenli ifadeler ve isim varlığı tanıma ile maskelenmesi.</li>
@@ -472,11 +472,11 @@ Sarı işaretli yerler doldurulmadan gönderilmemeli. Kaynak: <code>2209a-basvur
 </tr>
 </tbody>
 </table></div></section>
-<section class="card"><header><div><h2>5. Belirtmek İstediğiniz Diğer Konular</h2><p class="meta">TYBS: 5 · <span class="ok">759 karakter</span></p></div><button type="button" data-target="b9">Kopyala</button></header><div class="body" id="b9"><ul>
+<section class="card"><header><div><h2>5. Belirtmek İstediğiniz Diğer Konular</h2><p class="meta">TYBS: 5 · <span class="ok">798 karakter</span></p></div><button type="button" data-target="b9">Kopyala</button></header><div class="body" id="b9"><ul>
 <li><strong>Ön çalışma ve proje dönemi ayrımı:</strong> Sistemin ilk sürümü, bitirme projesi kapsamında proje başlangıcından önce geliştirilmektedir (Ocak 2027). TÜBİTAK desteği istenen 12 aylık dönem, bu sürüm üzerinde yapılacak araştırma, değerlendirme ve iyileştirme çalışmalarını kapsar.</li>
 <li><strong>Ön çalışmadan örnek veri:</strong> Pozisyon başına ilan sayıları ve en çok istenen yetkinlikler (Ekim 2026): tam yığın geliştirici 207 ilan (ilk yetkinlik %61), DevOps 122 ilan (%51), arka uç geliştirici 112 ilan (%43), makine öğrenmesi mühendisi 97 ilan (%56).</li>
 <li><strong>Etik:</strong> Gerçek kişilere ait özgeçmiş toplanmaz. İnsan katılımcı içeren tek çalışma anketli kullanılabilirlik çalışmasıdır (İP6); etik kurul onayı veya muafiyet belgesiyle yürütülür.</li>
-<li><strong>Üretken yapay zekâ kullanım beyanı:</strong> Bölüm C'deki metin.</li>
+<li><strong>Üretken yapay zekâ kullanımı:</strong> TYBS'deki ÜYZ beyan bölümünde ayrıntılı olarak beyan edilmiştir.</li>
 </ul></div></section>
 <section class="card"><header><div><h2>6. Ekler</h2><p class="meta">TYBS: 6 · <span class="ok">244 karakter</span></p></div><button type="button" data-target="b10">Kopyala</button></header><div class="body" id="b10"><ol>
 <li>Bilgilendirilmiş onam formu (kullanılabilirlik çalışması) <code>[Burak hazırlıyor — B1 #5]</code></li>
