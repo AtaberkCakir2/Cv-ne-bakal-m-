@@ -16,13 +16,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-018 · Ollama kurulumu ve model benchmark'ı
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 19.10.2026 – 01.11.2026 · **Öncelik:** P0 · **Efor:** 10 saat · **Alan:** AI / NLP
 - **Bağımlılık:** T-007 (Ataberk)
 - **Destek:** —
 - **Çıktı:** Benchmark raporu (poster için de kullanılacak)
 - **Kabul kriteri:** Aday modeller: Llama 3.x 8B Instruct (q4_K_M), Gemma 9B, Qwen 7B. 10 Türkçe CV ile: JSON uyumu, yetkinlik doğruluğu, token/sn, RAM. CPU ve (varsa) GPU ölçümü. Kazanan model + yedek model seçildi.
-- **Devam notu (29.10.2026):** Yapılan: henüz başlanmadı. Docker Desktop kurulu ama motor çalışmıyor: WSL kurulu değil. Repo kökünde `.env` oluşturuldu (rastgele şifreler, git dışı). #10 birleşti; Ollama `0.40.10`'a sabitlendi. Bu bilgisayar: i7-13700H, 32 GB RAM, RTX 4060 Laptop 8 GB → GPU ölçümü yapılabilir. · Sıradaki adım: yönetici PowerShell'de `wsl --install` + yeniden başlatma → Docker'da "Engine running" → `docker compose up -d --wait` → 3 aday modeli indir (`docker compose exec ollama ollama pull <model>`) → benchmark scripti (`ai/benchmark/`): JSON uyumu, token/sn, RAM/VRAM (CPU ve GPU), doğruluk T-019'un ilk 10 TR CV'si etiketlenince. · Açık sorular / engeller: WSL kurulumu Burak'ta (yönetici izni); 10 TR CV T-019'dan (hedef 03.11). · Branch: yok (başlarken `burak/ollama-benchmark` açılacak)
+- **Not:** Rapor `ai/eval/benchmark/README.md`, karar #25: Llama 3.1 8B (yedek Gemma 2 9B), JSON şeması zorunlu. Referans etiketler geçici (Claude); T-019 gold gelince ve VPS'te (T-056) tekrar ölçülmeli. Docker gerekmedi: Ollama Windows'a doğrudan kuruldu (0.40.13).
 
 ### T-019 · Etiketli değerlendirme veri seti (altın standart)
 
