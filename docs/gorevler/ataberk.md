@@ -108,12 +108,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-013 · pgvector eklentisi ve vektör indeksleri
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 02.11.2026 – 08.11.2026 · **Öncelik:** P1 · **Efor:** 3 saat · **Alan:** Veri Tabanı
 - **Bağımlılık:** T-012
 - **Destek:** Burak
 - **Çıktı:** Migration + benchmark notu
 - **Kabul kriteri:** skills.embedding ve job_postings.embedding için vector(384) + HNSW indeks (cosine). Örnek sorgu < 50 ms.
+- **Not:** Migration `0003_vektor_indeksleri` (m=16, ef_construction=64, `vector_cosine_ops`), modellerde `hnsw_index()`; upgrade/downgrade, `alembic check` ve planlayıcının indeksi seçtiğini doğrulayan test geçti (29.10). Ölçüm `docs/veritabani.md` "Vektör indeksleri": sentetik vektörlerle 6.422 ilanda p95 12 ms, 50.000 ilanda p95 6 ms, recall@10 ≥ 0,99. Gerçek embedding yok (Burak'ın T-031/T-042'si); gelince ölçüm tekrarlanmalı. Burak için: sorgu `ORDER BY embedding <=> :v LIMIT k` biçiminde, `WHERE` süzmesinde `hnsw.iterative_scan`.
 
 ### T-016 · Playwright scraper PoC (1 kaynak)
 
