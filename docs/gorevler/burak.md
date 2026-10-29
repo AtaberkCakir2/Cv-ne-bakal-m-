@@ -67,12 +67,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-030 · Kişisel veri anonimleştirme (PII maskeleme)
 
-- **Durum:** Yapılacak
+- **Durum:** Devam Ediyor
 - **Tarih:** 02.11.2026 – 08.11.2026 · **Öncelik:** P0 · **Efor:** 10 saat · **Alan:** Güvenlik & KVKK
 - **Bağımlılık:** T-020
 - **Destek:** —
 - **Çıktı:** ai/pii modülü + testler
 - **Kabul kriteri:** LLM'e gitmeden ÖNCE ad-soyad, telefon, e-posta, adres, TC kimlik no, doğum tarihi maskelenir (regex + NER). Test: telefon/e-posta/TCKN için %100 maskeleme.
+- **Devam notu (29.10.2026):** Yapılan: `ai/pii` (e-posta, telefon, TCKN, IBAN, bağlantı, doğum tarihi, adres düzenli ifadeleri; ad-soyad için kurallar: etiketli alan, başlık satırı, unvan, ilk ad listesi, adın metin içinde yayılması) + 126 test (telefon/e-posta/TCKN %100; yetkinlik metni bozulmuyor; sentetik CV'lerde ad/iletişim kalmıyor — #35'in 8 metin tabanlı CV'siyle yerelde denendi). · Sıradaki adım: NER kararı — yerel Türkçe NER modeli (ör. BERT tabanlı) `mask(..., detector=)`'a bağlanacak mı? worker-ai 2 GB bellek ve CPU süresiyle ölç; değilse kabul kriterinin "NER" kısmı için karar `docs/kararlar.md`'ye yazılsın. Ardından `scraper/etl/pipeline.py`'deki `mask_names`'e bağlanması için Ataberk'e haber. · Açık sorular / engeller: NER modeli seçimi; CI'daki mypy komutuna `pii` eklenmeli (Ataberk, `.github/workflows/ci.yml`). · Branch: `burak/pii-maskeleme`
 
 ### T-031 · Yetkinlik çıkarımı v1 (sözlük + kural)
 
