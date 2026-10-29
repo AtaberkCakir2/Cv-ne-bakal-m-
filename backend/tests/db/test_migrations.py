@@ -19,6 +19,7 @@ import pytest
 from alembic import command
 from alembic.config import Config
 from sqlalchemy import Engine, create_engine, inspect, select, text
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from app.db.enums import AnalysisStatus, ConsentType, SkillCategory, SkillKind, SkillLevel
@@ -137,3 +138,37 @@ def test_hard_delete_user_cascades_personal_data(session: Session) -> None:
 def test_role_skill_stats_refreshes(session: Session) -> None:
     session.execute(text("REFRESH MATERIALIZED VIEW role_skill_stats"))
     assert session.scalar(text("SELECT count(*) FROM role_skill_stats")) == 0
+
+
+def consent(user: User, version: str = "2026-12") -> Consent:
+    return Consent(user=user, consent_type=ConsentType.ACIK_RIZA, version=version, accepted_at=text("now()"))
+
+
+def test_consent_can_be_withdrawn_and_given_again(session: Session) -> None:
+    # Migration 0002: geri alınan onay satırı kalır, aynı sürüm yeniden onaylanınca yeni satır eklenir.
+    user = make_user_with_analysis(session)
+    first = session.scalar(select(Consent).where(Consent.user_id == user.id))
+    assert first is not None and first.withdrawn_at is None
+    first.withdrawn_at = text("now()")  # type: ignore[assignment]
+    session.add(consent(user))
+    session.flush()
+
+    rows = (
+        session.execute(
+            text("SELECT withdrawn_at IS NULL FROM consents WHERE user_id = :u ORDER BY withdrawn_at NULLS LAST"),
+            {"u": user.id},
+        )
+        .scalars()
+        .all()
+    )
+    assert rows == [False, True]  # biri geri alınmış, biri yürürlükte
+
+
+def test_same_version_cannot_be_active_twice(session: Session) -> None:
+    user = make_user_with_analysis(session)  # 2026-12 sürümü yürürlükte
+    session.add(consent(user, "2027-01"))  # yeni sürüm: sorun yok
+    session.flush()
+    with session.begin_nested():
+        session.add(consent(user))  # 2026-12 ikinci kez yürürlükte olamaz
+        with pytest.raises(IntegrityError):
+            session.flush()
