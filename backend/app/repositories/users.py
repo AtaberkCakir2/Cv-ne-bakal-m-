@@ -6,11 +6,11 @@ Modeller app/db/models/user.py'de (sahibi: Ataberk). Silinmiş (deleted_at dolu)
 import uuid
 from datetime import datetime
 
-from sqlalchemy import select, update
-from sqlalchemy.orm import Session
+from sqlalchemy import delete, select, update
+from sqlalchemy.orm import Session, selectinload
 
 from app.db.enums import TokenPurpose
-from app.db.models import Consent, RefreshToken, User, UserToken
+from app.db.models import Analysis, AuditLog, Consent, RefreshToken, Resource, Role, Skill, User, UserToken
 
 
 class UserRepository:
@@ -26,7 +26,7 @@ class UserRepository:
         return self.session.scalar(select(User).where(User.id == user_id, User.deleted_at.is_(None)))
 
     def email_exists(self, email: str) -> bool:
-        # Silinmiş hesap da e-postayı tutar (unique); kalıcı silme işi gelene kadar yeniden kayıt olunamaz.
+        # Silinen hesabın e-postası silme anında anonimleştirilir (T-049), yani adres yeniden kayıt için serbest kalır.
         return self.session.scalar(select(User.id).where(User.email == email)) is not None
 
     def add_user(self, user: User) -> User:
@@ -36,6 +36,68 @@ class UserRepository:
 
     def add_consents(self, consents: list[Consent]) -> None:
         self.session.add_all(consents)
+
+    def list_consents(self, user_id: uuid.UUID) -> list[Consent]:
+        return list(
+            self.session.scalars(
+                select(Consent).where(Consent.user_id == user_id).order_by(Consent.accepted_at, Consent.consent_type)
+            )
+        )
+
+    # --- profil ve KVKK (T-049)
+    def get_active_role(self, role_id: int) -> Role | None:
+        return self.session.scalar(select(Role).where(Role.id == role_id, Role.is_active))
+
+    def list_refresh_tokens(self, user_id: uuid.UUID) -> list[RefreshToken]:
+        return list(
+            self.session.scalars(
+                select(RefreshToken).where(RefreshToken.user_id == user_id).order_by(RefreshToken.created_at)
+            )
+        )
+
+    def list_analyses(self, user_id: uuid.UUID) -> list[Analysis]:
+        """Kullanıcının analizleri, bağlı kayıtlarıyla (dışa aktarma için). Silinmiş ama henüz kalıcı silinmemiş
+        analizler de dahil: o süre boyunca hâlâ işlenen veridir (KVKK md. 11)."""
+        return list(
+            self.session.scalars(
+                select(Analysis)
+                .where(Analysis.user_id == user_id)
+                .options(
+                    selectinload(Analysis.target_role),
+                    selectinload(Analysis.skills),
+                    selectinload(Analysis.unverified_skills),
+                    selectinload(Analysis.recommendations),
+                    selectinload(Analysis.feedback),
+                )
+                .order_by(Analysis.created_at)
+            )
+        )
+
+    def skill_names(self, skill_ids: set[int]) -> dict[int, str]:
+        if not skill_ids:
+            return {}
+        rows = self.session.execute(select(Skill.id, Skill.canonical_name).where(Skill.id.in_(skill_ids)))
+        return dict(rows.tuples().all())
+
+    def resources(self, resource_ids: set[int]) -> dict[int, Resource]:
+        if not resource_ids:
+            return {}
+        return {r.id: r for r in self.session.scalars(select(Resource).where(Resource.id.in_(resource_ids)))}
+
+    def list_audit(self, user_id: uuid.UUID) -> list[AuditLog]:
+        return list(self.session.scalars(select(AuditLog).where(AuditLog.user_id == user_id).order_by(AuditLog.id)))
+
+    def purge_deleted_analyses(self, before: datetime) -> None:
+        self.session.execute(delete(Analysis).where(Analysis.deleted_at.is_not(None), Analysis.deleted_at < before))
+
+    def add_audit(self, entry: AuditLog) -> None:
+        self.session.add(entry)
+
+    def purge_deleted_users(self, before: datetime) -> int:
+        """deleted_at'i `before`'dan eski kullanıcıları kalıcı siler; bağlı kayıtlar CASCADE ile gider,
+        audit_logs.user_id NULL olur. Silinen kullanıcı sayısını döner."""
+        result = self.session.execute(delete(User).where(User.deleted_at.is_not(None), User.deleted_at < before))
+        return int(getattr(result, "rowcount", 0) or 0)
 
     # --- refresh token
     def add_refresh_token(self, token: RefreshToken) -> None:

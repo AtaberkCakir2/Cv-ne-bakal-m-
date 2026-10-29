@@ -403,7 +403,198 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/MeOut"
+                  "$ref": "#/components/schemas/ProfileOut"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Kullanıcı"
+        ],
+        "summary": "Hesabımı sil",
+        "description": "Şifre tekrar istenir. Kişisel bilgiler hemen anonimleştirilir, oturumlar kapanır; hesap 30 gün sonra kalıcı\nolarak silinir.",
+        "operationId": "delete_me_api_v1_users_me_delete",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteAccountIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "403": {
+            "description": "Şifre hatalı",
+            "content": {
+              "application/problem+json": {}
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      },
+      "patch": {
+        "tags": [
+          "Kullanıcı"
+        ],
+        "summary": "Profil / hedef pozisyon güncelleme",
+        "description": "Sadece gönderilen alanlar değişir. `target_role_id: null` hedef pozisyonu temizler.",
+        "operationId": "update_me_api_v1_users_me_patch",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProfileUpdateIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProfileOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Pozisyon bulunamadı",
+            "content": {
+              "application/problem+json": {}
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/users/me/consents": {
+      "get": {
+        "tags": [
+          "Kullanıcı"
+        ],
+        "summary": "Onay kayıtlarım (sürümlü)",
+        "operationId": "my_consents_api_v1_users_me_consents_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/ConsentOut"
+                  },
+                  "type": "array",
+                  "title": "Response My Consents Api V1 Users Me Consents Get"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Kullanıcı"
+        ],
+        "summary": "Metnin yeni sürümünü onayla",
+        "description": "Yasal metin değişince istemci yeni sürümü burada onaylatır. Eski onay kayıtları silinmez.",
+        "operationId": "accept_consents_api_v1_users_me_consents_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConsentsIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/ConsentOut"
+                  },
+                  "type": "array",
+                  "title": "Response Accept Consents Api V1 Users Me Consents Post"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/users/me/export": {
+      "get": {
+        "tags": [
+          "Kullanıcı"
+        ],
+        "summary": "Verilerimi indir (JSON)",
+        "description": "KVKK md. 11: hesaba bağlı bütün kişisel veriler. CV dosyası ve metni saklanmadığı için yoktur.",
+        "operationId": "export_me_api_v1_users_me_export_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExportOut"
                 }
               }
             }
@@ -419,6 +610,16 @@
   },
   "components": {
     "schemas": {
+      "AnalysisStatus": {
+        "type": "string",
+        "enum": [
+          "queued",
+          "processing",
+          "done",
+          "failed"
+        ],
+        "title": "AnalysisStatus"
+      },
       "ConsentIn": {
         "properties": {
           "consent_type": {
@@ -439,6 +640,29 @@
         ],
         "title": "ConsentIn"
       },
+      "ConsentOut": {
+        "properties": {
+          "consent_type": {
+            "$ref": "#/components/schemas/ConsentType"
+          },
+          "version": {
+            "type": "string",
+            "title": "Version"
+          },
+          "accepted_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Accepted At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "consent_type",
+          "version",
+          "accepted_at"
+        ],
+        "title": "ConsentOut"
+      },
       "ConsentType": {
         "type": "string",
         "enum": [
@@ -447,6 +671,40 @@
           "kullanim_kosullari"
         ],
         "title": "ConsentType"
+      },
+      "ConsentsIn": {
+        "properties": {
+          "consents": {
+            "items": {
+              "$ref": "#/components/schemas/ConsentIn"
+            },
+            "type": "array",
+            "minItems": 1,
+            "title": "Consents"
+          }
+        },
+        "type": "object",
+        "required": [
+          "consents"
+        ],
+        "title": "ConsentsIn",
+        "description": "Metnin yeni sürümü onaylanınca gönderilir. Aynı sürüm daha önce onaylandıysa tekrar kaydedilmez."
+      },
+      "DeleteAccountIn": {
+        "properties": {
+          "password": {
+            "type": "string",
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Password"
+          }
+        },
+        "type": "object",
+        "required": [
+          "password"
+        ],
+        "title": "DeleteAccountIn",
+        "description": "Çalınmış bir oturumla hesap silinemesin diye şifre tekrar istenir."
       },
       "DependencyStatus": {
         "properties": {
@@ -499,6 +757,412 @@
         ],
         "title": "EmailIn"
       },
+      "ExportActivity": {
+        "properties": {
+          "action": {
+            "type": "string",
+            "title": "Action"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "action",
+          "created_at"
+        ],
+        "title": "ExportActivity"
+      },
+      "ExportAnalysis": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "target_role": {
+            "type": "string",
+            "title": "Target Role"
+          },
+          "status": {
+            "$ref": "#/components/schemas/AnalysisStatus"
+          },
+          "cv_sha256": {
+            "type": "string",
+            "title": "Cv Sha256"
+          },
+          "cv_pages": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cv Pages"
+          },
+          "match_score": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Match Score"
+          },
+          "postings_analyzed": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Postings Analyzed"
+          },
+          "completed_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Completed At"
+          },
+          "deleted_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Deleted At"
+          },
+          "duration_ms": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Duration Ms"
+          },
+          "error_code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error Code"
+          },
+          "model_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Model Name"
+          },
+          "prompt_version": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Prompt Version"
+          },
+          "skills": {
+            "items": {
+              "$ref": "#/components/schemas/ExportSkill"
+            },
+            "type": "array",
+            "title": "Skills"
+          },
+          "unverified_skills": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "type": "array",
+            "title": "Unverified Skills"
+          },
+          "recommendations": {
+            "items": {
+              "$ref": "#/components/schemas/ExportRecommendation"
+            },
+            "type": "array",
+            "title": "Recommendations"
+          },
+          "feedback": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Feedback"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "created_at",
+          "target_role",
+          "status",
+          "cv_sha256",
+          "cv_pages",
+          "match_score",
+          "postings_analyzed",
+          "completed_at",
+          "deleted_at",
+          "duration_ms",
+          "error_code",
+          "model_name",
+          "prompt_version",
+          "skills",
+          "unverified_skills",
+          "recommendations",
+          "feedback"
+        ],
+        "title": "ExportAnalysis"
+      },
+      "ExportOut": {
+        "properties": {
+          "exported_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Exported At"
+          },
+          "profile": {
+            "$ref": "#/components/schemas/ProfileOut"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "consents": {
+            "items": {
+              "$ref": "#/components/schemas/ConsentOut"
+            },
+            "type": "array",
+            "title": "Consents"
+          },
+          "sessions": {
+            "items": {
+              "$ref": "#/components/schemas/ExportSession"
+            },
+            "type": "array",
+            "title": "Sessions"
+          },
+          "analyses": {
+            "items": {
+              "$ref": "#/components/schemas/ExportAnalysis"
+            },
+            "type": "array",
+            "title": "Analyses"
+          },
+          "activity": {
+            "items": {
+              "$ref": "#/components/schemas/ExportActivity"
+            },
+            "type": "array",
+            "title": "Activity"
+          },
+          "note": {
+            "type": "string",
+            "title": "Note",
+            "default": "CV dosyanız ve CV metniniz saklanmadığı için bu dosyada yoktur. cv_sha256, dosyanın parmak izidir; içerik bundan geri elde edilemez."
+          }
+        },
+        "type": "object",
+        "required": [
+          "exported_at",
+          "profile",
+          "created_at",
+          "consents",
+          "sessions",
+          "analyses",
+          "activity"
+        ],
+        "title": "ExportOut"
+      },
+      "ExportRecommendation": {
+        "properties": {
+          "skill": {
+            "type": "string",
+            "title": "Skill"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "url": {
+            "type": "string",
+            "title": "Url"
+          },
+          "rank": {
+            "type": "integer",
+            "title": "Rank"
+          },
+          "reason_text": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason Text"
+          }
+        },
+        "type": "object",
+        "required": [
+          "skill",
+          "title",
+          "url",
+          "rank",
+          "reason_text"
+        ],
+        "title": "ExportRecommendation"
+      },
+      "ExportSession": {
+        "properties": {
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "expires_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Expires At"
+          },
+          "revoked_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Revoked At"
+          },
+          "user_agent": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "User Agent"
+          }
+        },
+        "type": "object",
+        "required": [
+          "created_at",
+          "expires_at",
+          "revoked_at",
+          "user_agent"
+        ],
+        "title": "ExportSession"
+      },
+      "ExportSkill": {
+        "properties": {
+          "skill": {
+            "type": "string",
+            "title": "Skill"
+          },
+          "kind": {
+            "type": "string",
+            "title": "Kind"
+          },
+          "level": {
+            "type": "string",
+            "title": "Level"
+          },
+          "confidence": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Confidence"
+          },
+          "demand_ratio": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Demand Ratio"
+          },
+          "priority": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Priority"
+          }
+        },
+        "type": "object",
+        "required": [
+          "skill",
+          "kind",
+          "level",
+          "confidence",
+          "demand_ratio",
+          "priority"
+        ],
+        "title": "ExportSkill"
+      },
       "HTTPValidationError": {
         "properties": {
           "detail": {
@@ -545,7 +1209,7 @@
         ],
         "title": "LoginIn"
       },
-      "MeOut": {
+      "ProfileOut": {
         "properties": {
           "id": {
             "type": "string",
@@ -573,6 +1237,16 @@
           "is_verified": {
             "type": "boolean",
             "title": "Is Verified"
+          },
+          "target_role": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/RoleRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
           }
         },
         "type": "object",
@@ -581,9 +1255,42 @@
           "email",
           "full_name",
           "role",
-          "is_verified"
+          "is_verified",
+          "target_role"
         ],
-        "title": "MeOut"
+        "title": "ProfileOut"
+      },
+      "ProfileUpdateIn": {
+        "properties": {
+          "full_name": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 120
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Full Name"
+          },
+          "target_role_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Target Role Id",
+            "description": "GET /roles listesindeki pozisyonun id'si"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "ProfileUpdateIn",
+        "description": "Sadece gönderilen alanlar değişir; `null` göndermek alanı temizler. Bilinmeyen alan 422 verir."
       },
       "ReadinessResponse": {
         "properties": {
@@ -703,6 +1410,29 @@
           "new_password"
         ],
         "title": "ResetPasswordIn"
+      },
+      "RoleRef": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "slug": {
+            "type": "string",
+            "title": "Slug"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "slug",
+          "name"
+        ],
+        "title": "RoleRef"
       },
       "TokenIn": {
         "properties": {
