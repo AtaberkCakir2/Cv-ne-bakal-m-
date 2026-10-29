@@ -6,6 +6,7 @@ requires-python = ">=3.12"
 # Veritabanı modelleri backend paketinden gelir (app.db); kurulum: pip install -e ../backend -e ".[dev]"
 dependencies = [
     "httpx>=0.27",
+    "celery[redis]>=5.4,<6",  # gece toplaması (T-034)
 ]
 
 [project.optional-dependencies]
@@ -42,3 +43,12 @@ python_version = "3.12"
 strict = true
 # app.db modelleri backend'den gelir; editable kurulumu mypy takip etmediği için yolu açıkça verilir.
 mypy_path = "$MYPY_CONFIG_FILE_DIR/../backend"
+
+# Celery tip bilgisi yayınlamıyor (py.typed yok); görev dekoratörü bu yüzden tipsiz sayılır.
+[[tool.mypy.overrides]]
+module = ["celery", "celery.*"]
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = ["collector.tasks"]
+disallow_untyped_decorators = false

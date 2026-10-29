@@ -180,12 +180,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-034 · Zamanlanmış veri toplama (Celery beat)
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 16.11.2026 – 22.11.2026 · **Öncelik:** P1 · **Efor:** 10 saat · **Alan:** Veri Toplama
 - **Bağımlılık:** T-016, T-033
 - **Destek:** —
 - **Çıktı:** Zamanlanmış görevler
 - **Kabul kriteri:** Her gece 03:00; kaynak başına 3-5 sn rastgele gecikme, üstel geri çekilme ile tekrar deneme, dönüşümlü User-Agent. Her çalışma scrape_runs tablosuna yazılır.
+- **Not:** `collector/nightly.py` (zincir: HN/Himalayas/Remote OK/Remotive → normalize → role_skill_stats) + `collector/tasks.py` (Celery beat 03:00 Europe/Istanbul, `data` kuyruğu, Redis kilidi, 3 sa sınır) + `python -m collector nightly`; `worker-data` compose servisi (`--profile data`, `scraper/Dockerfile`), CI'da imaj derleniyor (29.10). İstekler arası 3-5 sn rastgele bekleme, 429/5xx/ağ hatasında 5→40 sn üstel geri çekilme; bir kaynak düşerse diğerleri devam eder, 403/kalıcı 429 alan kaynak pasife alınır (kaynak-uygunluk kural 3). **Dönüşümlü User-Agent yapılmadı:** kaynak-uygunluk kural 3-4 UA sahteciliğini yasaklıyor, kimlik belirten tek UA kullanılıyor (karar önerisi). Gerçek deneme (Celery üzerinden, 29.10): 12,5 dk, +210 ilan (Himalayas 206), 4 kaynak `success`, istatistik 1.574 satır. T-016 (Playwright) bitmediği için şimdilik sadece API kaynakları; HTML kaynak gelince robots.txt kontrolü (kural 2) o adaptörde. Bilinen: HN'de alınmayan yorumlar (iş arayan, TR/EN dışı) her gece yeniden okunuyor (~150 istek, ~10 dk).
 
 ### T-045 · Pozisyon-yetkinlik istatistikleri
 

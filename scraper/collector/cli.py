@@ -11,19 +11,21 @@ python -m collector export-taxonomy --out taxonomy.json
 python -m collector normalize                 # sonunda role_skill_stats'ı da yeniler
 python -m collector refresh-stats
 python -m collector role-stats [--top 5]
+python -m collector nightly [--no-jitter]     # gece zinciri elle: kaynaklar → normalize → istatistik (T-034)
 python -m collector export-postings --out postings.jsonl [--limit 100]
 python -m collector export-template [--out exports/template_input.json] [--top 30]
 """
 
 import argparse
 import json
+import logging
 import sys
 from collections.abc import Callable, Iterable
 from pathlib import Path
 
 from app.db.session import get_sessionmaker
 
-from collector import esco, taxonomy
+from collector import esco, nightly, taxonomy
 from collector.http import PoliteClient
 from collector.posting import Posting, SourceInfo
 from collector.sources import emscad, himalayas, hn, remoteok, remotive
@@ -68,6 +70,8 @@ def build_parser() -> argparse.ArgumentParser:
     tpl = sub.add_parser("export-template", help="Sentetik CV şablon girdisi: pozisyon × yetkinlik × talep (T-019)")
     tpl.add_argument("--out", type=Path, default=TEMPLATE_OUT)
     tpl.add_argument("--top", type=int, default=template_input.DEFAULT_TOP)
+    ng = sub.add_parser("nightly", help="Gece toplamasını şimdi çalıştır (normalde Celery beat 03:00)")
+    ng.add_argument("--no-jitter", action="store_true", help="3-5 sn rastgele bekleme yerine kaynağın alt sınırı")
     return parser
 
 
@@ -110,6 +114,12 @@ def main(argv: list[str] | None = None) -> int:
         with session_factory() as session:
             print(f"role_skill_stats yenilendi: {stats.refresh(session)} satır")
         return 0
+
+    if args.command == "nightly":
+        logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
+        report = nightly.run_nightly(session_factory, jitter=None if args.no_jitter else nightly.JITTER_S)
+        print(report.summary())
+        return 0 if report.ok else 1
 
     if args.command == "refresh-stats":
         with session_factory() as session:
