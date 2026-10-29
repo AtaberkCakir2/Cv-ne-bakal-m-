@@ -22,7 +22,7 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 - **Destek:** —
 - **Çıktı:** Benchmark raporu (poster için de kullanılacak)
 - **Kabul kriteri:** Aday modeller: Llama 3.x 8B Instruct (q4_K_M), Gemma 9B, Qwen 7B. 10 Türkçe CV ile: JSON uyumu, yetkinlik doğruluğu, token/sn, RAM. CPU ve (varsa) GPU ölçümü. Kazanan model + yedek model seçildi.
-- **Not:** Rapor `ai/eval/benchmark/README.md`, karar #25: Llama 3.1 8B (yedek Gemma 2 9B), JSON şeması zorunlu. Referans etiketler geçici (Claude); T-019 gold gelince ve VPS'te (T-056) tekrar ölçülmeli. Docker gerekmedi: Ollama Windows'a doğrudan kuruldu (0.40.13).
+- **Not:** Rapor `ai/eval/benchmark/README.md`, karar #26: Llama 3.1 8B (yedek Gemma 2 9B), JSON şeması zorunlu. Referans etiketler geçici (Claude); T-019 gold gelince ve VPS'te (T-056) tekrar ölçülmeli. Docker gerekmedi: Ollama Windows'a doğrudan kuruldu (0.40.13).
 
 ### T-019 · Etiketli değerlendirme veri seti (altın standart)
 

@@ -1,6 +1,6 @@
 # LLM benchmark raporu (T-018)
 
-**Sonuç:** kazanan **Llama 3.1 8B Instruct (q4_K_M)**, yedek **Gemma 2 9B**. Üretimde Ollama'nın JSON şeması (structured output) zorunlu (karar önerisi: `docs/kararlar.md` #25).
+**Sonuç:** kazanan **Llama 3.1 8B Instruct (q4_K_M)**, yedek **Gemma 2 9B**. Üretimde Ollama'nın JSON şeması (structured output) zorunlu (karar önerisi: `docs/kararlar.md` #26).
 
 Tarih: 29.10.2026 · Ölçen: Burak (Claude Code ile) · Script: [`../scripts/benchmark_llm.py`](../scripts/benchmark_llm.py) · Ham sonuçlar: [`results/`](results/)
 
