@@ -221,12 +221,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-050 · Rate limit ve hata yönetimi
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 30.11.2026 – 06.12.2026 · **Öncelik:** P1 · **Efor:** 6 saat · **Alan:** Backend API
 - **Bağımlılık:** T-037
 - **Destek:** —
 - **Çıktı:** Middleware
 - **Kabul kriteri:** Redis tabanlı sınır: analiz 5/saat/kullanıcı, giriş 10/dk/IP, genel 100/dk. RFC 7807 hata formatı; 429 için Retry-After başlığı.
+- **Not:** 29.10.2026: `app/core/rate_limit.py` (Redis sabit pencere, fail-open, IP özetli anahtar) ve `app/api/rate_limits.py`. Genel 100/dk/IP ve giriş-kayıt-sıfırlama 10/dk/IP uçlara bağlı; analiz 5/saat/kullanıcı (`AnalysesRateLimit`) hazır, analiz oluşturma ucu kimlik doğrulamaya bağlanınca (#9, T-048) eklenecek. Production'da `FORWARDED_ALLOW_IPS` (Caddy) şart (T-075, Ataberk).
 
 ### T-059 · Electron masaüstü uygulaması
 

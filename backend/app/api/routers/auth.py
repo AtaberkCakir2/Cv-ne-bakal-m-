@@ -1,10 +1,12 @@
-"""Kimlik doğrulama uçları (contracts/api.md, "Kimlik doğrulama"). Rate limit T-050'de eklenecek."""
+"""Kimlik doğrulama uçları (contracts/api.md, "Kimlik doğrulama"). Giriş/kayıt/sıfırlama uçlarında IP başına sınır var
+(T-050, app/api/rate_limits.py)."""
 
 from typing import Annotated, Any, NoReturn
 
 from fastapi import APIRouter, Depends, Header, HTTPException, Request, Response
 
 from app.api.deps import AppSettings, DbSession, get_email_sender
+from app.api.rate_limits import AuthRateLimit
 from app.schemas.auth import (
     EmailIn,
     LoginIn,
@@ -44,6 +46,7 @@ def _tokens(pair: TokenPair) -> TokenOut:
 
 @router.post(
     "/register",
+    dependencies=[AuthRateLimit],
     status_code=201,
     response_model=RegisterOut,
     summary="Kayıt + KVKK rızaları",
@@ -65,7 +68,11 @@ def register(body: RegisterIn, request: Request, auth: Auth) -> RegisterOut:
 
 
 @router.post(
-    "/login", response_model=TokenOut, summary="Giriş", responses={401: {"description": "Hatalı bilgi", **_PROBLEM}}
+    "/login",
+    response_model=TokenOut,
+    summary="Giriş",
+    dependencies=[AuthRateLimit],
+    responses={401: {"description": "Hatalı bilgi", **_PROBLEM}, 429: {"description": "Çok fazla deneme", **_PROBLEM}},
 )
 def login(body: LoginIn, auth: Auth, user_agent: UserAgent = None) -> TokenOut:
     try:
@@ -96,6 +103,7 @@ def logout(body: RefreshIn, auth: Auth) -> Response:
 
 @router.post(
     "/verify-email",
+    dependencies=[AuthRateLimit],
     status_code=204,
     summary="E-posta doğrulama",
     responses={400: {"description": "Bağlantı geçersiz", **_PROBLEM}},
@@ -108,7 +116,7 @@ def verify_email(body: TokenIn, auth: Auth) -> Response:
     return Response(status_code=204)
 
 
-@router.post("/forgot-password", status_code=202, summary="Şifre sıfırlama e-postası")
+@router.post("/forgot-password", status_code=202, summary="Şifre sıfırlama e-postası", dependencies=[AuthRateLimit])
 def forgot_password(body: EmailIn, auth: Auth) -> Response:
     """E-posta kayıtlı olsun olmasın 202 döner (hesap var mı yok mu belli edilmez)."""
     auth.forgot_password(str(body.email))
@@ -117,6 +125,7 @@ def forgot_password(body: EmailIn, auth: Auth) -> Response:
 
 @router.post(
     "/reset-password",
+    dependencies=[AuthRateLimit],
     status_code=204,
     summary="Yeni şifre belirleme",
     responses={400: {"description": "Bağlantı geçersiz", **_PROBLEM}},
