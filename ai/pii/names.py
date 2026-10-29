@@ -65,13 +65,17 @@ _FIRST_NAME_PHRASE = re.compile(rf"\b({_WORD})((?:{_SP}{_NAME_TOKEN}){{1,2}})")
 _MIN_PROPAGATE_LEN = 3
 
 
-def find_names(text: str, lang: Lang = "tr", detector: NameDetector | None = None) -> list[Span]:
+def find_names(
+    text: str, lang: Lang = "tr", detector: NameDetector | None = None, *, header: bool = True
+) -> list[Span]:
+    """`header=False`: başlık kuralı (2) uygulanmaz; ilk satırı ad olmayan belgeler için (ilan metni)."""
     spans: list[Span] = []
     for m in LABELED.finditer(text):
         value = m.group(1).rstrip()
         if value:
             spans.append(Span(m.start(1), m.start(1) + len(value), Kind.NAME))
-    spans += _header_name(text)
+    if header:
+        spans += _header_name(text)
     spans += [Span(m.start(1), m.end(1), Kind.NAME) for m in HONORIFIC.finditer(text)]
     for m in _FIRST_NAME_PHRASE.finditer(text):
         if m.group(1) in FIRST_NAMES:
