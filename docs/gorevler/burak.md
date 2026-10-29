@@ -22,15 +22,18 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 - **Destek:** —
 - **Çıktı:** Benchmark raporu (poster için de kullanılacak)
 - **Kabul kriteri:** Aday modeller: Llama 3.x 8B Instruct (q4_K_M), Gemma 9B, Qwen 7B. 10 Türkçe CV ile: JSON uyumu, yetkinlik doğruluğu, token/sn, RAM. CPU ve (varsa) GPU ölçümü. Kazanan model + yedek model seçildi.
+- **Devam notu (29.10.2026):** Yapılan: henüz başlanmadı. Docker Desktop kurulu ama motor çalışmıyor: WSL kurulu değil. Repo kökünde `.env` oluşturuldu (rastgele şifreler, git dışı). #10 birleşti; Ollama `0.40.10`'a sabitlendi. Bu bilgisayar: i7-13700H, 32 GB RAM, RTX 4060 Laptop 8 GB → GPU ölçümü yapılabilir. · Sıradaki adım: yönetici PowerShell'de `wsl --install` + yeniden başlatma → Docker'da "Engine running" → `docker compose up -d --wait` → 3 aday modeli indir (`docker compose exec ollama ollama pull <model>`) → benchmark scripti (`ai/benchmark/`): JSON uyumu, token/sn, RAM/VRAM (CPU ve GPU), doğruluk T-019'un ilk 10 TR CV'si etiketlenince. · Açık sorular / engeller: WSL kurulumu Burak'ta (yönetici izni); 10 TR CV T-019'dan (hedef 03.11). · Branch: yok (başlarken `burak/ollama-benchmark` açılacak)
 
 ### T-019 · Etiketli değerlendirme veri seti (altın standart)
 
 - **Durum:** Devam Ediyor
-- **Tarih:** 19.10.2026 – 01.11.2026 · **Öncelik:** P0 · **Efor:** 12 saat · **Alan:** AI / NLP
+- **Tarih:** 19.10.2026 – 28.11.2026 · **Öncelik:** P0 · **Efor:** 12 saat (Burak; ekipçe toplam ~26–36 kişi-saat) · **Alan:** AI / NLP
 - **Bağımlılık:** —
-- **Destek:** Ataberk, Anıl
-- **Çıktı:** eval/dataset (anonim)
-- **Kabul kriteri:** En az 50 anonimleştirilmiş CV (TR + EN, farklı formatlar, 5 taranmış). Her CV'nin yetkinlikleri 2 kişi tarafından elle etiketlendi; anlaşmazlıklar 3. kişiyle çözüldü. Gerçek CV'ler için sahiplerinden yazılı izin.
+- **Destek:** Ataberk (şablon girdisi, etiketleme), Anıl (etiketleme)
+- **Çıktı:** ai/eval/dataset (sentetik)
+- **Kabul kriteri:** 50 sentetik CV (karar #20: gerçek kişilere ait CV toplanmaz): 25 TR + 25 EN; 10 pozisyon × 5; tek ve çok sütunlu; en az 5 taranmış; yeni mezun / stajyer / deneyimli dengeli. Tamamı en az 1 kişi, 20'si 2 kişi tarafından bağımsız elle etiketlendi; anlaşmazlıklar 3. kişiyle çözüldü; çift etiketlenen alt kümede etiketleyiciler arası F1 ≥ 0,85. Çift etiketlenen 20 CV dengeli seçilir: en az 8 TR + 8 EN, en az 6 çok sütunlu, en az 2 taranmış, üç deneyim düzeyinden de. Etiketler sıfırdan verilir; şablonun yetkinlik listesi veya bir eşleyicinin çıktısı cevap anahtarı olarak kullanılmaz.
+- **Not:** Plan #30'da Ataberk'le kararlaştırıldı (29.10.2026). İlk 10 Türkçe CV T-018 benchmark'ı için öncelikli (hedef 03.11). Şablon betiği `ai/eval/`'de; girdi listesi (pozisyon × yetkinlik × eş anlamlı, `role_skill_stats` oranlarıyla) Ataberk'ten JSON olarak gelir. CV üretiminde ÜYZ kullanılırsa araç adı ve sürümü TÜBİTAK beyanına eklenir.
+- **Devam notu (29.10.2026):** Yapılan: plan güncellemesi (#34); `ai/eval/scripts/generate_cvs.py` (JSON → tek/çok sütunlu PDF, taranmış benzetimi, manifest); **ilk 10 TR CV** (`syn-004`…`syn-013`, 10 pozisyonun her birinden 1; 3 çok sütunlu, 2 taranmış) — metinleri Claude Opus 5.5 ile yazıldı (ÜYZ beyanına eklenecek), ekipçe gözden geçirilmeli. · Sıradaki adım: (1) 10 TR CV'yi etiketle → T-018 doğruluk ölçümü; (2) Ataberk'in `template_input.json`'u gelince kalan 37 CV (25 EN dahil); (3) çift etiketlenecek 20 CV'yi dengeli seç (`double: true`). · Açık sorular / engeller: #30 (karar #20) ve #34 birleşmeli; Ataberk'in girdi JSON'u. · Branch: `burak/sentetik-cv-uretimi` (#34'ün üstünde)
 
 ### T-024 · UML diyagramları
 
