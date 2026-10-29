@@ -30,8 +30,10 @@ def test_application_link_address_and_dates_are_kept() -> None:
 
 
 def test_cv_masking_still_uses_header_rule() -> None:
-    # Fark bilinçli: CV'de ilk satır addır, ilanda başlıktır.
-    assert mask_text(POSTING_TR, "tr").startswith("[AD SOYAD]\n")
+    # Fark bilinçli: CV'de ilk satırlardaki ad satırı maskelenir, ilanda başlık kuralı hiç çalışmaz.
+    cv = "ZEYNEP KILIÇ\nBackend Geliştirici"  # büyük harfli ad sadece başlık kuralıyla bulunur
+    assert mask_text(cv, "tr") == "[AD SOYAD]\nBackend Geliştirici"
+    assert mask_posting(cv, "tr") == cv
 
 
 def test_english_posting_with_labeled_and_honorific_names() -> None:
