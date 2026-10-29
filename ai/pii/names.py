@@ -43,6 +43,8 @@ HONORIFIC = re.compile(
     r"\b(?:Prof\.\s*Dr\.|Doç\.\s*Dr\.|Dr\.\s*Öğr\.\s*Üyesi|Dr\.|Prof\.|Doç\.|Öğr\.\s*Gör\.|Arş\.\s*Gör\.|Av\.|Müh\."
     rf"|Mr\.|Mrs\.|Ms\.|Sayın|Bay|Bayan){_SP}((?:{_WORD})(?:{_SP}{_NAME_TOKEN}){{0,2}})"
 )
+# Türkçe hitaplar İngilizce metinde ad öneki değildir ("Bay Area", "North Bay").
+_TR_ONLY_TITLES = frozenset({"Sayın", "Bay", "Bayan"})
 HEADER_LINE = re.compile(rf"^[ \t]*{_NAME_TOKEN}(?:{_SP}{_NAME_TOKEN}){{1,3}}[ \t]*$")
 # İlk satırlarda ad olmayan başlıklar
 NOT_A_NAME = re.compile(
@@ -85,9 +87,12 @@ def find_names(
     *,
     header: bool = True,
     skip_words: frozenset[str] | None = None,
+    strict_honorifics: bool = False,
 ) -> list[Span]:
     """`header=False`: başlık kuralı (2) uygulanmaz; ilk satırı ad olmayan belgeler için (ilan metni).
-    `skip_words`: ad sayılmayacak kelimeler (küçük harf); verilmezse taksonomi + unvan kelimeleri."""
+    `skip_words`: ad sayılmayacak kelimeler (küçük harf); verilmezse taksonomi + unvan kelimeleri.
+    `strict_honorifics`: unvandan sonra tek kelime yetmez, tam ad (2+ kelime) veya bilinen ilk ad gerekir; ilan
+    metninde marka adı ad sayılmasın ("Dr. Squatch"). CV'de kapalı: referanstaki "Dr. Yılmaz" kaçmasın."""
     skip = (skill_words() if skip_words is None else skip_words) | TITLE_WORDS
     spans: list[Span] = []
     for m in LABELED.finditer(text):
@@ -96,7 +101,13 @@ def find_names(
             spans.append(Span(m.start(1), m.start(1) + len(value), Kind.NAME))
     if header:
         spans += _header_name(text, skip)
-    spans += [Span(m.start(1), m.end(1), Kind.NAME) for m in HONORIFIC.finditer(text)]
+    for m in HONORIFIC.finditer(text):
+        title, name = text[m.start() : m.start(1)].strip(), m.group(1)
+        if lang != "tr" and title in _TR_ONLY_TITLES:
+            continue
+        if strict_honorifics and not re.search(r"\s", name) and name.split("-")[0] not in FIRST_NAMES:
+            continue
+        spans.append(Span(m.start(1), m.end(1), Kind.NAME))
     # Her ilk ad kendi konumundan denenir: "Contact Ayşe Kaya" grubunda önceki büyük harfli kelime ("Contact")
     # eşleşmeyi yutup ilk adı atlatmasın.
     for w in _FIRST_NAME_START.finditer(text):

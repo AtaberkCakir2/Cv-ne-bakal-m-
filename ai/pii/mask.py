@@ -7,10 +7,14 @@ Kullanım:
 
 Maskelenen metin LLM'e, maskelenmemiş metin hiçbir yere gitmez. `counts` loglanabilir (kişisel veri içermez);
 metnin kendisi loglanmaz.
+
+Maskeleme idempotenttir: metindeki etiketlere ("[AD SOYAD]" …) dokunulmaz, maskelenmiş metin tekrar maskelenince
+değişmez (ilanlar her gece yeniden işlenir).
 """
 
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass, field
 
 from pii.kinds import PLACEHOLDERS, PRIORITY, Kind
@@ -28,8 +32,15 @@ class MaskResult:
 POSTING_KINDS = frozenset({Kind.NAME, Kind.EMAIL, Kind.PHONE, Kind.TCKN, Kind.IBAN})
 
 
+_PLACEHOLDER = re.compile("|".join(re.escape(p) for p in PLACEHOLDERS.values()))
+# Etiketin yerine aynı uzunlukta, harf/rakam/boşluk olmayan karakter (Unicode özel kullanım alanı): konumlar değişmez,
+# hiçbir kural (etiketli alan "name: …", ad yayma, NER) etiketin kelimelerini ad sanmaz.
+_NEUTRAL = ""
+
+
 def mask(text: str, lang: Lang = "tr", *, detector: NameDetector | None = None) -> MaskResult:
-    return _apply(text, _merge(find_structured(text) + find_names(text, lang, detector)))
+    scan, kept = _protect(text)
+    return _apply(text, _merge(_outside(text, find_structured(scan) + find_names(scan, lang, detector), kept)))
 
 
 def mask_text(text: str, lang: Lang = "tr") -> str:
@@ -39,8 +50,33 @@ def mask_text(text: str, lang: Lang = "tr") -> str:
 def mask_posting(text: str, lang: Lang = "tr", *, detector: NameDetector | None = None) -> str:
     """İş ilanı metni için: ad, e-posta, telefon, TCKN, IBAN. CV'deki başlık kuralı uygulanmaz (ilk satır ilan
     başlığıdır, ad değil); URL, adres ve tarih maskelenmez."""
-    structured = [s for s in find_structured(text) if s.kind in POSTING_KINDS]
-    return _apply(text, _merge(structured + find_names(text, lang, detector, header=False))).text
+    scan, kept = _protect(text)
+    structured = [s for s in find_structured(scan) if s.kind in POSTING_KINDS]
+    names = find_names(scan, lang, detector, header=False, strict_honorifics=True)
+    return _apply(text, _merge(_outside(text, structured + names, kept))).text
+
+
+def _protect(text: str) -> tuple[str, list[tuple[int, int]]]:
+    """Etiketleri nötr karakterlerle örter; örtülen aralıkları döndürür."""
+    kept = [(m.start(), m.end()) for m in _PLACEHOLDER.finditer(text)]
+    return _PLACEHOLDER.sub(lambda m: _NEUTRAL * len(m.group()), text), kept
+
+
+def _outside(text: str, spans: list[Span], kept: list[tuple[int, int]]) -> list[Span]:
+    """Bulguları etiketlerin dışında kalan parçalarına böler; harf veya rakam içermeyen parça atılır
+    ("name: [AD SOYAD]" etiketli alanı yeniden maskelenmez)."""
+    if not kept:
+        return spans
+    out: list[Span] = []
+    for span in spans:
+        start = span.start
+        for k_start, k_end in kept:
+            if k_end <= start or k_start >= span.end:
+                continue
+            out.append(Span(start, k_start, span.kind))
+            start = k_end
+        out.append(Span(start, span.end, span.kind))
+    return [s for s in out if any(c.isalnum() for c in text[s.start : s.end])]
 
 
 def _apply(text: str, spans: list[Span]) -> MaskResult:
