@@ -188,12 +188,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-045 · Pozisyon-yetkinlik istatistikleri
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 16.11.2026 – 22.11.2026 · **Öncelik:** P0 · **Efor:** 8 saat · **Alan:** Veri Toplama
 - **Bağımlılık:** T-033
 - **Destek:** —
 - **Çıktı:** role_skill_stats tablosu
 - **Kabul kriteri:** role_skill_stats: pozisyon × yetkinlik → ilan sayısı ve talep oranı; her gece toplama işinden sonra yenilenir.
+- **Not:** `role_skill_stats` T-012'de materialized view olarak kuruldu (son 6 ayın aktif, pozisyonu belli ilanları); T-045'te yenileme ve okuma eklendi: `scraper/etl/stats.py`, `collector refresh-stats` / `role-stats` (29.10). `collector normalize` sonunda view'ı kendisi yeniler (CONCURRENTLY: API okumaya devam eder), yani sıra import → normalize → istatistik; gece zamanlaması T-034'te bu komut zincirine bağlanacak. Gerçek veride 1.464 satır, ~2 sn. 12 pozisyondan 7'si 50 ilanın altında (`low_data`): Frontend 45, Veri Mühendisi 42, Mobil 40, Güvenlik 29, Veri Bilimci 24, Veri Analisti 5, Oyun 4 (#4'teki açık soru 2). Sözlükte soft skill'ler de sayılıyor (ör. QA'da İletişim %57); eşleştirmede (Burak, T-042) kategoriye göre süzülebilir.
 
 ### T-046 · Eğitim kaynağı havuzu
 

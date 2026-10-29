@@ -199,12 +199,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-049 · Profil ve KVKK endpoint'leri
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 23.11.2026 – 29.11.2026 · **Öncelik:** P0 · **Efor:** 10 saat · **Alan:** Backend API
 - **Bağımlılık:** T-037
 - **Destek:** —
 - **Çıktı:** /users/me endpoint'leri
 - **Kabul kriteri:** Profil güncelleme, hedef pozisyon; rıza kaydı (sürümlü); verilerimi indir (JSON); hesabımı sil (anında anonimleştirme, 30 gün içinde kalıcı silme).
+- **Not:** 29.10.2026: `GET/PATCH /users/me` (hedef pozisyon dahil), `GET/POST /users/me/consents` (sürümlü, eski sürüm silinmez), `GET /users/me/export` (profil, onaylar, oturumlar, analizler, işlem kayıtları), `DELETE /users/me` (şifre tekrar istenir; e-posta/ad/şifre hemen anonimleşir, oturumlar kapanır) ve `scripts/purge_deleted_users.py` (30 günü geçen hesap ve analizleri kalıcı siler; Celery beat T-039'a bağlanana kadar cron). Açık rızanın geri alınması için `consents` tablosuna geri alma alanı gerekiyor (Ataberk).
 
 ### T-053 · Sonuç panosu
 

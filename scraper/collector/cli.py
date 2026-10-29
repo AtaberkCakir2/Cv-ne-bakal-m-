@@ -8,7 +8,9 @@ python -m collector import emscad --csv data/fake_job_postings.csv [--active]
 python -m collector stats
 python -m collector seed-taxonomy
 python -m collector export-taxonomy --out taxonomy.json
-python -m collector normalize
+python -m collector normalize                 # sonunda role_skill_stats'ı da yeniler
+python -m collector refresh-stats
+python -m collector role-stats [--top 5]
 python -m collector export-postings --out postings.jsonl [--limit 100]
 """
 
@@ -25,6 +27,7 @@ from collector.http import PoliteClient
 from collector.posting import Posting, SourceInfo
 from collector.sources import emscad, himalayas, hn, remoteok, remotive
 from collector.store import run_import, source_counts
+from etl import stats
 from etl.pipeline import iter_contract, normalize
 
 
@@ -56,6 +59,9 @@ def build_parser() -> argparse.ArgumentParser:
     out = sub.add_parser("export-postings", help="Normalize ilanları sözleşme biçiminde JSONL'e yaz")
     out.add_argument("--out", type=Path, required=True)
     out.add_argument("--limit", type=int)
+    sub.add_parser("refresh-stats", help="role_skill_stats'ı yenile (T-045)")
+    rs = sub.add_parser("role-stats", help="Pozisyon başına ilan sayısı ve en çok istenen yetkinlikler")
+    rs.add_argument("--top", type=int, default=5)
     return parser
 
 
@@ -95,6 +101,25 @@ def main(argv: list[str] | None = None) -> int:
             f"yetkinlikli {n.with_skills} (%{100 * n.with_skills / max(n.postings, 1):.1f}), "
             f"{n.skill_links} yetkinlik bağı, {n.deactivated} benzer ilan pasife alındı"
         )
+        with session_factory() as session:
+            print(f"role_skill_stats yenilendi: {stats.refresh(session)} satır")
+        return 0
+
+    if args.command == "refresh-stats":
+        with session_factory() as session:
+            print(f"role_skill_stats yenilendi: {stats.refresh(session)} satır")
+        return 0
+
+    if args.command == "role-stats":
+        with session_factory() as session:
+            roles = stats.summaries(session, top=args.top)
+        for summary in roles:
+            warn = f"  ! az veri (< {stats.MIN_POSTINGS})" if summary.low_data else ""
+            print(f"{summary.slug:<22}{summary.total_postings:>5} ilan{warn}")
+            for d in summary.top_skills:
+                print(f"    %{100 * d.demand_ratio:5.1f}  {d.skill} ({d.posting_count})")
+        if roles and roles[0].computed_at:
+            print(f"hesaplanma: {roles[0].computed_at.astimezone():%d.%m.%Y %H:%M}")
         return 0
 
     if args.command == "export-postings":

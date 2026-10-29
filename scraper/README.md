@@ -67,6 +67,17 @@ Türkçe büyük harf: "İ" → "i", Türkçe metinde "I" hem "ı" hem "i" olara
 
 26.10.2026, 2.002 aktif ilan: pozisyonu belli %39,6 (792), yetkinlik bulunan %88 (ilan başına 7,5), 46 benzer ilan pasife alındı.
 
+## Pozisyon-yetkinlik istatistikleri (T-045)
+
+```bash
+python -m collector refresh-stats          # role_skill_stats'ı yeniler (normalize sonunda kendiliğinden çalışır)
+python -m collector role-stats --top 5     # pozisyon başına ilan sayısı ve en çok istenen yetkinlikler
+```
+
+`role_skill_stats` bir materialized view (tanımı `docs/veritabani.md`): son 6 ayın **aktif ve pozisyonu belli** ilanlarından pozisyon × yetkinlik → `posting_count`, `total_postings`, `demand_ratio`. Pasif ilanlar (EMSCAD, benzer kopyalar) girmez. Yenileme `CONCURRENTLY` yapılır, yani yenileme sırasında API eski veriyi okumaya devam eder. Okuma için `etl/stats.py`: `top_skills(session, role_slug)` ve `summaries(session)`. 50'den az ilanı olan pozisyon `low_data` olarak işaretlenir.
+
+Sıra: `import` → `normalize` (sonunda `refresh-stats`). Gece zamanlaması T-034'te. Toplama durursa ilanlar 6 ay içinde istatistikten düşer.
+
 ## Yetkinlik taksonomisi (T-017)
 
 ```bash
