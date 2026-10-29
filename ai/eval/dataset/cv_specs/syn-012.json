@@ -1,0 +1,16 @@
+{
+  "cv_id": "syn-012", "language": "tr", "layout": "multi_column", "scanned": true,
+  "target_role": "security-engineer", "experience": "new_grad", "double": false,
+  "header": {"name": "Kaan Demir", "title": "Siber Güvenlik Uzman Yardımcısı Adayı", "contact": ["kaan.demir@example.com", "0554 000 81 18", "Konya"]},
+  "sidebar": [
+    {"title": "Teknik", "list": ["Linux (Kali, Ubuntu)", "Ağ temelleri: TCP/IP, DNS", "Wireshark, Nmap", "Burp Suite", "Metasploit (temel)", "Python, Bash", "OWASP Top 10"]},
+    {"title": "Sertifika", "list": ["CompTIA Security+ (2026)", "TryHackMe — Top %5"]},
+    {"title": "Dil", "list": ["İngilizce B2"]}
+  ],
+  "main": [
+    {"title": "Hakkımda", "text": ["Sızma testi ve uygulama güvenliği alanında kariyer hedefleyen yeni mezun bir mühendisim. CTF yarışmalarında web ve ağ kategorilerinde aktifim; SIEM araçlarını öğrenmek istiyorum."]},
+    {"title": "Deneyim", "items": [{"heading": "Güvenlik Stajyeri — Ornek SOC Hizmetleri", "meta": "Yaz 2025", "bullets": ["Splunk üzerinde alarm kayıtlarını inceleyip olayları sınıflandırdım.", "Şirket içi web uygulamasında OWASP ZAP ile tarama; 3 orta seviye açığı raporladım (XSS, IDOR)."]}]},
+    {"title": "Projeler ve Yarışmalar", "items": [{"heading": "Üniversite CTF takımı — kaptan", "meta": "2023 – 2026", "text": ["Ulusal bir CTF'de 2. lik; web exploitation ve kriptografi soruları."]}, {"heading": "Ev laboratuvarı", "text": ["VirtualBox üzerinde Active Directory ortamı kurup saldırı ve savunma senaryoları denedim."]}]},
+    {"title": "Eğitim", "items": [{"heading": "Bilgisayar Mühendisliği, Lisans", "meta": "2022 – 2026", "text": ["Dersler: Bilgisayar Ağları, Kriptografi, İşletim Sistemleri"]}]}
+  ]
+}
