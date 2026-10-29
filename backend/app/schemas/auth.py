@@ -26,6 +26,15 @@ class RegisterIn(BaseModel):
 
     _email = field_validator("email")(_normalize_email)
 
+    @field_validator("consents")
+    @classmethod
+    def _no_duplicate_consents(cls, value: list[ConsentIn]) -> list[ConsentIn]:
+        # Aynı onay iki kez gelirse consents tablosundaki tekillik kısıtı commit'te 500 verirdi; burada 422 olur.
+        types = [c.consent_type for c in value]
+        if len(types) != len(set(types)):
+            raise ValueError("Her onay türü bir kez gönderilmeli.")
+        return value
+
 
 class RegisterOut(BaseModel):
     user_id: uuid.UUID

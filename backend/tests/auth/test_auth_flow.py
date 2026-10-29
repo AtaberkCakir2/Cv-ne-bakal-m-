@@ -89,6 +89,14 @@ def test_register_requires_all_consents(client: TestClient) -> None:
     assert "kullanim_kosullari" in response.json()["detail"]
 
 
+def test_register_rejects_duplicate_consent(client: TestClient) -> None:
+    response = client.post(
+        f"{API}/auth/register",
+        json={"email": EMAIL, "password": PASSWORD, "consents": [*CONSENTS, CONSENTS[0]]},
+    )
+    assert response.status_code == 422
+
+
 def test_register_duplicate_email_is_case_insensitive(client: TestClient) -> None:
     register(client)
     response = client.post(
