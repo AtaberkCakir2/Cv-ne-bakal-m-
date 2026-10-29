@@ -78,6 +78,14 @@ python -m collector role-stats --top 5     # pozisyon başına ilan sayısı ve 
 
 Sıra: `import` → `normalize` (sonunda `refresh-stats`). Gece zamanlaması T-034'te. Toplama durursa ilanlar 6 ay içinde istatistikten düşer.
 
+### Sentetik CV şablon girdisi (T-019)
+
+```bash
+python -m collector export-template        # → exports/template_input.json (--top 30: pozisyon başına yetkinlik)
+```
+
+Burak'ın `ai/eval` şablon betiği için: her pozisyonun unvanları (`titles`), ilan sayısı, `low_data` bayrağı ve talep oranına göre ilk 30 yetkinlik (`demand_ratio`, `tier`: core ≥ 0,30 / common ≥ 0,10 / rare; eş anlamlılar CV'de kısaltma ve yazım farkı üretmek için). Sadece toplu oranlar içerir, ilan metni yok. `exports/template_input.json` repoda tutulur; `ai/eval/dataset/template_input.json`'a kopyalamak `ai/` sahibinin işidir. Yetkinlik listesi etiketleme için cevap anahtarı değildir.
+
 ## Yetkinlik taksonomisi (T-017)
 
 ```bash
