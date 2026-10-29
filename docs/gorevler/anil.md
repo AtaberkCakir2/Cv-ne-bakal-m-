@@ -87,12 +87,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-022 · Tasarım sistemi
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 26.10.2026 – 01.11.2026 · **Öncelik:** P1 · **Efor:** 6 saat · **Alan:** UI / UX
 - **Bağımlılık:** T-021
 - **Destek:** —
 - **Çıktı:** Figma bileşen kütüphanesi
 - **Kabul kriteri:** Renk paleti, tipografi, buton/kart/grafik bileşenleri, açık/koyu tema, erişilebilirlik (kontrast AA).
+- **Not:** Figma yerine doğrudan kodda yapıldı (tek kaynak kod; Figma kütüphanesi istenirse buradan çıkarılabilir): `web/src/ui/` — renk/tipografi/boşluk değerleri (`tokens.css`), açık/koyu tema (sistem tercihi + elle seçim), buton, kart, form alanı, onay kutusu, uyarı, etiket, ilerleme çubuğu, skor halkası ve talep çubuk grafiği. AA kontrastı `npm run check:contrast` ile iki temada ölçülüyor. Canlı örnekler: `/tasarim` sayfası.
 
 ### T-023 · FastAPI proje iskeleti
 

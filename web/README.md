@@ -47,6 +47,15 @@ const me = useQuery({ queryKey: ["me"], queryFn: async () => unwrap(await api.GE
 
 Hatalar backend'in RFC 7807 biçimindedir; kullanıcıya `problemMessage(error)` gösterin.
 
+## Tasarım sistemi (T-022)
+
+Bileşenler `src/ui/` altında, `import { Button, TextField, Alert } from "../ui"` ile kullanılır. Canlı örnekler ve tüm durumlar: **`/tasarim`** sayfası.
+
+- **Renkler, yazı boyutları ve boşluklar** sadece `src/ui/tokens.css` içindeki değişkenlerden gelir (`var(--accent)`, `var(--space-4)`…). Bileşen veya sayfa koduna doğrudan renk kodu yazmayın; yeni renk gerekirse önce tokens.css'e ekleyin.
+- **Tema:** varsayılan sistem tercihi; üst menüdeki seçiciyle açık/koyu seçilir ve tarayıcıda saklanır. Koyu tema değerleri tokens.css'te iki yerde durur (sistem tercihi ve elle seçim); biri değişirse diğeri de değişmeli.
+- **Kontrast (WCAG AA):** renk değiştirdikten sonra `npm run check:contrast` çalıştırın. Betik metin/arka plan çiftlerinin iki temada da AA eşiğini geçtiğini ve koyu tema kopyalarının aynı olduğunu kontrol eder.
+- **Erişilebilirlik:** form alanları `label`, ipucu ve hata mesajını kendisi bağlar (`aria-describedby`, `aria-invalid`); hata uyarıları ekran okuyucuya hemen okunur. Grafiklerde değer her zaman metin olarak da yazılır.
+
 ## Notlar
 
 - Yayına alınırken statik sunucu bilinmeyen yolları `index.html`'e yönlendirmeli (SPA fallback), yoksa `/analiz/123` gibi doğrudan linkler 404 verir.
