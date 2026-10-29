@@ -1,5 +1,10 @@
-import { NavLink, Outlet } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
+import { flushSync } from "react-dom";
+import { NavLink, Outlet, useNavigate } from "react-router-dom";
 
+import { api } from "../api/client";
+import { clearSession, currentRefreshToken, pendingRefresh } from "../auth/session";
+import { useSession } from "../auth/useSession";
 import { ThemeToggle } from "../ui";
 
 const LINKS = [
@@ -11,6 +16,22 @@ const LINKS = [
 ];
 
 export function Layout() {
+  const session = useSession();
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+
+  async function logout() {
+    await pendingRefresh(); // yenileme sürerken eski token gönderilirse backend tüm oturumları kapatır
+    const refresh_token = currentRefreshToken();
+    // Sunucuya ulaşılamasa da bu cihazdaki oturum kapanır; refresh token en geç 7 günde zaten düşer.
+    if (refresh_token) await api.POST("/api/v1/auth/logout", { body: { refresh_token } }).catch(() => undefined);
+    // Önce giriş ekranına geç ve bunu hemen çiz (flushSync): korumalı sayfa hâlâ ekrandayken oturum silinirse
+    // RequireAuth "?sonra=" ile yönlendirirdi ve sonraki girişte kullanıcı eski sayfaya dönerdi.
+    flushSync(() => navigate("/giris"));
+    clearSession();
+    queryClient.clear(); // önceki kullanıcının verisi önbellekte kalmasın
+  }
+
   return (
     <>
       <header className="topbar">
@@ -25,7 +46,13 @@ export function Layout() {
           ))}
         </nav>
         <ThemeToggle />
-        <NavLink to="/giris">Giriş</NavLink>
+        {session ? (
+          <button type="button" className="link-button" onClick={logout}>
+            Çıkış
+          </button>
+        ) : (
+          <NavLink to="/giris">Giriş</NavLink>
+        )}
       </header>
       <main className="content">
         <Outlet />

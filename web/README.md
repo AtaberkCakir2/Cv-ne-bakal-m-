@@ -47,6 +47,13 @@ const me = useQuery({ queryKey: ["me"], queryFn: async () => unwrap(await api.GE
 
 Hatalar backend'in RFC 7807 biçimindedir; kullanıcıya `problemMessage(error)` gösterin.
 
+## Oturum (T-051)
+
+- Ekranlar: `/giris`, `/kayit`, `/sifremi-unuttum`, `/sifre-sifirla?token=`, `/e-posta-dogrula?token=` (son ikisi e-postadaki bağlantılar; yolları backend ile aynı olmalı).
+- `RequireAuth` altındaki sayfalar (`/yukle`, `/profil`…) oturum yoksa girişe yönlendirir, girişten sonra geri döner.
+- `api` istemcisi token'ı kendisi ekler ve süresi bitince yeniler (`src/auth/session.ts`); sayfa kodu token ile uğraşmaz.
+- Lokal denemede e-posta gönderilmez: `ENVIRONMENT=local` iken bağlantılar backend logunda görünür.
+
 ## Tasarım sistemi (T-022)
 
 Bileşenler `src/ui/` altında, `import { Button, TextField, Alert } from "../ui"` ile kullanılır. Canlı örnekler ve tüm durumlar: **`/tasarim`** sayfası.
