@@ -28,6 +28,7 @@ Testler gerçek CV kullanmaz; PDF'ler test sırasında bellekte üretilir.
 | `pii/` | Kişisel veri maskeleme (T-030) | ✅ |
 | `extraction/` | Yetkinlik çıkarımı (T-031, T-032) | — |
 | `eval/` | Etiketli değerlendirme seti ve araçları (T-019) | Devam ediyor |
+| `eval/benchmark/` | Yerel LLM benchmark'ı (T-018): Llama 3.1 8B seçildi, karar #26 | ✅ |
 
 ### `parsing` — PDF metin çıkarma
 
