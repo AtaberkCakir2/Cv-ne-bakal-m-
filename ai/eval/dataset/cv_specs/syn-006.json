@@ -1,0 +1,15 @@
+{
+  "cv_id": "syn-006", "language": "tr", "layout": "single_column", "scanned": false,
+  "target_role": "full-stack-developer", "experience": "experienced", "double": false,
+  "header": {"name": "Emre Şahin", "title": "Full-Stack Developer · 4 yıl deneyim", "contact": ["emre.sahin@example.com", "0505 000 44 55", "İstanbul (uzaktan çalışmaya açık)", "emresahin.example.com"]},
+  "main": [
+    {"title": "Özet", "text": ["Node.js ve React ile uçtan uca ürün geliştiren, 4 yıllık deneyime sahip full-stack geliştiriciyim. Mikroservis mimarisine geçiş ve CI/CD süreçlerinde aktif rol aldım. Takım çalışmasına ve kod incelemesine önem veririm."]},
+    {"title": "İş Deneyimi", "items": [
+      {"heading": "Senior Full-Stack Developer — Bulutkent Teknoloji (örnek)", "meta": "Mart 2024 – halen · İstanbul", "bullets": ["NestJS + TypeScript ile ödeme ve faturalama mikroservislerini yazdım; servisler arası iletişimde RabbitMQ kullandık.", "React (Next.js) tabanlı yönetim panelinde SSR'a geçişi yönettim.", "GitHub Actions ile test ve deploy hattını kurdum; k8s üzerinde Helm chart'larını bakımını yaptım.", "MongoDB'den PostgreSQL'e veri taşıma projesinde 2 kişilik ekibi yönettim."]},
+      {"heading": "Full-Stack Developer — Mavi Kod Ajans (örnek)", "meta": "Eylül 2022 – Şubat 2024", "bullets": ["Express.js ile 10+ müşteri projesinde REST ve GraphQL API'leri geliştirdim.", "Vue.js ile e-ticaret ön yüzleri; Jest ve Cypress ile test yazdım.", "AWS (EC2, S3, RDS) üzerinde ortam kurulumu."]}
+    ]},
+    {"title": "Teknik Yetkinlikler", "list": ["Diller: TypeScript / JavaScript (4 yıl), Python (temel), SQL", "Backend: Node.js, NestJS, Express, GraphQL", "Frontend: React, Next.js, Vue.js, Redux", "Veri: PostgreSQL, MongoDB, Redis", "DevOps: Docker, Kubernetes, GitHub Actions, AWS", "Test: Jest, Cypress, TDD"]},
+    {"title": "Eğitim", "items": [{"heading": "Bilgisayar Mühendisliği, Lisans", "meta": "2018 – 2022"}]},
+    {"title": "Diller", "list": ["İngilizce: C1 (iş yazışmaları ve toplantılar)"]}
+  ]
+}

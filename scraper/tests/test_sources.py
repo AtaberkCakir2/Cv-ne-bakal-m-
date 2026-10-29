@@ -145,3 +145,18 @@ def test_emscad_filters_fraud_and_non_software(tmp_path: Path) -> None:
     assert [p.external_id for p in postings] == ["1"]
     assert postings[0].description_clean == "We build APIs for the web\n\n3+ years of Python"
     assert postings[0].posted_at is None
+
+
+def test_hn_skips_comments_already_in_the_database() -> None:
+    # Gece toplaması kayıtlı yorumları tekrar istemez (T-034); 404 dönen route istenirse test düşer.
+    routes = {
+        "/v0/user/whoishiring.json": {"submitted": [2]},
+        "/v0/item/2.json": {"id": 2, "title": "Ask HN: Who is hiring? (October 2026)", "kids": [10, 11]},
+        "/v0/item/11.json": {
+            "id": 11,
+            "time": OCT_2026,
+            "text": "Acme | Backend Engineer | Remote<p>We build APIs with Python and PostgreSQL.",
+        },
+    }
+    postings = list(hn.fetch(client_for(routes), months=1, skip_ids={"10"}))
+    assert [p.external_id for p in postings] == ["11"]

@@ -1,0 +1,18 @@
+{
+  "cv_id": "syn-011", "language": "tr", "layout": "multi_column", "scanned": false,
+  "target_role": "ml-engineer", "experience": "experienced", "double": false,
+  "header": {"name": "Selin Öztürk", "title": "Makine Öğrenmesi Mühendisi", "contact": ["selin.ozturk@example.org", "0538 000 64 46", "Ankara"]},
+  "sidebar": [
+    {"title": "Beceriler", "list": ["Python (5 yıl)", "PyTorch, TensorFlow/Keras", "Hugging Face Transformers", "MLOps: MLflow, DVC", "Docker, k8s (temel)", "FastAPI", "AWS SageMaker", "Linux"]},
+    {"title": "Alanlar", "list": ["Doğal dil işleme (NLP)", "Bilgisayarlı görü", "LLM ince ayarı (LoRA)"]},
+    {"title": "Diller", "list": ["İngilizce (ileri)"]}
+  ],
+  "main": [
+    {"title": "Özet", "text": ["Türkçe metinlerde sınıflandırma ve varlık tanıma (NER) modellerini araştırmadan üretime taşıdım. Model sunumu, izleme ve maliyet optimizasyonu konularında deneyimliyim."]},
+    {"title": "Deneyim", "items": [
+      {"heading": "ML Engineer — Ornek Yapay Zeka Ltd.", "meta": "2023 – halen", "bullets": ["BERTurk tabanlı müşteri şikâyeti sınıflandırma modeli; F1 0,87 → 0,93.", "Modelleri FastAPI + Docker ile servis ettim; Kubernetes'te otomatik ölçekleme.", "Llama tabanlı bir modeli LoRA ile ince ayarladım; vLLM ile sunum maliyetini %35 düşürdük.", "MLflow ile deney takibi, DVC ile veri sürümleme."]},
+      {"heading": "Araştırma Asistanı — Üniversite Yapay Zeka Laboratuvarı", "meta": "2021 – 2023", "bullets": ["OpenCV ve PyTorch ile tarım görüntülerinde hastalık tespiti (CNN).", "Sonuçlar bir konferans bildirisinde yayımlandı."]}
+    ]},
+    {"title": "Eğitim", "items": [{"heading": "Bilgisayar Mühendisliği, Yüksek Lisans", "meta": "2021 – 2023 · Tez: Türkçe metinlerde az veriyle varlık tanıma"}, {"heading": "Matematik Mühendisliği, Lisans", "meta": "2017 – 2021"}]}
+  ]
+}

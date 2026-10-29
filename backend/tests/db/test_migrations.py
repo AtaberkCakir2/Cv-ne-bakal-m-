@@ -140,6 +140,23 @@ def test_role_skill_stats_refreshes(session: Session) -> None:
     assert session.scalar(text("SELECT count(*) FROM role_skill_stats")) == 0
 
 
+@pytest.mark.parametrize("table", ["skills", "job_postings"])
+def test_embedding_has_hnsw_cosine_index(session: Session, table: str) -> None:
+    # Migration 0003: benzerlik sorgusu `ORDER BY embedding <=> :v LIMIT k` biçiminde indeksi kullanmalı.
+    indexdef = session.scalar(
+        text("SELECT indexdef FROM pg_indexes WHERE indexname = :n"), {"n": f"ix_{table}_embedding"}
+    )
+    assert indexdef is not None and "hnsw" in indexdef and "vector_cosine_ops" in indexdef
+
+    session.execute(text("SET LOCAL enable_seqscan = off"))  # boş tabloda da planlayıcı indeksi seçsin
+    vector = "[" + ",".join(["0.1"] * 384) + "]"
+    plan = session.execute(
+        text(f"EXPLAIN SELECT id FROM {table} ORDER BY embedding <=> CAST(:v AS vector) LIMIT 5"),  # noqa: S608
+        {"v": vector},
+    ).scalars()
+    assert any(f"ix_{table}_embedding" in line for line in plan)
+
+
 def consent(user: User, version: str = "2026-12") -> Consent:
     return Consent(user=user, consent_type=ConsentType.ACIK_RIZA, version=version, accepted_at=text("now()"))
 

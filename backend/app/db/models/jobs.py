@@ -9,7 +9,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.base import Base, TimestampMixin
 from app.db.enums import LangCode, ScrapeStatus, SkillImportance, SourceType, pg_enum
-from app.db.models.catalog import EMBEDDING_DIM
+from app.db.models.catalog import EMBEDDING_DIM, hnsw_index
 
 
 class JobSource(TimestampMixin, Base):
@@ -27,7 +27,7 @@ class JobSource(TimestampMixin, Base):
 
 class JobPosting(TimestampMixin, Base):
     __tablename__ = "job_postings"
-    __table_args__ = (UniqueConstraint("source_id", "external_id"),)
+    __table_args__ = (UniqueConstraint("source_id", "external_id"), hnsw_index())
 
     id: Mapped[int] = mapped_column(BigInteger, Identity(), primary_key=True)  # contracts: id
     # Kaynak silinirse (ör. izin bitti) ilanları da silinir.
