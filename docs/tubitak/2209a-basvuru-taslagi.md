@@ -1,6 +1,6 @@
 # TÜBİTAK 2209-A Başvuru Taslağı (2026 çağrısı)
 
-> **Durum: TASLAK v0.1 (29.10.2026)** · Görev: T-028 (Ataberk; destek Burak, Anıl) · Son başvuru: **11.11.2026 17:30** (danışman onayı dahil), kuruluş e-imzası 16–23.11.2026.
+> **Durum: TASLAK v0.2 (29.10.2026)** · Görev: T-028 (Ataberk; destek Burak, Anıl) · Son başvuru: **11.11.2026 17:30** (danışman onayı dahil), kuruluş e-imzası 16–23.11.2026.
 >
 > Bu dosya TYBS'deki formun adımlarıyla aynı sırada yazıldı. Metinler buradan kopyalanıp TYBS'ye yapıştırılacak. Form ayrıca bir dosya yüklemeyi kabul etmiyor; öneri sistemde oluşturuluyor. Kaynak: TÜBİTAK "2209-A Başvuru İçeriği Bilgi Notu" (2026).
 >
@@ -19,7 +19,7 @@
 | Kaynakçadaki her kaynağa metin içinde atıf; **DOI varsa zorunlu** | Kaynakçadaki DOI'ler Crossref/DataCite'tan doğrulandı (29.10.2026) |
 | Bütçe en fazla **12.000 TL**, süre en fazla **12 ay**. Kapsam: makine-teçhizat, sarf, seyahat, hizmet alımı. Kongre katılımı, yayın ve gündelik giderleri kapsam dışı | Bkz. Bölüm 7 |
 | Yürütücü + en fazla **4** proje ortağı; herkesin ARBİS kaydı güncel; danışmanın YÖK kaydı güncel | Bkz. Bölüm 8 |
-| İnsan katılımcılı çalışmalarda **Etik Kurul Onayı veya Muafiyet Belgesi** e-BİDEB'e yüklenmezse proje yürürlüğe girmez | Kullanıcı çalışması ve CV toplama nedeniyle gerekli; bkz. Bölüm 8 |
+| İnsan katılımcılı çalışmalarda **Etik Kurul Onayı veya Muafiyet Belgesi** e-BİDEB'e yüklenmezse proje yürürlüğe girmez | Gerçek özgeçmiş toplanmıyor (değerlendirme sentetik özgeçmişlerle). Anketli kullanılabilirlik çalışması nedeniyle onay veya muafiyet gerekli; bkz. Bölüm 8 |
 
 Değerlendirme ağırlıkları: **Bilimsel nitelik %35 · Yöntem %25 · Proje yönetimi %20 · Yaygın etki %20.**
 
@@ -45,7 +45,7 @@ Yazılım sektöründe istenen teknolojiler, üniversite müfredatlarının gün
 
 Yöntem; ilan verisinin kullanım koşullarına uygun kaynaklardan toplanıp normalize edilmesi, 374 yetkinlik ve 12 hedef pozisyondan oluşan iki dilli bir taksonomi ile etiketlenmesi, pozisyon × yetkinlik talep oranlarının hesaplanması, özgeçmişten yetkinliklerin sözlük tabanlı yöntem ile sunucuda yerel çalışan açık kaynak bir büyük dil modelinin birlikte kullanıldığı hibrit bir yaklaşımla çıkarılması ve önerilerin yalnızca doğrulanmış kaynak veritabanından seçilmesine (geri getirme destekli üretim) dayanır. Kişisel veriler modele gönderilmeden önce maskelenir; özgeçmiş dosyası ve ham metin hiçbir yerde saklanmaz.
 
-Başarı; en az 50 elle etiketlenmiş özgeçmiş üzerinde yetkinlik çıkarımında F1 ≥ 0,80, üç değerlendiricinin öneri alakalılığı puanında ≥ 4,0/5, uydurma bağlantı oranında %0, merkezi işlem birimli bir sunucuda analiz süresinde p95 < 120 sn ve 20–30 öğrenciyle yapılacak kullanılabilirlik çalışmasında SUS ≥ 70 ile ölçülecektir. Proje altı iş paketiyle 12 ayda yürütülecektir. Ön çalışmada 2.048 güncel ilanlık havuz ve taksonomi tamamlanmıştır.
+Başarı; gerçek özgeçmiş yapısına göre üretilmiş ve elle etiketlenmiş en az 50 sentetik özgeçmiş üzerinde yetkinlik çıkarımında F1 ≥ 0,80, üç değerlendiricinin öneri alakalılığı puanında ≥ 4,0/5, uydurma bağlantı oranında %0, merkezi işlem birimli bir sunucuda analiz süresinde p95 < 120 sn ve 20–30 öğrenciyle yapılacak kullanılabilirlik çalışmasında SUS ≥ 70 ile ölçülecektir. Proje altı iş paketiyle 12 ayda yürütülecektir. Ön çalışmada 2.048 güncel ilanlık havuz ve taksonomi tamamlanmıştır.
 
 Beklenen çıktılar: web, masaüstü ve mobil istemcileri olan çalışan bir sistem, Türkçe/İngilizce yetkinlik taksonomisi, değerlendirme protokolü ve sonuçları, en az bir ulusal bildiri. Sistem öğrencilerin kariyer planlamasına ve üniversite kariyer merkezlerinin müfredat-sektör uyumu çalışmalarına veri sağlayacaktır.
 
@@ -85,7 +85,7 @@ Beklenen çıktılar: web, masaüstü ve mobil istemcileri olan çalışan bir s
 |---|---|---|---|
 | H-1 | Güncel ilan havuzu | Kullanım koşullarına uygun kaynaklardan aktif ilan sayısı; pozisyon başına ilan | ≥ 3.000 aktif ilan; 10 hedef pozisyonun en az 8'inde ≥ 50 ilan |
 | H-2 | Yetkinlik taksonomisi | İki dilli (TR/EN) yetkinlik ve eş anlamlı sayısı | ≥ 300 yetkinlik (ön çalışmada 374'e ulaşıldı), ≥ 10 hedef pozisyon |
-| H-3 | Yetkinlik çıkarım doğruluğu | Elle etiketlenmiş ≥ 50 özgeçmişte micro-F1 | ≥ 0,80 |
+| H-3 | Yetkinlik çıkarım doğruluğu | Elle etiketlenmiş ≥ 50 sentetik özgeçmişte micro-F1 | ≥ 0,80 |
 | H-4 | Öneri kalitesi | 3 değerlendiricinin 1–5 alakalılık puanı ortalaması; uydurma bağlantı oranı | ≥ 4,0; %0 |
 | H-5 | Kaynak havuzu | Doğrulanmış eğitim kaynağı; yetkinlik başına kaynak | ≥ 900; her yetkinlik için ≥ 3 (Türkçe öncelikli) |
 | H-6 | Performans ve güvenilirlik | Analiz süresi p95; analiz başarı oranı | < 120 sn; ≥ %95 |
@@ -129,11 +129,11 @@ Beklenen çıktılar: web, masaüstü ve mobil istemcileri olan çalışan bir s
 - **Bağımlı değişkenler:** yetkinlik çıkarımında kesinlik, duyarlılık ve F1; öneri alakalılık puanı; uydurma bağlantı oranı; analiz süresi; SUS puanı.
 
 **2.7. Etiketli test seti ve istatistiksel yöntemler.**
-- **Test seti:** En az 50 özgeçmiş (TR + EN, farklı biçimler, en az 5'i taranmış). Özgeçmişler sahiplerinin yazılı izniyle toplanır ve anonimleştirilir. Her özgeçmiş iki kişi tarafından bağımsız etiketlenir, anlaşmazlıkları üçüncü kişi çözer. Etiketleyiciler arası F1 < 0,85 ise etiketleme kılavuzu güncellenir.
+- **Test seti:** Proje kapsamında **gerçek kişilere ait özgeçmiş toplanmaz.** Test seti, ekip tarafından üretilen en az 50 sentetik özgeçmişten oluşur. Gerçek kişilere ait hiçbir bilgi içermez, ad ve iletişim bilgileri uydurmadır. Gerçek özgeçmişlerdeki çeşitliliği temsil etmesi için şu dağılım hedeflenir: Türkçe ve İngilizce; tek ve çok sütunlu düzen; en az 5 taranmış (görüntü) belge; farklı deneyim düzeyleri (yeni mezun, stajyer, deneyimli); farklı hedef pozisyonlar. Yetkinliklerin metinde açık liste, proje açıklaması içinde ve kısaltma/yazım farklılıklarıyla geçmesi sağlanır. Her özgeçmiş iki kişi tarafından bağımsız etiketlenir, anlaşmazlıkları üçüncü kişi çözer. Etiketleyiciler arası F1 < 0,85 ise etiketleme kılavuzu güncellenir. Sentetik setin sınırlılığı (gerçek özgeçmişlerdeki düzensizlikleri tam yansıtmayabilmesi) sonuçlarda ayrıca tartışılır.
 - **Doğruluk:** Özgeçmiş bazında ve toplamda micro-F1 raporlanır; %95 güven aralıkları bootstrap ile hesaplanır. Yöntemler (H1) aynı özgeçmişler üzerinde eşleştirilmiş olarak karşılaştırılır: özgeçmiş bazında F1 farkları için Wilcoxon işaretli sıralar testi ve eşleştirilmiş bootstrap, α = 0,05.
 - **Öneri kalitesi (H2):** Üç değerlendiricinin puanlarının ortalaması alınır, değerlendiriciler arası uyum raporlanır.
 - **Performans (H3):** 20 eşzamanlı kullanıcıyla 30 dakikalık yük testinde p50/p95 süreler ölçülür.
-- **Kullanılabilirlik:** 20–30 öğrenciyle SUS (Brooke, 1996) uygulanır; yorumlama Bangor vd. (2008) ölçeğine göre yapılır.
+- **Kullanılabilirlik:** 20–30 gönüllü öğrenci, bilgilendirilmiş onam verdikten sonra sistemi görev senaryolarıyla kullanır (hesap açma, özgeçmiş yükleme, sonucu yorumlama, kaynak açma). Katılımcılar kendi özgeçmişlerini veya ekibin sağladığı örnek özgeçmişi kullanabilir. Özgeçmiş içeriği ve analiz sonuçları araştırma verisi olarak kaydedilmez; sistem de özgeçmiş dosyasını ve ham metni saklamaz. Araştırma verisi olarak yalnızca anonim anket yanıtları, görev tamamlama oranı ve süresi toplanır. SUS (Brooke, 1996) uygulanır; yorumlama Bangor vd. (2008) ölçeğine göre yapılır. Çalışma, etik kurul onayı veya muafiyet belgesi alındıktan sonra başlar.
 
 **2.8. Ön çalışma (fizibilite).** Proje başlangıcında aşağıdakiler tamamlanmıştır:
 - Veri kaynaklarının hukuki uygunluk incelemesi (robots.txt ve kullanım koşulları).
@@ -160,7 +160,7 @@ Kurallar: Toplam süre ≤ 12 ay. Literatür taraması, rapor, sonuç paylaşım
 | No | İş paketi | Kim | Süre | Başarı ölçütü | Projenin başarısına katkı (%) |
 |---|---|---|---|---|---|
 | İP1 | İlan veri hattının genişletilmesi: yeni ve Türkçe kaynaklar, gece otomatik toplama, talep istatistiklerinin günlük yenilenmesi | `[DOLDUR]` | Ay 1–3 | ≥ 3.000 aktif ilan; 10 hedef pozisyonun ≥ 8'inde ≥ 50 ilan; toplama başarı oranı ≥ %95 | 15 |
-| İP2 | Etiketli test setinin oluşturulması (izinli ve anonimleştirilmiş özgeçmişler, çift etiketleme) | `[DOLDUR]` | Ay 1–3 | ≥ 50 özgeçmiş; etiketleyiciler arası F1 ≥ 0,85 | 10 |
+| İP2 | Etiketli sentetik test setinin oluşturulması (çeşitlilik dağılımına göre üretim, çift etiketleme) | `[DOLDUR]` | Ay 1–3 | ≥ 50 özgeçmiş; etiketleyiciler arası F1 ≥ 0,85 | 10 |
 | İP3 | Yetkinlik çıkarımı (sözlük, yerel model, hibrit) ve model karşılaştırma deneyi | `[DOLDUR]` | Ay 3–6 | Hibrit yöntemde micro-F1 ≥ 0,80; şema uyumlu çıktı ≥ %98; kişisel veri maskelemesi %100 | 25 |
 | İP4 | Eşleştirme, uyum skoru ve doğrulanmış kaynak havuzu ile öneri | `[DOLDUR]` | Ay 4–7 | ≥ 900 doğrulanmış kaynak; uydurma bağlantı %0; alakalılık ≥ 4,0/5 | 20 |
 | İP5 | Sistem entegrasyonu, istemciler ve performans/güvenlik testleri | `[DOLDUR]` | Ay 6–9 | Analiz p95 < 120 sn; analiz başarı oranı ≥ %95; kritik güvenlik bulgusu 0 | 15 |
@@ -176,8 +176,8 @@ Kurallar: Toplam süre ≤ 12 ay. Literatür taraması, rapor, sonuç paylaşım
 | R3 | Dil modelinin taksonomide olmayan yetkinlik veya uydurma bağlantı üretmesi | Bağlantılar yalnızca veritabanından gelir, model bağlantı üretmez. Model çıktısı taksonomi ve şemayla doğrulanır. Sapmada sözlük tabanlı sonuca dönülür (Y1), H1 karşılaştırması raporlanır. |
 | R4 | Farklı biçimdeki ve Türkçe özgeçmişlerde düşük çıkarım doğruluğu (F1 < 0,80) | Çok sütunlu PDF desteği, optik karakter tanıma yedeği, eş anlamlı sözlüğünün genişletilmesi. Sapmada kullanıcının yetkinlikleri elle düzeltebildiği ekran öne alınır. Hedeften sapma hata analiziyle raporlanır. |
 | R5 | Kişisel veri sızıntısı | Özgeçmiş ve ham metin saklanmaz; modele gitmeden maskeleme; günlük kayıtlarında maskeleme; şifreli yedek; en az yetki ilkesi. İhlal şüphesinde olay prosedürü uygulanır (izole etme, etki analizi, mevzuattaki sürede bildirim). |
-| R6 | Etiketli test seti için yeterli izinli özgeçmiş toplanamaması | İzin formu ve anonimleştirme süreci hazır. Sapmada test seti, gerçek özgeçmiş yapısı korunarak üretilmiş sentetik özgeçmişlerle tamamlanır ve bu durum ayrıca raporlanır. |
-| R7 | Kullanılabilirlik çalışmasına yeterli katılımcı bulunamaması veya etik kurul onayının gecikmesi | Başvuru İP1 döneminde yapılır; katılımcılar bölüm öğrencilerinden ve kariyer merkezi duyurusuyla toplanır. Sapmada çalışma süresi İP6 içinde uzatılır. |
+| R6 | Sentetik test setinin gerçek özgeçmişleri yeterince temsil etmemesi (ölçülen F1'in gerçekte düşük kalması) | Set, belge düzeni, dil, deneyim düzeyi ve yazım farklılıklarına göre bir dağılım planıyla üretilir; ek olarak açık lisanslı, anonim özgeçmiş örnekleri araştırılır. Kullanılabilirlik çalışmasında katılımcılardan, kendi sonuçlarındaki yetkinliklerin doğruluğunu anket sorusuyla değerlendirmeleri istenir (özgeçmiş kaydedilmeden). Sapma, sonuçlarda sınırlılık olarak raporlanır. |
+| R7 | Kullanılabilirlik çalışmasına yeterli katılımcı bulunamaması veya etik kurul onayının gecikmesi | Etik kurul başvurusu İP1 döneminde yapılır; katılımcılar bölüm öğrencilerinden ve kariyer merkezi duyurusuyla toplanır. Sapmada çalışma süresi İP6 içinde uzatılır. |
 | R8 | Sınav dönemlerinde ekip kapasitesinin düşmesi | Sınav haftaları takvime işlenmiştir; her modül belgelenmiştir, ekip üyeleri birbirinin işini yürütebilir. |
 
 ### 3.3. Araştırma Olanakları
@@ -208,12 +208,12 @@ Kurallar: Toplam süre ≤ 12 ay. Literatür taraması, rapor, sonuç paylaşım
 
 - Ön çalışma sonuçlarından bir tablo eklenebilir: pozisyon başına ilan sayısı ve en çok istenen ilk 3 yetkinlik. Örnek: Full-Stack 207 ilan, ilk yetkinlik %61; Backend 112 ilan, ilk yetkinlik %43.
 - Sistem mimarisi diyagramı eklenebilir: `docs/diagrams/`. Diyagram ve tablolarda ürün/marka adı geçmemeli.
-- Etik: Etik kurul başvurusu ve izin formu (`ai/eval/izin-formu.md`).
+- Etik: Gerçek özgeçmiş toplanmaz. İnsan katılımcı içeren tek çalışma anketli kullanılabilirlik çalışmasıdır (İP6); etik kurul onayı veya muafiyet belgesiyle yürütülür.
 
 ## 6. EKLER
 
 - Kullanılabilirlik anketi (SUS, 10 madde, Türkçe) ve öneri alakalılığı değerlendirme formu `[DOLDUR]`
-- Özgeçmiş sahibi izin formu (`ai/eval/izin-formu.md`)
+- Kullanılabilirlik çalışması bilgilendirilmiş onam formu `[DOLDUR]`
 
 ## KAYNAKLAR
 
@@ -261,10 +261,11 @@ Notlar:
 |---|---|---|---|---|
 | 1 | Danışmanla görüşme: konu, ekip, takvim varsayımı (Bölüm 3.1), etik kurul ihtiyacı. Danışmanın **YÖK kaydı güncel mi?** | Ataberk (+ Burak) | 01.11 | ☐ |
 | 2 | **Yürütücü** ve proje ortakları kararı (yürütücü + en fazla 4 ortak); `docs/kararlar.md`'ye yaz | Ekip + danışman | 01.11 | ☐ |
+| 2b | "Gerçek özgeçmiş toplanmaz; değerlendirme sentetik özgeçmişlerle" kararının `docs/kararlar.md`'ye yazılması ve Burak'ın T-019'unun (gerçek CV ve izin formu) buna göre güncellenmesi | Ataberk + Burak | 02.11 | ☐ |
 | 3 | Tüm ekip üyelerinin **ARBİS** kaydı güncel; kimse aynı dönemde başka bir 2209 başvurusunda yok | Herkes | 03.11 | ☐ |
 | 4 | Taslağın ekipçe okunması; `[DOLDUR]`/`[KARAR]` alanlarının kapatılması | Herkes | 05.11 | ☐ |
 | 5 | Öncelikli Alanlar listesinden uygun maddenin bulunması (Bölüm 1.1) | Ataberk | 04.11 | ☐ |
-| 6 | Etik kurul: kullanıcı çalışması ve özgeçmiş toplama için onay/muafiyet sürecinin öğrenilmesi (üniversite etik kurulu) | Burak | 05.11 | ☐ |
+| 6 | Etik kurul: anketli kullanılabilirlik çalışması için onay mı muafiyet mi gerektiğinin öğrenilmesi (üniversite etik kurulu); onam formu taslağı | Burak | 05.11 | ☐ |
 | 7 | Bütçe tekliflerinin netleşmesi (sunucu, yedek, GPU) | Ataberk | 05.11 | ☐ |
 | 8 | ÜYZ kullanım beyanı metni (taslak yapay zekâ desteğiyle hazırlandı) | Ataberk | 06.11 | ☐ |
 | 9 | TYBS'ye giriş, metinlerin yapıştırılması, **"Proje Önerisini Önizle"** ile kontrol (tablolar, karakterler) | Yürütücü | 07.11 | ☐ |
