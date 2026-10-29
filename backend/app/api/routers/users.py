@@ -8,6 +8,7 @@ from typing import Annotated, Any, NoReturn
 from fastapi import APIRouter, Depends, HTTPException, Request, Response
 
 from app.api.deps import AppSettings, CurrentUser, DbSession
+from app.api.rate_limits import AuthRateLimit
 from app.schemas.users import ConsentOut, ConsentsIn, DeleteAccountIn, ExportOut, ProfileOut, ProfileUpdateIn
 from app.services.auth import ConsentInput
 from app.services.users import ProfileChanges, UserError, UserService, profile_out
@@ -75,7 +76,9 @@ def export_me(request: Request, user: CurrentUser, users: Users, response: Respo
     "/me",
     status_code=204,
     summary="Hesabımı sil",
-    responses={403: {"description": "Şifre hatalı", **_PROBLEM}},
+    # Şifre denemesine açık: giriş uçlarıyla aynı IP sayacı
+    dependencies=[AuthRateLimit],
+    responses={403: {"description": "Şifre hatalı", **_PROBLEM}, 429: {"description": "Çok fazla deneme", **_PROBLEM}},
 )
 def delete_me(body: DeleteAccountIn, request: Request, user: CurrentUser, users: Users) -> Response:
     """Şifre tekrar istenir. Kişisel bilgiler hemen anonimleştirilir, oturumlar kapanır; hesap 30 gün sonra kalıcı

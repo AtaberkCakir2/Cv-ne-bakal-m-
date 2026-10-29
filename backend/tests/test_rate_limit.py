@@ -87,6 +87,14 @@ def test_auth_endpoints_share_a_stricter_ip_limit(client: TestClient) -> None:
     assert response.json()["request_id"]
 
 
+def test_account_deletion_is_in_the_auth_bucket(client: TestClient) -> None:
+    # DELETE /users/me şifre ister; giriş denemeleriyle aynı sayacı kullanır.
+    for _ in range(3):
+        client.post(f"{API}/auth/login", json={"email": "a@example.com", "password": "x"})
+    response = client.request("DELETE", f"{API}/users/me", json={"password": "x"})
+    assert response.status_code == 429
+
+
 def test_disabled_limits_create_no_limiter() -> None:
     app = create_app(TEST_SETTINGS)
     assert getattr(app.state, "rate_limiter", None) is None
