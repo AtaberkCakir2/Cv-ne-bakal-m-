@@ -10,7 +10,7 @@ Tarih: 29.10.2026 · Ölçen: Burak (Claude Code ile) · Script: [`../scripts/be
 |---|---|
 | Donanım | Intel i7-13700H (14 çekirdek / 20 iş parçacığı), 32 GB RAM, NVIDIA RTX 4060 Laptop 8 GB |
 | Yazılım | Windows 11, Ollama 0.40.13 (yerel kurulum; Docker'daki sabit sürüm 0.40.10) |
-| Modeller | `llama3.1:8b` (46e0c10c039e), `gemma2:9b` (ff02c3702f32), `qwen2.5:7b` (845dbda0ea48); üçü de Ollama'nın varsayılanı q4_K_M |
+| Modeller | `llama3.1:8b` (46e0c10c039e), `gemma2:9b` (ff02c3702f32), `qwen2.5:7b` (845dbda0ea48); Ollama varsayılanları: Llama ve Qwen q4_K_M, Gemma Q4_0 (Gemma için `gemma2:9b-instruct-q4_K_M` ayrıca çekilmeli) |
 | Ayarlar | temperature 0.1, seed 42, num_ctx 8192. CPU ölçümü `num_gpu: 0` ile |
 | Veri | 10 Türkçe sentetik CV (`syn-004`…`syn-013`, 10 pozisyondan 1'er; 3 çok sütunlu, 2 taranmış) |
 | Akış | PDF → `parsing.extract_text` → `pii.mask` → Ollama → JSON → taksonomiye eşleme. Taranmış 2 CV'de OCR (T-029) henüz olmadığı için metin CV tanımından alındı |
@@ -48,7 +48,7 @@ CV başına ortalama ~700 girdi, ~280–380 çıktı token'ı. Modelin ilk yükl
 | | Model | Neden |
 |---|---|---|
 | Kazanan | **Llama 3.1 8B Instruct q4_K_M** | Üretim sunucusu GPU'suz (karar #13): CPU'da en hızlı (53 sn/CV, diğerlerinden %25–30 hızlı), yanlış pozitif 0, kural uyumu iyi, 5,8 GB ile Ollama'nın 8 GB limitine rahat sığıyor. |
-| Yedek | **Gemma 2 9B q4_K_M** | En yüksek duyarlılık/F1, yanlış pozitif 0; ama CPU'da %35 daha yavaş ve daha çok bellek. |
+| Yedek | **Gemma 2 9B (ölçülen Q4_0)** | En yüksek duyarlılık/F1, yanlış pozitif 0; ama CPU'da %35 daha yavaş ve daha çok bellek. |
 | Elendi | Qwen 2.5 7B | En küçük bellek ama kurallara en az uyan (ders adı, istek cümlesi) ve en çok taksonomi dışı ad üreten model. |
 
 ## Riskler ve sonraki adımlar
