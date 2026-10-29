@@ -108,6 +108,31 @@ def test_single_labeled_cv_is_copied_to_gold(dataset: Path) -> None:
     assert "_karar_bekleyen" not in gold
 
 
+def test_double_cv_with_one_label_waits_for_second(dataset: Path) -> None:
+    """syn-001 double=true: ilk etiket tek başına gold'a girmez; ikinci etiket gelince taslak yazılır (#34)."""
+    burak = dataset / "labels" / "syn-001" / "burak.json"
+    burak_text = burak.read_text(encoding="utf-8")
+    burak.unlink()
+    assert agreement.main(["--dataset", str(dataset), "--skills", str(SKILLS), "--write-gold"]) == 0
+    gold_path = dataset / "gold" / "syn-001.json"
+    assert not gold_path.exists()
+
+    burak.write_text(burak_text, encoding="utf-8")
+    assert agreement.main(["--dataset", str(dataset), "--skills", str(SKILLS), "--write-gold"]) == 0
+    draft = json.loads(gold_path.read_text(encoding="utf-8"))
+    assert draft["_karar_bekleyen"]
+
+
+def test_single_label_not_in_manifest_is_not_copied(dataset: Path) -> None:
+    label_dir = dataset / "labels" / "syn-002"
+    label_dir.mkdir()
+    (label_dir / "ataberk.json").write_text(
+        json.dumps({"cv_id": "syn-002", "annotator": "ataberk", "skills": [], "notes": ""}), encoding="utf-8"
+    )
+    agreement.main(["--dataset", str(dataset), "--skills", str(SKILLS), "--write-gold"])
+    assert not (dataset / "gold" / "syn-002.json").exists()
+
+
 def test_write_gold_creates_draft_and_keeps_existing(dataset: Path) -> None:
     assert agreement.main(["--dataset", str(dataset), "--skills", str(SKILLS), "--write-gold"]) == 0
     gold_path = dataset / "gold" / "syn-001.json"
