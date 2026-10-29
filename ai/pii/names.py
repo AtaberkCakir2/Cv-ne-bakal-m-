@@ -74,6 +74,7 @@ FIRST_NAMES = frozenset(
     """.split()
 )
 _FIRST_NAME_PHRASE = re.compile(rf"\b({_WORD})((?:{_SP}{_NAME_TOKEN}){{1,2}})")
+_FIRST_NAME_START = re.compile(rf"(?<![\w-]){_WORD}")
 _MIN_PROPAGATE_LEN = 3
 
 
@@ -96,9 +97,18 @@ def find_names(
     if header:
         spans += _header_name(text, skip)
     spans += [Span(m.start(1), m.end(1), Kind.NAME) for m in HONORIFIC.finditer(text)]
-    for m in _FIRST_NAME_PHRASE.finditer(text):
-        if m.group(1) in FIRST_NAMES:
-            spans.append(Span(m.start(), m.end(), Kind.NAME))
+    # Her ilk ad kendi konumundan denenir: "Contact Ayşe Kaya" grubunda önceki büyük harfli kelime ("Contact")
+    # eşleşmeyi yutup ilk adı atlatmasın.
+    for w in _FIRST_NAME_START.finditer(text):
+        if w.group() in FIRST_NAMES and (phrase := _FIRST_NAME_PHRASE.match(text, w.start())):
+            # Addan sonra gelen yetkinlik/unvan kelimesi ada katılmaz ("Mert Python ile …").
+            end = w.end()
+            for tok in re.finditer(r"\S+", phrase.group(2)):
+                if _is_skipped(tok.group(), skip):
+                    break
+                end = phrase.start(2) + tok.end()
+            if end > w.end():
+                spans.append(Span(phrase.start(), end, Kind.NAME))
     if detector is not None:
         spans += [Span(start, end, Kind.NAME) for start, end in detector(text, lang)]
     return spans + _propagate(text, spans, skip)

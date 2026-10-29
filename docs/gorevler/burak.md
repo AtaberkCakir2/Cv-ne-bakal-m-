@@ -73,7 +73,7 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 - **Destek:** —
 - **Çıktı:** ai/pii modülü + testler
 - **Kabul kriteri:** LLM'e gitmeden ÖNCE ad-soyad, telefon, e-posta, adres, TC kimlik no, doğum tarihi maskelenir (regex + NER). Test: telefon/e-posta/TCKN için %100 maskeleme.
-- **Not:** Ad tespiti kurallar + yerel BERTurk NER (karar #24). Ataberk'e devredilenler: worker-ai imajına `ai[ner]` (CPU torch) kurulup model derleme sırasında indirilmeli (`HF_HUB_OFFLINE=1`); CI'daki mypy komutuna `pii` eklenmeli; `scraper/etl/pipeline.py`'deki ad maskeleme `pii.mask_text` ile değiştirilebilir.
+- **Not:** Ad tespiti kurallar + yerel BERTurk NER (karar #24). #37 incelemesi (Ataberk) düzeltildi: unvan satırındaki yetkinlikler ad sayılmıyor, adres ipucu tek başına adres değil, NER kütüphaneleri sabit sürümde. Ataberk'e devredilenler: worker-ai imajına `ai[ner]` (CPU torch) kurulup model derleme sırasında indirilmeli (`HF_HUB_OFFLINE=1`); CI'daki mypy komutuna `pii` eklenmeli; `scraper/etl/pipeline.py`'deki ad maskeleme `pii.mask_text` ile değiştirilebilir.
 
 ### T-031 · Yetkinlik çıkarımı v1 (sözlük + kural)
 

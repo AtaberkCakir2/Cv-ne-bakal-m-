@@ -53,3 +53,13 @@ def test_matches_scraper_name_masker_signature() -> None:
     # scraper/etl/pipeline.py: NameMasker = Callable[[str, Lang], str], Lang = Literal["tr", "en"]
     masker: Callable[[str, Literal["tr", "en"]], str] = mask_posting
     assert isinstance(masker("Kıdemli Geliştirici", "tr"), str)
+
+
+def test_english_posting_with_turkish_name() -> None:
+    assert mask_posting("Contact Ayşe Kaya at hr@acme.example", "en") == "Contact [AD SOYAD] at [E-POSTA]"
+
+
+def test_company_name_starting_with_first_name_is_masked() -> None:
+    # Bilinen sınırlılık: ilk adla başlayan kurum adı ("Deniz Bank") da ad sayılır. İlan için zararsız
+    # (yetkinlik kaybı yok); fazla maskelemek kaçırmaktan güvenli.
+    assert mask_posting("Deniz Bank projelerinde deneyim", "tr") == "[AD SOYAD] projelerinde deneyim"

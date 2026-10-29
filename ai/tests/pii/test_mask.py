@@ -201,3 +201,28 @@ def test_address_hint_alone_is_not_an_address(text: str) -> None:
 def test_address_fields_split_by_separator_are_masked() -> None:
     out = mask("Atatürk Mah. Cumhuriyet Cad. · Kadıköy/İstanbul").text
     assert "Atatürk" not in out and "Cumhuriyet" not in out
+
+
+@pytest.mark.parametrize(
+    "address",
+    ["Atatürk Cad. No: 12 Kadıköy/İstanbul", "221B Baker Street, London NW1 6XE"],
+)
+def test_real_addresses_are_still_masked(address: str) -> None:
+    out = mask(f"İletişim\n{address}\nPython, Django").text
+    assert Kind.ADDRESS in mask(address).counts
+    for word in ("Atatürk", "Kadıköy", "Baker", "NW1"):
+        assert word not in out
+    assert out.endswith("Python, Django")
+
+
+@pytest.mark.parametrize(
+    ("text", "expected"),
+    [
+        ("Yöneticim Ayşe Kaya ile çalıştım.", "Yöneticim [AD SOYAD] ile çalıştım."),
+        ("Referans Mert Aydın, Lead Engineer", "Referans [AD SOYAD], Lead Engineer"),
+        ("Stajda Mert Python ile otomasyon yazdı.", "Stajda Mert Python ile otomasyon yazdı."),
+    ],
+)
+def test_first_name_after_capitalized_word(text: str, expected: str) -> None:
+    # Önceki büyük harfli kelime ilk adı atlatmamalı; addan sonra gelen yetkinlik ada katılmamalı.
+    assert mask(text).text == expected
