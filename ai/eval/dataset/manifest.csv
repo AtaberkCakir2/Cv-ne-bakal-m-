@@ -1,4 +1,4 @@
-cv_id,source,language,layout,scanned,pages,target_role,consent_id
-syn-001,synthetic,tr,single_column,false,1,backend-developer,
-syn-002,synthetic,en,multi_column,false,1,frontend-developer,
-syn-003,synthetic,tr,table,false,1,data-analyst,
+cv_id,source,language,layout,scanned,pages,target_role,experience,double,consent_id
+syn-001,synthetic,tr,single_column,false,1,backend-developer,intern,true,
+syn-002,synthetic,en,multi_column,false,1,frontend-developer,experienced,false,
+syn-003,synthetic,tr,table,false,1,data-analyst,experienced,false,
