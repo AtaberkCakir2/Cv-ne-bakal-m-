@@ -14,7 +14,7 @@ python -m venv .venv
 pip install -e ".[dev]"
 pytest
 ruff check . && ruff format --check .
-mypy parsing pii tests eval/scripts
+mypy parsing pii extraction tests eval/scripts
 ```
 
 Testler gerçek CV kullanmaz; PDF'ler test sırasında bellekte üretilir.
@@ -26,7 +26,7 @@ Testler gerçek CV kullanmaz; PDF'ler test sırasında bellekte üretilir.
 | `parsing/` | PDF → metin (T-020) | ✅ |
 | `ocr/` | Taranmış CV için OCR (T-029) | — |
 | `pii/` | Kişisel veri maskeleme (T-030) | ✅ |
-| `extraction/` | Yetkinlik çıkarımı (T-031, T-032) | — |
+| `extraction/` | Yetkinlik çıkarımı (T-031 v1 sözlük + kural; T-032 LLM) | v1 ✅ |
 | `eval/` | Etiketli değerlendirme seti ve araçları (T-019) | Devam ediyor |
 | `eval/benchmark/` | Yerel LLM benchmark'ı (T-018): Llama 3.1 8B seçildi, karar #26 | ✅ |
 
@@ -81,3 +81,21 @@ mask_text(text, "en")  # sadece metin, sadece kurallar; scraper/etl/pipeline.py 
   - Ölçüm (58 öğelik sentetik set, 63 ad kelimesi): kurallar %44 → kurallar + NER + filtre %100, gerçek yanlış pozitif 3. ~420 MB disk, ~760 MB bellek, CV başına ~170 ms (CPU).
   - Kurulum isteğe bağlı: `pip install -e ".[ner]"` (sunucuda torch'un CPU sürümü). Kurulu değilse `default_detector()` None döner ve sadece kurallar çalışır; CI bu şekilde çalışır, gerçek model testi atlanır.
   - Model ilk kullanımda Hugging Face'ten bir kez indirilir; sunucuda imaj derlenirken indirilip `HF_HUB_OFFLINE=1` ile çalıştırılmalı. Metin hiçbir zaman dışarı gönderilmez.
+
+### `extraction` — yetkinlik çıkarımı v1 (T-031)
+
+```python
+from extraction import extract_skills, to_present_skills
+
+skills = extract_skills(masked_text, "tr")  # maskelenmiş CV metni (pii.mask)
+skills[0].skill, skills[0].level, skills[0].years, skills[0].confidence  # "Python", "advanced", 4, 0.95
+to_present_skills(skills)  # contracts/analysis_result.schema.json → present_skills
+```
+
+- **Sözlük:** `scraper/taxonomy/skills.csv` (başka yol için `CAREERAI_TAXONOMY`). Eşleme kuralları ilan eşleyicisiyle (`scraper/etl/skills.py`) aynı: kelime sınırı ("Java" ≠ "JavaScript"), "C++"/"Node.js"/".NET", harf duyarlı adlar ("Go", "SOLID"), Türkçe harf katlama, çakışmada uzun ad ("Spring Boot" > "Spring"). LLM gerektirmez; LLM çalışmazsa yedek yoldur.
+- **CV kuralları** (`eval/etiketleme-kilavuzu.md` ile aynı): istek cümlesi ("ileride Go öğrenmek istiyorum", "Next.js öğreniyorum") ve ders listesi ("Dersler: Kriptografi") alınmaz; "DevOps: Docker, …" başlığı yetkinlik sayılmaz; konuşulan dil sadece Diller bölümünde veya seviyesiyle ("İngilizce: B2") alınır.
+- **Seviye:** adın hemen yanındaki ipucu: "Python (ileri düzey)", "Java — orta", "ileri düzey SQL", CEFR (A1–A2 beginner, B1–B2 intermediate, C1–C2/ana dil advanced). Yoksa `unknown`.
+- **Deneyim yılı:** ipucundan ("(4 yıl)") veya aynı cümle parçasındaki "N yıl/yıllık/yıldır/years"; "2022 – 2026" gibi tarih aralıkları sayılmaz.
+- **Güven:** sözlük eşleşmesi kesin olduğu için güven, yetkinliğin CV'de ne kadar desteklendiğini gösterir: 0,6 + Yetenekler bölümünde 0,15 + 2 kez geçiyorsa 0,1 + seviye/yıl varsa 0,1 (en çok 0,95). `verified` her zaman `true`.
+- **Ölçüm** (10 TR sentetik CV, T-018'deki geçici referans): kesinlik 0,98, duyarlılık 0,97; Llama 3.1 8B tek başına duyarlılık 0,69. Referans da sözlükle üretildiği için bu sayılar iyimser; T-019 gold etiketleriyle tekrar ölçülecek. Kalan fark çoğunlukla referanstan: "GitHub Actions" içindeki GitHub'ı ayrıca sayması gibi.
+

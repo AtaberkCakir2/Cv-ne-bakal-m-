@@ -80,12 +80,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-031 · Yetkinlik çıkarımı v1 (sözlük + kural)
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 02.11.2026 – 15.11.2026 · **Öncelik:** P0 · **Efor:** 12 saat · **Alan:** AI / NLP
 - **Bağımlılık:** T-017 (Ataberk), T-020
 - **Destek:** Ataberk
 - **Çıktı:** ai/extraction v1
 - **Kabul kriteri:** Taksonomi + eş anlamlılarla hızlı eşleme (FlashText/regex); deneyim yılı ve seviye ipuçları ("ileri düzey", "3 yıl"). LLM çalışmasa bile sonuç üretir (yedek yol).
+- **Not:** `ai/extraction` (sözlük + kural, LLM'siz). 10 TR sentetik CV'de geçici referansa göre P 0,98 / R 0,97 (referans da sözlükle üretildiği için iyimser; T-019 gold ile tekrar ölç). Referans düzeltme önerileri: syn-012 Kriptografi CTF cümlesinde de geçiyor (geri eklenmeli); "GitHub Actions" içindeki GitHub ayrı sayılmamalı; MLOps/DevOps başlıkları tutarlı olmalı. Ataberk'le ortaklaştırma: `extraction/taxonomy.py` ve `scraper/etl/skills.py` aynı kurallar; CI mypy komutuna `extraction` eklenmeli.
 
 ### T-044 · Prompt versiyonlama
 
