@@ -1,0 +1,15 @@
+{
+  "cv_id": "syn-007", "language": "tr", "layout": "single_column", "scanned": false,
+  "target_role": "mobile-developer", "experience": "new_grad", "double": false,
+  "header": {"name": "Elif Doğan", "title": "Mobil Uygulama Geliştirici (Yeni Mezun)", "contact": ["elif.dogan@example.com", "0542 000 33 10", "Eskişehir"]},
+  "main": [
+    {"title": "Hakkımda", "text": ["Kotlin ve Flutter ile Android uygulamaları geliştiriyorum. Mezuniyet projemde çevrimdışı çalışan bir not uygulaması yazdım. iOS tarafını da öğrenmek için Swift'e başladım ama henüz proje yapmadım."]},
+    {"title": "Eğitim", "items": [{"heading": "Bilgisayar Mühendisliği, Lisans", "meta": "2022 – 2026", "text": ["Mobil Programlama dersinde Android Studio ile 3 uygulama geliştirdim."]}]},
+    {"title": "Projeler", "items": [
+      {"heading": "NotDefteri+ (bitirme projesi)", "bullets": ["Kotlin, Jetpack Compose ve Room veritabanı; MVVM mimarisi.", "Firebase Authentication ile giriş, Firestore ile senkronizasyon.", "Google Play'de kapalı testte 40 kullanıcı."]},
+      {"heading": "Hava Durumu Uygulaması", "bullets": ["Flutter (Dart) ile iOS ve Android için tek kod tabanı; REST API'den veri çekme, Provider ile durum yönetimi."]}
+    ]},
+    {"title": "Gönüllü Çalışma", "items": [{"heading": "Google Developer Student Club — Mobil ekip lideri", "meta": "2024 – 2025", "text": ["12 kişilik ekiple Flutter atölyeleri düzenledim; sunum ve iletişim becerilerimi geliştirdim."]}]},
+    {"title": "Yetenekler", "list": ["Kotlin (orta seviye), Java (orta seviye), Dart / Flutter (orta seviye)", "Android SDK, Jetpack Compose, Room", "Firebase, REST, Git", "UI tasarımı için Figma (temel)", "İngilizce: B2"]}
+  ]
+}

@@ -2,10 +2,12 @@
 
 from __future__ import annotations
 
+import csv
 import json
 import shutil
 import sys
 from pathlib import Path
+from typing import Any
 
 import pytest
 
@@ -76,10 +78,59 @@ def test_bad_skill_names_are_reported(skill: str, message: str) -> None:
     assert message in report.errors[0]
 
 
-def test_real_cv_requires_consent(dataset: Path) -> None:
+@pytest.mark.parametrize(
+    "row",
+    [
+        "cv-002,real,en,multi_column,true,2,backend-developer,experienced,false,IZN-1",  # karar #20: gerçek CV yok
+        "syn-002,synthetic,en,multi_column,true,2,backend-developer,senior,false,",  # bilinmeyen deneyim
+        "syn-002,synthetic,en,multi_column,true,2,backend-developer,intern,evet,",  # double true/false olmalı
+    ],
+    ids=["gercek", "deneyim", "double"],
+)
+def test_invalid_manifest_rows_are_errors(dataset: Path, row: str) -> None:
     with (dataset / "manifest.csv").open("a", encoding="utf-8") as f:
-        f.write("cv-002,real,en,multi_column,true,2,backend-developer,\n")
+        f.write(row + "\n")
     assert check_labels.main(["--dataset", str(dataset), "--skills", str(SKILLS)]) == 1
+
+
+def test_single_labeled_cv_is_copied_to_gold(dataset: Path) -> None:
+    with (dataset / "manifest.csv").open("a", encoding="utf-8") as f:
+        f.write("syn-002,synthetic,en,multi_column,false,1,frontend-developer,experienced,false,\n")
+    label_dir = dataset / "labels" / "syn-002"
+    label_dir.mkdir()
+    skills = [{"skill": "React", "level": "advanced", "years": 3}]
+    (label_dir / "ataberk.json").write_text(
+        json.dumps({"cv_id": "syn-002", "annotator": "ataberk", "skills": skills, "notes": ""}), encoding="utf-8"
+    )
+    assert agreement.main(["--dataset", str(dataset), "--skills", str(SKILLS), "--write-gold"]) == 0
+    gold = json.loads((dataset / "gold" / "syn-002.json").read_text(encoding="utf-8"))
+    assert (gold["adjudicator"], gold["skills"]) == ("ataberk", skills)
+    assert "_karar_bekleyen" not in gold
+
+
+def test_double_cv_with_one_label_waits_for_second(dataset: Path) -> None:
+    """syn-001 double=true: ilk etiket tek başına gold'a girmez; ikinci etiket gelince taslak yazılır (#34)."""
+    burak = dataset / "labels" / "syn-001" / "burak.json"
+    burak_text = burak.read_text(encoding="utf-8")
+    burak.unlink()
+    assert agreement.main(["--dataset", str(dataset), "--skills", str(SKILLS), "--write-gold"]) == 0
+    gold_path = dataset / "gold" / "syn-001.json"
+    assert not gold_path.exists()
+
+    burak.write_text(burak_text, encoding="utf-8")
+    assert agreement.main(["--dataset", str(dataset), "--skills", str(SKILLS), "--write-gold"]) == 0
+    draft = json.loads(gold_path.read_text(encoding="utf-8"))
+    assert draft["_karar_bekleyen"]
+
+
+def test_single_label_not_in_manifest_is_not_copied(dataset: Path) -> None:
+    label_dir = dataset / "labels" / "syn-002"
+    label_dir.mkdir()
+    (label_dir / "ataberk.json").write_text(
+        json.dumps({"cv_id": "syn-002", "annotator": "ataberk", "skills": [], "notes": ""}), encoding="utf-8"
+    )
+    agreement.main(["--dataset", str(dataset), "--skills", str(SKILLS), "--write-gold"])
+    assert not (dataset / "gold" / "syn-002.json").exists()
 
 
 def test_write_gold_creates_draft_and_keeps_existing(dataset: Path) -> None:
@@ -102,3 +153,75 @@ def test_cohen_kappa() -> None:
     assert agreement.cohen_kappa([]) is None
     assert agreement.cohen_kappa([("advanced", "advanced"), ("beginner", "beginner")]) == pytest.approx(1.0)
     assert agreement.cohen_kappa([("advanced", "beginner"), ("beginner", "advanced")]) == pytest.approx(-1.0)
+
+
+def _spec(cv_id: str, **overrides: Any) -> dict[str, Any]:
+    spec: dict[str, Any] = {
+        "cv_id": cv_id,
+        "language": "tr",
+        "layout": "single_column",
+        "scanned": False,
+        "target_role": "backend-developer",
+        "experience": "new_grad",
+        "double": False,
+        "header": {"name": "Deneme Kişi", "title": "Geliştirici", "contact": ["deneme@example.com", "0532 000 00 00"]},
+        "main": [
+            {"title": "Hakkımda", "text": ["Backend servisleri yazan, test yazmayı seven bir geliştiriciyim. " * 3]},
+            {"title": "Yetenekler", "list": ["Python (ileri düzey)", "PostgreSQL", "İngilizce: B2"]},
+        ],
+    }
+    spec.update(overrides)
+    return spec
+
+
+@pytest.mark.parametrize(
+    ("overrides", "multi", "scanned"),
+    [
+        ({}, 0, False),
+        (
+            {
+                "layout": "multi_column",
+                "sidebar": [{"title": "Araçlar", "list": [f"Araç {i}" for i in range(12)]}],
+                "main": [{"title": "Deneyim", "text": ["Uzun bir paragraf. " * 40]}],
+            },
+            1,
+            False,
+        ),
+        ({"scanned": True}, 0, True),
+    ],
+    ids=["tek-sutun", "cok-sutun", "taranmis"],
+)
+def test_generate_cvs_renders_readable_pdf(dataset: Path, overrides: dict[str, Any], multi: int, scanned: bool) -> None:
+    import generate_cvs
+
+    from parsing import extract_text
+
+    specs = dataset / "cv_specs"
+    specs.mkdir()
+    (specs / "syn-050.json").write_text(json.dumps(_spec("syn-050", **overrides)), encoding="utf-8")
+    assert generate_cvs.main(["--dataset", str(dataset)]) == 0
+
+    result = extract_text((dataset / "synthetic" / "syn-050.pdf").read_bytes())
+    assert result.needs_ocr is scanned
+    if not scanned:
+        assert "Python (ileri düzey)" in result.text or "Uzun bir paragraf" in result.text
+        assert "deneme@example.com" in result.text
+        assert result.multi_column_pages == multi
+    row = next(r for r in csv.DictReader((dataset / "manifest.csv").open(encoding="utf-8")) if r["cv_id"] == "syn-050")
+    assert (row["scanned"], row["layout"], row["source"]) == (
+        str(scanned).lower(),
+        _spec("syn-050", **overrides)["layout"],
+        "synthetic",
+    )
+    # Üretilen manifest doğrulamadan geçer; önceki satırlar (syn-001) korunur.
+    assert check_labels.main(["--dataset", str(dataset), "--skills", str(SKILLS)]) == 0
+
+
+def test_generate_cvs_rejects_invalid_spec(dataset: Path) -> None:
+    import generate_cvs
+
+    specs = dataset / "cv_specs"
+    specs.mkdir()
+    (specs / "syn-051.json").write_text(json.dumps(_spec("syn-099", layout="iki_sutun")), encoding="utf-8")
+    assert generate_cvs.main(["--dataset", str(dataset)]) == 1
+    assert not (dataset / "synthetic" / "syn-051.pdf").exists()

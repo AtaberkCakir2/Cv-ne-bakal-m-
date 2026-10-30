@@ -13,7 +13,7 @@ Python 3.12. Modeller backend paketinden geldiği için ikisi birlikte kurulur (
 ```bash
 python -m venv C:\venv\careerai      # Windows'ta kısa yol (uzun yol hatası olmasın)
 C:\venv\careerai\Scripts\activate    # macOS/Linux: source .venv/bin/activate
-pip install -e ../backend -e ".[dev]"
+pip install -e ../backend -e ../ai -e ".[dev]"   # ai: ilan maskeleme (pii)
 ```
 
 Veritabanı: repo kökünde `make up`, sonra `backend/` içinde `alembic -c app/db/alembic.ini upgrade head`. Adres `.env`'deki `DATABASE_URL`.
@@ -59,7 +59,7 @@ python -m collector export-postings --out postings.jsonl        # contracts/job_
 | Pozisyon | `etl/roles.py` | Başlık parçalanır (`Şirket \| Pozisyon \| Yer`), kıdem/teknoloji adları atılır, `roles.csv` eş anlamlılarıyla eşlenir. "Software Engineer" gibi genel başlıklar `role_id = NULL` kalır ve pozisyon istatistiğine girmez. |
 | Yetkinlik | `etl/skills.py` | Taksonomi + eş anlamlılar, kelime sınırıyla; `case_sensitive` adlar sadece o yazımla. "Nice to have" / "tercih sebebi" bölüm ve cümlelerindekiler `preferred`. |
 | Benzer ilan | `etl/dedup.py` | Aynı şirket + pozisyonda metni %90 benzeyenlerden en yenisi kalır, diğerleri `is_active=false` (silinmez). |
-| Kişi adı | `etl/pipeline.py` | `mask_names` bağlantı noktası; Burak'ın T-030 maskeleyicisi bağlanacak. |
+| Kişisel veri | `etl/pipeline.py` | Burak'ın T-030 maskeleyicisi `pii.mask_posting` (kurallar, NER yok): işe alımcının adı, telefon, TCKN, IBAN → `[AD SOYAD]`, `[TELEFON]`… `description_clean` üzerine yazılır. `mask_posting_once` önceki etiketlere dokunmaz, her gece tekrar çalışmak güvenli. 30.10.2026: 6.632 ilandan 338'inde maskeleme, 2 yetkinlik bağı kaybı. |
 
 Eşleyiciler (`etl/text.py`, `etl/skills.py`, `etl/roles.py`, `etl/dedup.py`) veritabanı kullanmaz: taksonomiyi `collector/taxonomy_rows.py`'den okur, backend paketi ve SQLAlchemy olmadan çalışır (AI worker T-031'de kullanacak; test: `test_matchers_do_not_import_the_database_layer`).
 

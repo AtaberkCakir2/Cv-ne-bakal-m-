@@ -11,13 +11,16 @@ WORKDIR /srv
 
 # Önce sadece bağımlılıklar: kod değişince bu katman yeniden kurulmaz.
 COPY backend/pyproject.toml backend/
+COPY ai/pyproject.toml ai/
 COPY scraper/pyproject.toml scraper/
-RUN mkdir -p backend/app scraper/collector scraper/etl \
-    && touch backend/app/__init__.py scraper/collector/__init__.py scraper/etl/__init__.py \
-    && pip install -e backend -e scraper
+RUN mkdir -p backend/app ai/pii scraper/collector scraper/etl \
+    && touch backend/app/__init__.py ai/pii/__init__.py scraper/collector/__init__.py scraper/etl/__init__.py \
+    && pip install -e backend -e ai -e scraper
 
-# Editable kurulum: taksonomi CSV'leri paketin yanındaki scraper/taxonomy/'den okunur.
+# Editable kurulum: taksonomi CSV'leri paketin yanındaki scraper/taxonomy/'den okunur (pii de aynı dosyayı bulur).
+# ai/'den sadece ilan maskeleme (pii) gerekir; NER (torch) kurulmaz, ilanlar kurallarla maskelenir.
 COPY backend/app backend/app
+COPY ai/pii ai/pii
 COPY scraper/collector scraper/collector
 COPY scraper/etl scraper/etl
 COPY scraper/taxonomy scraper/taxonomy
