@@ -21,7 +21,7 @@ Ekip onaylayınca `docs/kararlar.md`'ye eklenecek. Danışman farklı görüş b
 | A5 | **Yeni araştırma çıktısı: 12 aylık yetkinlik talebi eğilim analizi** (İP1) | Proje süresince her gece toplanan ilanlarla pozisyon bazında talebin zaman içindeki değişimi ölçülebilir. Bu, literatüre ve kariyer merkezlerine özgün bir veri sağlar ve bildiri için güçlü bir sonuçtur. Altyapı zaten var (T-034, T-045). |
 | A6 | **Öncelikli alan: "Yapay zekâ"** (ana). İlişkili alanlar: "Eğitimde dijitalleşme ve yenilikçilik", "Büyük veri ve bulut bilişim". | TÜBİTAK Öncelikli Alanlar listesinde üçü de birebir geçiyor. Öncelikli alanda taban puan farklı belirlenebiliyor. |
 | A7 | **Başlık:** "Kişisel Veriyi Koruyan Yerel Büyük Dil Modeli ve İş İlanı Analiziyle Öğrencilere Yönelik Yetkinlik Açığı Tespiti ve Öğrenme Kaynağı Önerisi" | Ayırt edici iki özelliği (kişisel veri koruması ve talep verisine dayanma) başlıkta taşıyor; marka içermiyor. |
-| A8 | **Bütçe: 11.900 TL**, yalnızca hizmet alımı | 12.000 TL sınırının altında. Kapsam dışı kalemler (kongre, yayın, mağaza ücreti) bilinçli olarak yazılmadı; mağaza ücretinin hizmet alımı sayılıp sayılmadığı belirsiz. |
+| A8 | **Bütçe: 11.840 TL**, yalnızca hizmet alımı | 12.000 TL sınırının altında. Sunucu güncel fiyatla (920 TL/ay) yazıldı; bütçe sınırını aştığı için yedek depolama (~2.140 TL) ve saatlik grafik işlemcili sunucu (~1.500 TL) bütçeye girmedi, ekip karşılar. Kapsam dışı kalemler (kongre, yayın, mağaza ücreti) bilinçli olarak yazılmadı; mağaza ücretinin hizmet alımı sayılıp sayılmadığı belirsiz. |
 | A9 | **Taksonomi ve değerlendirme protokolü açık lisansla paylaşılır** (CC BY 4.0, ESCO atfıyla) | Yaygın etkiye ölçülebilir bir veri çıktısı ekliyor. Taksonomi kişisel veri içermiyor; ESCO lisansı atıfla yeniden kullanıma izin veriyor. Sentetik CV seti de paylaşılabilir. |
 
 ---
@@ -39,7 +39,7 @@ Ekip onaylayınca `docs/kararlar.md`'ye eklenecek. Danışman farklı görüş b
 | 5 | Etik kurul: anketli çalışma için onay mı muafiyet mi gerektiğinin öğrenilmesi; bilgilendirilmiş onam formu ve Türkçe SUS anketinin hazırlanması (Ek 1–2) | **Burak** | Anıl | 05.11 |
 | 6 | Kullanılabilirlik çalışması görev senaryoları ve yaygın etki hedeflerinin kontrolü | **Anıl** | — | 04.11 |
 | 7 | Araştırma olanakları tablosuna Burak ve Anıl'ın bilgisayar bilgileri | **Burak, Anıl** | — | 03.11 |
-| 8 | Bütçe tekliflerinin kontrolü (sunucu, yedek, GPU); 32 GB sunucu kararı çıkarsa güncelleme | **Ataberk** | — | 05.11 |
+| 8 | Bütçe tekliflerinin kontrolü (sunucu, alan adı); toplam 12.000 TL'yi aşmamalı | **Ataberk** | — | 05.11 |
 | 9 | TYBS'ye giriş; metinlerin yapıştırılması; ortakların ve danışmanın eklenmesi; IBAN; **ÜYZ beyan bölümünün doldurulması** (Bölüm C); **"Proje Önerisini Önizle"** kontrolü | **Ataberk** | Anıl (önizleme kontrolü) | 07.11 |
 | 10 | Danışmana onaya gönderme. Reddedilirse düzeltme için zaman kalsın. | **Ataberk** | — | **09.11** |
 | 11 | Danışman onayı (sistemde) | Danışman | — | **11.11 17:30** |
@@ -70,8 +70,8 @@ Ekip onaylayınca `docs/kararlar.md`'ye eklenecek. Danışman farklı görüş b
 | Yürütücü | Ataberk |
 | Proje ortakları | Burak, Anıl |
 | Danışman | `[danışman adı: TYBS'de YÖKSİS/ARBİS'ten seçilecek]` |
-| Bütçe | 11.900 TL (Bölüm 7) |
-| ÜYZ kullanım beyanı (TYBS'de bu amaçla ayrılmış bölüme; rehber 1.2.2: araç adı ve sürümü, kullanılan bölümler, kullanımın niteliği) | "Bu araştırma önerisinin hazırlanmasında üretken yapay zekâ aracı Claude (Anthropic; model: Claude Opus 5.5, Claude Code arayüzü üzerinden) kullanılmıştır. Kullanım alanları: (1) Özet, bilimsel nitelik, amaç ve hedefler, yöntem, çalışma takvimi, risk yönetimi, araştırma olanakları, yaygın etki ve bütçe bölümlerinin ilk taslağının oluşturulması; (2) literatür kaynaklarının bulunması ve DOI bilgilerinin Crossref/DataCite üzerinden doğrulanması; (3) TÜBİTAK çağrı metni ve bilgi notundaki kuralların özetlenmesi; (4) dil ve biçim düzenlemesi. Kullanımın niteliği: ilk taslak oluşturma ve metin iyileştirme. Ön çalışma bölümündeki tüm sayısal sonuçlar (ilan sayıları, oranlar) proje ekibinin kendi yazılımı ve verisiyle üretilmiştir; yapay zekâ tarafından üretilmiş veri kullanılmamıştır. Taslak metinler proje ekibi tarafından gözden geçirilmiş, düzenlenmiş ve doğrulanmış; danışman tarafından kontrol edilmiştir. İçeriğin doğruluğu ve özgünlüğü proje ekibinin ve danışmanın sorumluluğundadır." `[Sentetik özgeçmişler bir ÜYZ aracıyla üretilirse araç adı ve sürümü buraya eklenecek — Burak]` |
+| Bütçe | 11.840 TL (Bölüm 7) |
+| ÜYZ kullanım beyanı (TYBS'de bu amaçla ayrılmış bölüme; rehber 1.2.2: araç adı ve sürümü, kullanılan bölümler, kullanımın niteliği) | "Bu araştırma önerisinin hazırlanmasında üretken yapay zekâ aracı Claude (Anthropic; model: Claude Opus 5.5, Claude Code arayüzü üzerinden) kullanılmıştır. Kullanım alanları: (1) Özet, bilimsel nitelik, amaç ve hedefler, yöntem, çalışma takvimi, risk yönetimi, araştırma olanakları, yaygın etki ve bütçe bölümlerinin ilk taslağının oluşturulması; (2) literatür kaynaklarının bulunması ve DOI bilgilerinin Crossref/DataCite üzerinden doğrulanması; (3) TÜBİTAK çağrı metni ve bilgi notundaki kuralların özetlenmesi; (4) dil ve biçim düzenlemesi; (5) ön çalışmada ve değerlendirme setinde kullanılan sentetik özgeçmiş metinlerinin yazılması. Kullanımın niteliği: ilk taslak oluşturma, sentetik test verisi üretimi ve metin iyileştirme. Ön çalışma bölümündeki sayısal sonuçlar (ilan sayıları, oranlar, ölçümler) proje ekibinin kendi yazılımı ve verisiyle üretilmiştir; sentetik özgeçmişler dışında yapay zekâ tarafından üretilmiş veri kullanılmamıştır. Taslak metinler proje ekibi tarafından gözden geçirilmiş, düzenlenmiş ve doğrulanmış; danışman tarafından kontrol edilmiştir. İçeriğin doğruluğu ve özgünlüğü proje ekibinin ve danışmanın sorumluluğundadır." |
 
 ---
 
@@ -173,7 +173,7 @@ Büyük dil modelleri metinden yapılandırılmış bilgi çıkarmada güçlü o
 - farklı deneyim düzeyleri (yeni mezun, stajyer, deneyimli)
 - 10 hedef pozisyonun tamamı
 
-Yetkinliklerin metinde açık liste olarak, proje açıklaması içinde ve kısaltma/yazım farklılıklarıyla geçmesi sağlanır. Sentetik özgeçmişlerin üretiminde bir üretken yapay zekâ aracından yararlanılırsa, aracın adı ve sürümü raporlanır; üretilen her özgeçmiş ekip tarafından elle gözden geçirilir ve gerçek bir kişiye ait bilgi içermediği kontrol edilir. Etiketler yapay zekâ ile değil, ekip üyelerince elle verilir. Her özgeçmiş iki kişi tarafından bağımsız etiketlenir, anlaşmazlıkları üçüncü kişi çözer. Etiketleyiciler arası F1 < 0,85 ise etiketleme kılavuzu güncellenip etiketleme tekrarlanır. Sentetik setin, gerçek özgeçmişlerdeki düzensizlikleri tam yansıtmayabilmesi sonuçlarda sınırlılık olarak tartışılır.
+Yetkinliklerin metinde açık liste olarak, proje açıklaması içinde ve kısaltma/yazım farklılıklarıyla geçmesi sağlanır. Sentetik özgeçmişlerin metinleri üretiminde üretken yapay zekâ aracından yararlanılır, aracın adı ve sürümü raporlanır; üretilen her özgeçmiş ekip tarafından elle gözden geçirilir ve gerçek bir kişiye ait bilgi içermediği kontrol edilir. Etiketler yapay zekâ ile değil, ekip üyelerince elle verilir. Her özgeçmiş en az bir kişi, dil, düzen ve deneyim düzeyine göre dengeli seçilen 20'si iki kişi tarafından bağımsız etiketlenir; anlaşmazlıkları üçüncü kişi çözer. Çift etiketlenen alt kümede etiketleyiciler arası F1 < 0,85 ise etiketleme kılavuzu güncellenip etiketleme tekrarlanır. Sentetik setin, gerçek özgeçmişlerdeki düzensizlikleri tam yansıtmayabilmesi sonuçlarda sınırlılık olarak tartışılır.
 
 **2.3. Yetkinlik çıkarımı deneyi (İP3).**
 - Ön işleme: PDF metin çıkarma; taranmış belgeler için optik karakter tanıma yedeği; kişisel verilerin (ad-soyad, telefon, e-posta, adres, kimlik numarası, doğum tarihi) düzenli ifadeler ve isim varlığı tanıma ile maskelenmesi.
@@ -208,15 +208,18 @@ Yetkinliklerin metinde açık liste olarak, proje açıklaması içinde ve kısa
 - **Ölçüm:** SUS (Brooke, 1996) uygulanır; hedef ortalama SUS puanının ≥ 70 olmasıdır (literatürdeki ortalama yaklaşık 68'dir) ve yorumlama Bangor vd. (2008) ölçeğine göre yapılır. Ankette ek olarak katılımcının kendi sonucundaki yetkinliklerin doğruluğunu 1–5 ölçekle değerlendirmesi istenir. Bu soru, sentetik setteki sonucun gerçek kullanımdaki karşılığı hakkında tamamlayıcı bir gösterge sağlar.
 - **Etik:** Çalışma, etik kurul onayı veya muafiyet belgesi alındıktan sonra başlar.
 
-**2.7. Ön çalışma (fizibilite).** Proje öncesinde, bitirme projesi kapsamında aşağıdakiler tamamlanmıştır (29.10.2026 itibarıyla):
+**2.7. Ön çalışma (fizibilite).** Proje öncesinde, bitirme projesi kapsamında aşağıdakiler tamamlanmıştır (30.10.2026 itibarıyla):
 - Veri kaynaklarının hukuki uygunluk incelemesi.
-- Kullanım koşullarına uygun programlama arayüzlerinden **2.048 güncel ilan** (Mayıs–Ekim 2026). Yedek olarak açık lisanslı (CC0) bir ilan veri seti (Vidros vd., 2017) pasif tutulmaktadır.
-- 374 yetkinlik ve 12 pozisyonluk iki dilli taksonomi. Yetkinliklerin 61'i uluslararası sınıflandırmaya bağlıdır.
+- Kullanım koşullarına uygun programlama arayüzlerinden **2.208 aktif güncel ilan** (Mayıs–Ekim 2026). Yedek olarak açık lisanslı (CC0) bir ilan veri seti (Vidros vd., 2017) pasif tutulmaktadır.
+- 374 yetkinlik ve 12 pozisyonluk iki dilli taksonomi (10 hedef pozisyon; ek olarak veri mühendisi ve veri analisti). Yetkinliklerin 61'i uluslararası sınıflandırmaya bağlıdır.
 - Normalizasyon hattı. İlanların %88'inde en az bir yetkinlik bulundu, ilan başına ortalama 7,5. %39,6'sı başlıktan bir hedef pozisyona eşlendi; elle yapılan 30 ilanlık kontrolde atamalar doğru çıktı.
-- Pozisyon × yetkinlik talep istatistikleri. Örnek: tam yığın geliştirici ilanlarının %61'i aynı arayüz kütüphanesini istiyor.
+- Pozisyon × yetkinlik talep istatistikleri. Örnek: tam yığın geliştirici ilanlarının %62'si aynı arayüz kütüphanesini istiyor.
+- Kişisel veri maskeleme: düzenli ifadeler ve yerel isim varlığı tanıma modeli. 58 öğelik sentetik sette ad yakalama, yalnız kurallarla %44 iken birleşik yöntemle %100'e çıktı.
+- Yerel dil modeli ön kıyası: 10 Türkçe sentetik özgeçmişte üç açık kaynak model karşılaştırıldı. Şema zorunlu kılındığında geçerli JSON oranı 30/30 oldu; seçilen modelde grafik işlemcisiz dizüstü bilgisayarda yalnızca yetkinlik çıkarımı özgeçmiş başına ortalama 53 saniye sürdü. Doğruluk ölçümü elle etiketlenmiş setle İP3'te yapılacaktır.
+- Doğrulanmış eğitim kaynağı havuzunun ilk bölümü (447 kaynak) ve haftalık bağlantı kontrolü.
 - Veritabanı şeması, otomatik test ve sürekli entegrasyon altyapısı.
 
-Sistemin ilk sürümünün Ocak 2027'de kullanıma açılması planlanmaktadır; bu sürüm proje süresince araştırma platformu olarak kullanılacaktır. Ön çalışma, yöntemin uygulanabilirliğini göstermiş ve bir riski de ortaya koymuştur: mevcut havuz İngilizce ve uzaktan çalışma ilanı ağırlıklıdır, 12 pozisyondan 7'sinde 50'den az ilan vardır. Bu risk İP1'de ele alınmaktadır.
+Sistemin ilk sürümünün Ocak 2027'de kullanıma açılması planlanmaktadır; bu sürüm proje süresince araştırma platformu olarak kullanılacaktır. Ön çalışma, yöntemin uygulanabilirliğini göstermiş ve bir riski de ortaya koymuştur: mevcut havuz İngilizce ve uzaktan çalışma ilanı ağırlıklıdır, 12 pozisyondan 4'ünde 50'den az ilan vardır. Bu risk İP1'de ele alınmaktadır.
 
 **Yöntemlerin çalışma takvimiyle ilişkisi:** 2.1 → İP1 · 2.2 → İP2 · 2.3 → İP3 · 2.4 → İP4 · 2.5 → İP5 · 2.6 → İP6.
 
@@ -248,7 +251,7 @@ Kurallara uygunluk: Toplam süre 12 ay; hiçbir iş paketi 12 aydan uzun değil.
 | R4 | Farklı biçimdeki ve Türkçe özgeçmişlerde düşük çıkarım doğruluğu (F1 < 0,80) | Çok sütunlu PDF desteği, optik karakter tanıma yedeği, eş anlamlı sözlüğünün genişletilmesi. Sapmada hata analizi yapılır, kullanıcının yetkinlikleri elle düzeltebildiği ekran öne alınır. Hedeften sapma alt gruplara göre raporlanır. |
 | R5 | Sentetik test setinin gerçek özgeçmişleri yeterince temsil etmemesi | Set, belge düzeni, dil, deneyim düzeyi ve yazım farklılıklarına göre bir dağılım planıyla üretilir. Kullanılabilirlik anketinde katılımcıların kendi sonuçlarının doğruluğunu değerlendirmesi tamamlayıcı gösterge olarak kullanılır (özgeçmiş kaydedilmeden). Sapma sınırlılık olarak raporlanır. |
 | R6 | Kişisel veri sızıntısı | Özgeçmiş ve ham metin saklanmaz; modele gitmeden maskeleme; günlük kayıtlarında maskeleme; şifreli yedek; en az yetki ilkesi. İhlal şüphesinde olay prosedürü uygulanır: izole etme, etki analizi, mevzuattaki sürede bildirim. |
-| R7 | Etik kurul onayının gecikmesi veya kullanılabilirlik çalışmasına yeterli katılımcı bulunamaması | Etik kurul başvurusu proje başında (Ay 1) yapılır. Katılımcılar bölüm öğrencilerinden ve duyurularla toplanır. Kariyer merkeziyle proje başında danışman aracılığıyla temas kurulur (katılımcı duyurusu ve talep raporunun paylaşımı için). Sapmada çalışma İP6 süresi içinde uzatılır, gerekirse çevrim içi oturumlarla yürütülür. |
+| R7 | Etik kurul onayının gecikmesi veya kullanılabilirlik çalışmasına yeterli katılımcı bulunamaması | Etik kurul başvurusu, proje yürürlüğe girmeden belge istenebileceği için sonuçlar beklenmeden yapılır. Katılımcılar bölüm öğrencilerinden ve duyurularla toplanır. Kariyer merkeziyle proje başında danışman aracılığıyla temas kurulur (katılımcı duyurusu ve talep raporunun paylaşımı için). Sapmada çalışma İP6 süresi içinde uzatılır, gerekirse çevrim içi oturumlarla yürütülür. |
 | R8 | Sunucu veya veri toplama kesintisi (eğilim analizinde boşluk) | Günlük şifreli yedek, uptime izleme, art arda başarısız toplamada uyarı. Kesinti olursa eksik günler analizde işaretlenir; eğilim analizi aylık toplulaştırılmış veriyle yapıldığı için birkaç günlük boşluk sonucu bozmaz. |
 | R9 | Sınav dönemlerinde ekip kapasitesinin düşmesi | Sınav haftaları takvime işlenmiştir. Her modül belgelenmiştir ve sürekli entegrasyonla test edilmektedir; ekip üyeleri birbirinin işini yürütebilir. |
 
@@ -258,7 +261,8 @@ Kurallara uygunluk: Toplam süre 12 ay; hiçbir iş paketi 12 aydan uzun değil.
 |---|---|---|
 | Ekip bilgisayarları | 6 çekirdekli / 32 GB RAM / 4 GB ekran kartlı bir dizüstü bilgisayar; 6 çekirdekli / 16 GB RAM / 8 GB ekran kartlı bir masaüstü bilgisayar; üçüncü ekip üyesinin bilgisayarı `[Burak'ın bilgisayar özellikleri eklenecek]` | Geliştirme, yerel model denemeleri, deneyler, testler |
 | Kiralık sanal sunucu | 8 vCPU / 16 GB RAM Linux sunucu (bütçeden, hizmet alımı) | Canlı sistem, dil modeli sunucusu, veritabanı, gece veri toplama |
-| Saatlik grafik işlemcili sunucu | Gerektiğinde kiralanır (bütçeden) | Model karşılaştırma deneyleri ve demo günleri |
+| Saatlik grafik işlemcili sunucu | Gerektiğinde ekip tarafından kiralanır (proje bütçesi dışında) | Model karşılaştırma deneyleri ve demo günleri |
+| Sunucu dışı şifreli yedek depolama | Ekip tarafından karşılanır (proje bütçesi dışında) | Veritabanının günlük yedeği |
 | Açık kaynak yazılımlar | Açık kaynak dil modelleri, ilişkisel veritabanı ve vektör arama eklentisi, web çatıları, optik karakter tanıma | Lisans maliyeti yok |
 | Sürüm kontrolü ve sürekli entegrasyon | Ücretsiz/öğrenci katmanı | Otomatik testler, kod incelemesi, dağıtım |
 | Üniversite | Bölüm öğrencileri ve duyuru kanalları | Kullanılabilirlik çalışması katılımcılarına erişim |
@@ -281,7 +285,7 @@ Kurallara uygunluk: Toplam süre 12 ay; hiçbir iş paketi 12 aydan uzun değil.
 ## 5. BELİRTMEK İSTEDİĞİNİZ DİĞER KONULAR
 
 - **Ön çalışma ve proje dönemi ayrımı:** Sistemin ilk sürümü, bitirme projesi kapsamında proje başlangıcından önce geliştirilmektedir (Ocak 2027). TÜBİTAK desteği istenen 12 aylık dönem, bu sürüm üzerinde yapılacak araştırma, değerlendirme ve iyileştirme çalışmalarını kapsar.
-- **Ön çalışmadan örnek veri:** Pozisyon başına ilan sayıları ve en çok istenen yetkinlikler (Ekim 2026): tam yığın geliştirici 207 ilan (ilk yetkinlik %61), DevOps 122 ilan (%51), arka uç geliştirici 112 ilan (%43), makine öğrenmesi mühendisi 97 ilan (%56).
+- **Ön çalışmadan örnek veri:** Pozisyon başına ilan sayıları ve en çok istenen yetkinlikler (Ekim 2026): tam yığın geliştirici 219 ilan (ilk yetkinlik %62), DevOps 130 ilan (%52), arka uç geliştirici 126 ilan (%42), makine öğrenmesi mühendisi 109 ilan (%60).
 - **Etik:** Gerçek kişilere ait özgeçmiş toplanmaz. İnsan katılımcı içeren tek çalışma anketli kullanılabilirlik çalışmasıdır (İP6); etik kurul onayı veya muafiyet belgesiyle yürütülür.
 - **Üretken yapay zekâ kullanımı:** TYBS'deki ÜYZ beyan bölümünde ayrıntılı olarak beyan edilmiştir.
 
@@ -325,13 +329,11 @@ Zhang, M., Jensen, K. N., Sonniks, S. D., Plank, B. 2022. "SkillSpan: Hard and S
 
 | Kalem | Tür | Hesap | Tutar |
 |---|---|---|---|
-| Sanal sunucu kiralama (8 vCPU / 16 GB, 12 ay) | Hizmet alımı | 12 × 700 TL | 8.400 TL |
-| Sunucu dışı şifreli yedek depolama (12 ay) | Hizmet alımı | 12 × 100 TL | 1.200 TL |
+| Sanal sunucu kiralama (8 vCPU / 16 GB, 12 ay) | Hizmet alımı | 12 × 920 TL | 11.040 TL |
 | Alan adı (1 yıl) | Hizmet alımı | 1 × 800 TL | 800 TL |
-| Saatlik grafik işlemcili sunucu (İP3 model deneyleri ve demo) | Hizmet alımı | ~50 saat × 30 TL | 1.500 TL |
-| **Toplam** | | | **11.900 TL** |
+| **Toplam** | | | **11.840 TL** |
 
 - Tutarlar güncel piyasa fiyatlarına dayalı tahmindir; harcamalar faturalı olacaktır.
-- Ekip 32 GB sunucuya geçerse sunucu satırı artar. O durumda GPU satırı düşürülerek toplam 12.000 TL'nin altında tutulur.
+- Sunucu dışı yedek depolama ve gerektiğinde kiralanacak saatlik grafik işlemcili sunucu proje bütçesinin dışındadır, ekip tarafından karşılanır. Kur veya fiyat artışından doğan fark da ekip tarafından karşılanır.
 - Mağaza geliştirici ücreti, kongre katılımı ve yayın giderleri kapsam dışı olduğu için yazılmadı. Öğrencilere ve danışmana ücret ödenmez. Destek yürütücünün kendi IBAN'ına yatar.
 - Bütçe adımı Bilgi Notu'nda yok; TYBS'de ayrı bir adımda isteniyorsa oradan girilecek.
