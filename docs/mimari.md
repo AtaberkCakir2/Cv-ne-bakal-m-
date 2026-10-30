@@ -67,8 +67,8 @@ CPU'lu sunucuda bir analiz yaklaşık 1–2 dakika sürer; bu yüzden işlem sen
 | Ortam | Amaç | Adres | Altyapı | Deploy tetikleyici | Veri | Erişim | Sorumlu |
 |---|---|---|---|---|---|---|---|
 | Lokal | Geliştirme | localhost | docker-compose (geliştirici bilgisayarı) | Elle (make up) | Seed + sahte veri; gerçek CV yok | Geliştirici | Ataberk |
-| Staging | Test, demo, UAT, go-live provası | staging-api.<alanadi> | VPS üzerinde ayrı compose projesi | develop branch'ine merge → otomatik | Anonim test verisi, gerçek ilanlar | Ekip + beta kullanıcıları | Ataberk |
-| Production | Canlı sistem | api.<alanadi>, app.<alanadi> | VPS, ayrı compose profili, kaynak limitli | main'e merge + elle onay (environment protection) | Gerçek kullanıcı verisi (KVKK kapsamında) | Sadece Ataberk + 1 yedek (SSH anahtarı) | Ataberk |
+| Staging | Test, demo, UAT, go-live provası | staging-api.<alanadi> | VPS üzerinde ayrı compose projesi | main'e merge → otomatik | Anonim test verisi, gerçek ilanlar | Ekip + beta kullanıcıları | Ataberk |
+| Production | Canlı sistem | api.<alanadi>, app.<alanadi> | VPS, ayrı compose profili, kaynak limitli | vX.Y.Z etiketi + elle onay (environment protection) | Gerçek kullanıcı verisi (KVKK kapsamında) | Sadece Ataberk + 1 yedek (SSH anahtarı) | Ataberk |
 
 ## Production servisleri (docker compose)
 
