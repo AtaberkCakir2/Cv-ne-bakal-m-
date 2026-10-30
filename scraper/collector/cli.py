@@ -109,7 +109,8 @@ def main(argv: list[str] | None = None) -> int:
         print(
             f"{n.postings} ilan: pozisyonu belli {n.with_role} (%{100 * n.with_role / max(n.postings, 1):.1f}), "
             f"yetkinlikli {n.with_skills} (%{100 * n.with_skills / max(n.postings, 1):.1f}), "
-            f"{n.skill_links} yetkinlik bağı, {n.deactivated} benzer ilan pasife alındı"
+            f"{n.skill_links} yetkinlik bağı, {n.masked} ilanda kişisel veri maskelendi, "
+            f"{n.deactivated} benzer ilan pasife alındı"
         )
         with session_factory() as session:
             print(f"role_skill_stats yenilendi: {stats.refresh(session)} satır")
