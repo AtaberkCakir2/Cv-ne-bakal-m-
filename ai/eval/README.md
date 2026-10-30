@@ -25,7 +25,7 @@ Plan: #30'da Ataberk'le kararlaştırıldı (29.10.2026). Görev durumu: `docs/g
 | CV listesi (kimlik içermez) | `dataset/manifest.csv` | Evet |
 | Etiketler | `dataset/labels/<cv_id>/<etiketleyici>.json` | Evet |
 | Altın standart (anlaşmazlık çözülmüş) | `dataset/gold/<cv_id>.json` | Evet |
-| Geçici yetkinlik listesi | `dataset/skills_provisional.json` | Evet |
+| Yetkinlik listesi | `scraper/taxonomy/skills.csv` (Ataberk, T-017); `dataset/skills_provisional.json` sadece testlerde | Evet |
 
 **Kişisel veri yok:** CV'lerdeki ad, okul, şirket ve iletişim bilgileri uydurmadır; her CV repoya girmeden önce gerçek bir kişiye ait bilgi içermediği elle kontrol edilir. CV üretiminde bir ÜYZ aracı kullanılırsa adı ve sürümü TÜBİTAK beyanına yazılır.
 
@@ -108,7 +108,7 @@ python ai/eval/scripts/generate_cvs.py --only syn-014
 }
 ```
 
-- `skill`: `skills_provisional.json`'daki `canonical_name` ile **birebir** aynı. Listede olmayan yetkinlik için kılavuzdaki kurala bak.
+- `skill`: taksonomideki (`scraper/taxonomy/skills.csv`) `canonical_name` ile **birebir** aynı. Listede olmayan yetkinlik için kılavuzdaki kurala bak.
 - `level`: `beginner`, `intermediate`, `advanced`, `unknown` — `contracts/analysis_result.schema.json` ile aynı değerler.
 - `years`: CV'de açıkça yazıyorsa sayı, yoksa `null`.
 
@@ -123,6 +123,6 @@ python ai/eval/scripts/generate_cvs.py --only syn-014
 
 Etiketleyiciler arası F1 0,85'in altındaysa kılavuz yetersiz demektir; kılavuz güncellenip etiketleme tekrar gözden geçirilir. Modelden bunu beklemek de anlamsız olur (hedef F1 ≥ 0,80).
 
-## Taksonomi gelince
+## Taksonomi değişince
 
-Ataberk'in taksonomisi (T-017) hazır olduğunda `skills_provisional.json` yerine o kullanılır. `check_labels.py --skills <yeni-dosya>` ile etiketler yeniden doğrulanır; adı değişen yetkinlikler toplu güncellenir.
+`check_labels.py` ve `agreement.py` varsayılan olarak Ataberk'in taksonomisini (T-017, `scraper/taxonomy/skills.csv`) kullanır; ilk 82 yetkinlikli geçici liste (`skills_provisional.json`) sadece örnek etiketlerin testlerinde kalır. Taksonomi değişince `check_labels.py` etiketleri yeniden doğrular; adı değişen yetkinlikler toplu güncellenir.

@@ -34,6 +34,13 @@ def test_real_dataset_is_valid() -> None:
     assert check_labels.main([]) == 0
 
 
+def test_taxonomy_csv_is_the_default_skill_list() -> None:
+    skills = load_skill_names(_common.DEFAULT_SKILLS)
+    assert len(skills.names) > 300
+    assert "PostgreSQL" in skills and skills.suggest("postgres") == "PostgreSQL"
+    assert load_skill_names(SKILLS).names <= skills.names  # geçici listedeki adlar taksonomide de var
+
+
 def test_examples_are_valid() -> None:
     assert check_labels.main(["--dataset", str(EXAMPLES), "--skills", str(SKILLS)]) == 0
 

@@ -17,10 +17,10 @@ CV sahibinin **sahip olduğunu** CV'den makul biçimde anlayabildiğiniz her yet
 
 ## Ad nasıl yazılır
 
-- `skills_provisional.json`'daki `canonical_name`'i birebir kullanın. Eş anlamlılar (`synonyms`) için de standart ad yazılır: "Postgres" → `PostgreSQL`, "k8s" → `Kubernetes`.
+- Taksonomideki (`scraper/taxonomy/skills.csv`, Ataberk, T-017) `canonical_name`'i birebir kullanın. Eş anlamlılar (`synonyms`) için de standart ad yazılır: "Postgres" → `PostgreSQL`, "k8s" → `Kubernetes`.
 - Aynı yetkinlik bir kez yazılır.
 - Eş anlamlı veya küçük/büyük harf farklı bir ad yazarsanız (ör. `"Postgres"`) `check_labels.py` hata verir ve doğru adı önerir.
-- **Listede yoksa:** adı CV'de yazdığı gibi yazın ve başına `?` koyun (ör. `"?Apache Kafka"`). `check_labels.py` bunları ayrı listeler; hafta sonunda listeye eklenip eklenmeyeceğine birlikte karar verilir.
+- **Listede yoksa:** adı CV'de yazdığı gibi yazın ve başına `?` koyun (ör. `"?Temporal"`). `check_labels.py` bunları ayrı listeler; hafta sonunda listeye eklenip eklenmeyeceğine birlikte karar verilir.
 
 ## Seviye (`level`)
 

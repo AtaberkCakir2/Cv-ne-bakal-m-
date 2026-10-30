@@ -12,7 +12,8 @@ from typing import Any
 
 EVAL_DIR = Path(__file__).resolve().parent.parent
 DEFAULT_DATASET = EVAL_DIR / "dataset"
-DEFAULT_SKILLS = DEFAULT_DATASET / "skills_provisional.json"
+# Ataberk'in taksonomisi (T-017); ai/extraction de aynı dosyayı kullanır.
+DEFAULT_SKILLS = EVAL_DIR.parents[1] / "scraper" / "taxonomy" / "skills.csv"
 
 TEAM = ("ataberk", "burak", "anil")
 LEVELS = ("beginner", "intermediate", "advanced", "unknown")
@@ -64,12 +65,22 @@ class Skills:
 
 
 def load_skill_names(path: Path) -> Skills:
-    data = json.loads(path.read_text(encoding="utf-8"))
-    names = {s["canonical_name"] for s in data["skills"]}
+    """Taksonomi CSV'si (`scraper/taxonomy/skills.csv`, eş anlamlılar `|` ile) veya `{"skills": [...]}` JSON'u."""
+    skills: list[dict[str, Any]]
+    if path.suffix == ".csv":
+        with path.open(encoding="utf-8", newline="") as f:
+            skills = [
+                {"canonical_name": row["canonical_name"].strip(), "synonyms": row["synonyms"].split("|")}
+                for row in csv.DictReader(f)
+            ]
+    else:
+        skills = json.loads(path.read_text(encoding="utf-8"))["skills"]
+    names = {s["canonical_name"] for s in skills}
     by_alias: dict[str, str] = {}
-    for s in data["skills"]:
+    for s in skills:
         for alias in [s["canonical_name"], *s.get("synonyms", [])]:
-            by_alias.setdefault(alias.lower(), s["canonical_name"])
+            if alias.strip():
+                by_alias.setdefault(alias.strip().lower(), s["canonical_name"])
     return Skills(names, by_alias)
 
 
