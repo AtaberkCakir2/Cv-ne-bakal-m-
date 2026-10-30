@@ -28,7 +28,7 @@ CV sahibinin **sahip olduğunu** CV'den makul biçimde anlayabildiğiniz her yet
 |---|---|
 | `advanced` | "ileri düzey", "uzman", "advanced", "proficient" yazıyor **veya** iş deneyiminde ≥ 3 yıl kullanılmış |
 | `intermediate` | "orta", "iyi derecede", "intermediate", "good" **veya** 1–3 yıl iş/staj deneyiminde kullanılmış |
-| `beginner` | "temel", "başlangıç", "basic", "familiar" **veya** sadece okul/kişisel projede geçiyor |
+| `beginner` | "temel", "başlangıç", "basic", "familiar" **veya** sadece okul/kişisel projede geçiyor **veya** 1 yıldan kısa iş/staj deneyiminde kullanılmış (ör. 3 aylık yaz stajı) |
 | `unknown` | Seviyeyi gösteren hiçbir ipucu yok (sadece yetenek listesinde adı geçiyor) |
 
 - Yazılı ifade ile süre çelişirse **yazılı ifade** kazanır.
