@@ -206,6 +206,7 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 - **Destek:** Burak
 - **Çıktı:** resources tablosu (≥ 900 kayıt)
 - **Kabul kriteri:** YouTube Data API v3 + elle küratörlük. Her yetkinlik için en az 3 kaynak (Türkçe öncelikli; seviye, süre, ücretsiz/ücretli). Haftalık link sağlık kontrolü (ölü link → pasif).
+- **Devam notu (30.10.2026):** Yapılan: `resources.csv`'de 12 zayıf link düzeltildi, dev DB'ye de işlendi (447 canlı kaynak); `scraper/Dockerfile` derleme hatası giderildi; worker-data yeni imajla ayağa kalktı, beat ve 3 zamanlanmış iş doğrulandı. Sıradaki adım: kalan 748 YouTube araması (günde en fazla 100, kota TR ~10:00'da yenilenir), sonra `resources-report` ile ≥ 900 kayıt ve yetkinlik başına ≥ 3 kaynak kontrolü (şu an 360/374 yetkinlikte eksik). Açık sorular / engeller: `seed` var olan satırı güncellemez, CSV'de değişen URL yeni bir ortama değil sadece sıfırdan seed'e yansır; arama durumu yerelde `scraper/data/`, işçide `scraper-data` volume'unda ayrı tutulur. Branch: ataberk/kaynak-havuzu
 
 ### T-047 · 2. ve 3. veri kaynağı entegrasyonu
 
