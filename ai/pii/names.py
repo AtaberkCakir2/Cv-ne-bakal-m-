@@ -45,6 +45,14 @@ HONORIFIC = re.compile(
 )
 # Türkçe hitaplar İngilizce metinde ad öneki değildir ("Bay Area", "North Bay").
 _TR_ONLY_TITLES = frozenset({"Sayın", "Bay", "Bayan"})
+# Unvanla başlayan marka adları. Unvandan sonraki her ad maskelenir ("Mr. Johnson", "Prof. Smith"); fazla maskelemenin
+# yetkinlik maliyeti yok, kaçırmanın var. İstisna sadece bu küçük liste.
+HONORIFIC_BRANDS = frozenset(
+    {
+        "Dr. Squatch", "Dr. Martens", "Dr. Dre", "Dr. Oetker", "Dr. Pepper", "Dr. Scholl",
+        "Mr. Clean", "Mr. Rooter", "Mr. Electric", "Mr. Bean",
+    }
+)  # fmt: skip
 HEADER_LINE = re.compile(rf"^[ \t]*{_NAME_TOKEN}(?:{_SP}{_NAME_TOKEN}){{1,3}}[ \t]*$")
 # İlk satırlarda ad olmayan başlıklar
 NOT_A_NAME = re.compile(
@@ -87,12 +95,9 @@ def find_names(
     *,
     header: bool = True,
     skip_words: frozenset[str] | None = None,
-    strict_honorifics: bool = False,
 ) -> list[Span]:
     """`header=False`: başlık kuralı (2) uygulanmaz; ilk satırı ad olmayan belgeler için (ilan metni).
-    `skip_words`: ad sayılmayacak kelimeler (küçük harf); verilmezse taksonomi + unvan kelimeleri.
-    `strict_honorifics`: unvandan sonra tek kelime yetmez, tam ad (2+ kelime) veya bilinen ilk ad gerekir; ilan
-    metninde marka adı ad sayılmasın ("Dr. Squatch"). CV'de kapalı: referanstaki "Dr. Yılmaz" kaçmasın."""
+    `skip_words`: ad sayılmayacak kelimeler (küçük harf); verilmezse taksonomi + unvan kelimeleri."""
     skip = (skill_words() if skip_words is None else skip_words) | TITLE_WORDS
     spans: list[Span] = []
     for m in LABELED.finditer(text):
@@ -105,7 +110,7 @@ def find_names(
         title, name = text[m.start() : m.start(1)].strip(), m.group(1)
         if lang != "tr" and title in _TR_ONLY_TITLES:
             continue
-        if strict_honorifics and not re.search(r"\s", name) and name.split("-")[0] not in FIRST_NAMES:
+        if f"{title.split()[-1]} {name.split()[0]}" in HONORIFIC_BRANDS:
             continue
         spans.append(Span(m.start(1), m.end(1), Kind.NAME))
     # Her ilk ad kendi konumundan denenir: "Contact Ayşe Kaya" grubunda önceki büyük harfli kelime ("Contact")

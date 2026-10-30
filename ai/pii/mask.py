@@ -52,7 +52,7 @@ def mask_posting(text: str, lang: Lang = "tr", *, detector: NameDetector | None 
     başlığıdır, ad değil); URL, adres ve tarih maskelenmez."""
     scan, kept = _protect(text)
     structured = [s for s in find_structured(scan) if s.kind in POSTING_KINDS]
-    names = find_names(scan, lang, detector, header=False, strict_honorifics=True)
+    names = find_names(scan, lang, detector, header=False)
     return _apply(text, _merge(_outside(text, structured + names, kept))).text
 
 
