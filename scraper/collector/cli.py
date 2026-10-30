@@ -14,6 +14,10 @@ python -m collector role-stats [--top 5]
 python -m collector nightly [--no-jitter]     # gece zinciri elle: kaynaklar → normalize → istatistik (T-034)
 python -m collector export-postings --out postings.jsonl [--limit 100]
 python -m collector export-template [--out exports/template_input.json] [--top 30]
+python -m collector resources-seed                 # taxonomy/resources.csv → resources (T-046)
+python -m collector resources-youtube [--limit 10] # kota dolana kadar YouTube araması, kaldığı yerden devam
+python -m collector resources-check                # link kontrolü + YouTube bilgilerini yenileme
+python -m collector resources-report
 """
 
 import argparse
@@ -25,7 +29,7 @@ from pathlib import Path
 
 from app.db.session import get_sessionmaker
 
-from collector import esco, nightly, taxonomy
+from collector import esco, nightly, resources, taxonomy, youtube
 from collector.http import PoliteClient
 from collector.posting import Posting, SourceInfo
 from collector.sources import emscad, himalayas, hn, remoteok, remotive
@@ -70,6 +74,11 @@ def build_parser() -> argparse.ArgumentParser:
     tpl = sub.add_parser("export-template", help="Sentetik CV şablon girdisi: pozisyon × yetkinlik × talep (T-019)")
     tpl.add_argument("--out", type=Path, default=TEMPLATE_OUT)
     tpl.add_argument("--top", type=int, default=template_input.DEFAULT_TOP)
+    sub.add_parser("resources-seed", help="Elle derlenen kaynakları yükle (T-046)")
+    ry = sub.add_parser("resources-youtube", help="YouTube'da eğitim videosu ara (günlük kota dolana kadar)")
+    ry.add_argument("--limit", type=int, help="En fazla bu kadar arama")
+    sub.add_parser("resources-check", help="Linkleri kontrol et, YouTube bilgilerini yenile")
+    sub.add_parser("resources-report", help="Kaynak sayıları ve eksik yetkinlikler")
     ng = sub.add_parser("nightly", help="Gece toplamasını şimdi çalıştır (normalde Celery beat 03:00)")
     ng.add_argument("--no-jitter", action="store_true", help="3-5 sn rastgele bekleme yerine kaynağın alt sınırı")
     return parser
@@ -114,6 +123,49 @@ def main(argv: list[str] | None = None) -> int:
         )
         with session_factory() as session:
             print(f"role_skill_stats yenilendi: {stats.refresh(session)} satır")
+        return 0
+
+    if args.command == "resources-seed":
+        with session_factory() as session:
+            print(f"{resources.seed(session)} kaynak eklendi")
+        return 0
+
+    if args.command == "resources-youtube":
+        key = youtube.YoutubeSettings().youtube_api_key
+        if not key:
+            print("YOUTUBE_API_KEY boş, arama yapılmadı", file=sys.stderr)
+            return 1
+        with session_factory() as session:
+            found = resources.search_youtube(
+                session,
+                PoliteClient(delay_s=resources.YOUTUBE_DELAY_S, max_retries=0),
+                key,
+                taxonomy.load_skills(),
+                limit=args.limit,
+            )
+        print(
+            f"{found.searches} arama, {found.added} video, kalan {found.remaining}"
+            + (" (kota doldu)" * found.quota_hit)
+        )
+        return 0
+
+    if args.command == "resources-check":
+        key = youtube.YoutubeSettings().youtube_api_key
+        with session_factory() as session:
+            c = resources.check_links(
+                session,
+                PoliteClient(delay_s=resources.CHECK_DELAY_S),
+                PoliteClient(delay_s=resources.YOUTUBE_DELAY_S, max_retries=0),
+                key,
+            )
+        print(f"{c.checked} link kontrol edildi, {c.dead} ölü, {c.revived} geri geldi")
+        return 0
+
+    if args.command == "resources-report":
+        with session_factory() as session:
+            rep = resources.report(session)
+        print(f"{rep['total']} canlı kaynak, dil: {rep['languages']}")
+        print(f"{resources.MIN_PER_SKILL}'ten az kaynağı olan: {len(rep['short'])}/{rep['skills']} yetkinlik")
         return 0
 
     if args.command == "nightly":

@@ -140,3 +140,19 @@ mypy .
 ```
 
 Testler ağa çıkmaz; kaynaklar uydurma JSON ile denenir.
+
+## Eğitim kaynağı havuzu (T-046)
+
+Öneri linkleri sadece `resources` tablosundan gelir (karar #10). İki kaynak: elle derlenen `taxonomy/resources.csv` ve YouTube Data API.
+
+```bash
+python -m collector resources-seed            # CSV → resources (aynı URL tekrar eklenmez)
+python -m collector resources-youtube --limit 10  # YouTube araması; --limit olmadan kota dolana kadar
+python -m collector resources-check           # ölü linkler + YouTube bilgilerini yenileme
+python -m collector resources-report          # toplam ve 3'ten az kaynağı olan yetkinlikler
+```
+
+- `.env`'de `YOUTUBE_API_KEY` gerekir; boşsa arama atlanır.
+- Günde en fazla 100 arama (Türkçe ve İngilizce ayrı arama). Kota Pasifik saatiyle gece yarısı (TR ~10:00) yenilenir. Aramalar talebi yüksek yetkinlikten başlar, durum `data/youtube_searched.json`'da.
+- `worker-data` her gün 06:00'da aramaya devam eder, pazar 07:00'de linkleri kontrol eder.
+- Filtre: 10 dk–12 sa, TR ≥ 1.000 / EN ≥ 10.000 izlenme, başlıkta yetkinlik adı ve öğretim ipucu var, tanıtım kelimesi yok. Seviye başlıktan okunur, ipucu yoksa `beginner`.
