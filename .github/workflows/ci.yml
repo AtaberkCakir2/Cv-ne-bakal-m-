@@ -1,4 +1,4 @@
-# CI (T-008, sahibi: Ataberk). Her PR'da ve main/develop'a her push'ta çalışır.
+# CI (T-008, sahibi: Ataberk). Her PR'da ve main'e her push'ta çalışır.
 # Her modülde, sahibinin README'sinde yazan komutlar birebir çalıştırılır: CI'da geçen, yerelde de geçer.
 # Henüz kurulmamış modüller (web, mobile, ai worker imajı) dosyaları eklendiği anda otomatik devreye girer.
 # "Kırmızı CI ile merge yok" kuralı GitHub'daki branch protection ile zorunlu kılınır (infra/ci.md).
@@ -7,7 +7,7 @@ name: CI
 on:
   pull_request:
   push:
-    branches: [main, develop]
+    branches: [main]
 
 concurrency:
   group: ci-${{ github.ref }}

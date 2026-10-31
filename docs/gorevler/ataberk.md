@@ -21,8 +21,8 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 - **Bağımlılık:** T-001 (Anıl)
 - **Destek:** —
 - **Çıktı:** GitHub repo
-- **Kabul kriteri:** Klasörler: /backend /ai /scraper /web /desktop /mobile /infra /docs. main + develop; branch protection (1 onay + yeşil CI zorunlu), PR şablonu, conventional commits, CODEOWNERS.
-- **Not:** Repo ve klasör yapısı kuruldu (24.10). Kalan: ana dal koruması (Student Pack sonrası).
+- **Kabul kriteri:** Klasörler: /backend /ai /scraper /web /mobile /infra /docs (Electron `web/`'i kullanır). Tek ana dal `main` (karar #27); branch protection (1 onay + yeşil CI zorunlu), PR şablonu, conventional commits, CODEOWNERS.
+- **Not:** Repo, klasör yapısı ve PR şablonu hazır. Kalan: ana dal koruması ve CODEOWNERS; özel repoda GitHub Pro gerektiriyor (Student Pack başvurusu 30.10'da yapıldı, onay bekleniyor).
 
 ### T-007 · Lokal geliştirme ortamı (docker-compose)
 
@@ -154,7 +154,7 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 - **Çıktı:** staging ortamı (HTTPS)
 - **Kabul kriteri:** VPS'te docker compose ile staging; Caddy reverse proxy + otomatik HTTPS; staging verisi production'dan ayrı.
 
-### T-036 · CD: develop → staging otomatik deploy
+### T-036 · CD: main → staging otomatik deploy
 
 - **Durum:** Yapılacak
 - **Tarih:** 09.11.2026 – 15.11.2026 · **Öncelik:** P0 · **Efor:** 10 saat · **Alan:** DevOps / Altyapı
