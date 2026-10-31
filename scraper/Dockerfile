@@ -13,14 +13,17 @@ WORKDIR /srv
 COPY backend/pyproject.toml backend/
 COPY ai/pyproject.toml ai/
 COPY scraper/pyproject.toml scraper/
-RUN mkdir -p backend/app ai/pii scraper/collector scraper/etl \
-    && touch backend/app/__init__.py ai/pii/__init__.py scraper/collector/__init__.py scraper/etl/__init__.py \
+RUN mkdir -p backend/app ai/pii ai/extraction scraper/collector scraper/etl \
+    && touch backend/app/__init__.py ai/pii/__init__.py ai/extraction/__init__.py scraper/collector/__init__.py \
+       scraper/etl/__init__.py \
     && pip install -e backend -e ai -e scraper
 
 # Editable kurulum: taksonomi CSV'leri paketin yanındaki scraper/taxonomy/'den okunur (pii de aynı dosyayı bulur).
-# ai/'den sadece ilan maskeleme (pii) gerekir; NER (torch) kurulmaz, ilanlar kurallarla maskelenir.
+# ai/'den sadece ilan maskeleme (pii) ve CV ile ortak yetkinlik eşleyicisi (extraction) gerekir; NER (torch)
+# kurulmaz, ilanlar kurallarla maskelenir.
 COPY backend/app backend/app
 COPY ai/pii ai/pii
+COPY ai/extraction ai/extraction
 COPY scraper/collector scraper/collector
 COPY scraper/etl scraper/etl
 COPY scraper/taxonomy scraper/taxonomy

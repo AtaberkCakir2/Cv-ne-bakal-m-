@@ -21,8 +21,8 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 - **Bağımlılık:** T-001 (Anıl)
 - **Destek:** —
 - **Çıktı:** GitHub repo
-- **Kabul kriteri:** Klasörler: /backend /ai /scraper /web /desktop /mobile /infra /docs. main + develop; branch protection (1 onay + yeşil CI zorunlu), PR şablonu, conventional commits, CODEOWNERS.
-- **Not:** Repo ve klasör yapısı kuruldu (24.10). Kalan: ana dal koruması (Student Pack sonrası).
+- **Kabul kriteri:** Klasörler: /backend /ai /scraper /web /mobile /infra /docs (Electron `web/`'i kullanır). Tek ana dal `main` (karar #27); branch protection (1 onay + yeşil CI zorunlu), PR şablonu, conventional commits, CODEOWNERS.
+- **Not:** Repo, klasör yapısı ve PR şablonu hazır. Kalan: ana dal koruması ve CODEOWNERS; özel repoda GitHub Pro gerektiriyor (Student Pack başvurusu 30.10'da yapıldı, onay bekleniyor).
 
 ### T-007 · Lokal geliştirme ortamı (docker-compose)
 
@@ -143,7 +143,7 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 - **Destek:** Burak
 - **Çıktı:** scraper/etl modülü
 - **Kabul kriteri:** HTML temizleme, dil tespiti, pozisyon başlığı normalizasyonu ("Back-end Geliştirici" = Backend Developer), tekrar kayıt temizleme (hash + benzerlik), yetkinlik etiketleme (Burak'ın v1 modülü).
-- **Not:** `scraper/etl/` + `python -m collector normalize` / `export-postings` (26.10). HTML temizleme ve dil tespiti T-015'ten (`collector/clean.py`). Pozisyon sadece başlıktan (ekip kararı 26.10: yetkinlikten tahmin yok, istatistik döngüsel olmasın); genel başlıklar ("Software Engineer") `role_id = NULL`. Benzer ilan: aynı şirket + pozisyonda Jaccard ≥ 0,9 → eski kopya pasif. 2.002 aktif ilanda pozisyonu belli **%39,6 (792)**, yetkinlik bulunan %88 (ilan başına 7,5), 46 benzer ilan pasife alındı; 30 ilanlık elle kontrolde pozisyon ataması doğru. Burak'ın T-031'i başlamadığı için ilan etiketleyicisi sözlük tabanlı olarak burada yazıldı (`etl/skills.py`, arayüz `tag(text, lang)`); T-031 ile ortaklaştırılacak. Kişisel veri maskeleme 30.10'da bağlandı: `pii.mask_posting` (Burak, T-030) `normalize`'ın varsayılanı, `mask_posting_once` sarmalayıcısı önceki etiketleri korur (6.632 ilandan 338'i maskelendi, 2 yetkinlik bağı kaybı, istatistik değişmedi). Açık: ince pozisyonlar (oyun 4, veri analisti 5 ilan) Türkçe kaynaklar gelince artar.
+- **Not:** `scraper/etl/` + `python -m collector normalize` / `export-postings` (26.10). HTML temizleme ve dil tespiti T-015'ten (`collector/clean.py`). Pozisyon sadece başlıktan (ekip kararı 26.10: yetkinlikten tahmin yok, istatistik döngüsel olmasın); genel başlıklar ("Software Engineer") `role_id = NULL`. Benzer ilan: aynı şirket + pozisyonda Jaccard ≥ 0,9 → eski kopya pasif. 2.002 aktif ilanda pozisyonu belli **%39,6 (792)**, yetkinlik bulunan %88 (ilan başına 7,5), 46 benzer ilan pasife alındı; 30 ilanlık elle kontrolde pozisyon ataması doğru. Burak'ın T-031'i başlamadığı için ilan etiketleyicisi sözlük tabanlı olarak burada yazıldı (`etl/skills.py`, arayüz `tag(text, lang)`); 30.10'da T-031 ile ortaklaştırıldı: eşleme Burak'ın `extraction.taxonomy.Matcher`'ıyla, önem (required/preferred) burada (karar #28). Gerçek veride 248 hatalı bağ silindi (Objective-C → C 112, Ruby on Rails → Ruby 117, Azure DevOps → DevOps 19), başka bağ değişmedi. Kişisel veri maskeleme 30.10'da bağlandı: `pii.mask_posting` (Burak, T-030) `normalize`'ın varsayılanı, `mask_posting_once` sarmalayıcısı önceki etiketleri korur (6.632 ilandan 338'i maskelendi, 2 yetkinlik bağı kaybı, istatistik değişmedi). Açık: ince pozisyonlar (oyun 4, veri analisti 5 ilan) Türkçe kaynaklar gelince artar.
 
 ### T-035 · Staging ortamı
 
@@ -154,7 +154,7 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 - **Çıktı:** staging ortamı (HTTPS)
 - **Kabul kriteri:** VPS'te docker compose ile staging; Caddy reverse proxy + otomatik HTTPS; staging verisi production'dan ayrı.
 
-### T-036 · CD: develop → staging otomatik deploy
+### T-036 · CD: main → staging otomatik deploy
 
 - **Durum:** Yapılacak
 - **Tarih:** 09.11.2026 – 15.11.2026 · **Öncelik:** P0 · **Efor:** 10 saat · **Alan:** DevOps / Altyapı
