@@ -52,8 +52,9 @@ nano .env
 
 Parolalar ve anahtarlar için `openssl rand -hex 32` kullanın. Her alana ayrı değer girin.
 
+İlk deploy GitHub Actions ile yapılır, önce `infra/ci.md` "Deploy" bölümündeki ayarları tamamlayın. Actions → Deploy → Run workflow çalışıp yeşil olunca sunucuda:
+
 ```bash
-bash deploy.sh
 docker compose exec ollama ollama pull llama3.1:8b
 docker compose run --rm worker-data python -m collector seed-taxonomy
 docker compose run --rm worker-data python -m collector resources-seed

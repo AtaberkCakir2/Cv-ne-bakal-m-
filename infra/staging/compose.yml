@@ -34,8 +34,7 @@ services:
         condition: service_healthy
 
   api:
-    build: ../../backend
-    image: careerai/api:staging
+    image: careerai/api:staging  # deploy.sh GHCR imajını bu ada bağlar
     environment:
       <<: *app-env
       IP_HASH_SECRET: ${IP_HASH_SECRET:?infra/staging/.env dosyasında IP_HASH_SECRET yok}
@@ -52,9 +51,6 @@ services:
         condition: service_healthy
 
   worker-data:
-    build:
-      context: ../..
-      dockerfile: scraper/Dockerfile
     image: careerai/worker-data:staging
     environment:
       <<: *app-env

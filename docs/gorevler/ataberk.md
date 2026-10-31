@@ -158,12 +158,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-036 · CD: main → staging otomatik deploy
 
-- **Durum:** Yapılacak
+- **Durum:** Devam Ediyor
 - **Tarih:** 09.11.2026 – 15.11.2026 · **Öncelik:** P0 · **Efor:** 10 saat · **Alan:** DevOps / Altyapı
 - **Bağımlılık:** T-008, T-035
 - **Destek:** —
 - **Çıktı:** .github/workflows/deploy.yml
 - **Kabul kriteri:** Image'lar GHCR'a push; SSH ile deploy; alembic upgrade; smoke test; başarısızsa önceki image'a dönüş.
+- **Devam notu (01.11.2026):** Yapılan: `.github/workflows/deploy.yml` ve geri dönüşlü `infra/staging/deploy.sh`; deploy ve geri dönüş yerelde bozuk imajla denendi, actionlint temiz. Sıradaki adım: `main`'e girince Actions → Deploy → Run workflow ile imaj gönderimini dene; sunucu gelince `infra/ci.md` Deploy ayarları. Açık sorular / engeller: T-009, T-010 ve T-035 bekleniyor; SSH adımı gerçek sunucuda denenmedi. Branch: ataberk/sunucu-hazirlik
 
 ### T-028 · TÜBİTAK 2209-A başvuru dosyası
 

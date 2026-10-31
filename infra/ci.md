@@ -38,3 +38,18 @@ GitHub bunu ancak branch protection ile zorunlu kılar. Özel (private) repolard
 5. **Do not allow bypassing** (yöneticiler dahil) işaretleyin.
 
 O zamana kadar kural ekip sözleşmesidir (karar #6): kırmızı CI'lı PR birleştirilmez.
+
+## Deploy (T-036)
+
+`.github/workflows/deploy.yml`: `main`'de CI yeşil olunca `api` ve `worker-data` imajlarını `ghcr.io/ataberkcakir2/careerai-*:<sha>` olarak gönderir, sunucuda `infra/staging/deploy.sh <sha>` çalıştırır. Betik migration ve smoke test yapar; başarısız olursa önceki imajlara döner (migration'lar geri alınmaz, önceki sürümle uyumlu yazılmalı).
+
+Sunucu hazır olunca repo → Settings'te:
+
+| Yer | Ad | Değer |
+|---|---|---|
+| Secrets and variables → Actions → Variables | `STAGING_DEPLOY` | `true` (tanımsızken otomatik deploy kapalı) |
+| Actions secrets | `STAGING_HOST` | Sunucu IP'si veya adı |
+| Actions secrets | `STAGING_SSH_KEY` | Sadece CI için üretilen özel anahtar (`ssh-keygen -t ed25519 -N "" -f ci_key`); `ci_key.pub` sunucuda deploy kullanıcısının `authorized_keys` dosyasına eklenir, `ci_key` sonra silinir |
+| Actions secrets | `STAGING_KNOWN_HOSTS` | `ssh-keyscan <sunucu-ip>` çıktısı |
+
+İmaj kısmı sunucusuz denenebilir: Actions → Deploy → Run workflow sadece imajları derleyip gönderir. Bu özel repoda GHCR depolaması kotalıdır; her imajın son 5 sürümü tutulur.

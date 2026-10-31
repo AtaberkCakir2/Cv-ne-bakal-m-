@@ -1,0 +1,97 @@
+# CD (T-036, sahibi: Ataberk). main'de CI yeşil olunca imajları GHCR'a gönderir ve staging'e deploy eder.
+# Ayarlar ve kurulum: infra/ci.md. Sunucu hazır olana kadar `STAGING_DEPLOY` değişkeni tanımsız bırakılır: otomatik
+# çalışma atlanır, elle çalıştırma (Actions → Deploy → Run workflow) sadece imajları derler.
+name: Deploy
+
+on:
+  workflow_run:
+    workflows: [CI]
+    branches: [main]
+    types: [completed]
+  workflow_dispatch:
+
+# Deploy'lar sırayla: yarıda kesilen migration staging'i bozar, bu yüzden iptal yok.
+concurrency:
+  group: deploy-staging
+
+permissions:
+  contents: read
+
+env:
+  SHA: ${{ github.event.workflow_run.head_sha || github.sha }}
+  IMAGE_PREFIX: ghcr.io/ataberkcakir2/careerai
+
+jobs:
+  build:
+    name: İmaj (${{ matrix.name }})
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.workflow_run.conclusion == 'success' && vars.STAGING_DEPLOY == 'true')
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      packages: write
+    strategy:
+      matrix:
+        include:
+          - { name: api, context: backend, file: backend/Dockerfile }
+          - { name: worker-data, context: ., file: scraper/Dockerfile }
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.SHA }}
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/build-push-action@v6
+        with:
+          context: ${{ matrix.context }}
+          file: ${{ matrix.file }}
+          push: true
+          tags: ${{ env.IMAGE_PREFIX }}-${{ matrix.name }}:${{ env.SHA }}
+          cache-from: type=gha,scope=${{ matrix.name }}
+          cache-to: type=gha,mode=max,scope=${{ matrix.name }}
+      # GHCR depolaması kotalı (özel repo): geri dönüş için son sürümler yeter.
+      - uses: actions/delete-package-versions@v5
+        with:
+          package-name: careerai-${{ matrix.name }}
+          package-type: container
+          min-versions-to-keep: 5
+
+  deploy:
+    name: Staging'e deploy
+    needs: build
+    if: vars.STAGING_DEPLOY == 'true'
+    runs-on: ubuntu-24.04
+    environment: staging
+    permissions:
+      contents: read
+      packages: read
+    steps:
+      - name: SSH ayarı
+        env:
+          KEY: ${{ secrets.STAGING_SSH_KEY }}
+          KNOWN_HOSTS: ${{ secrets.STAGING_KNOWN_HOSTS }}
+        run: |
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "$KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          printf '%s\n' "$KNOWN_HOSTS" > ~/.ssh/known_hosts
+      - name: Deploy
+        env:
+          HOST: ${{ secrets.STAGING_HOST }}
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ACTOR: ${{ github.actor }}
+        run: |
+          # Token sadece bu iş boyunca geçerli; sunucuda kalıcı GHCR parolası tutulmaz.
+          printf '%s' "$TOKEN" | ssh "deploy@$HOST" "docker login ghcr.io -u '$ACTOR' --password-stdin"
+          ssh "deploy@$HOST" "cd careerai && git fetch --quiet origin && git checkout --quiet --detach '$SHA'"
+          ssh "deploy@$HOST" "bash careerai/infra/staging/deploy.sh '$SHA'"
+      - name: GHCR oturumunu kapat
+        if: always()
+        env:
+          HOST: ${{ secrets.STAGING_HOST }}
+        run: ssh "deploy@$HOST" "docker logout ghcr.io" || true
