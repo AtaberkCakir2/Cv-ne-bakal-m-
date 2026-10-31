@@ -36,12 +36,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-009 · VPS tedariki ve sunucu sertleştirme
 
-- **Durum:** Yapılacak
+- **Durum:** Devam Ediyor
 - **Tarih:** 19.10.2026 – 25.10.2026 · **Öncelik:** P0 · **Efor:** 6 saat · **Alan:** DevOps / Altyapı
 - **Bağımlılık:** —
 - **Destek:** —
 - **Çıktı:** Sunucu erişim dokümanı (sırlar hariç)
 - **Kabul kriteri:** Ubuntu 24.04 LTS, en az 8 vCPU / 16 GB RAM / 160 GB SSD. SSH sadece anahtar ile, root girişi kapalı, ufw (22/80/443), fail2ban, unattended-upgrades, 4 GB swap, saat dilimi Europe/Istanbul.
+- **Devam notu (01.11.2026):** Yapılan: `infra/server/harden.sh` ve kurulum rehberi yazıldı; shellcheck temiz, gerçek sunucuda denenmedi. Sıradaki adım: CX43 alınınca `infra/server/README.md` 1–2. adımlar. Açık sorular / engeller: CX43 stoğu. Branch: ataberk/sunucu-hazirlik
 
 ### T-010 · Alan adı ve DNS
 
@@ -147,12 +148,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-035 · Staging ortamı
 
-- **Durum:** Yapılacak
+- **Durum:** Devam Ediyor
 - **Tarih:** 02.11.2026 – 08.11.2026 · **Öncelik:** P0 · **Efor:** 8 saat · **Alan:** DevOps / Altyapı
 - **Bağımlılık:** T-009, T-007
 - **Destek:** —
 - **Çıktı:** staging ortamı (HTTPS)
 - **Kabul kriteri:** VPS'te docker compose ile staging; Caddy reverse proxy + otomatik HTTPS; staging verisi production'dan ayrı.
+- **Devam notu (01.11.2026):** Yapılan: `infra/staging/` (compose, Caddyfile, deploy.sh) yerelde HTTPS, migration ve sağlık kontrolleriyle denendi. Sıradaki adım: T-009 ve T-010 bitince README 3. adım. Açık sorular / engeller: T-046 birleşmeli; `ai/Dockerfile` (Burak) yok, worker-ai eklenmedi; 16 GB'da production ile birlikte çalışma T-075'te kesinleşecek. Branch: ataberk/sunucu-hazirlik
 
 ### T-036 · CD: main → staging otomatik deploy
 
