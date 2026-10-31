@@ -1,6 +1,6 @@
 # CI (GitHub Actions) — T-008
 
-Tanım: [`.github/workflows/ci.yml`](../.github/workflows/ci.yml). Her PR'da ve `main` / `develop`'a her push'ta çalışır. Sonuçlar PR sayfasının altında ve GitHub'da **Actions** sekmesinde görünür.
+Tanım: [`.github/workflows/ci.yml`](../.github/workflows/ci.yml). Her PR'da ve `main`'e her push'ta çalışır. Sonuçlar PR sayfasının altında ve GitHub'da **Actions** sekmesinde görünür.
 
 ## İşler
 
