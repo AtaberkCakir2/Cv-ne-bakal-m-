@@ -16,6 +16,8 @@ python -m collector export-postings --out postings.jsonl [--limit 100]
 python -m collector export-template [--out exports/template_input.json] [--top 30]
 python -m collector resources-seed                 # taxonomy/resources.csv → resources (T-046)
 python -m collector resources-youtube [--limit 10] # kota dolana kadar YouTube araması, kaldığı yerden devam
+python -m collector resources-export               # bulunan videolar → taxonomy/resources_youtube.csv
+python -m collector resources-import               # o dosyayı yeni ortama yükle, başlık ve süre API'den
 python -m collector resources-check                # link kontrolü + YouTube bilgilerini yenileme
 python -m collector resources-report
 """
@@ -77,6 +79,8 @@ def build_parser() -> argparse.ArgumentParser:
     sub.add_parser("resources-seed", help="Elle derlenen kaynakları yükle (T-046)")
     ry = sub.add_parser("resources-youtube", help="YouTube'da eğitim videosu ara (günlük kota dolana kadar)")
     ry.add_argument("--limit", type=int, help="En fazla bu kadar arama")
+    sub.add_parser("resources-export", help="Bulunan videoları taxonomy/resources_youtube.csv'ye yaz")
+    sub.add_parser("resources-import", help="resources_youtube.csv'yi yükle, başlık ve süreyi API'den al")
     sub.add_parser("resources-check", help="Linkleri kontrol et, YouTube bilgilerini yenile")
     sub.add_parser("resources-report", help="Kaynak sayıları ve eksik yetkinlikler")
     ng = sub.add_parser("nightly", help="Gece toplamasını şimdi çalıştır (normalde Celery beat 03:00)")
@@ -147,6 +151,23 @@ def main(argv: list[str] | None = None) -> int:
             f"{found.searches} arama, {found.added} video, kalan {found.remaining}"
             + (" (kota doldu)" * found.quota_hit)
         )
+        return 0
+
+    if args.command == "resources-export":
+        with session_factory() as session:
+            print(f"{resources.export_youtube(session)} video yazıldı: {resources.YOUTUBE_CSV}")
+        return 0
+
+    if args.command == "resources-import":
+        key = youtube.YoutubeSettings().youtube_api_key
+        if not key:
+            print("YOUTUBE_API_KEY boş, yükleme yapılmadı", file=sys.stderr)
+            return 1
+        with session_factory() as session:
+            added = resources.import_youtube(
+                session, PoliteClient(delay_s=resources.YOUTUBE_DELAY_S, max_retries=0), key
+            )
+        print(f"{added} video eklendi")
         return 0
 
     if args.command == "resources-check":

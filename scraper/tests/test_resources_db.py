@@ -145,3 +145,34 @@ def test_report_counts_only_live(session: Session) -> None:
     rep = resources.report(session)
     assert rep["total"] == 3
     assert rep["short"] == []
+
+
+def test_export_import_keeps_videos_and_skips_deleted(session: Session, tmp_path: Path) -> None:
+    skill_id = session.scalar(select(Skill.id).where(Skill.slug == "docker"))
+    for video_id in ("abc", "gone"):
+        session.add(
+            Resource(
+                skill_id=skill_id,
+                title="eski başlık",
+                url=f"https://www.youtube.com/watch?v={video_id}",
+                provider=ResourceProvider.YOUTUBE,
+                language=LangCode.TR,
+                level=ResourceLevel.INTERMEDIATE,
+                duration_min=5,
+                is_free=True,
+            )
+        )
+    session.flush()
+    path = tmp_path / "resources_youtube.csv"
+
+    assert resources.export_youtube(session, path) == 2
+    assert "eski başlık" not in path.read_text(encoding="utf-8")
+
+    for r in session.scalars(select(Resource)):
+        session.delete(r)
+    session.flush()
+    assert resources.import_youtube(session, client(lambda req: api(req, ["abc"])), "k", path) == 1
+
+    video = session.scalars(select(Resource)).one()
+    assert video.url.endswith("v=abc")
+    assert (video.title, video.duration_min, video.level) == ("Docker Eğitimi", 60, ResourceLevel.INTERMEDIATE)

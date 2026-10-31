@@ -30,6 +30,7 @@ from etl.skills import SkillTagger
 log = logging.getLogger(__name__)
 
 RESOURCES_CSV = TAXONOMY_DIR / "resources.csv"
+YOUTUBE_CSV = TAXONOMY_DIR / "resources_youtube.csv"
 SEARCHED_FILE = TAXONOMY_DIR.parent / "data" / "youtube_searched.json"
 WANTED: dict[Lang, int] = {"tr": 3, "en": 2}  # arama başına alınacak video; Türkçe öncelikli
 MIN_PER_SKILL = 3
@@ -166,6 +167,49 @@ def search_youtube(
 
 def _video_id(url: str) -> str:
     return url.rsplit("=", 1)[-1]
+
+
+def export_youtube(session: Session, path: Path = YOUTUBE_CSV) -> int:
+    """Bulunan videoları yeni ortam için yazar. Başlık ve süre yazılmaz: API verisi repoda 30 günden eski kalır."""
+    rows = session.execute(
+        select(Skill.slug, Resource.url, Resource.language, Resource.level)
+        .join(Skill, Skill.id == Resource.skill_id)
+        .where(Resource.provider == ResourceProvider.YOUTUBE, Resource.is_alive)
+        .order_by(Skill.slug, Resource.url)
+    ).all()
+    with path.open("w", encoding="utf-8", newline="") as f:
+        out = csv.writer(f, lineterminator="\n")
+        out.writerow(["skill_slug", "video_id", "language", "level"])
+        out.writerows((r.slug, _video_id(r.url), r.language.value, r.level.value) for r in rows)
+    return len(rows)
+
+
+def import_youtube(session: Session, client: PoliteClient, key: str, path: Path = YOUTUBE_CSV) -> int:
+    """`export_youtube` dosyasını yükler; başlık ve süre API'den güncel alınır, silinen videolar atlanır."""
+    with path.open(encoding="utf-8", newline="") as f:
+        items = {row["video_id"]: row for row in csv.DictReader(f)}
+    ids = _skill_ids(session)
+    now = datetime.now(UTC)
+    added = _insert(
+        session,
+        [
+            {
+                "skill_id": ids[items[v.id]["skill_slug"]],
+                "title": v.title,
+                "url": v.url,
+                "provider": ResourceProvider.YOUTUBE,
+                "language": LangCode(items[v.id]["language"]),
+                "level": ResourceLevel(items[v.id]["level"]),
+                "duration_min": v.duration_min,
+                "is_free": True,
+                "last_checked_at": now,
+            }
+            for v in youtube.fetch_videos(client, key, list(items))
+            if items[v.id]["skill_slug"] in ids
+        ],
+    )
+    session.commit()
+    return added
 
 
 @dataclass
