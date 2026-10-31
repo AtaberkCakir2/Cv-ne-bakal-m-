@@ -38,7 +38,7 @@ Ekip onaylayınca `docs/kararlar.md`'ye eklenecek. Danışman farklı görüş b
 | 4 | Yöntem (Bölüm 2.3–2.6) ve hipotezlerin (H1–H3) teknik kontrolü: model adayları, istatistik testleri, sentetik set dağılımı | **Burak** | — | 04.11 |
 | 5 | Etik kurul: anketli çalışma için onay mı muafiyet mi gerektiğinin öğrenilmesi; bilgilendirilmiş onam formu ve Türkçe SUS anketinin hazırlanması (Ek 1–2) | **Burak** | Anıl | 05.11 |
 | 6 | Kullanılabilirlik çalışması görev senaryoları ve yaygın etki hedeflerinin kontrolü | **Anıl** | — | 04.11 |
-| 7 | Araştırma olanakları tablosuna Burak ve Anıl'ın bilgisayar bilgileri | **Burak, Anıl** | — | 03.11 |
+| 7 | ~~Araştırma olanakları tablosuna Burak ve Anıl'ın bilgisayar bilgileri~~ (tamamlandı) | **Burak, Anıl** | — | 03.11 |
 | 8 | Bütçe tekliflerinin kontrolü (sunucu, alan adı); toplam 12.000 TL'yi aşmamalı | **Ataberk** | — | 05.11 |
 | 9 | TYBS'ye giriş; metinlerin yapıştırılması; ortakların ve danışmanın eklenmesi; IBAN; **ÜYZ beyan bölümünün doldurulması** (Bölüm C); **"Proje Önerisini Önizle"** kontrolü | **Ataberk** | Anıl (önizleme kontrolü) | 07.11 |
 | 10 | Danışmana onaya gönderme. Reddedilirse düzeltme için zaman kalsın. | **Ataberk** | — | **09.11** |
@@ -259,7 +259,7 @@ Kurallara uygunluk: Toplam süre 12 ay; hiçbir iş paketi 12 aydan uzun değil.
 
 | Olanak | Açıklama | Projedeki kullanımı |
 |---|---|---|
-| Ekip bilgisayarları | 6 çekirdekli / 32 GB RAM / 4 GB ekran kartlı bir dizüstü bilgisayar; 6 çekirdekli / 16 GB RAM / 8 GB ekran kartlı bir masaüstü bilgisayar; üçüncü ekip üyesinin bilgisayarı `[Burak'ın bilgisayar özellikleri eklenecek]` | Geliştirme, yerel model denemeleri, deneyler, testler |
+| Ekip bilgisayarları | 6 çekirdekli / 32 GB RAM / 4 GB ekran kartlı bir dizüstü bilgisayar; 6 çekirdekli / 16 GB RAM / 8 GB ekran kartlı iki masaüstü bilgisayar | Geliştirme, yerel model denemeleri, deneyler, testler |
 | Kiralık sanal sunucu | 8 vCPU / 16 GB RAM Linux sunucu (bütçeden, hizmet alımı) | Canlı sistem, dil modeli sunucusu, veritabanı, gece veri toplama |
 | Saatlik grafik işlemcili sunucu | Gerektiğinde ekip tarafından kiralanır (proje bütçesi dışında) | Model karşılaştırma deneyleri ve demo günleri |
 | Sunucu dışı şifreli yedek depolama | Ekip tarafından karşılanır (proje bütçesi dışında) | Veritabanının günlük yedeği |
