@@ -145,7 +145,7 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 - **Destek:** Ataberk, Burak
 - **Çıktı:** Demo videosu + sunum
 - **Kabul kriteri:** Posterin yerleştirilmesi; 3 dakikalık anlatım provası (herkes sunabilmeli); yedek olarak 2 dk demo videosu.
-- **Devam notu (29.10.2026):** Yapılan: anlatım metni, demo videosu çekim planı, soru-cevap ve prova listesi `docs/kongre/sunum-ve-demo.md`. · Sıradaki adım: köşeli parantezli sayıları Burak'ın benchmark'ı ve Ataberk'in ilan verisiyle doldurmak, videoyu çekmek, ekipçe prova. · Açık sorular / engeller: T-026 (poster teslimi 05.11). · Branch: anil/kongre-sunumu
+- **Devam notu (04.11.2026):** Yapılan: anlatım metni, demo videosu çekim planı, soru-cevap ve prova listesi `docs/kongre/sunum-ve-demo.md`; benchmark sonucu işlendi (F1 bilerek yok, referans geçici). · Sıradaki adım: `[N]` ve `%[X]` (backend ilanlarında Docker oranı) değerlerini Ataberk'ten almak, videoyu çekmek, ekipçe prova. · Açık sorular / engeller: T-026 (poster teslimi 05.11). · Branch: anil/kongre-sunumu
 
 ### T-039 · Asenkron analiz işi (Celery + Redis)
 

@@ -2,7 +2,7 @@
 
 Bu belge poster başındaki 3 dakikalık anlatımın metnini, 2 dakikalık yedek demo videosunun çekim planını ve sık gelecek sorulara verilecek cevapları içerir. Kabul kriteri: herkes anlatımı tek başına yapabilmeli, demo videosu hazır olmalı.
 
-Köşeli parantezli yerler (`[…]`) kongreden önce gerçek değerle doldurulur. Ölçülmemiş bir sayı söylenmez.
+Köşeli parantezli yerler (`[…]`) kongreden önce gerçek değerle doldurulur. Ölçülmemiş bir sayı söylenmez. **Benchmark'taki F1 (0,82–0,85) söylenmez:** referans insan etiketi değil, geçici taslak (`ai/eval/benchmark/README.md`). Kalan `[N]` ve `%[X]` (backend ilanlarında Docker oranı) Ataberk'in güncel istatistiğinden gelecek.
 
 ## 1. Üç dakikalık anlatım
 
@@ -31,7 +31,7 @@ Yaklaşık 400 kelime; normal hızda 3 dakika. Her bölümün yanında posterde 
 
 **Durum ve kapanış (30 sn) · posterde: benchmark ve yol haritası**
 
-> Model karşılaştırmamızda [model adı] seçtik: [benchmark sonucu, ör. F1 / analiz süresi]. Şu an kimlik doğrulama, arayüz ve veri toplama altyapısı çalışıyor; analiz akışını uçtan uca bağlayıp Ocak 2027'de web, masaüstü ve Android'de yayına alacağız. Kendi CV'nizi denemek isterseniz sizi bekleme listesine yazalım. Sorularınızı almaktan memnuniyet duyarız.
+> 10 Türkçe sentetik CV'de üç açık kaynak modeli karşılaştırdık ve Llama 3.1 8B'yi seçtik: grafik kartı olmadan en hızlı model oldu, yetkinlik çıkarımı CV başına ortalama 53 saniye sürdü. Doğruluğu elle etiketlenen setle ölçeceğiz. Şu an kimlik doğrulama, arayüz ve veri toplama altyapısı çalışıyor; analiz akışını uçtan uca bağlayıp Ocak 2027'de web, masaüstü ve Android'de yayına alacağız. Kendi CV'nizi denemek isterseniz sizi bekleme listesine yazalım. Sorularınızı almaktan memnuniyet duyarız.
 
 ### Anlatırken
 
@@ -71,8 +71,8 @@ Stantta internet veya sunucu sorun çıkarırsa bu video oynatılır. Tam analiz
 |---|---|---|
 | ChatGPT'ye CV'mi yapıştırsam aynısını yapmaz mı? | Genel bir model güncel Türkiye ilanlarını bilmez ve "ilanların yüzde kaçı istiyor" diye sayı veremez. Biz her gece topladığımız ilanlardan istatistik çıkarıyoruz. Ayrıca CV'niz dışarıdaki bir şirkete gitmiyor. | Burak |
 | İlanları nereden alıyorsunuz, yasal mı? | Herkese açık ilan sayfalarından, kullanım koşullarına ve robots.txt'ye uyarak, hız sınırıyla. Kişisel veri toplamıyoruz; sadece ilan metnindeki yetkinlikleri. Engellenirsek açık veri setleriyle devam edebiliyoruz. | Ataberk |
-| Yetkinlik çıkarımı ne kadar doğru? | [Benchmark sonucu]. Model çıktısını sabit bir yetkinlik sözlüğüyle eşleştiriyoruz; sözlükte olmayan bir yetkinlik "doğrulanmamış" diye işaretleniyor. Önerilen kaynak linklerini de model üretmiyor, sadece bizim veritabanımızdaki listeden seçiyor; uydurma link çıkamaz. | Burak |
-| Analiz ne kadar sürüyor? | CPU'lu sunucuda yaklaşık 1–2 dakika; bu yüzden kuyruk ve ilerleme ekranı var. [Ölçülen süre varsa onu söyle.] | Anıl |
+| Yetkinlik çıkarımı ne kadar doğru? | Kesin sayıyı henüz söylemiyoruz: ön kıyastaki referans geçiciydi, ekibin elle etiketlediği set bitince ölçeceğiz (hedef F1 ≥ 0,80). Model çıktısını sabit bir yetkinlik sözlüğüyle eşleştiriyoruz; sözlükte olmayan bir yetkinlik "doğrulanmamış" diye işaretleniyor. Önerilen kaynak linklerini de model üretmiyor, sadece bizim veritabanımızdaki listeden seçiyor; uydurma link çıkamaz. | Burak |
+| Analiz ne kadar sürüyor? | Hedefimiz 1–2 dakika, sunucuda henüz ölçmedik. Grafik kartsız bir dizüstünde yalnızca yetkinlik çıkarımı CV başına ortalama 53 saniye sürdü. Bu yüzden kuyruk ve ilerleme ekranı var. | Anıl |
 | CV'm saklanıyor mu? | Hayır. Dosya diske yazılmıyor, ham metin hiçbir yerde tutulmuyor; sadece çıkarılan yetkinlikler ve dosyanın parmak izi (hash) kalıyor. Hesabınızı silince hepsi siliniyor. | Anıl |
 | Sadece yazılım mı? | İlk sürüm yazılım pozisyonlarıyla başlıyor; yetkinlik sözlüğü genişletilerek başka alanlara açılabilir. | Ataberk |
 | Ücretli mi olacak? | Hayır; bitirme projesi ve TÜBİTAK 2209-A kapsamında öğrencilere ücretsiz. | Herkes |
