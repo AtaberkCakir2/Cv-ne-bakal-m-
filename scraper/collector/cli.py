@@ -8,24 +8,32 @@ python -m collector import emscad --csv data/fake_job_postings.csv [--active]
 python -m collector stats
 python -m collector seed-taxonomy
 python -m collector export-taxonomy --out taxonomy.json
-python -m collector normalize
+python -m collector normalize                 # sonunda role_skill_stats'ı da yeniler
+python -m collector refresh-stats
+python -m collector role-stats [--top 5]
+python -m collector nightly [--no-jitter]     # gece zinciri elle: kaynaklar → normalize → istatistik (T-034)
 python -m collector export-postings --out postings.jsonl [--limit 100]
+python -m collector export-template [--out exports/template_input.json] [--top 30]
 """
 
 import argparse
 import json
+import logging
 import sys
 from collections.abc import Callable, Iterable
 from pathlib import Path
 
 from app.db.session import get_sessionmaker
 
-from collector import esco, taxonomy
+from collector import esco, nightly, taxonomy
 from collector.http import PoliteClient
 from collector.posting import Posting, SourceInfo
 from collector.sources import emscad, himalayas, hn, remoteok, remotive
 from collector.store import run_import, source_counts
+from etl import stats, template_input
 from etl.pipeline import iter_contract, normalize
+
+TEMPLATE_OUT = Path(__file__).resolve().parents[1] / "exports" / "template_input.json"
 
 
 def _api(info: SourceInfo, fetch: Callable[[PoliteClient], Iterable[Posting]]) -> tuple[SourceInfo, Iterable[Posting]]:
@@ -56,6 +64,14 @@ def build_parser() -> argparse.ArgumentParser:
     out = sub.add_parser("export-postings", help="Normalize ilanları sözleşme biçiminde JSONL'e yaz")
     out.add_argument("--out", type=Path, required=True)
     out.add_argument("--limit", type=int)
+    sub.add_parser("refresh-stats", help="role_skill_stats'ı yenile (T-045)")
+    rs = sub.add_parser("role-stats", help="Pozisyon başına ilan sayısı ve en çok istenen yetkinlikler")
+    rs.add_argument("--top", type=int, default=5)
+    tpl = sub.add_parser("export-template", help="Sentetik CV şablon girdisi: pozisyon × yetkinlik × talep (T-019)")
+    tpl.add_argument("--out", type=Path, default=TEMPLATE_OUT)
+    tpl.add_argument("--top", type=int, default=template_input.DEFAULT_TOP)
+    ng = sub.add_parser("nightly", help="Gece toplamasını şimdi çalıştır (normalde Celery beat 03:00)")
+    ng.add_argument("--no-jitter", action="store_true", help="3-5 sn rastgele bekleme yerine kaynağın alt sınırı")
     return parser
 
 
@@ -93,8 +109,48 @@ def main(argv: list[str] | None = None) -> int:
         print(
             f"{n.postings} ilan: pozisyonu belli {n.with_role} (%{100 * n.with_role / max(n.postings, 1):.1f}), "
             f"yetkinlikli {n.with_skills} (%{100 * n.with_skills / max(n.postings, 1):.1f}), "
-            f"{n.skill_links} yetkinlik bağı, {n.deactivated} benzer ilan pasife alındı"
+            f"{n.skill_links} yetkinlik bağı, {n.masked} ilanda kişisel veri maskelendi, "
+            f"{n.deactivated} benzer ilan pasife alındı"
         )
+        with session_factory() as session:
+            print(f"role_skill_stats yenilendi: {stats.refresh(session)} satır")
+        return 0
+
+    if args.command == "nightly":
+        logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
+        report = nightly.run_nightly(session_factory, jitter=None if args.no_jitter else nightly.JITTER_S)
+        print(report.summary())
+        return 0 if report.ok else 1
+
+    if args.command == "refresh-stats":
+        with session_factory() as session:
+            print(f"role_skill_stats yenilendi: {stats.refresh(session)} satır")
+        return 0
+
+    if args.command == "role-stats":
+        with session_factory() as session:
+            roles = stats.summaries(session, top=args.top)
+        for summary in roles:
+            warn = f"  ! az veri (< {stats.MIN_POSTINGS})" if summary.low_data else ""
+            print(f"{summary.slug:<22}{summary.total_postings:>5} ilan{warn}")
+            for d in summary.top_skills:
+                print(f"    %{100 * d.demand_ratio:5.1f}  {d.skill} ({d.posting_count})")
+        if roles and roles[0].computed_at:
+            print(f"hesaplanma: {roles[0].computed_at.astimezone():%d.%m.%Y %H:%M}")
+        return 0
+
+    if args.command == "export-template":
+        with session_factory() as session:
+            demand, computed_at = template_input.load_demand(session)
+        data = template_input.build(
+            demand, taxonomy.load_skills(), taxonomy.load_roles(), top=args.top, computed_at=computed_at
+        )
+        args.out.parent.mkdir(parents=True, exist_ok=True)
+        args.out.write_text(json.dumps(data, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
+        print(f"{len(data['roles'])} pozisyon yazıldı: {args.out}")
+        for role in data["roles"]:
+            warn = "  ! az veri" if role["low_data"] else ""
+            print(f"  {role['slug']:<22}{role['total_postings']:>5} ilan, {len(role['skills']):>2} yetkinlik{warn}")
         return 0
 
     if args.command == "export-postings":

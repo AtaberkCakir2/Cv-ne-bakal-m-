@@ -22,7 +22,7 @@ cd Cv-ne-bakal-m-
 cp .env.example .env        # PowerShell: Copy-Item .env.example .env
 ```
 
-`.env` içindeki `POSTGRES_PASSWORD` (iki yerde: kendisi ve `DATABASE_URL`) ile `JWT_SECRET` değerlerini değiştirin. Lokal ortamda herkes kendi şifresini seçer, paylaşmaya gerek yoktur. **`.env` repoya yüklenmez** (`.gitignore` engeller); sunucu şifreleri WhatsApp grubunda değil, özel mesajla paylaşılır.
+`.env` içindeki `POSTGRES_PASSWORD` değerini (iki yerde: kendisi ve `DATABASE_URL`) değiştirin. Lokalde `JWT_SECRET` boş kalır ve `ENVIRONMENT=local` satırı silinmez: backend o zaman kendi geliştirme anahtarını kullanır. Staging ve production'da `JWT_SECRET` zorunludur (en az 32 karakter). Lokal ortamda herkes kendi şifresini seçer, paylaşmaya gerek yoktur. **`.env` repoya yüklenmez** (`.gitignore` engeller); sunucu şifreleri WhatsApp grubunda değil, özel mesajla paylaşılır.
 
 **3. Servisleri başlatın:**
 

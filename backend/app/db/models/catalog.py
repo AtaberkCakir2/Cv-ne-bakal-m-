@@ -12,6 +12,20 @@ from app.db.enums import LangCode, ResourceLevel, ResourceProvider, SkillCategor
 EMBEDDING_DIM = 384  # sentence-transformers paraphrase-multilingual-MiniLM-L12-v2
 
 
+def hnsw_index(column: str = "embedding") -> Index:
+    """Kosinüs benzerliği için HNSW indeksi (T-013). Sorgu `<=>` operatörüyle yazılmalı, yoksa indeks kullanılmaz.
+
+    m / ef_construction pgvector'un varsayılanları; ölçüm ve gerekçe docs/veritabani.md "Vektör indeksleri".
+    """
+    return Index(
+        None,
+        column,
+        postgresql_using="hnsw",
+        postgresql_with={"m": 16, "ef_construction": 64},
+        postgresql_ops={column: "vector_cosine_ops"},
+    )
+
+
 class Role(TimestampMixin, Base):
     __tablename__ = "roles"
     __table_args__ = (Index(None, "synonyms", postgresql_using="gin"),)
@@ -26,7 +40,7 @@ class Role(TimestampMixin, Base):
 
 class Skill(TimestampMixin, Base):
     __tablename__ = "skills"
-    __table_args__ = (Index(None, "synonyms", postgresql_using="gin"),)
+    __table_args__ = (Index(None, "synonyms", postgresql_using="gin"), hnsw_index())
 
     id: Mapped[int] = mapped_column(Identity(), primary_key=True)
     canonical_name: Mapped[str] = mapped_column(String(100), unique=True)  # contracts: skills[].skill
@@ -34,7 +48,6 @@ class Skill(TimestampMixin, Base):
     category: Mapped[SkillCategory] = mapped_column(pg_enum(SkillCategory, "skill_category"), index=True)
     synonyms: Mapped[list[str]] = mapped_column(ARRAY(Text), server_default=text("'{}'"))
     esco_uri: Mapped[str | None] = mapped_column(Text)
-    # HNSW indeksi T-013'te ayrı migration ile eklenir.
     embedding: Mapped[list[float] | None] = mapped_column(Vector(EMBEDDING_DIM))
     is_active: Mapped[bool] = mapped_column(server_default=text("true"))
 

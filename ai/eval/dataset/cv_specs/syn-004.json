@@ -1,0 +1,21 @@
+{
+  "cv_id": "syn-004",
+  "language": "tr",
+  "layout": "single_column",
+  "scanned": false,
+  "target_role": "backend-developer",
+  "experience": "new_grad",
+  "double": false,
+  "header": {
+    "name": "Mert Aydoğan",
+    "title": "Yeni Mezun Backend Geliştirici",
+    "contact": ["mert.aydogan@example.com", "0532 000 20 30", "İzmir", "mertaydogan.example.com"]
+  },
+  "main": [
+    {"title": "Hakkımda", "text": ["Ege bölgesinde bir üniversitenin Bilgisayar Mühendisliği bölümünden 2026'da mezun oldum. Ölçeklenebilir REST servisleri yazmayı seviyorum; ileride Go ve Kafka öğrenmek istiyorum."]},
+    {"title": "Eğitim", "items": [{"heading": "Bilgisayar Mühendisliği, Lisans", "meta": "2022 – 2026 · GNO 3,21/4", "text": ["Bitirme projesi: Django REST Framework ve PostgreSQL ile kampüs etkinlik yönetim sistemi."]}]},
+    {"title": "Staj", "items": [{"heading": "Stajyer Yazılım Geliştirici — Ornek Lojistik A.Ş.", "meta": "Temmuz 2025 – Eylül 2025", "bullets": ["Spring Boot ile sipariş takip servisine yeni uç noktalar ekledim (Java 17).", "Postgres sorgularında indeks kullanımıyla rapor süresini yaklaşık %40 azalttık.", "Servisleri Docker compose ile lokalde ayağa kaldırdım; CI tarafında Jenkins'te birim testleri (JUnit) çalıştırdım."]}]},
+    {"title": "Projeler", "items": [{"heading": "Kişisel finans API'si", "text": ["FastAPI + SQLAlchemy ile yazdım, JWT ile kimlik doğrulama ekledim. Redis'i önbellek olarak kullandım."]}, {"heading": "Ders projesi: Veri Yapıları", "text": ["C dili ile bağlı liste ve ikili arama ağacı uygulamaları."]}]},
+    {"title": "Yetenekler", "list": ["Python (ileri düzey), Java (orta), SQL", "Django, FastAPI, Spring Boot", "PostgreSQL, Redis", "Git, Linux, Docker", "İngilizce: B2"]}
+  ]
+}

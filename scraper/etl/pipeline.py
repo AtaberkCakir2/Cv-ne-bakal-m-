@@ -5,12 +5,14 @@ Pasif ilanlar (ör. EMSCAD) da etiketlenir ama benzer ilan karşılaştırmasın
 ilan yeniden aktif yapılmaz.
 """
 
+import re
 from collections.abc import Callable, Iterator
 from dataclasses import dataclass
 from typing import Any
 
 from app.db.enums import SkillImportance
 from app.db.models import JobPosting, JobPostingSkill, JobSource, Role, Skill
+from pii import PLACEHOLDERS, mask_posting
 from sqlalchemy import delete, insert, select, update
 from sqlalchemy.orm import Session
 
@@ -22,9 +24,26 @@ from etl.skills import SkillTagger
 
 BATCH_SIZE = 500
 
-# Kişi adı maskeleme (ör. ilandaki işe alımcının adı) isim tanıma ister: Burak'ın T-030 maskeleyicisi buraya bağlanır.
-# Metni değiştirirse description_clean güncellenir.
+# İlandaki kişisel veri (işe alımcının adı, telefon, TCKN…) maskeleyicisi. Metni değiştirirse description_clean
+# güncellenir. Varsayılan: mask_posting_once.
 NameMasker = Callable[[str, Lang], str]
+
+_PLACEHOLDER = re.compile("|".join(re.escape(p) for p in PLACEHOLDERS.values()))
+# Yer tutucular maskeleme sırasında harf/rakam içermeyen işaretlerle (Unicode özel kullanım alanı) değiştirilir.
+_GUARD = {p: chr(0xE000) + chr(0xE100 + i) + chr(0xE001) for i, p in enumerate(PLACEHOLDERS.values())}
+_UNGUARD = {v: k for k, v in _GUARD.items()}
+_GUARDED = re.compile("|".join(map(re.escape, _UNGUARD)))
+
+
+def mask_posting_once(text: str, lang: Lang) -> str:
+    """Burak'ın T-030 maskeleyicisi `pii.mask_posting` (kurallar; NER yok, sonuç tekrarlanabilir); normalize her gece
+    tüm ilanlarda tekrar çalıştığı için önceki çalışmanın koyduğu etiketlere dokunmaz.
+
+    mask_posting kendi etiketini yeniden maskeleyebiliyor: "name: X" → "[AD SOYAD]", sonra ad yayma kuralı "SOYAD"
+    kelimesini her yerde maskeleyip "[AD [AD SOYAD]]" üretiyor ve her gece bir kat daha ekleniyordu.
+    """
+    guarded = _PLACEHOLDER.sub(lambda m: _GUARD[m.group()], text)
+    return _GUARDED.sub(lambda m: _UNGUARD[m.group()], mask_posting(guarded, lang))
 
 
 @dataclass
@@ -46,7 +65,7 @@ def normalize(
     skills: list[SkillRow],
     roles: list[RoleRow],
     *,
-    mask_names: NameMasker | None = None,
+    mask_names: NameMasker | None = mask_posting_once,
 ) -> NormalizeResult:
     role_ids, skill_ids = _ids(session, Role), _ids(session, Skill)
     missing = {s.slug for s in skills} - skill_ids.keys() | {r.slug for r in roles} - role_ids.keys()

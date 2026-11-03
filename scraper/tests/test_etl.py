@@ -10,6 +10,7 @@ import pytest
 
 from collector.taxonomy_rows import load_roles, load_skills
 from etl.dedup import DedupItem, near_duplicates
+from etl.pipeline import mask_posting_once
 from etl.roles import RoleMatcher
 from etl.skills import SkillTagger
 from etl.text import fold, fold_phrase
@@ -127,6 +128,22 @@ def test_case_sensitive_names() -> None:
     assert "Go" in tags("Services are written in Go and golang tooling.")
 
 
+@pytest.mark.parametrize(
+    ("text", "kept", "dropped"),
+    [
+        ("Experience with Objective-C and Swift.", "Objective-C", "C"),
+        ("We build on Ruby on Rails.", "Ruby on Rails", "Ruby"),
+        ("Pipelines run on Azure DevOps.", "Azure DevOps", "DevOps"),
+    ],
+)
+def test_overlapping_names_keep_the_longest(text: str, kept: str, dropped: str) -> None:
+    # CV tarafıyla aynı kural (extraction.taxonomy.Matcher): uzun ad içindeki kısa ad ayrı yetkinlik sayılmaz.
+    found = tags(text)
+    assert kept in found
+    assert dropped not in found
+    assert "Ruby" in tags("Ruby on Rails and plain Ruby scripts.")  # ayrıca yazılmışsa yine bulunur
+
+
 def test_synonyms_map_to_canonical() -> None:
     assert "JavaScript" in tags("Modern JS and ECMAScript")
     assert "PostgreSQL" in tags("postgres, psql")
@@ -185,3 +202,13 @@ def test_near_duplicates_need_same_company_and_role() -> None:
 def test_different_postings_are_kept() -> None:
     half = " ".join(f"other{i}" for i in range(100)) + " " + " ".join(f"word{i}" for i in range(100))
     assert near_duplicates([item(1, BASE), item(2, half, day=2)]) == set()
+
+
+def test_masking_twice_does_not_nest_placeholders() -> None:
+    # pii.mask_posting kendi etiketini yeniden maskeleyebiliyor ("name: X" → [AD SOYAD], sonra "SOYAD" yayılıyor);
+    # normalize her gece çalıştığı için mask_posting_once eski etiketlere dokunmamalı.
+    text = "About Acme\n\nWe build the database of the same name: Acme\n\nContact Ayşe Kaya at hr@acme.example"
+    once = mask_posting_once(text, "en")
+    assert "Ayşe" not in once and "[E-POSTA]" in once
+    assert mask_posting_once(once, "en") == once
+    assert "[AD [AD SOYAD]]" not in mask_posting_once(mask_posting_once(once, "en"), "en")

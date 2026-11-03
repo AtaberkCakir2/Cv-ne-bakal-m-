@@ -1,0 +1,15 @@
+{
+  "cv_id": "syn-009", "language": "tr", "layout": "single_column", "scanned": true,
+  "target_role": "devops-engineer", "experience": "experienced", "double": false,
+  "header": {"name": "Burcu Arslan", "title": "DevOps Mühendisi", "contact": ["burcu.arslan@example.com", "0507 000 90 12", "Kocaeli"]},
+  "main": [
+    {"title": "Özet", "text": ["5 yıllık sistem yönetimi ve 2 yıllık DevOps deneyimi. Linux sunucularda başladığım kariyerimi bulut altyapısı, otomasyon ve izleme üzerine sürdürüyorum."]},
+    {"title": "İş Deneyimi", "items": [
+      {"heading": "DevOps Engineer — Ornek Yazılım Hizmetleri", "meta": "2024 – halen", "bullets": ["Terraform ile Azure üzerinde altyapı kodlaması (IaC); ortam kurulum süresi 2 günden 40 dakikaya indi.", "Kubernetes (AKS) kümelerinde Helm ile 30+ servisin dağıtımı; ArgoCD ile GitOps.", "Prometheus + Grafana ile izleme ve alarm; nöbet (on-call) süreçlerini yazdım.", "GitLab CI hatlarında güvenlik taraması (Trivy) ekledim."]},
+      {"heading": "Sistem Yöneticisi — Ornek Üretim A.Ş.", "meta": "2019 – 2024", "bullets": ["150+ Linux (Ubuntu, CentOS) ve Windows Server sunucusunun bakımı.", "Ansible ile yapılandırma yönetimi; Bash ve Python ile otomasyon betikleri.", "Nginx ve HAProxy ile yük dengeleme; yedekleme ve felaket kurtarma planları."]}
+    ]},
+    {"title": "Sertifikalar", "list": ["CKA — Certified Kubernetes Administrator (2025)", "Microsoft Azure Administrator Associate (AZ-104)"]},
+    {"title": "Teknik", "list": ["Linux (ileri), Bash, Python (orta)", "Docker, Kubernetes, Helm, ArgoCD", "Terraform, Ansible", "Azure (ileri), AWS (temel)", "GitLab CI, Jenkins", "Prometheus, Grafana, ELK"]},
+    {"title": "Eğitim", "items": [{"heading": "Bilgisayar Programcılığı, Ön Lisans", "meta": "2016 – 2018"}, {"heading": "Yönetim Bilişim Sistemleri, Lisans (açıköğretim)", "meta": "2019 – 2023"}]}
+  ]
+}
