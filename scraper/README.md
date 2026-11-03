@@ -13,7 +13,7 @@ Python 3.12. Modeller backend paketinden geldiği için ikisi birlikte kurulur (
 ```bash
 python -m venv C:\venv\careerai      # Windows'ta kısa yol (uzun yol hatası olmasın)
 C:\venv\careerai\Scripts\activate    # macOS/Linux: source .venv/bin/activate
-pip install -e ../backend -e ".[dev]"
+pip install -e ../backend -e ../ai -e ".[dev]"   # ai: ilan maskeleme (pii)
 ```
 
 Veritabanı: repo kökünde `make up`, sonra `backend/` içinde `alembic -c app/db/alembic.ini upgrade head`. Adres `.env`'deki `DATABASE_URL`.
@@ -59,11 +59,67 @@ python -m collector export-postings --out postings.jsonl        # contracts/job_
 | Pozisyon | `etl/roles.py` | Başlık parçalanır (`Şirket \| Pozisyon \| Yer`), kıdem/teknoloji adları atılır, `roles.csv` eş anlamlılarıyla eşlenir. "Software Engineer" gibi genel başlıklar `role_id = NULL` kalır ve pozisyon istatistiğine girmez. |
 | Yetkinlik | `etl/skills.py` | Taksonomi + eş anlamlılar, kelime sınırıyla; `case_sensitive` adlar sadece o yazımla. "Nice to have" / "tercih sebebi" bölüm ve cümlelerindekiler `preferred`. |
 | Benzer ilan | `etl/dedup.py` | Aynı şirket + pozisyonda metni %90 benzeyenlerden en yenisi kalır, diğerleri `is_active=false` (silinmez). |
-| Kişi adı | `etl/pipeline.py` | `mask_names` bağlantı noktası; Burak'ın T-030 maskeleyicisi bağlanacak. |
+| Kişisel veri | `etl/pipeline.py` | Burak'ın T-030 maskeleyicisi `pii.mask_posting` (kurallar, NER yok): işe alımcının adı, telefon, TCKN, IBAN → `[AD SOYAD]`, `[TELEFON]`… `description_clean` üzerine yazılır. `mask_posting_once` önceki etiketlere dokunmaz, her gece tekrar çalışmak güvenli. 30.10.2026: 6.632 ilandan 338'inde maskeleme, 2 yetkinlik bağı kaybı. |
+
+Eşleyiciler (`etl/text.py`, `etl/skills.py`, `etl/roles.py`, `etl/dedup.py`) veritabanı kullanmaz: taksonomiyi `collector/taxonomy_rows.py`'den okur, backend paketi ve SQLAlchemy olmadan çalışır (AI worker T-031'de kullanacak; test: `test_matchers_do_not_import_the_database_layer`).
 
 Türkçe büyük harf: "İ" → "i", Türkçe metinde "I" hem "ı" hem "i" olarak denenir ("PROGRAMCISI", "FastAPI").
 
 26.10.2026, 2.002 aktif ilan: pozisyonu belli %39,6 (792), yetkinlik bulunan %88 (ilan başına 7,5), 46 benzer ilan pasife alındı.
+
+## Pozisyon-yetkinlik istatistikleri (T-045)
+
+```bash
+python -m collector refresh-stats          # role_skill_stats'ı yeniler (normalize sonunda kendiliğinden çalışır)
+python -m collector role-stats --top 5     # pozisyon başına ilan sayısı ve en çok istenen yetkinlikler
+```
+
+`role_skill_stats` bir materialized view (tanımı `docs/veritabani.md`): son 6 ayın **aktif ve pozisyonu belli** ilanlarından pozisyon × yetkinlik → `posting_count`, `total_postings`, `demand_ratio`. Pasif ilanlar (EMSCAD, benzer kopyalar) girmez. Yenileme `CONCURRENTLY` yapılır, yani yenileme sırasında API eski veriyi okumaya devam eder. Okuma için `etl/stats.py`: `top_skills(session, role_slug)` ve `summaries(session)`. 50'den az ilanı olan pozisyon `low_data` olarak işaretlenir.
+
+Sıra: `import` → `normalize` (sonunda `refresh-stats`). Gece zamanlaması T-034'te (aşağıda). Toplama durursa ilanlar 6 ay içinde istatistikten düşer.
+
+## Gece toplaması (T-034)
+
+Her gece **03:00 (İstanbul)** Celery beat `collector.nightly` görevini başlatır (`collector/tasks.py`, kuyruk `data`). Zincir `collector/nightly.py`'de:
+
+1. Kaynaklar sırayla: Hacker News (son 2 aylık başlık, sadece veritabanında olmayan yorumlar), Himalayas (10 arama × 2 sayfa), Remote OK, Remotive (gecede 1 çağrı). EMSCAD gece çalışmaz.
+2. Yeni ilan geldiyse `normalize`.
+3. Her durumda `role_skill_stats` yenilenir (6 aylık pencere her gün kayar).
+
+| Kural | Nasıl |
+|---|---|
+| İstekler arası 3–5 sn rastgele bekleme | `PoliteClient(jitter=(3, 5))`; kaynağın kendi alt sınırı daha büyükse o (Remotive 30 sn) |
+| Üstel geri çekilme | 429/5xx ve ağ hatalarında 5 → 10 → 20 → 40 sn (+ %50'ye kadar rastgele), en çok 4 tekrar; `Retry-After` varsa o (en çok 10 dk) |
+| User-Agent | Kimliğini belirten **tek** UA (`CareerAI-Bot/…`). Dönüşümlü/sahte UA kullanılmaz: `kaynak-uygunluk.md` kural 3-4 |
+| Bir kaynak düşerse | Diğerleri devam eder; her kaynak `scrape_runs`'a ayrı yazılır (`success` / `partial` / `failed`) |
+| 403 veya tekrarlara rağmen 429 | Kaynak `job_sources.is_active = false` yapılır ve sonraki geceler atlanır (kural 3). Durum incelenip elle açılır: `UPDATE job_sources SET is_active = true WHERE name = '…'` |
+| Üst üste binme | Redis kilidi: elle tetikleme ile beat çakışırsa ikincisi atlanır. Süre sınırı 3 saat |
+
+**Elle çalıştırma** (Celery olmadan, aynı zincir):
+
+```bash
+python -m collector nightly              # 3-5 sn beklemeyle
+python -m collector nightly --no-jitter  # sadece kaynağın alt sınırı (hızlı deneme)
+```
+
+**İşçi** (Linux/Docker'da işçi + beat tek süreç):
+
+```bash
+docker compose --profile data up -d worker-data          # repo kökünde; imaj scraper/Dockerfile
+celery -A collector.tasks worker -B -Q data --concurrency 1 --loglevel INFO
+```
+
+Windows'ta `-B` çalışmaz; işçi ve beat ayrı başlatılır: `celery -A collector.tasks worker -Q data --pool solo` ve `celery -A collector.tasks beat`. Elle tetikleme: `celery -A collector.tasks call collector.nightly --queue data`.
+
+`make up` worker-data'yı **başlatmaz**: üç geliştiricinin bilgisayarı her gece aynı kaynaklara gitmesin. Sunucuda (staging/production, T-035) `--profile data` ile açılır.
+
+### Sentetik CV şablon girdisi (T-019)
+
+```bash
+python -m collector export-template        # → exports/template_input.json (--top 30: pozisyon başına yetkinlik)
+```
+
+Burak'ın `ai/eval` şablon betiği için: her pozisyonun unvanları (`titles`), ilan sayısı, `low_data` bayrağı ve talep oranına göre ilk 30 yetkinlik (`demand_ratio`, `tier`: core ≥ 0,30 / common ≥ 0,10 / rare; eş anlamlılar CV'de kısaltma ve yazım farkı üretmek için). Sadece toplu oranlar içerir, ilan metni yok. `exports/template_input.json` repoda tutulur; `ai/eval/dataset/template_input.json`'a kopyalamak `ai/` sahibinin işidir. Yetkinlik listesi etiketleme için cevap anahtarı değildir.
 
 ## Yetkinlik taksonomisi (T-017)
 

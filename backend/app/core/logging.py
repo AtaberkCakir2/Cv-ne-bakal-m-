@@ -53,3 +53,6 @@ def configure_logging(level: str = "INFO") -> None:
     # uvicorn'un kendi erişim logu yerine istek logunu middleware yazar
     logging.getLogger("uvicorn.access").handlers.clear()
     logging.getLogger("uvicorn.access").propagate = False
+    # httpx her isteği (ör. her /health/ready'de Ollama) INFO olarak yazıyor; sadece uyarı ve hatalar kalsın.
+    logging.getLogger("httpx").setLevel(logging.WARNING)
+    logging.getLogger("httpcore").setLevel(logging.WARNING)

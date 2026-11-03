@@ -1,0 +1,12 @@
+{
+  "cv_id": "syn-010", "language": "tr", "layout": "single_column", "scanned": false,
+  "target_role": "qa-engineer", "experience": "intern", "double": false,
+  "header": {"name": "Ozan Çelik", "title": "Yazılım Test Stajyeri", "contact": ["ozan.celik@example.com", "0546 000 25 25", "Bursa"]},
+  "main": [
+    {"title": "Hakkımda", "text": ["Yazılım kalitesine meraklı, 4. sınıf öğrencisiyim. Manuel testten başlayıp test otomasyonuna geçiyorum. ISTQB Foundation sınavına hazırlanıyorum."]},
+    {"title": "Staj", "items": [{"heading": "QA Stajyeri — Ornek Bankacılık Teknolojileri", "meta": "Temmuz – Ağustos 2026", "bullets": ["Mobil bankacılık uygulaması için 120+ manuel test senaryosu yazdım ve Jira'da hata kayıtlarını yönettim.", "Selenium WebDriver (Java) ile giriş ve para transferi akışlarının otomasyonunu yaptım.", "Postman ile REST API testleri; koleksiyonları Newman ile CI'da çalıştırdık.", "Agile/Scrum ekibinde günlük toplantılara ve sprint planlamasına katıldım."]}]},
+    {"title": "Projeler", "items": [{"heading": "E-ticaret demo sitesi test otomasyonu", "text": ["Cypress + JavaScript ile uçtan uca testler; GitHub Actions'ta her push'ta çalışıyor. Page Object Model kullandım."]}, {"heading": "Yük testi denemesi", "text": ["JMeter ile ders projesi API'sine 200 eşzamanlı kullanıcı testi."]}]},
+    {"title": "Yetenekler", "list": ["Manuel test, test senaryosu yazma, hata raporlama", "Selenium, Cypress, Postman, JMeter", "Java (temel), JS (temel), SQL (temel)", "Jira, Confluence, Git", "İngilizce: B1 · Problem çözme ve detaylara dikkat"]},
+    {"title": "Eğitim", "items": [{"heading": "Bilgisayar Mühendisliği, Lisans", "meta": "2023 – 2027 (beklenen)", "text": ["Dersler: Yazılım Mühendisliği, Yazılım Test ve Kalite"]}]}
+  ]
+}

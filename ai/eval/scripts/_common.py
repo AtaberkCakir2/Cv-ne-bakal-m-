@@ -16,10 +16,11 @@ DEFAULT_SKILLS = DEFAULT_DATASET / "skills_provisional.json"
 
 TEAM = ("ataberk", "burak", "anil")
 LEVELS = ("beginner", "intermediate", "advanced", "unknown")
-SOURCES = ("real", "synthetic")
+SOURCES = ("synthetic",)  # karar #20: gerçek kişilere ait CV toplanmaz
 LANGUAGES = ("tr", "en")
 LAYOUTS = ("single_column", "multi_column", "table", "creative")
-CV_ID_RE = re.compile(r"^(cv|syn)-(\d{3,})$")
+EXPERIENCE = ("new_grad", "intern", "experienced")
+CV_ID_RE = re.compile(r"^syn-(\d{3,})$")
 PENDING_KEY = "_karar_bekleyen"
 
 # cv numarası mod 3 → (etiketleyiciler, hakem). README'deki tabloyla aynı.
@@ -83,7 +84,7 @@ def load_manifest(dataset: Path, report: Report) -> dict[str, dict[str, str]]:
             where = f"manifest.csv:{line_no}"
             cv_id = (row.get("cv_id") or "").strip()
             if not CV_ID_RE.match(cv_id):
-                report.error(f"{where}: geçersiz cv_id '{cv_id}' (ör. cv-001, syn-001)")
+                report.error(f"{where}: geçersiz cv_id '{cv_id}' (ör. syn-001)")
                 continue
             if cv_id in rows:
                 report.error(f"{where}: {cv_id} iki kez yazılmış")
@@ -92,13 +93,10 @@ def load_manifest(dataset: Path, report: Report) -> dict[str, dict[str, str]]:
             _check_enum(report, where, "language", row.get("language"), LANGUAGES)
             _check_enum(report, where, "layout", row.get("layout"), LAYOUTS)
             _check_enum(report, where, "scanned", row.get("scanned"), ("true", "false"))
+            _check_enum(report, where, "experience", row.get("experience"), EXPERIENCE)
+            _check_enum(report, where, "double", row.get("double"), ("true", "false"))
             if not (row.get("pages") or "").strip().isdigit():
                 report.error(f"{where}: pages sayı olmalı")
-            expected_prefix = "syn" if row.get("source") == "synthetic" else "cv"
-            if not cv_id.startswith(expected_prefix + "-"):
-                report.error(f"{where}: source={row.get('source')} için cv_id '{expected_prefix}-' ile başlamalı")
-            if row.get("source") == "real" and not (row.get("consent_id") or "").strip():
-                report.error(f"{where}: gerçek CV için consent_id (izin formu no) zorunlu")
             rows[cv_id] = row
     return rows
 
@@ -110,7 +108,7 @@ def _check_enum(report: Report, where: str, name: str, value: str | None, allowe
 
 def cv_number(cv_id: str) -> int:
     m = CV_ID_RE.match(cv_id)
-    return int(m.group(2)) if m else 0
+    return int(m.group(1)) if m else 0
 
 
 def assignment(cv_id: str) -> tuple[tuple[str, str], str]:

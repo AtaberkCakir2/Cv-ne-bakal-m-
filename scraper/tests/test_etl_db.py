@@ -10,7 +10,7 @@ from pathlib import Path
 import pytest
 from alembic import command
 from alembic.config import Config
-from app.db.models import JobPosting, JobPostingSkill, Role
+from app.db.models import JobPosting, JobPostingSkill, Role, Skill
 from sqlalchemy import Engine, create_engine, func, select
 from sqlalchemy.orm import Session
 
@@ -117,3 +117,20 @@ def test_name_masker_hook_updates_description(session: Session) -> None:
     )
     assert result.masked == 1
     assert session.scalar(select(JobPosting.description_clean)) == "İletişim: [isim]. Python."
+
+
+def test_default_masker_hides_recruiter_and_keeps_skills(session: Session) -> None:
+    # Varsayılan maskeleyici pii.mask_posting (T-030): işe alımcının adı ve iletişimi gider, ilan başlığı ve
+    # yetkinlikler kalır. İkinci normalize metni bir daha değiştirmez.
+    text = "Python ve PostgreSQL ile API geliştireceksiniz. İK sorumlusu Ayşe Kaya: 0532 111 22 33"
+    run_import(session, SOURCE, [posting("1", "Backend Developer", text)])
+
+    first = normalize(session, load_skills(), load_roles())
+    stored = session.scalar(select(JobPosting.description_clean))
+    assert first.masked == 1
+    assert stored == "Python ve PostgreSQL ile API geliştireceksiniz. İK sorumlusu [AD SOYAD]: [TELEFON]"
+    skills = set(session.scalars(select(Skill.slug).join(JobPostingSkill, JobPostingSkill.skill_id == Skill.id)))
+    assert {"python", "postgresql"} <= skills
+
+    assert normalize(session, load_skills(), load_roles()).masked == 0
+    assert session.scalar(select(JobPosting.description_clean)) == stored

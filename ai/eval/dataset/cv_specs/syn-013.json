@@ -1,0 +1,12 @@
+{
+  "cv_id": "syn-013", "language": "tr", "layout": "single_column", "scanned": false,
+  "target_role": "game-developer", "experience": "intern", "double": false,
+  "header": {"name": "Deniz Akın", "title": "Oyun Geliştirici · Unity / C#", "contact": ["deniz.akin@example.com", "0535 000 52 25", "İstanbul", "denizakin.example.com/portfolyo"]},
+  "main": [
+    {"title": "Hakkımda", "text": ["Unity ile 2D ve 3D oyunlar geliştiren 3. sınıf öğrencisiyim. 3 game jam'e katıldım. Unreal Engine'e geçmeyi düşünüyorum."]},
+    {"title": "Staj", "items": [{"heading": "Oyun Geliştirme Stajyeri — Ornek Games", "meta": "Haziran – Eylül 2026", "bullets": ["Unity (C#) ile hiper-casual bir mobil oyunun seviye editörünü geliştirdim.", "Oyun içi analitik için Firebase olaylarını entegre ettim.", "Shader Graph ile basit görsel efektler; profiler ile mobilde FPS'i 38'den 58'e çıkardık."]}]},
+    {"title": "Projeler", "items": [{"heading": "Labirent Koşusu (Game Jam 2025)", "text": ["48 saatte 4 kişilik ekiple Unity'de 3D platform oyunu; jüri ödülü."]}, {"heading": "Fizik motoru denemesi", "text": ["C++ ve SFML ile basit 2D çarpışma algılama; ders projesi."]}, {"heading": "Blender modelleme", "text": ["Oyun için düşük poligonlu karakter ve çevre modelleri."]}]},
+    {"title": "Yetenekler", "list": ["C# (orta-ileri), C++ (temel)", "Unity (2 yıl), Unity Shader Graph", "Blender (temel), Git, Plastic SCM", "Oyun tasarımı, prototipleme", "İngilizce: B2 · takım çalışması"]},
+    {"title": "Eğitim", "items": [{"heading": "Dijital Oyun Tasarımı, Lisans", "meta": "2024 – 2028 (beklenen)"}]}
+  ]
+}
