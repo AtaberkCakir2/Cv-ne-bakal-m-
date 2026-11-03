@@ -8,19 +8,23 @@ import pytest
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 from pypdf import PdfWriter
+from pypdf.errors import DependencyError
 
 from app.core.uploads import MAX_PDF_BYTES, UploadSizeLimitMiddleware
+from app.services import cv_validation
 
 URL = "/api/v1/analyses"
 PROBLEM = "application/problem+json"
 
 
-def make_pdf(pages: int = 1, password: str | None = None, owner_only: bool = False) -> bytes:
+def make_pdf(
+    pages: int = 1, password: str | None = None, owner_only: bool = False, algorithm: str = "RC4-128"
+) -> bytes:
     writer = PdfWriter()
     for _ in range(pages):
         writer.add_blank_page(width=595, height=842)
     if password:
-        writer.encrypt(user_password="" if owner_only else password, owner_password=password)
+        writer.encrypt(user_password="" if owner_only else password, owner_password=password, algorithm=algorithm)
     buffer = io.BytesIO()
     writer.write(buffer)
     return buffer.getvalue()
@@ -108,6 +112,25 @@ def test_encrypted_pdf_is_rejected(client: TestClient) -> None:
     response = upload(client, make_pdf(1, password="gizli"))
     assert_problem(response, 422, "PDF_UNREADABLE")
     assert "Şifreli" in response.json()["detail"]  # kod sözleşmedeki gibi genel, mesaj nedeni söylüyor
+
+
+@pytest.mark.parametrize("algorithm", ["AES-128", "AES-256"])
+def test_aes_encrypted_pdf_is_rejected(client: TestClient, algorithm: str) -> None:
+    # Word ve Acrobat AES kullanır; pypdf bunun için cryptography paketini ister.
+    assert_problem(upload(client, make_pdf(1, password="gizli", algorithm=algorithm)), 422, "PDF_UNREADABLE")
+
+
+@pytest.mark.parametrize("algorithm", ["AES-128", "AES-256"])
+def test_aes_edit_restricted_pdf_is_accepted(client: TestClient, algorithm: str) -> None:
+    assert upload(client, make_pdf(1, password="sahip", owner_only=True, algorithm=algorithm)).status_code == 202
+
+
+def test_unsupported_encryption_is_unreadable_not_500(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
+    def fail(*args: object, **kwargs: object) -> None:
+        raise DependencyError("cryptography gerekli")
+
+    monkeypatch.setattr(cv_validation, "PdfReader", fail)
+    assert_problem(upload(client, make_pdf(1)), 422, "PDF_UNREADABLE")
 
 
 def test_edit_restricted_pdf_without_open_password_is_accepted(client: TestClient) -> None:

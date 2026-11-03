@@ -9,7 +9,7 @@ import io
 from dataclasses import dataclass
 
 from pypdf import PasswordType, PdfReader
-from pypdf.errors import PdfReadError
+from pypdf.errors import DependencyError, PyPdfError
 
 from app.core.uploads import MAX_PDF_BYTES, MAX_PDF_PAGES
 
@@ -52,7 +52,8 @@ def validate_cv(content: bytes, content_type: str | None) -> ValidatedCv:
         pages = len(reader.pages)
     except CvRejected:
         raise
-    except (PdfReadError, ValueError, KeyError, TypeError, OSError) as exc:
+    # DependencyError: desteklenmeyen şifreleme türü; PyPdfError'dan türemiyor, ayrıca yakalanır.
+    except (PyPdfError, DependencyError, ValueError, KeyError, TypeError, OSError) as exc:
         raise CvRejected(422, "PDF_UNREADABLE", "PDF dosyası okunamadı; dosya bozuk olabilir.") from exc
 
     if pages == 0:

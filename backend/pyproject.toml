@@ -12,7 +12,7 @@ dependencies = [
     "psycopg[binary]>=3.2",
     # CV yükleme (T-038)
     "python-multipart>=0.0.18",
-    "pypdf>=5.1",
+    "pypdf[crypto]>=5.1",
     # Veritabanı (app/db, T-012 — Ataberk)
     "sqlalchemy>=2.0.36,<2.1",
     "alembic>=1.14",
