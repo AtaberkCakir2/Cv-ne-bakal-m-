@@ -43,13 +43,26 @@ O zamana kadar kural ekip sözleşmesidir (karar #6): kırmızı CI'lı PR birle
 
 `.github/workflows/deploy.yml`: `main`'de CI yeşil olunca `api` ve `worker-data` imajlarını `ghcr.io/ataberkcakir2/careerai-*:<sha>` olarak gönderir, sunucuda `infra/staging/deploy.sh <sha>` çalıştırır. Betik migration ve smoke test yapar; başarısız olursa önceki imajlara döner (migration'lar geri alınmaz, önceki sürümle uyumlu yazılmalı).
 
-Sunucu hazır olunca repo → Settings'te:
+Sunucu hazır olunca:
+
+1. **Settings → Environments → New environment:** adı `staging`. *Deployment branches and tags* → *Selected branches* → `main`. Sırlar repo düzeyinde değil burada durur: başka dallardaki workflow'lar okuyamaz.
+2. Kendi bilgisayarınızda sadece CI için bir anahtar üretin: `ssh-keygen -t ed25519 -N "" -C careerai-ci -f ci_key`
+3. `ci_key.pub` içeriğini sunucuda `/home/deploy/.ssh/authorized_keys` dosyasına **şu önekle** ekleyin (tek satır):
+
+   ```
+   restrict,command="bash /home/deploy/careerai/infra/staging/ci-deploy.sh" ssh-ed25519 AAAA... careerai-ci
+   ```
+
+   Bu anahtar sadece `main`'deki bir commit'i deploy edebilir; kabuk, `sudo` ve port yönlendirme açmaz (`infra/staging/ci-deploy.sh`).
+4. Ayarları girin, sonra `ci_key` dosyasını silin:
 
 | Yer | Ad | Değer |
 |---|---|---|
 | Secrets and variables → Actions → Variables | `STAGING_DEPLOY` | `true` (tanımsızken otomatik deploy kapalı) |
-| Actions secrets | `STAGING_HOST` | Sunucu IP'si veya adı |
-| Actions secrets | `STAGING_SSH_KEY` | Sadece CI için üretilen özel anahtar (`ssh-keygen -t ed25519 -N "" -f ci_key`); `ci_key.pub` sunucuda deploy kullanıcısının `authorized_keys` dosyasına eklenir, `ci_key` sonra silinir |
-| Actions secrets | `STAGING_KNOWN_HOSTS` | `ssh-keyscan <sunucu-ip>` çıktısı |
+| Environments → staging → Environment secrets | `STAGING_HOST` | Sunucu IP'si veya adı |
+| Environments → staging → Environment secrets | `STAGING_SSH_KEY` | `ci_key` içeriği |
+| Environments → staging → Environment secrets | `STAGING_KNOWN_HOSTS` | `ssh-keyscan <sunucu-ip>` çıktısı |
 
-İmaj kısmı sunucusuz denenebilir: Actions → Deploy → Run workflow sadece imajları derleyip gönderir. Bu özel repoda GHCR depolaması kotalıdır; her imajın son 5 sürümü tutulur.
+Deploy sadece bu repodaki `main`'e yapılan push'un CI'ı yeşil olunca çalışır; fork'tan gelen PR'lar tetiklemez.
+
+İmaj kısmı sunucusuz denenebilir: Actions → Deploy → Run workflow sadece imajları derleyip gönderir. Bu özel repoda GHCR depolaması kotalıdır; her imajın son 5 sürümü tutulur. Sunucuda her servisin son 3 imajı kalır.

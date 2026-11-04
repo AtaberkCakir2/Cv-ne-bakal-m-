@@ -40,8 +40,10 @@ printf '%s ALL=(ALL) NOPASSWD:ALL\n' "$DEPLOY_USER" > "/etc/sudoers.d/90-$DEPLOY
 chmod 440 "/etc/sudoers.d/90-$DEPLOY_USER"
 visudo -cq
 install -d -m 700 -o "$DEPLOY_USER" -g "$DEPLOY_USER" "/home/$DEPLOY_USER/.ssh"
-install -m 600 -o "$DEPLOY_USER" -g "$DEPLOY_USER" /root/.ssh/authorized_keys \
-  "/home/$DEPLOY_USER/.ssh/authorized_keys"
+# Sadece ilk çalıştırmada: tekrar çalıştırınca sonradan eklenen CI anahtarı (infra/ci.md) silinmesin.
+[[ -f "/home/$DEPLOY_USER/.ssh/authorized_keys" ]] \
+  || install -m 600 -o "$DEPLOY_USER" -g "$DEPLOY_USER" /root/.ssh/authorized_keys \
+    "/home/$DEPLOY_USER/.ssh/authorized_keys"
 
 log "SSH: sadece anahtar, root kapalı"
 # 00- öneki şart: sshd ilk gördüğü değeri alır, cloud-init'in 50- dosyası parola girişini açabiliyor.

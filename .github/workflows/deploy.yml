@@ -24,9 +24,14 @@ env:
 jobs:
   build:
     name: İmaj (${{ matrix.name }})
+    # `branches: [main]` sadece dal adına bakar: fork'taki `main` dalından gelen PR'ın CI'ı da eşleşir. Bu yüzden
+    # sadece bu repoya yapılan push'lar.
     if: >-
       github.event_name == 'workflow_dispatch' ||
-      (github.event.workflow_run.conclusion == 'success' && vars.STAGING_DEPLOY == 'true')
+      (github.event.workflow_run.conclusion == 'success' &&
+       github.event.workflow_run.event == 'push' &&
+       github.event.workflow_run.head_repository.full_name == github.repository &&
+       vars.STAGING_DEPLOY == 'true')
     runs-on: ubuntu-24.04
     permissions:
       contents: read
@@ -52,6 +57,8 @@ jobs:
           file: ${{ matrix.file }}
           push: true
           tags: ${{ env.IMAGE_PREFIX }}-${{ matrix.name }}:${{ env.SHA }}
+          # İmza kaydı (attestation) GHCR'da ayrı sürüm sayılır; sürüm silme adımı imajları yarım bırakmasın.
+          provenance: false
           cache-from: type=gha,scope=${{ matrix.name }}
           cache-to: type=gha,mode=max,scope=${{ matrix.name }}
       # GHCR depolaması kotalı (özel repo): geri dönüş için son sürümler yeter.
@@ -64,7 +71,8 @@ jobs:
   deploy:
     name: Staging'e deploy
     needs: build
-    if: vars.STAGING_DEPLOY == 'true'
+    # Elle çalıştırma başka daldan seçilirse sadece imaj derlenir; staging'e sadece main gider.
+    if: vars.STAGING_DEPLOY == 'true' && (github.event_name == 'workflow_run' || github.ref == 'refs/heads/main')
     runs-on: ubuntu-24.04
     environment: staging
     permissions:
@@ -85,13 +93,6 @@ jobs:
           HOST: ${{ secrets.STAGING_HOST }}
           TOKEN: ${{ secrets.GITHUB_TOKEN }}
           ACTOR: ${{ github.actor }}
-        run: |
-          # Token sadece bu iş boyunca geçerli; sunucuda kalıcı GHCR parolası tutulmaz.
-          printf '%s' "$TOKEN" | ssh "deploy@$HOST" "docker login ghcr.io -u '$ACTOR' --password-stdin"
-          ssh "deploy@$HOST" "cd careerai && git fetch --quiet origin && git checkout --quiet --detach '$SHA'"
-          ssh "deploy@$HOST" "bash careerai/infra/staging/deploy.sh '$SHA'"
-      - name: GHCR oturumunu kapat
-        if: always()
-        env:
-          HOST: ${{ secrets.STAGING_HOST }}
-        run: ssh "deploy@$HOST" "docker logout ghcr.io" || true
+        # Anahtar sunucuda sadece infra/staging/ci-deploy.sh'ı çalıştırabilir (forced command). Token bu iş boyunca
+        # geçerli, stdin'den gider ve betik bitince oturum kapatılır.
+        run: printf '%s' "$TOKEN" | ssh "deploy@$HOST" "deploy $SHA $ACTOR"

@@ -306,7 +306,8 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 - **Bağımlılık:** T-036, T-064
 - **Destek:** —
 - **Çıktı:** Production ortamı
-- **Kabul kriteri:** Ayrı compose profili; en az yetkili DB kullanıcıları; sırlar .env (chmod 600, repoda yok); Postgres/Redis/Ollama dış dünyaya kapalı (sadece iç ağ); kaynak limitleri (mem_limit).
+- **Kabul kriteri:** Ayrı compose profili; en az yetkili DB kullanıcıları; sırlar .env (chmod 600, repoda yok); Postgres/Redis/Ollama dış dünyaya kapalı (sadece iç ağ); kaynak limitleri
+- **Not:** Staging'in Caddy'si 80/443'ü tutuyor, production aynı sunucuda kendi Caddy'siyle bu portları alamaz: tek ortak Caddy (iki site bloğu) ve ortak Ollama gerekir. Bellek bütçesi tek ortama göre (~15,5/16 GB); plan `infra/server/README.md` "Bellek" bölümünde (PR #50, Anıl'ın incelemesi). (mem_limit).
 
 ### T-079 · Mimari doküman ve ADR'ler
 

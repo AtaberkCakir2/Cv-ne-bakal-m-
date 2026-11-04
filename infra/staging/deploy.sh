@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Verilen commit'in imajlarını staging'e alır; başarısız olursa önceki imajlara döner (T-036).
 #   bash infra/staging/deploy.sh <commit-sha>
-# Normalde .github/workflows/deploy.yml çalıştırır. Elle kullanılacaksa önce `docker login ghcr.io`.
+# Normalde CI, ci-deploy.sh üzerinden çalıştırır. Elle kullanılacaksa önce `docker login ghcr.io`.
 #
 # Geri dönüş migration'ları geri almaz: migration'lar önceki sürümle uyumlu yazılmalı (sütun silme ayrı PR'da).
 set -euo pipefail
@@ -15,15 +15,26 @@ cd "$(dirname "$0")"
 
 # compose.yml sabit `careerai/<servis>:staging` adını kullanır; deploy bu adı doğru imaja bağlar.
 use_images() {  # $1: new (bu commit) veya previous
+  local s
+  if [[ "$1" == previous ]]; then
+    for s in "${SERVICES[@]}"; do docker tag "careerai/$s:previous" "careerai/$s:staging"; done
+    return
+  fi
+  # Önce hepsi indirilir: biri inmezse hiçbir etiket değişmeden durulur, yarım sürüm kalmaz.
   for s in "${SERVICES[@]}"; do
-    if [[ "$1" == previous ]]; then
-      docker tag "careerai/$s:previous" "careerai/$s:staging"
-    else
-      local image="$IMAGE_PREFIX-$s:$SHA"
-      docker image inspect "$image" >/dev/null 2>&1 || docker pull --quiet "$image"
-      docker tag "$image" "careerai/$s:staging"
-    fi
+    docker image inspect "$IMAGE_PREFIX-$s:$SHA" >/dev/null 2>&1 || docker pull --quiet "$IMAGE_PREFIX-$s:$SHA"
   done
+  for s in "${SERVICES[@]}"; do docker tag "$IMAGE_PREFIX-$s:$SHA" "careerai/$s:staging"; done
+}
+
+# `docker image prune` etiketli imajları silmez: her servisin en yeni 3 <sha> etiketi kalır, gerisi silinir.
+prune_images() {
+  local s
+  for s in "${SERVICES[@]}"; do
+    docker image ls "$IMAGE_PREFIX-$s" --format '{{.Repository}}:{{.Tag}}' | tail -n +4 \
+      | xargs -r docker image rm >/dev/null || true
+  done
+  docker image prune --force >/dev/null
 }
 
 # `if roll_out` içinde `set -e` çalışmaz: her adım && ile bağlı, yoksa hatalı migration başarı sayılır.
@@ -44,7 +55,7 @@ fi
 
 use_images new
 if roll_out; then
-  docker image prune --force >/dev/null
+  prune_images
   echo "Deploy tamam: $SHA"
   exit 0
 fi
