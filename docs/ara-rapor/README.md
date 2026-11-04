@@ -4,6 +4,14 @@ Teslim: **12 Kasım 2026 saat 13.30**, imza karşılığı, Umut veya Ezgi hocay
 
 Kaynak: [İstanbul Nişantaşı Üniversitesi LEE Tez ve Proje Yazım Kılavuzu](https://lee.nisantasi.edu.tr/wp-content/uploads/2024/12/aTEZ-YAZIM-KILAVUZU-2024-1.pdf) (kapak tarihi Eylül 2022, 46 sayfa). Kılavuz lisansüstü tez ve projeler için yazılmış; bitirme raporuna nasıl uygulanacağı duyuruda ayrıntılı değil.
 
+## Dosyalar
+
+- `ara-sinav-raporu.md`: metnin tek kaynağı. Düzeltme buraya yapılır.
+- `cikti/CareerAI_Ara_Sinav_Raporu.pdf`: baskıya hazır çıktı.
+- `cikti/CareerAI_Ara_Sinav_Raporu.docx`: düzenlenebilir sürüm. Sayfa numaraları dizinlere PDF'ten yazıldı; Word'de düzenlenirse dizinler elle güncellenmeli.
+- `img/` ve `diyagram/`: şekiller. Şekil 2 ve 4, 8 punto okunabilsin diye `docs/diagrams/` altındaki tam sürümlerin sadeleştirilmiş halidir; Şekil 4'te `user_tokens`, `analysis_unverified_skills` da var.
+- Yeniden üretmek için repo kökünde: `python docs/ara-rapor/uret.py` (pymupdf, python-docx, Chrome gerekir).
+
 ## Hocaya sorulacaklar
 
 1. **Ekler:** Kılavuz örnek kapak, etik beyan ve diğer şablonları Ek 1–24'e bırakıyor ama yayımlanan PDF'te ekler yok. Özellikle Ek 1 (dış kapak), Ek 2 (iç kapak), Ek 5 (etik beyan) gerekli.
@@ -25,7 +33,6 @@ Kaynak: [İstanbul Nişantaşı Üniversitesi LEE Tez ve Proje Yazım Kılavuzu]
 | Sayfa numarası | Kapaklarda yok; sonra Giriş'e kadar i, ii, iii; Giriş'ten itibaren 1, 2, 3. Alttan 1,5 cm, sağa hizalı |
 | 1. derece başlık | `1. BAŞLIK`: yeni sayfa, kalın, tamamı büyük, sola hizalı |
 | 2. derece başlık | `1.1. Başlık`: kalın, her kelimenin ilk harfi büyük |
-| 3. derece başlık | `1.1.1. Başlık`: kalın değil, her kelimenin ilk harfi büyük |
 | Diğer başlıklar | Etik beyan, teşekkür, özet, dizinler, kaynaklar: büyük, kalın, ortalı, sonrasında 24 punto |
 | Tablo | Başlık üstte, `Tablo 1. Başlık`, kalın, ortalı. Hücre dolgusu yok; başlık satırının üstü ve altı ile son satırın altı 0,75 punto çizgi; hücreler yatay ortalı; en fazla 15 cm genişlik |
 | Şekil | Başlık altta, `Şekil 1. Başlık`, kalın, ortalı; en fazla 15 × 23,7 cm; gerekirse renkli |
@@ -35,6 +42,8 @@ Kaynak: [İstanbul Nişantaşı Üniversitesi LEE Tez ve Proje Yazım Kılavuzu]
 | Özet ve Abstract | 150–250 kelime; atıf, tablo, şekil yok; 3–8 anahtar kelime (ilki büyük harfle başlar) |
 | İçindekiler | Üç dereceye kadar; 2. derece 0,5 cm, 3. derece 1 cm girinti; noktalı sekme |
 
+Bilinen sapma: Tam sayfa şekillerden önceki sayfalarda alt boşluk, kılavuzun 2,5 cm sınırını aşıyor (Bölüm 3). Üçüncü derece başlık kullanılmadı.
+
 Metinde kılavuza göre zaten uygulananlar: bölüm sırası, Giriş ve Sonuç'ta alt başlık olmaması, başlıklarda noktalama olmaması, tablo ve şekillere sırayla numara ve önceden atıf, vurgu için kalın kullanılmaması, 10'dan küçük sayıların yazıyla yazılması, `gg Ay yyyy` tarih biçimi, `%40` yazımı.
 
 ## Teslimden önce kontrol
@@ -43,6 +52,7 @@ Metinde kılavuza göre zaten uygulananlar: bölüm sırası, Giriş ve Sonuç't
 - [ ] Ataberk: Bölüm 4.1, 4.2, 5.1, 6.1 ve güncel ilan, kaynak sayıları (2.208 ve 447, 30 Ekim tarihli; #48)
 - [ ] Burak: Bölüm 3.5, 4.3, 5.2, 5.3
 - [ ] Anıl: Bölüm 4.4, 4.5, 6.2; görev, test ve değişiklik isteği sayıları teslim tarihine göre güncellendi
-- [ ] Şekiller eklendi (Mermaid diyagramlarını dışa aktarma: `docs/diagrams/README.md`; görsellerde kişisel veri yok)
+- [ ] Word dosyası Word'de açılıp kapak konumları, sayfa numaraları ve yatay sayfalar kontrol edildi (Word ve LibreOffice olmayan bilgisayarda üretildi, görsel olarak denenmedi)
+- [ ] Logo eklendi; `[DOLDUR]` vurguları PDF'te kalmadı
 - [ ] Bütün ekip metni okudu ve anlatabiliyor
 - [ ] Basım en geç 11 Kasım 2026

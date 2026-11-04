@@ -149,17 +149,17 @@ CareerAI bu uygulamalardan, yetkinlik açığını ilan verisindeki talep oranı
 
 ## 3.1. Genel Mimari
 
-Sistem, istemciler, FastAPI tabanlı API, Redis kuyruğu, yapay zekâ işçisi, veri tabanı ve gece çalışan veri toplayıcıdan oluşmaktadır. Yapay zekâ analizi işlemcide dakikalar sürebildiği için istek içinde değil, kuyruk işi olarak çalıştırılmakta, istemci ilerlemeyi izlemektedir. Bileşenler Şekil 1'de, analiz akışı Şekil 2'de, kullanım durumları Şekil 3'te gösterilmiştir.
+Sistem, istemciler, FastAPI tabanlı API, Redis kuyruğu, yapay zekâ işçisi, veri tabanı ve gece çalışan veri toplayıcıdan oluşmaktadır. Yapay zekâ analizi işlemcide dakikalar sürebildiği için istek içinde değil, kuyruk işi olarak çalıştırılmakta, istemci ilerlemeyi izlemektedir. Bileşenler Şekil 1'de, analiz akışı Şekil 2'de, kullanım durumları Şekil 3'te gösterilmiştir. Bu şekiller planlanan tasarımı göstermekte olup uçtan uca akış henüz bağlanmamıştır.
 
 Analiz akışında özgeçmiş yüklenmekte, PDF metni çıkarılmakta, kişisel veriler maskelenmekte, yetkinlikler çıkarılmakta, vektör gösterimleri üretilmekte, ilan istatistikleriyle eşleştirme yapılmakta ve doğrulanmış kaynaklardan öneri oluşturulmaktadır.
 
 [Görsel: `docs/diagrams/component-deployment.md`]
 
-**Şekil 1. Sistem bileşenleri**
+**Şekil 1. Planlanan sistem bileşenleri**
 
 [Görsel: `docs/diagrams/sequence-cv-analiz.md`]
 
-**Şekil 2. Özgeçmiş analizi sıralama diyagramı**
+**Şekil 2. Planlanan özgeçmiş analizi akışının ana adımları**
 
 [Görsel: `docs/diagrams/use-case.md`]
 
@@ -191,7 +191,7 @@ Veri tabanı 17 tablodan oluşmaktadır ve yapısı Şekil 4'te gösterilmiştir
 
 [Görsel: `backend/app/db/erd.svg`]
 
-**Şekil 4. Varlık-ilişki diyagramı**
+**Şekil 4. Veri tabanı tabloları ve ilişkileri**
 
 ## 3.4. Kişisel Verilerin Korunması
 
@@ -267,7 +267,7 @@ On ekranlık tıklanabilir prototip ve açık ile koyu temalı tasarım sistemi 
 
 [Görsel: `web/prototip/index.html`]
 
-**Şekil 6. Sonuç panosu prototipi**
+**Şekil 6. Sonuç panosu prototipi (örnek veri)**
 
 ## 4.6. Ekip İçi İş Bölümü
 
