@@ -149,13 +149,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-039 · Asenkron analiz işi (Celery + Redis)
 
-- **Durum:** Devam Ediyor
+- **Durum:** Tamamlandı
 - **Tarih:** 09.11.2026 – 15.11.2026 · **Öncelik:** P0 · **Efor:** 14 saat · **Alan:** Backend API
 - **Bağımlılık:** T-038
 - **Destek:** Burak
 - **Çıktı:** Kuyruk altyapısı
 - **Kabul kriteri:** POST /analyses → 202 + analysis_id; durum: queued/processing/done/failed; ilerleme SSE veya polling ile; görev zaman aşımı 180 sn; otomatik 1 tekrar deneme.
-- **Devam notu (05.11.2026):** Yapılan: Celery kuyruğu (`app/worker/`), CV baytları için ayrı geçici depo (`app/services/cv_store.py`, CV_REDIS_URL), `AnalysisRunner` (180 sn, 1 tekrar), analizler PostgreSQL'e ve kullanıcıya bağlandı, `GET /analyses/{id}` ile yoklama. code-reviewer incelemesi (2 yüksek, 6 orta, 7 düşük) kod içindekiler düzeltildi; `openapi.json` ve `backend/README.md` güncel. Docker gerektirmeyen 71 test, ruff ve mypy temiz. · Sıradaki adım: Docker açılınca `tests/auth/test_analyses_queue.py`'yi gerçek PostgreSQL ile çalıştırmak (henüz hiç çalışmadı); gerçek Redis ve Linux işçisiyle (Docker) uçtan uca ve 180 sn sınırını denemek. · Açık sorular / engeller: #9 birleşmeden bu dal PR olamaz (taban `anil/cv-yukleme`). Ataberk'e öneri: kalıcılığı kapalı ayrı CV Redis'i (compose + staging, CV_REDIS_URL). `contracts/api.md`'deki `/events` (SSE) yerine yoklama kullanıldı. · Branch: anil/analiz-kuyrugu
+- **Not:** 05.11.2026: Celery `analysis` kuyruğu (`app/worker/`), CV baytları kalıcılığı kapalı ayrı Redis'te (`CV_REDIS_URL`, 1 saat), mesajda sadece kimlik. Soft 180 sn, geçici hatada 1 tekrar. `POST /analyses` artık giriş ve saatlik sınır istiyor, kayıt PostgreSQL'de; ilerleme `GET /analyses/{id}` ile yoklama (SSE yok). Askıda kalan analiz 65 dk sonra ilk yoklamada `failed` olur. Gerçek akış T-057'de `app/services/analyzer.py`'ye bağlanır; local/test dışında o zamana kadar analiz `failed` olur. Yetkinlik listeleri T-048'de. Docker'da gerçek API, Linux işçisi, PostgreSQL ve iki Redis ile denendi. Ataberk: compose ve staging'e CV Redis'i (`--save "" --appendonly no`, `maxmemory`, `noeviction`), `.env.example`'a `CV_REDIS_URL`, analiz işçisi servisi.
 
 ### T-040 · Web arayüzü altyapısı (Electron ile ortak)
 
