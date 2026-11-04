@@ -149,12 +149,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-039 · Asenkron analiz işi (Celery + Redis)
 
-- **Durum:** Yapılacak
+- **Durum:** Devam Ediyor
 - **Tarih:** 09.11.2026 – 15.11.2026 · **Öncelik:** P0 · **Efor:** 14 saat · **Alan:** Backend API
 - **Bağımlılık:** T-038
 - **Destek:** Burak
 - **Çıktı:** Kuyruk altyapısı
 - **Kabul kriteri:** POST /analyses → 202 + analysis_id; durum: queued/processing/done/failed; ilerleme SSE veya polling ile; görev zaman aşımı 180 sn; otomatik 1 tekrar deneme.
+- **Devam notu (05.11.2026):** Yapılan: Celery kuyruğu (`app/worker/`), CV baytları için ayrı geçici depo (`app/services/cv_store.py`, CV_REDIS_URL), `AnalysisRunner` (180 sn, 1 tekrar), analizler PostgreSQL'e ve kullanıcıya bağlandı, `GET /analyses/{id}` ile yoklama. Docker gerektirmeyen 69 test, ruff ve mypy temiz. · Sıradaki adım: Docker açılınca `tests/auth/test_analyses_queue.py`'yi gerçek PostgreSQL ile çalıştırmak; gerçek Redis ve Linux işçisiyle (Docker) uçtan uca ve 180 sn sınırını denemek; code-reviewer incelemesi; `openapi.json` üretimi; `backend/README.md`. · Açık sorular / engeller: #9 birleşmeden bu dal PR olamaz (taban `anil/cv-yukleme`). Ataberk'e öneri: kalıcılığı kapalı ayrı CV Redis'i (compose + staging, CV_REDIS_URL). `contracts/api.md`'deki `/events` (SSE) yerine yoklama kullanıldı. · Branch: anil/analiz-kuyrugu
 
 ### T-040 · Web arayüzü altyapısı (Electron ile ortak)
 

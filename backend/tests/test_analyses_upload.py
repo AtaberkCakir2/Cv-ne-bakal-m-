@@ -3,6 +3,7 @@ import hashlib
 import io
 import tempfile
 import uuid
+from types import SimpleNamespace
 
 import pytest
 from fastapi import FastAPI
@@ -10,11 +11,48 @@ from fastapi.testclient import TestClient
 from pypdf import PdfWriter
 from pypdf.errors import DependencyError
 
+from app.api.deps import get_current_user
+from app.api.routers.analyses import get_analysis_service
 from app.core.uploads import MAX_PDF_BYTES, UploadSizeLimitMiddleware
 from app.services import cv_validation
+from app.services.analyses import AnalysisService
 
 URL = "/api/v1/analyses"
 PROBLEM = "application/problem+json"
+USER_ID = uuid.uuid4()
+
+
+class FakeRepository:
+    """Doğrulama testleri veritabanı istemez; kuyruklu akış tests/auth/test_analyses_queue.py'de."""
+
+    def __init__(self) -> None:
+        self.added: list[tuple[uuid.UUID, int, str, int]] = []
+
+    def role_exists(self, role_id: int) -> bool:
+        return True
+
+    def add(self, user_id: uuid.UUID, target_role_id: int, cv_sha256: str, cv_pages: int) -> uuid.UUID:
+        self.added.append((user_id, target_role_id, cv_sha256, cv_pages))
+        return uuid.uuid4()
+
+    def mark_failed(self, analysis_id: uuid.UUID, code: object) -> None:
+        raise AssertionError
+
+    def get_owned(self, analysis_id: uuid.UUID, user_id: uuid.UUID) -> None:
+        return None
+
+
+class FakeQueue:
+    def enqueue(self, analysis_id: uuid.UUID, pdf: bytes) -> None:
+        del pdf
+
+
+@pytest.fixture(autouse=True)
+def repository(app: FastAPI) -> FakeRepository:
+    fake = FakeRepository()
+    app.dependency_overrides[get_current_user] = lambda: SimpleNamespace(id=USER_ID)
+    app.dependency_overrides[get_analysis_service] = lambda: AnalysisService(fake, FakeQueue())
+    return fake
 
 
 def make_pdf(
@@ -44,28 +82,13 @@ def assert_problem(response, status: int, code: str) -> None:  # type: ignore[no
     assert body["request_id"] == response.headers["x-request-id"]
 
 
-def test_valid_pdf_is_accepted_and_result_is_available(client: TestClient) -> None:
-    response = upload(client, make_pdf(2))
-    assert response.status_code == 202
-    body = response.json()
-    assert body["status"] == "queued"
-    analysis_id = uuid.UUID(body["analysis_id"])
-
-    result = client.get(f"{URL}/{analysis_id}")
-    assert result.status_code == 200
-    data = result.json()
-    assert data["analysis_id"] == str(analysis_id)
-    assert data["status"] == "done"
-    assert data["missing_skills"][0]["skill"] == "Docker"  # contracts/examples sahte sonucu
-
-
-def test_only_hash_and_page_count_are_stored_not_the_cv(app: FastAPI, client: TestClient) -> None:
+def test_valid_pdf_is_accepted_and_only_hash_and_pages_are_kept(client: TestClient, repository: FakeRepository) -> None:
     pdf = make_pdf(3)
-    analysis_id = uuid.UUID(upload(client, pdf).json()["analysis_id"])
-    record = app.state.analysis_service.repository.get(analysis_id)
-    assert record.cv_sha256 == hashlib.sha256(pdf).hexdigest()
-    assert record.cv_pages == 3
-    assert pdf not in repr(vars(record)).encode()  # kayıtta CV baytları yok
+    response = upload(client, pdf)
+    assert response.status_code == 202
+    assert response.json()["status"] == "queued"
+    uuid.UUID(response.json()["analysis_id"])
+    assert repository.added == [(USER_ID, 1, hashlib.sha256(pdf).hexdigest(), 3)]
 
 
 def test_upload_is_never_written_to_disk(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:

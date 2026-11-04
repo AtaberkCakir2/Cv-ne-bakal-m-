@@ -2,6 +2,7 @@
 
 from functools import lru_cache
 from pathlib import Path
+from urllib.parse import urlsplit
 
 from pydantic import Field, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -48,6 +49,20 @@ class Settings(BaseSettings):
     rate_limit_general_per_minute: int = 100
     rate_limit_auth_per_minute: int = 10
     rate_limit_analyses_per_hour: int = 5
+
+    # Analiz kuyruğu (T-039). CV baytları kalıcılığı KAPALI ayrı bir Redis'te durur (karar #9): REDIS_URL'den farklı.
+    cv_redis_url: str | None = None
+    analysis_timeout_s: int = 180
+    analysis_cv_ttl_s: int = 3600
+    # Bekleyen CV sayısı; her biri en fazla 5 MB. CV Redis'inin bellek sınırına göre ayarlanır.
+    analysis_queue_limit: int = 20
+
+    @property
+    def cv_store_url(self) -> str | None:
+        """CV deposunun adresi. Sadece local/test'te ayrı Redis olmadan çalışılır (orada yalnızca sahte CV var)."""
+        if self.cv_redis_url:
+            return self.cv_redis_url
+        return urlsplit(self.redis_url)._replace(path="/1").geturl() if self.is_explicit_dev else None
 
     @property
     def is_production(self) -> bool:
