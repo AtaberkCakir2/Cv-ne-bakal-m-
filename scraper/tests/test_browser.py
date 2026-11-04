@@ -1,3 +1,4 @@
+from collections.abc import Iterator
 from urllib.robotparser import RobotFileParser
 
 import pytest
@@ -67,7 +68,7 @@ def test_retries_temporary_errors_then_succeeds() -> None:
 
 
 def test_timeout_is_retried() -> None:
-    calls = iter([TimeoutError(), (200, "tamam")])
+    calls: Iterator[TimeoutError | tuple[int, str]] = iter([TimeoutError(), (200, "tamam")])
 
     def open_page(url: str) -> tuple[int, str]:
         result = next(calls)
