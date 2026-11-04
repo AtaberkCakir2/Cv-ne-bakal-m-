@@ -4,17 +4,19 @@ import hashlib
 import logging
 import uuid
 from collections.abc import Iterator
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 from decimal import Decimal
 
 import pytest
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 from sqlalchemy import select
+from sqlalchemy.exc import OperationalError
 from sqlalchemy.orm import Session, sessionmaker
 
 from app.db.enums import AnalysisErrorCode, AnalysisStatus
 from app.db.models import Analysis, Role
+from app.services import analysis_runner
 from app.services.analysis_queue import QueueUnavailable
 from app.services.analysis_runner import AnalysisRunner, RetryLater
 from app.services.analyzer import AnalysisFailed, AnalysisOutput
@@ -144,6 +146,9 @@ def test_status_is_visible_only_to_the_owner(client: TestClient, queue: Queue, r
     body = response.json()
     assert body["status"] == "queued"
     assert body["target_role"]["slug"].startswith("rol-")
+    # Sözleşmede null olamayan alanlar değer yokken yanıtta da yok.
+    assert not {"match_score", "postings_analyzed", "model"} & set(body)
+    assert body["error"] is None and body["completed_at"] is None
     assert client.get(f"{URL}/{analysis_id}", headers=signed_in(client, "diger@example.com")).status_code == 404
     assert client.get(f"{URL}/{analysis_id}").status_code == 401
     assert client.get(f"{URL}/{uuid.uuid4()}", headers=owner).status_code == 404
@@ -219,15 +224,66 @@ def test_error_text_is_never_logged(
     role: int,
     db_sessionmaker: sessionmaker[Session],
     caplog: pytest.LogCaptureFixture,
+    monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     analysis_id = queued(client, queue, role)
     work, store = runner(db_sessionmaker, Analyzer(ValueError("Ayse Yilmaz 05321234567")))
     store.put(analysis_id, b"%PDF")
+    # Alembic fileConfig var olan logger'ları kapatır; kapalı kalırsa bu test bir şey kanıtlamaz.
+    monkeypatch.setattr(analysis_runner.logger, "disabled", False)
     with caplog.at_level(logging.DEBUG):
         work.run(analysis_id, last_attempt=True)
     assert "Ayse" not in caplog.text
     assert "ValueError" in caplog.text
     assert row(db_sessionmaker, analysis_id).error_code is AnalysisErrorCode.INTERNAL
+
+
+def test_later_error_does_not_chain_the_original_error(
+    client: TestClient, queue: Queue, role: int, db_sessionmaker: sessionmaker[Session]
+) -> None:
+    analysis_id = queued(client, queue, role)
+    work, store = runner(db_sessionmaker, Analyzer(ValueError("Ayse Yilmaz")))
+    store.put(analysis_id, b"%PDF")
+    with pytest.raises(RetryLater) as raised:
+        work.run(analysis_id, last_attempt=False)
+    assert raised.value.__context__ is None
+
+
+def test_database_error_on_finish_still_removes_the_cv(
+    client: TestClient, queue: Queue, role: int, db_sessionmaker: sessionmaker[Session]
+) -> None:
+    analysis_id = queued(client, queue, role)
+    work, store = runner(db_sessionmaker, Analyzer())
+    store.put(analysis_id, b"%PDF")
+    calls = {"n": 0}
+
+    def flaky() -> Session:
+        calls["n"] += 1
+        if calls["n"] > 1:
+            raise OperationalError("x", {}, Exception("baglanti"))
+        return db_sessionmaker()
+
+    work.sessions = flaky  # type: ignore[assignment]
+    with pytest.raises(OperationalError):
+        work.run(analysis_id, last_attempt=False)
+    assert store.items == {}
+
+
+def test_stuck_analysis_fails_on_the_next_poll(
+    client: TestClient, queue: Queue, role: int, db_sessionmaker: sessionmaker[Session]
+) -> None:
+    analysis_id = queued(client, queue, role)
+    with db_sessionmaker() as session:
+        saved = session.get(Analysis, analysis_id)
+        assert saved is not None
+        saved.status = AnalysisStatus.PROCESSING
+        saved.created_at = datetime.now(UTC) - timedelta(hours=2)
+        session.commit()
+    owner = bearer(login(client, "kuyruk@example.com")["access_token"])
+    body = client.get(f"{URL}/{analysis_id}", headers=owner).json()
+    assert body["status"] == "failed"
+    assert body["error"]["code"] == "INTERNAL"
+    assert row(db_sessionmaker, analysis_id).status is AnalysisStatus.FAILED
 
 
 def test_deleted_analysis_is_skipped_and_cv_removed(

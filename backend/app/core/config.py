@@ -54,8 +54,10 @@ class Settings(BaseSettings):
     cv_redis_url: str | None = None
     analysis_timeout_s: int = 180
     analysis_cv_ttl_s: int = 3600
-    # Bekleyen CV sayısı; her biri en fazla 5 MB. CV Redis'inin bellek sınırına göre ayarlanır.
-    analysis_queue_limit: int = 20
+    # Bu süreyi geçip bitmeyen analiz askıda sayılır (işçi öldü, sert süre sınırı). CV TTL'inden uzun olmalı.
+    analysis_stale_after_s: int = 3900
+    # Bekleyen CV sayısı; her biri en fazla 5 MB. Tek işçi ve iş başına ~6 dk (180 sn x 2) ile hepsi TTL içinde biter.
+    analysis_queue_limit: int = 8
 
     @property
     def cv_store_url(self) -> str | None:
@@ -82,6 +84,10 @@ class Settings(BaseSettings):
     def _secret_must_be_set_outside_local(self) -> "Settings":
         if self.environment not in ("local", "test") and self.jwt_secret == DEV_JWT_SECRET:
             raise ValueError("JWT_SECRET ayarlanmamış: local/test dışında geliştirme anahtarı kullanılamaz.")
+        if self.environment not in ("local", "test") and self.cv_redis_url == self.redis_url:
+            raise ValueError(
+                "CV_REDIS_URL, REDIS_URL ile aynı olamaz: broker kalıcıdır, CV diske yazılırdı (karar #9)."
+            )
         return self
 
 

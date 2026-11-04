@@ -38,20 +38,26 @@ class AnalysisRunner:
             self._forget(analysis_id)
             return
         started = time.monotonic()
+        output: AnalysisOutput | None = None
+        permanent: AnalysisErrorCode | None = None
+        transient: AnalysisErrorCode | None = None
         try:
             pdf = self.store.get(analysis_id)
             if pdf is None:  # süre aşımıyla silinmiş; tekrar denemek işe yaramaz
                 raise AnalysisFailed(AnalysisErrorCode.INTERNAL)
             output = self.analyzer.analyze(pdf, target_role_id)
         except AnalysisFailed as exc:
-            self._finish(analysis_id, started, error=exc.code)
+            permanent = exc.code
         except (TimeoutError, SoftTimeLimitExceeded):
-            self._transient(analysis_id, started, AnalysisErrorCode.LLM_TIMEOUT, last_attempt)
+            transient = AnalysisErrorCode.LLM_TIMEOUT
         except Exception as exc:  # hangi hata olursa olsun analiz askıda kalmamalı
             logger.warning("analysis_failed: %s", type(exc).__name__)
-            self._transient(analysis_id, started, AnalysisErrorCode.INTERNAL, last_attempt)
+            transient = AnalysisErrorCode.INTERNAL
+        # except dışında: sonraki bir hata özgün hatayı (mesajında CV parçası olabilir) zincirle loga taşımasın.
+        if transient is not None:
+            self._transient(analysis_id, started, transient, last_attempt)
         else:
-            self._finish(analysis_id, started, output=output)
+            self._finish(analysis_id, started, output=output, error=permanent)
 
     def _start(self, analysis_id: uuid.UUID) -> int | None:
         """Çalıştırılacak analizin hedef pozisyonunu döner; silinmiş veya bitmişse None."""
@@ -70,7 +76,7 @@ class AnalysisRunner:
             return
         with self.sessions() as session:
             analysis = session.get(Analysis, analysis_id, with_for_update=True)
-            if analysis is not None and analysis.deleted_at is None:
+            if analysis is not None and analysis.deleted_at is None and analysis.status not in _FINISHED:
                 analysis.status = AnalysisStatus.QUEUED
                 session.commit()
         raise RetryLater
@@ -83,21 +89,23 @@ class AnalysisRunner:
         output: AnalysisOutput | None = None,
         error: AnalysisErrorCode | None = None,
     ) -> None:
-        with self.sessions() as session:
-            # Analiz sürerken silinmiş olabilir: kilitleyip tekrar oku, silinmişe sonuç yazma.
-            analysis = session.get(Analysis, analysis_id, with_for_update=True)
-            if analysis is not None and analysis.deleted_at is None:
-                analysis.status = AnalysisStatus.FAILED if error else AnalysisStatus.DONE
-                analysis.error_code = error
-                analysis.duration_ms = int((time.monotonic() - started) * 1000)
-                analysis.completed_at = datetime.now(UTC)
-                if output is not None:
-                    analysis.match_score = output.match_score
-                    analysis.postings_analyzed = output.postings_analyzed
-                    analysis.model_name = output.model_name
-                    analysis.prompt_version = output.prompt_version
-                session.commit()
-        self._forget(analysis_id)
+        try:
+            with self.sessions() as session:
+                # Analiz sürerken silinmiş olabilir: kilitleyip tekrar oku, silinmişe sonuç yazma.
+                analysis = session.get(Analysis, analysis_id, with_for_update=True)
+                if analysis is not None and analysis.deleted_at is None and analysis.status not in _FINISHED:
+                    analysis.status = AnalysisStatus.FAILED if error else AnalysisStatus.DONE
+                    analysis.error_code = error
+                    analysis.duration_ms = int((time.monotonic() - started) * 1000)
+                    analysis.completed_at = datetime.now(UTC)
+                    if output is not None:
+                        analysis.match_score = output.match_score
+                        analysis.postings_analyzed = output.postings_analyzed
+                        analysis.model_name = output.model_name
+                        analysis.prompt_version = output.prompt_version
+                    session.commit()
+        finally:
+            self._forget(analysis_id)  # veritabanı hatasında veya süre sınırında da CV kalmasın
 
     def _forget(self, analysis_id: uuid.UUID) -> None:
         try:

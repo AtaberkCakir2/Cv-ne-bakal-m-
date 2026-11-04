@@ -1,10 +1,16 @@
+import logging
 import uuid
+from datetime import UTC, datetime, timedelta
 
-from app.db.enums import AnalysisErrorCode
+from sqlalchemy.exc import SQLAlchemyError
+
+from app.db.enums import AnalysisErrorCode, AnalysisStatus
 from app.db.models import Analysis
 from app.repositories.analyses import AnalysisRepository
 from app.services.analysis_queue import AnalysisQueue, QueueUnavailable
 from app.services.cv_validation import validate_cv
+
+logger = logging.getLogger(__name__)
 
 
 class UnknownRole(Exception):
@@ -25,9 +31,21 @@ class AnalysisService:
         try:
             self.queue.enqueue(analysis_id, cv.content)
         except QueueUnavailable:
-            self.repository.mark_failed(analysis_id, AnalysisErrorCode.INTERNAL)
+            try:
+                self.repository.mark_failed(analysis_id, AnalysisErrorCode.INTERNAL)
+            except SQLAlchemyError as exc:  # kullanıcı yine 503 alsın; satırı askı kontrolü kapatır
+                logger.warning("analysis_mark_failed_error: %s", type(exc).__name__)
             raise
         return analysis_id
 
-    def get(self, analysis_id: uuid.UUID, user_id: uuid.UUID) -> Analysis | None:
-        return self.repository.get_owned(analysis_id, user_id)
+    def get(self, analysis_id: uuid.UUID, user_id: uuid.UUID, stale_after: timedelta) -> Analysis | None:
+        analysis = self.repository.get_owned(analysis_id, user_id)
+        # İşçi öldüyse veya sert süre sınırına takıldıysa satırı düzeltecek kimse yok: kullanıcı sonsuza dek beklemesin.
+        # Bu süreye kadar CV de süre aşımıyla silinmiş olur, tekrar çalıştırılamaz.
+        if (
+            analysis is not None
+            and analysis.status in (AnalysisStatus.QUEUED, AnalysisStatus.PROCESSING)
+            and datetime.now(UTC) - analysis.created_at > stale_after
+        ):
+            self.repository.mark_failed(analysis_id, AnalysisErrorCode.INTERNAL)
+        return analysis

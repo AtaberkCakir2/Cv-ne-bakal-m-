@@ -64,17 +64,21 @@ Kurallar:
 |---|---|---|
 | GET | `/api/v1/health` | ✅ |
 | GET | `/api/v1/health/ready` | ✅ |
-| POST | `/api/v1/analyses` | ✅ CV doğrulama (≤ 5 MB, ≤ 5 sayfa, PDF imzası, şifreli/bozuk PDF), SHA-256 · kimlik doğrulama henüz yok (T-048 ile eklenecek) |
-| GET | `/api/v1/analyses/{id}` | ✅ sonuç · liste/silme/geri bildirim T-048 |
+| POST | `/api/v1/analyses` | ✅ Giriş ve saatlik sınır gerekir. CV doğrulama (≤ 5 MB, ≤ 5 sayfa, PDF imzası, şifreli/bozuk PDF), SHA-256, kuyruğa alma |
+| GET | `/api/v1/analyses/{id}` | ✅ Durum yoklama (sadece sahibi); yetkinlik listeleri, geçmiş, silme, geri bildirim T-048 |
 
-**Geliştirme modu (geçici):** Analizler bellekte tutulur (sunucu kapanınca silinir) ve kuyruk hemen `contracts/examples/analysis_result.example.json` örnek sonucunu döner. Böylece web ve mobil ekranlar AI modülünü beklemeden geliştirilebilir. Gerçek veritabanı deposu T-012 (Ataberk), gerçek kuyruk T-039 ile gelecek.
+### Analiz kuyruğu (T-039)
 
-Örnek:
+`POST /analyses` satırı PostgreSQL'e yazar, işi Celery ile `analysis` kuyruğuna verir ve `202` döner. İstemci `GET /analyses/{id}` ile `queued → processing → done / failed` durumunu yoklar. Görev en fazla 180 sn sürer, geçici hatada bir kez daha denenir.
 
 ```bash
-curl -F "file=@ozgecmis.pdf;type=application/pdf" -F target_role_id=1 http://localhost:8000/api/v1/analyses
-curl http://localhost:8000/api/v1/analyses/<analysis_id>
+celery -A app.worker.celery_app worker -Q analysis --concurrency 1 --loglevel INFO
 ```
+
+- **CV baytları Celery mesajına ve kalıcı Redis'e girmez (karar #9).** Mesaj sadece analiz kimliğini taşır; baytlar kalıcılığı kapalı ayrı Redis'te (`CV_REDIS_URL`) durur, 1 saatte kendiliğinden, iş bitince hemen silinir. `ENVIRONMENT=local/test` dışında ayar yoksa analiz başlamaz (503). Lokalde `REDIS_URL`'in 1. veritabanı kullanılır (sadece sahte CV).
+- CV Redis'i örneği: `redis-server --save "" --appendonly no --maxmemory 256mb --maxmemory-policy noeviction`. Bekleyen iş sınırı `ANALYSIS_QUEUE_LIMIT` (varsayılan 8) belleğe göre ayarlanır; dolunca 503 + `Retry-After`.
+- Askıda kalan analiz (işçi öldü, sert süre sınırı) `ANALYSIS_STALE_AFTER_S` (65 dk) sonra ilk yoklamada `failed` olur. İşçiyi `-E` ile çalıştırmayın: olaylar hata izini broker Redis'ine yazar.
+- **Gerçek analiz akışı henüz bağlı değil (T-057).** Local/test'te örnek değerler döner (`ExampleAnalyzer`); diğer ortamlarda sahte sonuç gösterilmez, analiz `failed` olur.
 
 ### CV diske yazılmaz
 
@@ -119,8 +123,8 @@ Kullanıcı doğrulanmış ve KVKK onayları verilmiş olarak oluşturulur; tekr
 - Aşılınca `429` + `Retry-After` (saniye), gövde RFC 7807. Sayaçlar Redis'te (`REDIS_URL`); IP açık yazılmaz, tuzlu özeti anahtar olur.
 - Redis'e ulaşılamazsa sınır uygulanmaz, `rate_limit_store_unavailable` uyarısı loglanır ve 10 sn Redis denenmez. Tamamen kapatmak için `RATE_LIMIT_ENABLED=false`.
 - **Production (T-075):** Caddy arkasında uvicorn'a `FORWARDED_ALLOW_IPS=<Caddy'nin IP'si veya alt ağı>` verilmeli; verilmezse bütün kullanıcılar Caddy'nin IP'siyle tek sayacı paylaşır. Redis ≥ 7 gerekli.
-- Analiz sınırı (`AnalysesRateLimit`, `app/api/rate_limits.py`) analiz oluşturma ucu kimlik doğrulamaya bağlanınca o uca eklenir.
+- Analiz sınırı başarısız yüklemeleri de sayar; sadece kuyruğa alınanların sayılması T-048'de değerlendirilecek.
 
 ## Sıradaki işler
 
-T-039 analiz kuyruğu · T-048 sonuç ve katalog endpoint'leri (analiz uçlarına kimlik doğrulama ve analiz sınırı bununla gelir).
+T-048 sonuç ve katalog endpoint'leri · T-057 gerçek analiz akışı (Burak).

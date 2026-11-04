@@ -1,6 +1,7 @@
 """Analiz görevi: en fazla 180 sn, geçici hatada bir kez daha denenir (T-039)."""
 
 import uuid
+from functools import lru_cache
 from typing import Any
 
 from app.core.config import get_settings
@@ -14,6 +15,7 @@ RETRY_DELAY_S = 5
 _settings = get_settings()
 
 
+@lru_cache
 def build_runner() -> AnalysisRunner:
     url = _settings.cv_store_url
     if url is None:

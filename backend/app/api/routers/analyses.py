@@ -1,10 +1,11 @@
 import uuid
+from datetime import timedelta
 from typing import Annotated, Any
 
 from fastapi import APIRouter, Depends, File, Form, HTTPException, Request, Response, UploadFile
 from fastapi.responses import JSONResponse
 
-from app.api.deps import CurrentUser, DbSession
+from app.api.deps import AppSettings, CurrentUser, DbSession
 from app.api.rate_limits import AnalysesRateLimit
 from app.core.errors import problem
 from app.db.models import Analysis
@@ -36,20 +37,24 @@ Analyses = Annotated[AnalysisService, Depends(get_analysis_service)]
 
 def _out(analysis: Analysis) -> AnalysisOut:
     code = analysis.error_code
+    # Sözleşmede bu üç alan null olamaz: değer yoksa yanıtta da yok (response_model_exclude_unset).
+    optional: dict[str, Any] = {}
+    if analysis.postings_analyzed is not None:
+        optional["postings_analyzed"] = analysis.postings_analyzed
+    if analysis.match_score is not None:
+        optional["match_score"] = float(analysis.match_score)
+    if analysis.model_name and analysis.prompt_version:
+        optional["model"] = AnalysisModelOut(name=analysis.model_name, prompt_version=analysis.prompt_version)
     return AnalysisOut(
         analysis_id=analysis.id,
         status=analysis.status,
         target_role=TargetRoleOut(slug=analysis.target_role.slug, name=analysis.target_role.name),
-        postings_analyzed=analysis.postings_analyzed,
-        match_score=float(analysis.match_score) if analysis.match_score is not None else None,
-        model=(
-            AnalysisModelOut(name=analysis.model_name, prompt_version=analysis.prompt_version)
-            if analysis.model_name and analysis.prompt_version
-            else None
-        ),
+        present_skills=[],
+        missing_skills=[],
         error=AnalysisErrorOut(code=code, message=ERROR_MESSAGES[code]) if code else None,
         created_at=analysis.created_at,
         completed_at=analysis.completed_at,
+        **optional,
     )
 
 
@@ -102,16 +107,19 @@ def create_analysis(
 @router.get(
     "/{analysis_id}",
     response_model=AnalysisOut,
+    response_model_exclude_unset=True,
     summary="Analiz durumu ve sonucu",
     responses={
         401: {"description": "Giriş gerekli", **_PROBLEM},
         404: {"description": "Analiz bulunamadı", **_PROBLEM},
     },
 )
-def get_analysis(analysis_id: uuid.UUID, user: CurrentUser, service: Analyses, response: Response) -> AnalysisOut:
+def get_analysis(
+    analysis_id: uuid.UUID, user: CurrentUser, service: Analyses, settings: AppSettings, response: Response
+) -> AnalysisOut:
     """Durum: queued, processing, done, failed. Başkasının analizi de 404 döner. (Liste, silme: T-048.)"""
     response.headers["Cache-Control"] = "no-store"
-    analysis = service.get(analysis_id, user.id)
+    analysis = service.get(analysis_id, user.id, timedelta(seconds=settings.analysis_stale_after_s))
     if analysis is None:
         raise HTTPException(status_code=404, detail="Analiz bulunamadı.")
     return _out(analysis)

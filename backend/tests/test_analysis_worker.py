@@ -71,6 +71,22 @@ def test_publish_failure_removes_the_cv() -> None:
     assert store.items == {}
 
 
+def test_unexpected_publish_error_also_removes_the_cv() -> None:
+    store = Store()
+
+    def fail(_: uuid.UUID) -> None:
+        raise RuntimeError("beklenmedik")
+
+    with pytest.raises(QueueUnavailable):
+        CeleryAnalysisQueue(store, fail, 5).enqueue(uuid.uuid4(), b"x")
+    assert store.items == {}
+
+
+def test_cv_redis_must_differ_from_the_broker_outside_dev() -> None:
+    with pytest.raises(ValueError, match="CV_REDIS_URL"):
+        settings(environment="production", cv_redis_url="redis://cache:6379/0")
+
+
 def test_store_failure_is_unavailable() -> None:
     store = Store()
     store.fail = True

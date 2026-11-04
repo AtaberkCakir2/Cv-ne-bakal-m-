@@ -5,7 +5,6 @@ import uuid
 from collections.abc import Callable
 from typing import Protocol
 
-from kombu.exceptions import OperationalError
 from redis.exceptions import RedisError
 
 from app.core.config import Settings
@@ -45,7 +44,7 @@ class CeleryAnalysisQueue:
             raise QueueUnavailable from exc
         try:
             self._send(analysis_id)
-        except (OperationalError, RedisError, OSError) as exc:
+        except Exception as exc:  # broker hatası türü ne olursa olsun CV depoda kalmasın
             logger.warning("analysis_queue_publish_failed: %s", type(exc).__name__)
             try:
                 store.delete(analysis_id)
