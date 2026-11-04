@@ -9,7 +9,7 @@ import httpx
 
 from collector.clean import EMAIL_MASK
 from collector.http import PoliteClient
-from collector.sources import emscad, himalayas, hn, remoteok, remotive
+from collector.sources import arbeitnow, emscad, himalayas, hn, jobicy, remoteok, remotive
 
 OCT_2026 = 1790812800  # 2026-10-01 00:00 UTC
 
@@ -128,6 +128,50 @@ def test_remotive_parses_jobs() -> None:
     }
     postings = list(remotive.fetch(client_for(routes)))
     assert [(p.external_id, p.posted_at) for p in postings] == [("5", date(2026, 10, 22))]
+
+
+def test_jobicy_follows_cursor_and_keeps_each_job_once() -> None:
+    job = {
+        "id": 7,
+        "jobTitle": "Backend Engineer",
+        "companyName": "Delta",
+        "url": "https://jobicy.com/jobs/7",
+        "jobGeo": "Europe",
+        "jobDescription": "<p>You will build our APIs in Python and work with the team.</p>",
+        "pubDate": "2026-10-31T17:05:04+00:00",
+    }
+    routes = {
+        "/api/jobs?industry=engineering&count=100&cursor=abc": {"jobs": [{**job, "id": 8}], "nextCursor": None},
+        "/api/jobs?industry=engineering": {"jobs": [job], "nextCursor": "abc"},
+        "/api/jobs?industry=data-science": {"jobs": [job], "nextCursor": None},
+        "/api/jobs": {"jobs": [], "nextCursor": None},
+    }
+    postings = list(jobicy.fetch(client_for(routes)))
+    assert [(p.external_id, p.posted_at) for p in postings] == [("7", date(2026, 10, 31)), ("8", date(2026, 10, 31))]
+
+
+def test_arbeitnow_decodes_description_and_stops_at_last_page() -> None:
+    job = {
+        "slug": "python-developer-berlin-1",
+        "title": "Python Developer",
+        "company_name": "Epsilon",
+        "url": "https://www.arbeitnow.com/jobs/1",
+        "location": "Berlin",
+        "remote": False,
+        "description": "&lt;p&gt;You will work with our team on the data platform.&lt;/p&gt;",
+        "created_at": OCT_2026,
+    }
+    routes = {
+        "/api/job-board-api?page=1": {
+            "data": [job, {**job, "slug": "s", "title": "Sales Manager"}],
+            "links": {"next": None},
+        }
+    }
+    postings = list(arbeitnow.fetch(client_for(routes), pages=5))
+    assert [(p.external_id, p.location, p.posted_at) for p in postings] == [
+        ("python-developer-berlin-1", "Berlin", date(2026, 10, 1))
+    ]
+    assert "<p>" not in postings[0].description_clean and "&lt;" not in postings[0].description_clean
 
 
 def test_emscad_filters_fraud_and_non_software(tmp_path: Path) -> None:
