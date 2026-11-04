@@ -1,0 +1,10 @@
+# Her gece 02:00 (sunucu saati Europe/Istanbul, harden.sh). Persistent: sunucu o saatte kapalıysa açılınca çalışır.
+[Unit]
+Description=CareerAI Postgres yedeği her gece 02:00 (%i)
+
+[Timer]
+OnCalendar=*-*-* 02:00:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target

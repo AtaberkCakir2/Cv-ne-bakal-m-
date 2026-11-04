@@ -258,12 +258,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-068 · Yedekleme
 
-- **Durum:** Yapılacak
+- **Durum:** Devam Ediyor
 - **Tarih:** 07.12.2026 – 13.12.2026 · **Öncelik:** P0 · **Efor:** 8 saat · **Alan:** Operasyon / İzleme
 - **Bağımlılık:** T-035
 - **Destek:** —
 - **Çıktı:** Yedekleme scriptleri + cron
 - **Kabul kriteri:** pg_dump her gün 02:00; 7 günlük + 4 haftalık saklama; restic ile şifreli olarak sunucu dışına (Backblaze B2 / Storage Box). Geri yükleme testi yapıldı.
+- **Devam notu (05.11.2026):** Yapılan: `infra/backup/` (backup.sh, restore-test.sh, systemd servis + zamanlayıcı, backup.env.example, README). Yerelde Alpine kapsayıcısında restic 0.17 ile dev DB'den denendi: 6,5 MB yedek ~3 sn, geri yükleme ~5 sn, 11 tablonun sayısı canlıyla aynı; başarısız dökümde snapshot ve başarı dosyası oluşmuyor, aynı anda ikinci yedek reddediliyor. Sıradaki adım: sunucu gelince depo seçimi (Storage Box veya B2), README "Kurulum" adımları, `careerai-backup@staging.timer` açılıp ilk gece yedeği ve sunucuda `restore-test.sh`. Açık sorular / engeller: sunucu (T-009) ve staging (T-035, PR #50); systemd birimleri gerçek sunucuda denenmedi; başarısızlık uyarısı T-066'da. Branch: ataberk/t068-yedekleme
 
 ### T-070 · Tanıtım (landing) sayfası
 
