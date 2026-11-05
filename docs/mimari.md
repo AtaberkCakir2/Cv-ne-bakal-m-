@@ -81,6 +81,7 @@ CPU'lu sunucuda bir analiz yaklaşık 1–2 dakika sürer; bu yüzden işlem sen
 | ollama | ollama/ollama | 11434 | HAYIR (kesinlikle) | 8 GB | 1 | /api/tags | Burak |
 | postgres | pgvector/pgvector:pg16 | 5432 | HAYIR | 2 GB | 1 | pg_isready | Ataberk |
 | redis | redis:7 (AOF açık, şifreli) | 6379 | HAYIR | 256 MB | 1 | redis-cli ping | Ataberk |
+| cv-redis | redis:7 (kalıcılık kapalı, tmpfs; kuyruktaki CV baytları, karar #9) | 6379 | HAYIR | 256 MB | 1 | redis-cli ping | Ataberk |
 | uptime-kuma / grafana | louislam/uptime-kuma, grafana | 3001, 3000 | Sadece status sayfası (şifreli panel) | 512 MB | 1 | — | Ataberk |
 
 **Bellek bütçesi:** toplam ~15,5 GB / 16 GB RAM, sınırda. Bu yüzden AI worker eşzamanlılığı 1, 4 GB swap ve RAM %85'i aşınca uyarı var. Kullanıcı sayısı artarsa ilk adım Ollama'yı ayrı (tercihen GPU'lu) sunucuya taşımaktır.
