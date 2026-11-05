@@ -13,6 +13,12 @@ REPO_ROOT = Path(__file__).resolve().parents[3]
 DEV_JWT_SECRET = "careerai-local-dev-jwt-secret-do-not-use-in-prod"  # noqa: S105
 
 
+def _redis_server(url: str) -> tuple[str, int]:
+    """Redis adresinin sunucusu (host, port). Veritabanı numarası yok sayılır: /0 ve /1 aynı sunucudur."""
+    parts = urlsplit(url)
+    return (parts.hostname or "").lower(), parts.port or 6379
+
+
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=REPO_ROOT / ".env", env_file_encoding="utf-8", extra="ignore")
 
@@ -84,7 +90,11 @@ class Settings(BaseSettings):
     def _secret_must_be_set_outside_local(self) -> "Settings":
         if self.environment not in ("local", "test") and self.jwt_secret == DEV_JWT_SECRET:
             raise ValueError("JWT_SECRET ayarlanmamış: local/test dışında geliştirme anahtarı kullanılamaz.")
-        if self.environment not in ("local", "test") and self.cv_redis_url == self.redis_url:
+        if (
+            self.environment not in ("local", "test")
+            and self.cv_redis_url
+            and _redis_server(self.cv_redis_url) == _redis_server(self.redis_url)
+        ):
             raise ValueError(
                 "CV_REDIS_URL, REDIS_URL ile aynı olamaz: broker kalıcıdır, CV diske yazılırdı (karar #9)."
             )

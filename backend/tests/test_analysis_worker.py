@@ -82,9 +82,18 @@ def test_unexpected_publish_error_also_removes_the_cv() -> None:
     assert store.items == {}
 
 
-def test_cv_redis_must_differ_from_the_broker_outside_dev() -> None:
+@pytest.mark.parametrize(
+    "cv_url",
+    ["redis://cache:6379/0", "redis://cache:6379/1", "redis://cache:6379", "redis://CACHE", "redis://:pw@cache/2"],
+)
+def test_cv_redis_must_differ_from_the_broker_outside_dev(cv_url: str) -> None:
+    # Veritabanı numarası farklı olsa da aynı (kalıcı) Redis sunucusudur.
     with pytest.raises(ValueError, match="CV_REDIS_URL"):
-        settings(environment="production", cv_redis_url="redis://cache:6379/0")
+        settings(environment="production", cv_redis_url=cv_url)
+
+
+def test_cv_redis_on_another_server_is_accepted() -> None:
+    assert settings(environment="staging", cv_redis_url="redis://cache:6380/0").cv_store_url == "redis://cache:6380/0"
 
 
 def test_store_failure_is_unavailable() -> None:
