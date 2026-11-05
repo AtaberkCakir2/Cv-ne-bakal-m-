@@ -64,7 +64,7 @@ sudo bash -c 'set -a; . /etc/careerai/backup.env; restic snapshots'
 ## Geri yükleme testi (aylık)
 
 ```bash
-sudo bash -c 'set -a; . /etc/careerai/backup.env; ~/careerai/infra/backup/restore-test.sh staging ~/careerai/infra/staging'
+sudo bash -c 'set -a; . /etc/careerai/backup.env; bash /home/deploy/careerai/infra/backup/restore-test.sh staging /home/deploy/careerai/infra/staging'
 ```
 
 Yükleme süresini ve tablo sayılarını DR tatbikatı notuna yazın (T-087). Canlı sayılar yedekten sonra biraz değişmiş olabilir; temel tablolar boşsa test başarısızdır.

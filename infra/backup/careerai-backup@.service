@@ -8,6 +8,7 @@ After=network-online.target docker.service
 [Service]
 Type=oneshot
 EnvironmentFile=/etc/careerai/backup.env
-ExecStart=/home/deploy/careerai/infra/backup/backup.sh %i /home/deploy/careerai/infra/%i
+# bash ile: dosya izni kopyalama sırasında kaybolsa da (203/EXEC) yedek çalışır.
+ExecStart=/usr/bin/bash /home/deploy/careerai/infra/backup/backup.sh %i /home/deploy/careerai/infra/%i
 Nice=10
 IOSchedulingClass=idle

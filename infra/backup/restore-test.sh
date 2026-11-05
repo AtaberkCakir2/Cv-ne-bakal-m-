@@ -14,7 +14,8 @@ TABLES="users consents analyses job_sources job_postings job_posting_skills skil
 
 : "${RESTIC_REPOSITORY:?RESTIC_REPOSITORY tanımlı değil (backup.env)}"
 
-cleanup() { docker rm -f "$CONTAINER" >/dev/null 2>&1 || true; }
+# -v: imajın anonim veri birimi geri yüklenen veritabanının kendisi; silinmezse kişisel veri diskte kalır.
+cleanup() { docker rm -fv "$CONTAINER" >/dev/null 2>&1 || true; }
 trap cleanup EXIT
 
 counts() {  # $@: psql komutu (bağlantı dahil); her satır "tablo sayı"
@@ -28,7 +29,8 @@ start=$(date +%s)
 echo "Geçici Postgres açılıyor"
 docker run -d --rm --name "$CONTAINER" -e POSTGRES_PASSWORD=restore -e POSTGRES_DB=restore "$PG_IMAGE" >/dev/null
 for _ in $(seq 60); do
-  docker exec "$CONTAINER" pg_isready -U postgres -d restore >/dev/null 2>&1 && break
+  # -h 127.0.0.1: ilk kurulumdaki geçici sunucu sadece soketi dinler, "hazır" sanılıp pg_restore kopmasın.
+  docker exec "$CONTAINER" pg_isready -h 127.0.0.1 -U postgres -d restore >/dev/null 2>&1 && break
   sleep 1
 done
 
