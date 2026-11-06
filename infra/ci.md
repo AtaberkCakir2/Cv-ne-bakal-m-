@@ -27,17 +27,16 @@ Yeni modül eklemek için workflow'a dokunmak gerekmez: dosyası repoya girdiği
    - `npm ci` → `package-lock.json` commit'lenmemiş.
    - **Yerelde geçiyor, CI'da düşüyor** → büyük ihtimalle araç sürümü farkı. CI her seferinde en güncel `ruff`/`mypy`'yi kurar (`pyproject.toml`'da `ruff>=0.8` yazıyor). Örnek: ruff 0.8 Markdown dosyalarını biçimlendirmez, 0.17 README'lerdeki Python kod bloklarını da kontrol eder. Çözüm: modül sahibi `pyproject.toml`'da sürümü sabitler (ör. `"ruff==0.17.2"`, `"mypy==<sürüm>"`) ve herkes `pip install -e ".[dev]"` ile günceller. Backend'de sabitlendi (#17: `ruff==0.17.2`, `mypy==2.4.0`); `ai/` için henüz açık uçlu.
 
-## "Kırmızı CI ile merge yok" kuralı (T-006, repo sahibi yapar)
+## `main` koruması (T-006)
 
-GitHub bunu ancak branch protection ile zorunlu kılar. Özel (private) repolarda branch protection için GitHub Pro gerekir; GitHub Student Developer Pack ile ücretsizdir. Pack onaylanınca:
+Repo → **Settings** → **Branches** → `main` kuralı (GitHub Pro, Student Pack ile):
 
-1. Repo → **Settings** → **Branches** → **Add branch ruleset** (veya *Add classic branch protection rule*), hedef: `main`.
-2. **Require a pull request before merging** → *Required approvals: 1*.
-3. **Require status checks to pass** → şunları ekleyin: `Backend (ruff, mypy, pytest + migration)`, `Docker (compose + imaj build)`; AI/Web/Mobil işleri ilk kez çalıştıktan sonra onları da ekleyin.
-4. **Require branches to be up to date before merging** işaretleyin.
-5. **Do not allow bypassing** (yöneticiler dahil) işaretleyin.
+- **PR zorunlu, 1 onay:** `main`'e doğrudan push yok. Yeni commit gelince eski onay düşer.
+- **Zorunlu kontroller:** `Backend (ruff, mypy, pytest + migration)`, `Scraper (ruff, mypy, pytest)`, `Web (eslint, tsc)`, `Docker (compose + imaj build)`. `AI` işi `main`'de yeşile dönünce, `Mobil` ilk kez çalışınca listeye eklenir.
+- **Dal güncel olmalı:** PR, `main`'in son hâlini içermeden birleşmez (PR sayfasında **Update branch**).
+- **Yöneticiler dahil atlanamaz;** force push ve `main`'i silme kapalı.
 
-O zamana kadar kural ekip sözleşmesidir (karar #6): kırmızı CI'lı PR birleştirilmez.
+`.github/CODEOWNERS` her PR'a ilgili klasörün sahibini otomatik inceleyici ekler. "Sahibin onayı zorunlu" açık değil: kişi kendi klasöründeki PR'ı kendisi onaylayamayacağı için her PR'da herhangi 1 ekip üyesinin onayı yeter.
 
 ## Deploy (T-036)
 
