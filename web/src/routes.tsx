@@ -2,6 +2,7 @@ import { createBrowserRouter } from "react-router-dom";
 
 import { RequireAuth } from "./auth/RequireAuth";
 import { Layout } from "./components/Layout";
+import { AnalysisPage } from "./pages/AnalysisPage";
 import { ForgotPasswordPage } from "./pages/auth/ForgotPasswordPage";
 import { LoginPage } from "./pages/auth/LoginPage";
 import { RegisterPage } from "./pages/auth/RegisterPage";
@@ -12,6 +13,7 @@ import { NotFoundPage } from "./pages/NotFoundPage";
 import { PlaceholderPage } from "./pages/PlaceholderPage";
 import { ProfilePage } from "./pages/ProfilePage";
 import { StatusPage } from "./pages/StatusPage";
+import { UploadPage } from "./pages/UploadPage";
 
 /**
  * Ekranlar web/prototip (T-021 wireframe) ile aynı adları kullanır. E-posta bağlantılarının yolları
@@ -33,8 +35,8 @@ export const router = createBrowserRouter([
         element: <RequireAuth />,
         children: [
           { path: "pozisyon", element: <PlaceholderPage title="Hedef pozisyon" /> },
-          { path: "yukle", element: <PlaceholderPage title="CV yükle" note="Sadece PDF, en fazla 10 MB." /> },
-          { path: "analiz/:id", element: <PlaceholderPage title="Analiz sonucu" /> },
+          { path: "yukle", element: <UploadPage /> },
+          { path: "analiz/:id", element: <AnalysisPage /> },
           { path: "gecmis", element: <PlaceholderPage title="Geçmiş analizler" /> },
           { path: "profil", element: <ProfilePage /> },
         ],

@@ -85,6 +85,51 @@ code { font-family: var(--font-mono); font-size: 0.9em; }
 .link-button { background: none; border: 0; padding: var(--space-1) var(--space-3); color: var(--text-muted); font: inherit; cursor: pointer; }
 .link-button:hover { color: var(--text); }
 
+/* CV yükleme ve analiz bekleme (T-052) */
+.upload-card { max-width: 36rem; margin: 0 auto; }
+.upload-card form { margin-bottom: var(--space-4); }
+.narrow-card { max-width: 32rem; margin: 0 auto; }
+.narrow-card .gauge { margin: 0 auto var(--space-4); }
+.drop {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-2);
+  padding: var(--space-6) var(--space-4);
+  margin-bottom: var(--space-4);
+  border: 2px dashed var(--border-strong);
+  border-radius: var(--radius);
+  background: var(--surface-muted);
+  text-align: center;
+}
+.drop p { margin: 0; }
+.drop--over { border-color: var(--accent); background: var(--info-surface); }
+.drop--error { border-color: var(--danger); }
+.drop__title { font-weight: 600; }
+.drop__file { overflow-wrap: anywhere; }
+/* Gizli dosya girişine klavyeyle gelinince görünür odak, etiket düğmesinde gösterilir. */
+.drop input:focus-visible + label { outline: 3px solid var(--focus); outline-offset: 2px; }
+.steps { display: grid; gap: var(--space-2); padding: 0; margin: 0 0 var(--space-4); list-style: none; counter-reset: step; }
+.steps li {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--text-muted);
+  counter-increment: step;
+}
+.steps li::before {
+  content: counter(step);
+  display: inline-grid;
+  place-items: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border: 2px solid var(--border-strong);
+  border-radius: 50%;
+  font-size: var(--text-sm);
+}
+.steps .steps__item--done::before { content: "✓"; border-color: var(--success); color: var(--success); }
+.steps .steps__item--now { color: var(--text); font-weight: 600; }
+.steps .steps__item--now::before { border-color: var(--accent); color: var(--accent); }
+
 .details { display: grid; grid-template-columns: max-content 1fr; gap: var(--space-2) var(--space-6); margin: 0; }
 .details dt { color: var(--text-muted); }
 .details dd { margin: 0; }

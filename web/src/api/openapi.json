@@ -620,6 +620,72 @@
       }
     },
     "/api/v1/analyses": {
+      "get": {
+        "tags": [
+          "Analiz"
+        ],
+        "summary": "Geçmiş analizlerim",
+        "description": "Yeniden eskiye. Sadece kullanıcının kendi, silinmemiş analizleri.",
+        "operationId": "list_analyses_api_v1_analyses_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 20,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AnalysisListOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Giriş gerekli",
+            "content": {
+              "application/problem+json": {}
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
       "post": {
         "tags": [
           "Analiz"
@@ -627,15 +693,20 @@
         "summary": "CV yükle ve analiz başlat",
         "description": "CV dosyası diske yazılmaz ve saklanmaz; sadece SHA-256 özeti ve sayfa sayısı kaydedilir.\nSonuç için `GET /analyses/{id}` yoklanır.",
         "operationId": "create_analysis_api_v1_analyses_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
         "requestBody": {
+          "required": true,
           "content": {
             "multipart/form-data": {
               "schema": {
                 "$ref": "#/components/schemas/Body_create_analysis_api_v1_analyses_post"
               }
             }
-          },
-          "required": true
+          }
         },
         "responses": {
           "202": {
@@ -690,12 +761,7 @@
               "application/problem+json": {}
             }
           }
-        },
-        "security": [
-          {
-            "HTTPBearer": []
-          }
-        ]
+        }
       }
     },
     "/api/v1/analyses/{analysis_id}": {
@@ -704,7 +770,7 @@
           "Analiz"
         ],
         "summary": "Analiz durumu ve sonucu",
-        "description": "Durum: queued, processing, done, failed. Başkasının analizi de 404 döner. (Liste, silme: T-048.)",
+        "description": "Durum: queued, processing, done, failed. Başkasının veya silinmiş analiz 404 döner.",
         "operationId": "get_analysis_api_v1_analyses__analysis_id__get",
         "security": [
           {
@@ -742,6 +808,210 @@
           },
           "404": {
             "description": "Analiz bulunamadı",
+            "content": {
+              "application/problem+json": {}
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Analiz"
+        ],
+        "summary": "Analizi sil",
+        "description": "Analiz hemen listeden ve sonuçtan kalkar, 30 gün içinde kalıcı silinir. Başkasının analizi de 404 döner.",
+        "operationId": "delete_analysis_api_v1_analyses__analysis_id__delete",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "analysis_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Analysis Id"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "401": {
+            "description": "Giriş gerekli",
+            "content": {
+              "application/problem+json": {}
+            }
+          },
+          "404": {
+            "description": "Analiz bulunamadı",
+            "content": {
+              "application/problem+json": {}
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/roles": {
+      "get": {
+        "tags": [
+          "Katalog"
+        ],
+        "summary": "Hedef pozisyonlar",
+        "description": "Aktif pozisyonlar, ada göre. `id`, `POST /analyses` ve `PATCH /users/me` için `target_role_id`'dir.",
+        "operationId": "list_roles_api_v1_roles_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/RoleOut"
+                  },
+                  "type": "array",
+                  "title": "Response List Roles Api V1 Roles Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/roles/{slug}/skills": {
+      "get": {
+        "tags": [
+          "Katalog"
+        ],
+        "summary": "Pozisyonun en çok istenen yetkinlikleri",
+        "description": "Son 6 ayın aktif ilanlarından, talep oranına göre. İlan yoksa liste boş, `total_postings` 0.",
+        "operationId": "role_skills_api_v1_roles__slug__skills_get",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Slug"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 20,
+              "title": "Limit"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RoleSkillsOut"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Pozisyon bulunamadı",
+            "content": {
+              "application/problem+json": {}
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/skills/{slug}/resources": {
+      "get": {
+        "tags": [
+          "Katalog"
+        ],
+        "summary": "Yetkinlik için eğitim kaynakları",
+        "description": "Sadece erişilebilir (haftalık link kontrolünden geçen) kaynaklar; önce ücretsizler.",
+        "operationId": "skill_resources_api_v1_skills__slug__resources_get",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Slug"
+            }
+          },
+          {
+            "name": "language",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/LangCode"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Language"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SkillResourcesOut"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Yetkinlik bulunamadı",
             "content": {
               "application/problem+json": {}
             }
@@ -815,6 +1085,27 @@
         ],
         "title": "AnalysisErrorOut"
       },
+      "AnalysisListOut": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/AnalysisSummaryOut"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "total"
+        ],
+        "title": "AnalysisListOut"
+      },
       "AnalysisModelOut": {
         "properties": {
           "name": {
@@ -870,8 +1161,7 @@
           },
           "present_skills": {
             "items": {
-              "additionalProperties": true,
-              "type": "object"
+              "$ref": "#/components/schemas/PresentSkillOut"
             },
             "type": "array",
             "title": "Present Skills",
@@ -879,8 +1169,7 @@
           },
           "missing_skills": {
             "items": {
-              "additionalProperties": true,
-              "type": "object"
+              "$ref": "#/components/schemas/MissingSkillOut"
             },
             "type": "array",
             "title": "Missing Skills",
@@ -932,7 +1221,7 @@
           "created_at"
         ],
         "title": "AnalysisOut",
-        "description": "contracts/analysis_result.schema.json. Yetkinlik ve öneri listeleri T-048'de doldurulacak."
+        "description": "contracts/analysis_result.schema.json."
       },
       "AnalysisStatus": {
         "type": "string",
@@ -943,6 +1232,68 @@
           "failed"
         ],
         "title": "AnalysisStatus"
+      },
+      "AnalysisSummaryOut": {
+        "properties": {
+          "analysis_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Analysis Id"
+          },
+          "status": {
+            "$ref": "#/components/schemas/AnalysisStatus"
+          },
+          "target_role": {
+            "$ref": "#/components/schemas/TargetRoleOut"
+          },
+          "match_score": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Match Score"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/AnalysisErrorOut"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "completed_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Completed At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "analysis_id",
+          "status",
+          "target_role",
+          "created_at"
+        ],
+        "title": "AnalysisSummaryOut",
+        "description": "Geçmiş listesindeki satır: yetkinlik listeleri yok, ayrıntı için GET /analyses/{id}."
       },
       "Body_create_analysis_api_v1_analyses_post": {
         "properties": {
@@ -965,6 +1316,57 @@
           "target_role_id"
         ],
         "title": "Body_create_analysis_api_v1_analyses_post"
+      },
+      "CatalogResourceOut": {
+        "properties": {
+          "resource_id": {
+            "type": "integer",
+            "title": "Resource Id"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "url": {
+            "type": "string",
+            "title": "Url"
+          },
+          "provider": {
+            "$ref": "#/components/schemas/ResourceProvider"
+          },
+          "language": {
+            "$ref": "#/components/schemas/LangCode"
+          },
+          "level": {
+            "$ref": "#/components/schemas/ResourceLevel"
+          },
+          "duration_min": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Duration Min"
+          },
+          "is_free": {
+            "type": "boolean",
+            "title": "Is Free"
+          }
+        },
+        "type": "object",
+        "required": [
+          "resource_id",
+          "title",
+          "url",
+          "provider",
+          "language",
+          "level",
+          "is_free"
+        ],
+        "title": "CatalogResourceOut"
       },
       "ConsentIn": {
         "properties": {
@@ -1534,6 +1936,14 @@
         "type": "object",
         "title": "HealthResponse"
       },
+      "LangCode": {
+        "type": "string",
+        "enum": [
+          "tr",
+          "en"
+        ],
+        "title": "LangCode"
+      },
       "LoginIn": {
         "properties": {
           "email": {
@@ -1554,6 +1964,64 @@
           "password"
         ],
         "title": "LoginIn"
+      },
+      "MissingSkillOut": {
+        "properties": {
+          "skill": {
+            "type": "string",
+            "title": "Skill"
+          },
+          "demand_ratio": {
+            "type": "number",
+            "title": "Demand Ratio"
+          },
+          "priority": {
+            "type": "integer",
+            "title": "Priority"
+          },
+          "resources": {
+            "items": {
+              "$ref": "#/components/schemas/ResourceOut"
+            },
+            "type": "array",
+            "title": "Resources"
+          }
+        },
+        "type": "object",
+        "required": [
+          "skill",
+          "demand_ratio",
+          "priority",
+          "resources"
+        ],
+        "title": "MissingSkillOut"
+      },
+      "PresentSkillOut": {
+        "properties": {
+          "skill": {
+            "type": "string",
+            "title": "Skill"
+          },
+          "level": {
+            "$ref": "#/components/schemas/SkillLevel"
+          },
+          "confidence": {
+            "type": "number",
+            "title": "Confidence"
+          },
+          "verified": {
+            "type": "boolean",
+            "title": "Verified"
+          }
+        },
+        "type": "object",
+        "required": [
+          "skill",
+          "level",
+          "confidence",
+          "verified"
+        ],
+        "title": "PresentSkillOut"
       },
       "ProfileOut": {
         "properties": {
@@ -1757,6 +2225,131 @@
         ],
         "title": "ResetPasswordIn"
       },
+      "ResourceLevel": {
+        "type": "string",
+        "enum": [
+          "beginner",
+          "intermediate",
+          "advanced"
+        ],
+        "title": "ResourceLevel"
+      },
+      "ResourceOut": {
+        "properties": {
+          "resource_id": {
+            "type": "integer",
+            "title": "Resource Id"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "url": {
+            "type": "string",
+            "title": "Url"
+          },
+          "provider": {
+            "$ref": "#/components/schemas/ResourceProvider"
+          },
+          "language": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/LangCode"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "level": {
+            "$ref": "#/components/schemas/ResourceLevel"
+          },
+          "duration_min": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Duration Min"
+          },
+          "is_free": {
+            "type": "boolean",
+            "title": "Is Free"
+          },
+          "reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason"
+          }
+        },
+        "type": "object",
+        "required": [
+          "resource_id",
+          "title",
+          "url",
+          "provider",
+          "level",
+          "is_free"
+        ],
+        "title": "ResourceOut",
+        "description": "Sadece veri tabanındaki kaynaklar (karar #10). Değeri olmayan isteğe bağlı alanlar yanıtta yer almaz."
+      },
+      "ResourceProvider": {
+        "type": "string",
+        "enum": [
+          "youtube",
+          "udemy",
+          "coursera",
+          "btk_akademi",
+          "docs",
+          "blog",
+          "other"
+        ],
+        "title": "ResourceProvider"
+      },
+      "RoleOut": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "slug": {
+            "type": "string",
+            "title": "Slug"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "slug",
+          "name"
+        ],
+        "title": "RoleOut"
+      },
       "RoleRef": {
         "properties": {
           "id": {
@@ -1779,6 +2372,157 @@
           "name"
         ],
         "title": "RoleRef"
+      },
+      "RoleRefOut": {
+        "properties": {
+          "slug": {
+            "type": "string",
+            "title": "Slug"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          }
+        },
+        "type": "object",
+        "required": [
+          "slug",
+          "name"
+        ],
+        "title": "RoleRefOut"
+      },
+      "RoleSkillOut": {
+        "properties": {
+          "skill": {
+            "type": "string",
+            "title": "Skill"
+          },
+          "slug": {
+            "type": "string",
+            "title": "Slug"
+          },
+          "category": {
+            "$ref": "#/components/schemas/SkillCategory"
+          },
+          "demand_ratio": {
+            "type": "number",
+            "title": "Demand Ratio"
+          },
+          "posting_count": {
+            "type": "integer",
+            "title": "Posting Count"
+          }
+        },
+        "type": "object",
+        "required": [
+          "skill",
+          "slug",
+          "category",
+          "demand_ratio",
+          "posting_count"
+        ],
+        "title": "RoleSkillOut"
+      },
+      "RoleSkillsOut": {
+        "properties": {
+          "role": {
+            "$ref": "#/components/schemas/RoleRefOut"
+          },
+          "total_postings": {
+            "type": "integer",
+            "title": "Total Postings"
+          },
+          "computed_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Computed At"
+          },
+          "skills": {
+            "items": {
+              "$ref": "#/components/schemas/RoleSkillOut"
+            },
+            "type": "array",
+            "title": "Skills"
+          }
+        },
+        "type": "object",
+        "required": [
+          "role",
+          "total_postings",
+          "computed_at",
+          "skills"
+        ],
+        "title": "RoleSkillsOut",
+        "description": "Pozisyonun en çok istenen yetkinlikleri (role_skill_stats, son 6 ayın aktif ilanları, gece yenilenir)."
+      },
+      "SkillCategory": {
+        "type": "string",
+        "enum": [
+          "dil",
+          "framework",
+          "veritabani",
+          "bulut",
+          "devops",
+          "arac",
+          "metodoloji",
+          "soft"
+        ],
+        "title": "SkillCategory"
+      },
+      "SkillLevel": {
+        "type": "string",
+        "enum": [
+          "beginner",
+          "intermediate",
+          "advanced",
+          "unknown"
+        ],
+        "title": "SkillLevel"
+      },
+      "SkillRefOut": {
+        "properties": {
+          "slug": {
+            "type": "string",
+            "title": "Slug"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          }
+        },
+        "type": "object",
+        "required": [
+          "slug",
+          "name"
+        ],
+        "title": "SkillRefOut"
+      },
+      "SkillResourcesOut": {
+        "properties": {
+          "skill": {
+            "$ref": "#/components/schemas/SkillRefOut"
+          },
+          "resources": {
+            "items": {
+              "$ref": "#/components/schemas/CatalogResourceOut"
+            },
+            "type": "array",
+            "title": "Resources"
+          }
+        },
+        "type": "object",
+        "required": [
+          "skill",
+          "resources"
+        ],
+        "title": "SkillResourcesOut"
       },
       "TargetRoleOut": {
         "properties": {

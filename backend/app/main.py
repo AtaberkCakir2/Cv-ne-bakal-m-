@@ -45,16 +45,18 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             limit=Limit("general", settings.rate_limit_general_per_minute, 60),
             exempt_paths=frozenset({f"{settings.api_prefix}/health"}),
         )
+    # Büyük yüklemeler gövde okunmadan reddedilir (bellek koruması). CORS'un içinde: 413/411 yanıtı da CORS
+    # başlıklarını alır, tarayıcı bunu ağ hatası sanmaz (T-052).
+    app.add_middleware(UploadSizeLimitMiddleware, paths=(f"{settings.api_prefix}/analyses",))
     app.add_middleware(
         CORSMiddleware,
         allow_origins=settings.cors_origins,
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
-        expose_headers=["X-Request-ID"],
+        # Retry-After: web, 429/503'te kalan süreyi gösterebilsin (T-052).
+        expose_headers=["X-Request-ID", "Retry-After"],
     )
-    # Büyük yüklemeler gövde okunmadan reddedilir (bellek koruması).
-    app.add_middleware(UploadSizeLimitMiddleware, paths=(f"{settings.api_prefix}/analyses",))
     # En dışta: istek kimliği her yanıta (hatalar dahil) eklenir.
     app.add_middleware(RequestContextMiddleware)
 

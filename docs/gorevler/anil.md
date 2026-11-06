@@ -193,12 +193,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-052 · CV yükleme ve analiz bekleme ekranı
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 16.11.2026 – 22.11.2026 · **Öncelik:** P0 · **Efor:** 8 saat · **Alan:** Web / Masaüstü
 - **Bağımlılık:** T-040, T-039
 - **Destek:** —
 - **Çıktı:** Yükleme ekranı
 - **Kabul kriteri:** Sürükle-bırak, dosya kontrolü, hedef pozisyon seçimi, ilerleme durumu (kuyrukta / analiz ediliyor), zaman aşımında anlamlı mesaj.
+- **Not:** 06.11.2026: `/yukle` (pozisyon seçimi, profildeki hedef varsayılan; az ilan uyarısı; sürükle-bırak veya dosya seç; istemcide boyut + `%PDF-` kontrolü; 413/415/422/429/503 için Türkçe mesaj, `Retry-After` ile kalan süre; 60 sn yükleme zaman aşımı) ve `/analiz/:id` (3 sn'de bir yoklama; Sırada → Analiz ediliyor → Tamamlandı; 7 dk'yı geçince "uzun sürüyor" uyarısı; hata koduna göre ipucu ve "Tekrar dene"; bitince skor özeti, sonuç panosu T-053). Gerçek API + Celery işçisi + ayrı CV Redis ile uçtan uca denendi. SSE (`/analyses/{id}/events`) yok, yoklama kullanılıyor.
 
 ### T-049 · Profil ve KVKK endpoint'leri
 
