@@ -6,10 +6,14 @@ ortamında bağlantı loga da yazılır (geliştirici e-postayı tıklayabilsin 
 """
 
 import logging
+from collections import deque
 from dataclasses import dataclass
 from typing import Protocol
 
 logger = logging.getLogger(__name__)
+
+# İletiler tek kullanımlık bağlantı taşır ve API sürekli çalışır: bellekte sınırsız birikmesin.
+OUTBOX_LIMIT = 100
 
 
 @dataclass(frozen=True)
@@ -26,7 +30,7 @@ class EmailSender(Protocol):
 
 class OutboxEmailSender:
     def __init__(self, *, log_links: bool = False) -> None:
-        self.outbox: list[EmailMessage] = []
+        self.outbox: deque[EmailMessage] = deque(maxlen=OUTBOX_LIMIT)
         self._log_links = log_links
 
     def send(self, message: EmailMessage) -> None:
