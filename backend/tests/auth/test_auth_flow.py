@@ -156,7 +156,7 @@ def test_me_requires_valid_access_token(client: TestClient) -> None:
     forged = jwt.encode({"sub": user_id, "role": "admin", "type": "access"}, "baska-anahtar-" * 3, algorithm="HS256")
     assert client.get(f"{API}/users/me", headers=bearer(forged)).status_code == 401
 
-    unsigned = jwt.encode({"sub": user_id, "type": "access", "iat": 0, "exp": 9999999999}, None, algorithm="none")
+    unsigned = jwt.encode({"sub": user_id, "type": "access", "iat": 0, "exp": 9999999999}, "", algorithm="none")
     assert client.get(f"{API}/users/me", headers=bearer(unsigned)).status_code == 401
 
     refresh_as_access = login(client)["refresh_token"]
