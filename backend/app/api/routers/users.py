@@ -9,6 +9,7 @@ from fastapi import APIRouter, Depends, HTTPException, Request, Response
 
 from app.api.deps import AppSettings, CurrentUser, DbSession
 from app.api.rate_limits import AuthRateLimit
+from app.db.enums import ConsentType
 from app.schemas.users import ConsentOut, ConsentsIn, DeleteAccountIn, ExportOut, ProfileOut, ProfileUpdateIn
 from app.services.auth import ConsentInput
 from app.services.users import ProfileChanges, UserError, UserService, profile_out
@@ -61,7 +62,26 @@ def my_consents(user: CurrentUser, users: Users) -> list[ConsentOut]:
 @router.post("/me/consents", response_model=list[ConsentOut], summary="Metnin yeni sürümünü onayla")
 def accept_consents(body: ConsentsIn, request: Request, user: CurrentUser, users: Users) -> list[ConsentOut]:
     """Yasal metin değişince istemci yeni sürümü burada onaylatır. Eski onay kayıtları silinmez."""
-    return users.accept_consents(user, [ConsentInput(c.consent_type, c.version) for c in body.consents], _ip(request))
+    try:
+        return users.accept_consents(
+            user, [ConsentInput(c.consent_type, c.version) for c in body.consents], _ip(request)
+        )
+    except UserError as exc:
+        _raise(exc)
+
+
+@router.delete(
+    "/me/consents/{consent_type}",
+    response_model=list[ConsentOut],
+    summary="Açık rızayı geri al",
+    responses={422: {"description": "Bu onay türü geri alınamaz", **_PROBLEM}},
+)
+def withdraw_consent(consent_type: ConsentType, request: Request, user: CurrentUser, users: Users) -> list[ConsentOut]:
+    """KVKK md. 11. Onay kaydı silinmez, `withdrawn_at` dolar. Tekrar çağrılırsa bir şey değişmez."""
+    try:
+        return users.withdraw_consent(user, consent_type, _ip(request))
+    except UserError as exc:
+        _raise(exc)
 
 
 @router.get("/me/export", response_model=ExportOut, summary="Verilerimi indir (JSON)")
