@@ -145,9 +145,25 @@ def test_digits_inside_hashes_are_not_tckn() -> None:
 
 @pytest.mark.parametrize(
     "text",
-    ["TC12345678901", "TCKN12345678901", "tc12345678901", "tckn:12345678901", "no12345678901", "12345678901TC"],
+    [
+        "TC12345678901",
+        "TCKN12345678901",
+        "tc12345678901",
+        "tckn:12345678901",
+        "no12345678901",
+        "12345678901TC",
+        "T.C.12345678901",
+        "T.C. 12345678901",
+        "No.12345678901",
+        "TCKN,12345678901",
+    ],
 )
 def test_tckn_attached_to_letters_is_masked(text: str) -> None:
     # #44 incelemesi: sadece hash karakterlerine (küçük harf hex, alt çizgi) bitişik 11 hane atlanır. CV ve ilan.
     assert "12345678901" not in mask_text(text, "tr")
     assert "12345678901" not in mask_posting(text, "tr")
+
+
+@pytest.mark.parametrize("text", ["oran 3.12345678901", "oran 3,12345678901", "12345678901.5", "12345678901,5"])
+def test_decimal_numbers_are_not_tckn(text: str) -> None:
+    assert mask_posting(text, "tr") == text

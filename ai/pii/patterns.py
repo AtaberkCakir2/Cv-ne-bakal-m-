@@ -36,7 +36,8 @@ _PHONE_MIN_DIGITS = 9
 
 # Hash veya kod içindeki 11 hane TCKN değildir ("a3f91234567890b2c", "id_12345678901"): sadece küçük harf hex
 # ve alt çizgiye bitişikse atlanır. Diğer harflere bitişik olan maskelenir ("TC12345678901", "no12345678901").
-TCKN = re.compile(r"(?<![0-9a-f_.,])[1-9]\d{10}(?![.,]\d|[0-9a-f_])")
+# Önündeki nokta/virgül sadece rakamdan sonra geliyorsa ondalıktır ("3.12345678901"); "T.C.12345678901" maskelenir.
+TCKN = re.compile(r"(?<![0-9a-f_])(?<!\d[.,])[1-9]\d{10}(?![.,]\d|[0-9a-f_])")
 # "tc"/"tckn" önekiyle bitişik yazılan ("tc12345678901"): "c" hex olduğu için yukarıdaki kural atlar.
 TCKN_PREFIXED = re.compile(r"(?<![a-z])tc(?:kn)?[:\s]*([1-9]\d{10})(?![.,]\d|[0-9a-f_])", re.IGNORECASE)
 
