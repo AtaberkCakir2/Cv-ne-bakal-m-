@@ -133,10 +133,45 @@ def test_undotted_titles_initials_and_missing_spaces_are_masked(text: str, names
 
 
 @pytest.mark.parametrize(
-    "text", ["Ms Excel ve Ms Office biliyorum", "Ms Word, Ms Sql, Ms. PowerPoint", "Mr. Clean", "Mr Clean"]
+    "text",
+    [
+        "Ms Excel ve Ms Office biliyorum",
+        "Ms Word, Ms Sql, Ms. PowerPoint",
+        "Mr. Clean",
+        "Mr Clean",
+        # #66 incelemesi: noktasız "Ms" bunları ad sayıp yetkinliği siliyordu.
+        "Ms Visual Studio, Ms SharePoint, Ms Share Point, Ms Dynamics, Ms Exchange, Ms Paint",
+        "Ms Server, Ms Edge, Ms Fabric, Ms Intune, Ms PowerBI, Ms PowerShell, Ms OneDrive",
+    ],
 )
 def test_microsoft_products_and_brands_after_title_are_kept(text: str) -> None:
     assert mask_posting(text, "tr") == text
+    assert mask_posting(text, "en") == text
+
+
+@pytest.mark.parametrize(
+    ("text", "masked"),
+    [
+        ("Dr. McDonald ile çalıştım", "Dr. [AD SOYAD] ile çalıştım"),
+        ("Mr. DeVito leads", "Mr. [AD SOYAD] leads"),
+        ("Ms. MacLeod", "Ms. [AD SOYAD]"),
+        ("Prof. O'Brien", "Prof. [AD SOYAD]"),
+        ("Prof. O’Brien", "Prof. [AD SOYAD]"),
+        ("Dr. Ayşe McDonald", "Dr. [AD SOYAD]"),
+        ("Mr. J. McDonald", "Mr. [AD SOYAD]"),
+        ("ekip lideri Ayşe McDonald ile", "ekip lideri [AD SOYAD] ile"),
+        ("Mert O'Brien ile", "[AD SOYAD] ile"),
+    ],
+)
+def test_surname_with_inner_capital_or_prefix_is_fully_masked(text: str, masked: str) -> None:
+    # Eşleşme kelimenin ortasında durup soyadın geri kalanını açıkta bırakmasın ("[AD SOYAD]Donald").
+    assert mask_posting(text, "en") == masked
+
+
+def test_turkish_suffix_after_title_name_is_kept() -> None:
+    assert (
+        mask_posting("Dr. McDonald'a ve Dr. Ayşe'ye ilettim", "tr") == "Dr. [AD SOYAD]'a ve Dr. [AD SOYAD]'ye ilettim"
+    )
 
 
 def test_numbers_inside_links_are_not_phone_or_tckn() -> None:
@@ -199,6 +234,11 @@ def test_digits_inside_hashes_are_not_tckn() -> None:
         "No.12345678901",
         "TCKN,12345678901",
         "kimlikde12345678901",
+        # Kısa hex önek hash değildir (#66 incelemesi).
+        "de12345678901",
+        "a12345678901",
+        "12345678901a",
+        "kimlik: de12345678901",
     ],
 )
 def test_tckn_attached_to_letters_is_masked(text: str) -> None:

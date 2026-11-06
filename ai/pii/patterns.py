@@ -35,10 +35,13 @@ PHONE = re.compile(
 _PHONE_MIN_DIGITS = 9
 
 # Hash veya kod içindeki 11 hane TCKN değildir: alt çizgiye bitişikse ("id_12345678901") veya bütün kelime küçük harf
-# hex ise ("a3f91234567890b2c", `_is_hash`) atlanır. Diğer harflere bitişik olan maskelenir ("TC12345678901",
-# "kimlikde12345678901"). Önündeki nokta/virgül sadece rakamdan sonra geliyorsa ondalıktır ("3.12345678901").
+# hex ve en az 14 karakterse, en az 3'ü rakam dışıysa ("a3f91234567890b2c", `_is_hash`) atlanır. Diğer harflere bitişik
+# olan maskelenir ("TC12345678901", "kimlikde12345678901", "de12345678901"). Önündeki nokta/virgül sadece rakamdan sonra
+# geliyorsa ondalıktır ("3.12345678901").
 TCKN = re.compile(r"(?<![\d_])(?<!\d[.,])[1-9]\d{10}(?![.,]\d|[\d_])")
 _HEX_WORD = re.compile(r"[0-9a-f]+")
+_HASH_MIN_LEN = 14
+_HASH_MIN_NON_DIGITS = 3
 
 IBAN = re.compile(r"\bTR\s?\d{2}(?:\s?\d{4}){5}\s?\d{2}\b", re.IGNORECASE)
 
@@ -142,7 +145,12 @@ def _is_hash(text: str, m: re.Match[str]) -> bool:
         start -= 1
     while end < len(text) and text[end].isalnum():
         end += 1
-    return end - start > m.end() - m.start() and _HEX_WORD.fullmatch(text, start, end) is not None
+    word = text[start:end]
+    return (
+        len(word) >= _HASH_MIN_LEN
+        and sum(not c.isdigit() for c in word) >= _HASH_MIN_NON_DIGITS
+        and _HEX_WORD.fullmatch(word) is not None
+    )
 
 
 def _address_fields(text: str) -> list[Span]:
