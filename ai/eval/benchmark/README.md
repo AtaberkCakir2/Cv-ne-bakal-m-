@@ -9,7 +9,7 @@ Tarih: 29.10.2026 · Ölçen: Burak (Claude Code ile) · Script: [`../scripts/be
 | | |
 |---|---|
 | Donanım | Intel i7-13700H (14 çekirdek / 20 iş parçacığı), 32 GB RAM, NVIDIA RTX 4060 Laptop 8 GB |
-| Yazılım | Windows 11, Ollama 0.40.13 (yerel kurulum; Docker'daki sabit sürüm 0.40.10) |
+| Yazılım | Windows 11, Ollama 0.40.13 (yerel kurulum; Docker'daki sabit sürüm de 0.40.13, #45) |
 | Modeller | `llama3.1:8b` (46e0c10c039e), `gemma2:9b` (ff02c3702f32), `qwen2.5:7b` (845dbda0ea48); Ollama varsayılanları: Llama ve Qwen q4_K_M, Gemma Q4_0 (Gemma için `gemma2:9b-instruct-q4_K_M` ayrıca çekilmeli) |
 | Ayarlar | temperature 0.1, seed 42, num_ctx 8192. CPU ölçümü `num_gpu: 0` ile |
 | Veri | 10 Türkçe sentetik CV (`syn-004`…`syn-013`, 10 pozisyondan 1'er; 3 çok sütunlu, 2 taranmış) |
@@ -56,7 +56,7 @@ CV başına ortalama ~700 girdi, ~280–380 çıktı token'ı. Modelin ilk yükl
 - **Süre:** bu makinenin CPU'sunda yalnızca yetkinlik çıkarımı ~53 sn. 8 vCPU'lu VPS'te daha yavaş olacak (tahmin ~1,5–2×, ölçülmedi); analiz hedefi 1–2 dk (karar #11). Kaynak önerisi (T-043) ikinci bir LLM çağrısı ekleyecek. VPS'te tekrar ölçülmeli (T-056); gerekirse: daha kısa çıktı (sadece ad + seviye), `num_ctx` 4096, küçük model (Llama 3.2 3B) denemesi.
 - **Referans geçici:** T-019 gold etiketleri gelince `python eval/scripts/benchmark_llm.py run …` ile tekrar ölçülmeli; İngilizce CV'ler (25 adet) henüz yok.
 - **Taranmış CV'ler:** OCR (T-029) gelince 2 taranmış CV gerçek akıştan geçirilmeli.
-- Docker'daki Ollama 0.40.10, bu ölçüm 0.40.13 ile yapıldı; sonuçların değişmesi beklenmez ama VPS ölçümü sabit sürümle yapılmalı.
+- Ölçüm Ollama 0.40.13 ile yapıldı; `docker-compose.yml` de bu sürüme sabitlendi (#45), VPS ölçümü aynı sürümle yapılır.
 
 ## Tekrar üretmek
 
