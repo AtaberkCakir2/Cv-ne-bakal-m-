@@ -12,8 +12,10 @@ yapamaması anlamına gelmesin. Bağlantı kurulamayınca 10 sn boyunca Redis de
 beklemesin); tek bir yavaş yanıtta sadece o istek atlanır. IP'ler Redis'e açık yazılmaz, `security.hash_ip` ile
 tuzlu özetleri anahtar olur.
 
-Gereksinimler: Redis ≥ 7 (`EXPIRE ... NX`). Ters vekil (Caddy) arkasında gerçek istemci IP'si için uvicorn'a
-`FORWARDED_ALLOW_IPS` (vekilin adresi/alt ağı) verilmeli; verilmezse herkes vekilin IP'siyle tek sayacı paylaşır.
+Gereksinimler: Redis ≥ 7 (`EXPIRE ... NX`). Vekil (production'da cloudflared, karar #30) arkasında gerçek
+istemci IP'si için uvicorn'a `FORWARDED_ALLOW_IPS` (vekilin adresi/alt ağı) verilmeli; verilmezse herkes vekilin
+IP'siyle tek sayacı paylaşır. `*` verilmez: uvicorn o zaman `X-Forwarded-For`'daki ilk (istemcinin uydurabileceği)
+adresi alır.
 """
 
 import logging
