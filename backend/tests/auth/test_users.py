@@ -90,6 +90,63 @@ def test_consents_are_versioned_and_never_overwritten(client: TestClient) -> Non
     assert client.post(f"{API}/users/me/consents", headers=headers, json=dup).status_code == 422
 
 
+def test_explicit_consent_can_be_withdrawn_and_given_again(
+    client: TestClient, db_sessionmaker: sessionmaker[Session]
+) -> None:
+    headers = signed_in(client)
+    url = f"{API}/users/me/consents"
+    response = client.delete(f"{url}/acik_riza", headers=headers)
+    assert response.status_code == 200
+    by_type = {c["consent_type"]: c for c in response.json()}
+    assert by_type["acik_riza"]["withdrawn_at"] is not None
+    assert by_type["kvkk_aydinlatma"]["withdrawn_at"] is None and by_type["kullanim_kosullari"]["withdrawn_at"] is None
+
+    # Tekrarlanabilir: zaman değişmez, ikinci denetim kaydı yazılmaz.
+    again = {c["consent_type"]: c for c in client.delete(f"{url}/acik_riza", headers=headers).json()}
+    first_time = datetime.fromisoformat(by_type["acik_riza"]["withdrawn_at"])
+    assert datetime.fromisoformat(again["acik_riza"]["withdrawn_at"]) == first_time
+    with db_sessionmaker() as session:
+        actions = session.scalars(select(AuditLog.action).where(AuditLog.action == "consent.withdraw")).all()
+    assert len(actions) == 1
+
+    # Aynı sürüm yeniden onaylanınca eski satır ispat olarak kalır, yeni satır yürürlüğe girer.
+    version = next(c["version"] for c in CONSENTS if c["consent_type"] == "acik_riza")
+    body = {"consents": [{"consent_type": "acik_riza", "version": version}]}
+    rows = [c for c in client.post(url, headers=headers, json=body).json() if c["consent_type"] == "acik_riza"]
+    assert sorted(c["withdrawn_at"] is None for c in rows) == [False, True]
+
+    exported = client.get(f"{API}/users/me/export", headers=headers).json()["consents"]
+    assert any(c["withdrawn_at"] for c in exported)
+
+
+def test_withdraw_covers_all_versions_and_only_my_consents(client: TestClient) -> None:
+    register(client, "diger@example.com")
+    headers = signed_in(client)
+    url = f"{API}/users/me/consents"
+    new = {"consents": [{"consent_type": "acik_riza", "version": "2027-01"}]}
+    client.post(url, headers=headers, json=new)
+
+    rows = [c for c in client.delete(f"{url}/acik_riza", headers=headers).json() if c["consent_type"] == "acik_riza"]
+    assert len(rows) == 2 and all(c["withdrawn_at"] for c in rows)
+
+    other_headers = bearer(login(client, "diger@example.com")["access_token"])
+    assert all(c["withdrawn_at"] is None for c in client.get(url, headers=other_headers).json())
+
+
+@pytest.mark.parametrize("consent_type", ["kvkk_aydinlatma", "kullanim_kosullari"])
+def test_only_explicit_consent_can_be_withdrawn(client: TestClient, consent_type: str) -> None:
+    headers = signed_in(client)
+    response = client.delete(f"{API}/users/me/consents/{consent_type}", headers=headers)
+    assert response.status_code == 422
+    assert all(c["withdrawn_at"] is None for c in client.get(f"{API}/users/me/consents", headers=headers).json())
+
+
+def test_withdraw_needs_login_and_a_known_type(client: TestClient) -> None:
+    assert client.delete(f"{API}/users/me/consents/acik_riza").status_code == 401
+    headers = signed_in(client)
+    assert client.delete(f"{API}/users/me/consents/yok", headers=headers).status_code == 422
+
+
 def test_export_contains_my_data_but_not_secrets(
     client: TestClient, role: Role, db_sessionmaker: sessionmaker[Session]
 ) -> None:

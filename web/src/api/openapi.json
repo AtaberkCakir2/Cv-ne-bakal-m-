@@ -592,6 +592,53 @@
         ]
       }
     },
+    "/api/v1/users/me/consents/{consent_type}": {
+      "delete": {
+        "tags": [
+          "Kullanıcı"
+        ],
+        "summary": "Açık rızayı geri al",
+        "description": "KVKK md. 11. Onay kaydı silinmez, `withdrawn_at` dolar. Tekrar çağrılırsa bir şey değişmez.",
+        "operationId": "withdraw_consent_api_v1_users_me_consents__consent_type__delete",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "consent_type",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ConsentType"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ConsentOut"
+                  },
+                  "title": "Response Withdraw Consent Api V1 Users Me Consents  Consent Type  Delete"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Bu onay türü geri alınamaz",
+            "content": {
+              "application/problem+json": {}
+            }
+          }
+        }
+      }
+    },
     "/api/v1/users/me/export": {
       "get": {
         "tags": [
@@ -1484,13 +1531,26 @@
             "type": "string",
             "format": "date-time",
             "title": "Accepted At"
+          },
+          "withdrawn_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Withdrawn At"
           }
         },
         "type": "object",
         "required": [
           "consent_type",
           "version",
-          "accepted_at"
+          "accepted_at",
+          "withdrawn_at"
         ],
         "title": "ConsentOut"
       },
