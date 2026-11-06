@@ -128,6 +128,22 @@ def test_case_sensitive_names() -> None:
     assert "Go" in tags("Services are written in Go and golang tooling.")
 
 
+@pytest.mark.parametrize(
+    ("text", "kept", "dropped"),
+    [
+        ("Experience with Objective-C and Swift.", "Objective-C", "C"),
+        ("We build on Ruby on Rails.", "Ruby on Rails", "Ruby"),
+        ("Pipelines run on Azure DevOps.", "Azure DevOps", "DevOps"),
+    ],
+)
+def test_overlapping_names_keep_the_longest(text: str, kept: str, dropped: str) -> None:
+    # CV tarafıyla aynı kural (extraction.taxonomy.Matcher): uzun ad içindeki kısa ad ayrı yetkinlik sayılmaz.
+    found = tags(text)
+    assert kept in found
+    assert dropped not in found
+    assert "Ruby" in tags("Ruby on Rails and plain Ruby scripts.")  # ayrıca yazılmışsa yine bulunur
+
+
 def test_synonyms_map_to_canonical() -> None:
     assert "JavaScript" in tags("Modern JS and ECMAScript")
     assert "PostgreSQL" in tags("postgres, psql")
