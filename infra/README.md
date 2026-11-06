@@ -1,6 +1,5 @@
 # infra/ — Sahibi: Ataberk
 
-Sunucu kurulumu, Docker, CI/CD (GitHub Actions), izleme, yedekleme ve deploy scriptleri.
+Production PC kurulumu, Docker, Cloudflare Tunnel, CI/CD (GitHub Actions), izleme, yedekleme ve deploy scriptleri.
 
-- `server/`: sunucu sertleştirme ve kurulum adımları (T-009)
-- `staging/`: staging compose, Caddy ve deploy betiği (T-035)
+VPS yoktur: production Ataberk'in PC'sinde çalışır ve alan adına Cloudflare Tunnel ile bağlanır (`docs/kararlar.md` #30). PC hazırlığı ve kontrol listesi: [`pc/README.md`](pc/README.md).
