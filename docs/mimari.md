@@ -71,8 +71,8 @@ Production PC'sinde (i7-9750H, CPU) bir analiz yaklaşık 1–2 dakika sürer; b
 | Ortam | Amaç | Adres | Altyapı | Deploy tetikleyici | Veri | Erişim | Sorumlu |
 |---|---|---|---|---|---|---|---|
 | Lokal | Geliştirme | 127.0.0.1 | docker-compose (her geliştiricinin bilgisayarı; proje adı `careerai`) | Elle (make up) | Seed + sahte veri; gerçek CV yok | Geliştirici | Ataberk |
-| Prova (staging) | Go-live provası, UAT, rollback denemesi | Sadece 127.0.0.1 (gerekirse geçici tünel: staging.<alanadi>) | Production PC'sinde geçici compose projesi (`careerai-staging`), iş bitince kapatılır | Elle, ihtiyaç olunca | Anonim test verisi, gerçek ilanlar | Ekip | Ataberk |
-| Production | Canlı sistem, hocalara sunum | app.<alanadi>, api.<alanadi> | Ataberk'in PC'si, compose projesi `careerai-prod`, kaynak limitli, host'a port açmaz; dış erişim sadece Cloudflare Tunnel | vX.Y.Z etiketi + PC'de elle güncelleme (`git checkout vX.Y.Z`, `docker compose pull`, `up -d`) | Gerçek kullanıcı verisi (KVKK kapsamında) | PC başında Ataberk; Cloudflare ve yedek erişimi Ataberk + 1 yedek kişi | Ataberk |
+| Prova (staging) | Go-live provası, UAT, rollback denemesi | Sadece 127.0.0.1 (gerekirse geçici tünel: staging.cvnebakalim.com) | Production PC'sinde geçici compose projesi (`careerai-staging`), iş bitince kapatılır | Elle, ihtiyaç olunca | Anonim test verisi, gerçek ilanlar | Ekip | Ataberk |
+| Production | Canlı sistem, hocalara sunum | app.cvnebakalim.com, api.cvnebakalim.com | Ataberk'in PC'si, compose projesi `careerai-prod`, kaynak limitli, host'a port açmaz; dış erişim sadece Cloudflare Tunnel | vX.Y.Z etiketi + PC'de elle güncelleme (`git checkout vX.Y.Z`, `docker compose pull`, `up -d`) | Gerçek kullanıcı verisi (KVKK kapsamında) | PC başında Ataberk; Cloudflare ve yedek erişimi Ataberk + 1 yedek kişi | Ataberk |
 
 ## Production servisleri (docker compose)
 

@@ -139,7 +139,7 @@ Skor = Olasılık × Etki (1–5). Seviye: ≥ 15 Yüksek, 8–14 Orta, < 8 Dü�
 | AI sunucusu (VPS) | **Kiralanmıyor** (karar #30): sistem Ataberk'in PC'sinde çalışır | 0 | - | 0 TL | — | Fizibilite raporunda 6 ay için 4.200 TL'ydi |
 | Cloudflare | DNS, Tunnel, Pages (statik sayfalar) | 1 | - | - | Zorunlu | Ücretsiz plan |
 | Mobil mağaza lisansları | Google Play (tek seferlik) + Apple Developer (yıllık) | 1 | 4.500 TL | 4.500 TL | Zorunlu | Fizibilite raporu. Apple v1.1'e ertelenirse sadece Google Play ödenir (ön ödeme azalır). |
-| Alan adı | 1 yıllık alan adı | 1 | 800 TL | 800 TL | Zorunlu | Fizibilite raporu (domain + SSL). SSL Cloudflare ile ücretsiz; alan adının ad sunucuları Cloudflare'e yönlendirilir. Kesin fiyat alınınca güncellenmeli. |
+| Alan adı | `cvnebakalim.com`, 1 yıl, otomatik yenileme (alındı: 06.11.2026) | 1 | 800 TL | 800 TL | Zorunlu | Fizibilite raporu (domain + SSL). Cloudflare Registrar'dan maliyet fiyatına alındı (.com ~10 USD/yıl); ad sunucuları zaten Cloudflare'de, SSL ücretsiz. Tutar faturadaki TL karşılığıyla güncellenmeli. |
 | Yapay zeka API'leri | Ollama ile yerel modeller | 1 | - | - | Zorunlu | Fizibilite raporu: dış API maliyeti 0 |
 | PC dışı yedek depolama | Şifreli yedekler için nesne depolama (ör. Backblaze B2 ücretsiz 10 GB) | 6 | - | 0 TL | Önerilen | Yedekler ücretsiz katmana sığar varsayımı; aşılırsa ayda ~100 TL (6 ay 600 TL) |
 | PC elektriği ve internet | Production PC'sinin sürekli açık kalması | — | - | - | — | Ekip karşılar; bütçeye yazılmadı |
