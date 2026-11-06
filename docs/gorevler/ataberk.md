@@ -209,7 +209,7 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-047 · 2. ve 3. veri kaynağı entegrasyonu
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 23.11.2026 – 29.11.2026 · **Öncelik:** P1 · **Efor:** 8 saat · **Alan:** Veri Toplama
 - **Bağımlılık:** T-034
 - **Destek:** —
