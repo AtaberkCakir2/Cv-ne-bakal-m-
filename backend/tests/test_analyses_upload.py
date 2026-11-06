@@ -58,6 +58,9 @@ class FakeRepository:
     def resources(self, resource_ids: set[int]) -> dict[int, Any]:
         raise AssertionError
 
+    def save_feedback(self, analysis_id: uuid.UUID, rating: int, comment: str | None) -> None:
+        raise AssertionError
+
 
 class FakeQueue:
     def enqueue(self, analysis_id: uuid.UUID, pdf: bytes) -> None:

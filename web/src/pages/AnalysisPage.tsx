@@ -2,9 +2,10 @@ import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 
+import { ResultDashboard } from "../analysis/ResultDashboard";
 import { api, problemMessage, unwrap, type Problem } from "../api/client";
 import type { components } from "../api/schema";
-import { Alert, Card, ScoreGauge, Spinner } from "../ui";
+import { Alert, Card, Spinner } from "../ui";
 
 type Analysis = components["schemas"]["AnalysisOut"];
 
@@ -24,7 +25,7 @@ const ERROR_HINTS: Partial<Record<string, string>> = {
   LLM_TIMEOUT: "Sistem şu an yoğun. Birkaç dakika sonra tekrar dene.",
 };
 
-/** T-052: analiz bekleme ekranı. Bitmemiş analiz 3 sn'de bir yoklanır; bitince özet (sonuç panosu T-053). */
+/** T-052: analiz bekleme ekranı. Bitmemiş analiz 3 sn'de bir yoklanır; bitince sonuç panosu (T-053). */
 export function AnalysisPage() {
   const { id = "" } = useParams();
   const analysis = useQuery({
@@ -49,7 +50,7 @@ export function AnalysisPage() {
 
   const data = analysis.data;
   if (data.status === "failed") return <Failed data={data} />;
-  if (data.status === "done") return <Done data={data} />;
+  if (data.status === "done") return <ResultDashboard data={data} />;
   return <Waiting data={data} />;
 }
 
@@ -103,25 +104,6 @@ function Failed({ data }: { data: Analysis }) {
       <Link className="btn btn--block" to="/yukle">
         Tekrar dene
       </Link>
-    </Card>
-  );
-}
-
-function Done({ data }: { data: Analysis }) {
-  return (
-    <Card title="Analiz tamamlandı" headingLevel={1} className="narrow-card" focusTitle>
-      <p className="muted">
-        Hedef pozisyon: <strong>{data.target_role.name}</strong>
-        {data.postings_analyzed != null && ` · ${data.postings_analyzed} ilanla karşılaştırıldı`}
-      </p>
-      {data.match_score != null && <ScoreGauge score={data.match_score} />}
-      <dl className="details">
-        <dt>CV'nde bulunan yetkinlik</dt>
-        <dd>{data.present_skills?.length ?? 0}</dd>
-        <dt>Eksik yetkinlik</dt>
-        <dd>{data.missing_skills?.length ?? 0}</dd>
-      </dl>
-      <p className="muted">Ayrıntılı sonuç panosu yakında burada olacak.</p>
     </Card>
   );
 }

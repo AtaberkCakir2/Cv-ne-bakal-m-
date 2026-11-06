@@ -18,6 +18,10 @@ class UnknownRole(Exception):
     pass
 
 
+class AnalysisNotFinished(Exception):
+    """Geri bildirim sadece tamamlanmış analize verilir."""
+
+
 @dataclass(frozen=True)
 class ResultCatalog:
     skill_names: dict[int, str]
@@ -69,6 +73,16 @@ class AnalysisService:
     def delete(self, analysis_id: uuid.UUID, user_id: uuid.UUID) -> bool:
         """Başkasının analizi veya zaten silinmiş analiz için False (404)."""
         return self.repository.soft_delete(analysis_id, user_id)
+
+    def give_feedback(self, analysis_id: uuid.UUID, user_id: uuid.UUID, rating: int, comment: str | None) -> bool:
+        """Başkasının veya silinmiş analiz için False (404); bitmemiş analizde AnalysisNotFinished (409)."""
+        analysis = self.repository.get_owned(analysis_id, user_id)
+        if analysis is None:
+            return False
+        if analysis.status != AnalysisStatus.DONE:
+            raise AnalysisNotFinished
+        self.repository.save_feedback(analysis_id, rating, comment)
+        return True
 
     def catalog_for(self, analysis: Analysis) -> ResultCatalog:
         """Sonuçtaki yetkinlik adları ve önerilen kaynaklar (analiz tabloları sadece kimlik tutar)."""

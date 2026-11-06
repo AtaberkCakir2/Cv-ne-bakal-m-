@@ -8,7 +8,7 @@ from decimal import Decimal
 import pytest
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
-from sqlalchemy import text
+from sqlalchemy import select, text
 from sqlalchemy.orm import Session, sessionmaker
 
 from app.db.enums import (
@@ -26,6 +26,7 @@ from app.db.models import (
     AnalysisRecommendation,
     AnalysisSkill,
     AnalysisUnverifiedSkill,
+    Feedback,
     Resource,
     Role,
     Skill,
@@ -339,3 +340,94 @@ def test_delete_hides_the_analysis_and_keeps_it_for_purge(
 
 def test_delete_needs_login(client: TestClient) -> None:
     assert client.delete(f"{URL}/{uuid.uuid4()}").status_code == 401
+
+
+def test_feedback_is_saved_updated_and_shown_in_result(
+    client: TestClient, sessions: sessionmaker[Session], role: int
+) -> None:
+    me, headers = user(client, "geribildirim@example.com")
+    analysis_id = add_analysis(sessions, me, role)
+    url = f"{URL}/{analysis_id}/feedback"
+
+    first = client.post(url, headers=headers, json={"rating": 4, "comment": "  Faydalı oldu.  "})
+    again = client.post(url, headers=headers, json={"rating": 5, "comment": "   "})
+
+    assert first.status_code == 200, first.text
+    assert first.json() == {"rating": 4, "comment": "Faydalı oldu."}
+    assert again.json() == {"rating": 5, "comment": None}
+    assert client.get(f"{URL}/{analysis_id}", headers=headers).json()["feedback"] == {"rating": 5, "comment": None}
+    with sessions() as session:
+        saved = session.scalars(select(Feedback).where(Feedback.analysis_id == analysis_id)).all()
+        assert [(f.rating, f.comment) for f in saved] == [(5, None)]
+
+
+def test_result_without_feedback_has_no_feedback_key(
+    client: TestClient, sessions: sessionmaker[Session], role: int
+) -> None:
+    me, headers = user(client, "bosgb@example.com")
+    analysis_id = add_analysis(sessions, me, role)
+
+    assert "feedback" not in client.get(f"{URL}/{analysis_id}", headers=headers).json()
+
+
+@pytest.mark.parametrize("body", [{"rating": 0}, {"rating": 6}, {"rating": 3, "comment": "x" * 1001}, {}])
+def test_feedback_is_validated(
+    client: TestClient, sessions: sessionmaker[Session], role: int, body: dict[str, object]
+) -> None:
+    me, headers = user(client, "gecersiz@example.com")
+    analysis_id = add_analysis(sessions, me, role)
+
+    assert client.post(f"{URL}/{analysis_id}/feedback", headers=headers, json=body).status_code == 422
+
+
+def test_feedback_needs_a_finished_own_analysis(client: TestClient, sessions: sessionmaker[Session], role: int) -> None:
+    owner, _ = user(client, "gbsahip@example.com")
+    me, headers = user(client, "gbbaska@example.com")
+    others = add_analysis(sessions, owner, role)
+    waiting = add_analysis(sessions, me, role, status=AnalysisStatus.PROCESSING)
+
+    assert client.post(f"{URL}/{others}/feedback", headers=headers, json={"rating": 5}).status_code == 404
+    response = client.post(f"{URL}/{waiting}/feedback", headers=headers, json={"rating": 5})
+    assert response.status_code == 409
+    assert response.headers["content-type"].startswith("application/problem+json")
+    assert client.post(f"{URL}/{others}/feedback", json={"rating": 5}).status_code == 401
+
+
+def test_feedback_on_deleted_analysis_is_404(client: TestClient, sessions: sessionmaker[Session], role: int) -> None:
+    me, headers = user(client, "silgb@example.com")
+    analysis_id = add_analysis(sessions, me, role)
+    assert client.delete(f"{URL}/{analysis_id}", headers=headers).status_code == 204
+
+    assert client.post(f"{URL}/{analysis_id}/feedback", headers=headers, json={"rating": 3}).status_code == 404
+
+
+def test_non_web_resource_links_are_never_returned(
+    client: TestClient, sessions: sessionmaker[Session], role: int
+) -> None:
+    me, headers = user(client, "link@example.com")
+    analysis_id = add_analysis(sessions, me, role)
+    with sessions() as session:
+        docker = skill(session, "Docker")
+        bad = Resource(
+            skill_id=docker.id,
+            title="Kötü",
+            url="javascript:alert(1)",
+            provider=ResourceProvider.OTHER,
+            language=LangCode.TR,
+            level=ResourceLevel.BEGINNER,
+            is_free=True,
+        )
+        session.add(bad)
+        session.flush()
+        session.add_all(
+            [
+                AnalysisSkill(analysis_id=analysis_id, skill_id=docker.id, kind=SkillKind.MISSING, priority=1),
+                AnalysisRecommendation(analysis_id=analysis_id, skill_id=docker.id, resource_id=bad.id, rank=1),
+            ]
+        )
+        session.commit()
+
+    body = client.get(f"{URL}/{analysis_id}", headers=headers).json()
+
+    assert body["missing_skills"][0]["resources"] == []
+    assert client.get(f"{API}/skills/docker/resources").json()["resources"] == []

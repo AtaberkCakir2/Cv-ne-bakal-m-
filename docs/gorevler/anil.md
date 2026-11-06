@@ -213,12 +213,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-053 · Sonuç panosu
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 23.11.2026 – 29.11.2026 · **Öncelik:** P0 · **Efor:** 16 saat · **Alan:** Web / Masaüstü
 - **Bağımlılık:** T-052, T-048
 - **Destek:** —
 - **Çıktı:** Sonuç ekranı
 - **Kabul kriteri:** Uyum skoru göstergesi; mevcut / eksik yetkinlik grafiği; "150 ilanın %75'i" ifadeleri; kaynak kartları; pop-up detay; geri bildirim (1-5 yıldız); geçmiş analizler.
+- **Not:** 06.11.2026: `/analiz/:id` bitince pano: skor halkası, mevcut yetkinlik etiketleri (taksonomide olmayanlar "tahmini"), eksiklerin talep çubukları, "150 ilanın %75'i" (Türkçe ek sayıya göre), öncelik sırasıyla kaynak kartları ve `<dialog>` detay, 1-5 yıldız + yorum (`POST /analyses/{id}/feedback`, tekrar gönderilirse güncellenir; `GET` yanıtında `feedback` API eki), ilan kaynağı + ESCO atfı (`scraper/kaynak-uygunluk.md` kural 7). `/gecmis`: 20'şer liste, aç / tekrar dene / onaylı silme. DB'den gelen kaynak linkleri sadece http(s). Gerçek akışta yetkinlik listeleri T-057'ye (Burak) kadar boş.
 
 ---
 

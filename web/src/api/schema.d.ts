@@ -291,6 +291,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/analyses/{analysis_id}/feedback": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Analize geri bildirim (1-5 yıldız + yorum)
+         * @description Analiz başına tek geri bildirim; tekrar gönderilirse öncekinin yerine geçer.
+         */
+        post: operations["give_feedback_api_v1_analyses__analysis_id__feedback_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/roles": {
         parameters: {
             query?: never;
@@ -395,7 +415,7 @@ export interface components {
         };
         /**
          * AnalysisOut
-         * @description contracts/analysis_result.schema.json.
+         * @description contracts/analysis_result.schema.json. `feedback` API'nin eki (sözleşmede yok): verildiyse yanıtta yer alır.
          */
         AnalysisOut: {
             /**
@@ -428,6 +448,7 @@ export interface components {
             created_at: string;
             /** Completed At */
             completed_at?: string | null;
+            feedback?: components["schemas"]["FeedbackOut"] | null;
         };
         /**
          * AnalysisStatus
@@ -679,6 +700,26 @@ export interface components {
             demand_ratio: string | null;
             /** Priority */
             priority: number | null;
+        };
+        /** FeedbackIn */
+        FeedbackIn: {
+            /**
+             * Rating
+             * @description 1-5 yıldız
+             */
+            rating: number;
+            /**
+             * Comment
+             * @description İsteğe bağlı yorum
+             */
+            comment?: string | null;
+        };
+        /** FeedbackOut */
+        FeedbackOut: {
+            /** Rating */
+            rating: number;
+            /** Comment */
+            comment: string | null;
         };
         /** HTTPValidationError */
         HTTPValidationError: {
@@ -1701,6 +1742,68 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    give_feedback_api_v1_analyses__analysis_id__feedback_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                analysis_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["FeedbackIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FeedbackOut"];
+                };
+            };
+            /** @description Giriş gerekli */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": unknown;
+                };
+            };
+            /** @description Analiz bulunamadı */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": unknown;
+                };
+            };
+            /** @description Analiz henüz tamamlanmadı */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": unknown;
+                };
+            };
+            /** @description Puan 1-5 dışında veya yorum 1000 karakterden uzun */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": unknown;
                 };
             };
         };

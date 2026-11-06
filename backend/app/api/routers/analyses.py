@@ -12,6 +12,7 @@ from app.core.errors import problem
 from app.db.enums import SkillKind
 from app.db.models import Analysis, AnalysisRecommendation, Resource
 from app.repositories.analyses import SqlAnalysisRepository
+from app.repositories.catalog import is_web_url
 from app.schemas.analyses import (
     ERROR_MESSAGES,
     AnalysisCreated,
@@ -20,12 +21,14 @@ from app.schemas.analyses import (
     AnalysisModelOut,
     AnalysisOut,
     AnalysisSummaryOut,
+    FeedbackIn,
+    FeedbackOut,
     MissingSkillOut,
     PresentSkillOut,
     ResourceOut,
     TargetRoleOut,
 )
-from app.services.analyses import AnalysisService, ResultCatalog, UnknownRole
+from app.services.analyses import AnalysisNotFinished, AnalysisService, ResultCatalog, UnknownRole
 from app.services.analysis_queue import QueueUnavailable
 from app.services.cv_validation import CvRejected
 
@@ -85,7 +88,9 @@ def _skills(analysis: Analysis, catalog: ResultCatalog) -> tuple[list[PresentSki
     resources: dict[int, list[ResourceOut]] = defaultdict(list)
     for rec in analysis.recommendations:  # rank sırasıyla yüklenir (Analysis.recommendations order_by)
         resource = catalog.resources[rec.resource_id]
-        if resource.is_alive:  # link kontrolünden düşen kaynak katalogda olduğu gibi sonuçta da gösterilmez
+        # Link kontrolünden düşen kaynak katalogda olduğu gibi sonuçta da gösterilmez; http(s) dışı adres
+        # (ör. hatalı veriyle gelen javascript:) hiç verilmez.
+        if resource.is_alive and is_web_url(resource.url):
             resources[rec.skill_id].append(_resource(rec, resource))
     # Önce AI'ın verdiği öncelik, yoksa talep oranı. Yanıttaki öncelik sıra numarasıdır: 1, 2, 3… (sözleşme: ≥ 1,
     # önem sırası). AI'ın değerinde boşluk, tekrar veya boş değer olsa da numara sırayla çelişmez.
@@ -114,6 +119,8 @@ def _out(analysis: Analysis, catalog: ResultCatalog) -> AnalysisOut:
         optional["match_score"] = float(analysis.match_score)
     if analysis.model_name and analysis.prompt_version:
         optional["model"] = AnalysisModelOut(name=analysis.model_name, prompt_version=analysis.prompt_version)
+    if analysis.feedback is not None:
+        optional["feedback"] = FeedbackOut(rating=analysis.feedback.rating, comment=analysis.feedback.comment)
     present, missing = _skills(analysis, catalog)
     return AnalysisOut(
         analysis_id=analysis.id,
@@ -229,6 +236,30 @@ def get_analysis(
     if analysis is None:
         raise HTTPException(status_code=404, detail="Analiz bulunamadı.")
     return _out(analysis, service.catalog_for(analysis))
+
+
+@router.post(
+    "/{analysis_id}/feedback",
+    response_model=FeedbackOut,
+    summary="Analize geri bildirim (1-5 yıldız + yorum)",
+    responses={
+        401: {"description": "Giriş gerekli", **_PROBLEM},
+        404: {"description": "Analiz bulunamadı", **_PROBLEM},
+        409: {"description": "Analiz henüz tamamlanmadı", **_PROBLEM},
+        422: {"description": "Puan 1-5 dışında veya yorum 1000 karakterden uzun", **_PROBLEM},
+    },
+)
+def give_feedback(
+    request: Request, analysis_id: uuid.UUID, body: FeedbackIn, user: CurrentUser, service: Analyses
+) -> FeedbackOut | JSONResponse:
+    """Analiz başına tek geri bildirim; tekrar gönderilirse öncekinin yerine geçer."""
+    try:
+        found = service.give_feedback(analysis_id, user.id, body.rating, body.comment)
+    except AnalysisNotFinished:
+        return problem(409, "Geri bildirim analiz tamamlanınca verilebilir.", request)
+    if not found:
+        raise HTTPException(status_code=404, detail="Analiz bulunamadı.")
+    return FeedbackOut(rating=body.rating, comment=body.comment)
 
 
 @router.delete(

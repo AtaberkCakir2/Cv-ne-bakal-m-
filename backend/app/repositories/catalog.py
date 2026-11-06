@@ -22,6 +22,11 @@ ROLE_SKILL_STATS = table(
 )
 
 
+def is_web_url(url: str) -> bool:
+    """Kullanıcıya link olarak verilecek adres sadece http(s) olabilir (javascript:, data: vb. asla)."""
+    return url.lower().startswith(("https://", "http://"))
+
+
 @dataclass(frozen=True)
 class RoleSkillStat:
     skill: Skill
@@ -60,6 +65,7 @@ class CatalogRepository:
         query = select(Resource).where(Resource.skill_id == skill_id, Resource.is_alive)
         if language is not None:
             query = query.where(Resource.language == language)
-        return list(
-            self.session.scalars(query.order_by(Resource.is_free.desc(), Resource.level, Resource.title, Resource.id))
+        rows = self.session.scalars(
+            query.order_by(Resource.is_free.desc(), Resource.level, Resource.title, Resource.id)
         )
+        return [r for r in rows if is_web_url(r.url)]
