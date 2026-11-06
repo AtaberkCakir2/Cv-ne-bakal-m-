@@ -32,13 +32,16 @@ restic backup --quiet --host careerai-pc --tag "$TAG" --tag postgres \
 log "Eski yedekler temizleniyor (7 günlük + 4 haftalık)"
 restic forget --quiet --tag "$TAG" --group-by host,tags --keep-daily 7 --keep-weekly 4 --prune
 
-# Pazar günleri depodaki verinin %10'u okunup doğrulanır; bozulma geri yükleme gününe kalmasın.
-if [[ "$(date +%u)" == 7 ]]; then
+# Haftada bir depodaki verinin %10'u okunup doğrulanır; bozulma geri yükleme gününe kalmasın.
+# Sabit gün yerine son kontrolün tarihine bakılır: PC o gün kapalıysa kontrol atlanmaz, sonraki yedekte yapılır.
+mkdir -p "$STATE_DIR"
+LAST_CHECK="$(cat "$STATE_DIR/last-check" 2>/dev/null || echo 0)"
+if (( $(date +%s) - LAST_CHECK >= 6 * 86400 )); then
   log "Depo kontrolü"
   restic check --read-data-subset=10%
+  date +%s > "$STATE_DIR/last-check"
 fi
 
 # Zamanlayıcı ve izleme (T-066) bu dosyaya bakar: 26 saatten eskiyse yedek çalışmıyor demektir.
-mkdir -p "$STATE_DIR"
 date +%s > "$STATE_DIR/last-success"
 log "Yedek tamam: $TAG"

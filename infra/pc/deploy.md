@@ -28,7 +28,9 @@ cp infra/pc/.env.example infra/pc/.env.staging
 ```
 
 - `.env.prod`: `APP_ENVIRONMENT=production`; şifreler için her satıra ayrı `openssl rand -hex 32` çıktısı; `TUNNEL_TOKEN` 3. adımdan; yedek ayarları (`RESTIC_*`, `B2_*`) `infra/backup/README.md`'den.
-- `.env.staging`: `APP_ENVIRONMENT=staging`; production'dan **farklı** şifreler; `TUNNEL_TOKEN=`, `RESTIC_*` ve `COMPOSE_PROFILES=` boş.
+- `.env.staging`: `APP_ENVIRONMENT=staging`; `COMPOSE_SUBNET=172.31.11.0/24`; production'dan **farklı** şifreler; `TUNNEL_TOKEN=`, `RESTIC_*` ve `COMPOSE_PROFILES=` boş.
+
+`COMPOSE_SUBNET` projenin Docker ağıdır; api yalnızca bu ağdan (cloudflared) gelen `X-Forwarded-For` başlığına güvenir, istek sınırları istemcinin uydurduğu adresle aşılamaz. Değiştirirseniz ağın yeniden kurulması gerekir: `docker compose -p <proje> --env-file <dosya> -f infra/pc/compose.yml down` (`-v` olmadan), sonra deploy.
 
 Postgres şifresi ilk açılışta veri tabanına yazılır; sonradan dosyada değiştirmek yetmez.
 

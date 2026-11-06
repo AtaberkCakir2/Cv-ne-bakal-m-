@@ -1,6 +1,6 @@
 # Yedekleme (T-068)
 
-Postgres her gün 02:00'de yedeklenir: `pg_dump` → [restic](https://restic.net) → PC dışındaki şifreli depo (karar #30). PC o saatte kapalıysa veya uykudaysa kaçan yedek açıldıktan sonraki ilk 10 dakikada alınır (risk R-18). Saklama 7 günlük + 4 haftalık; pazar günleri depo doğrulanır. Hedefler (`docs/go-live.md`): RPO ≤ 24 saat, RTO ≤ 4 saat, aylık geri yükleme testi.
+Postgres her gün 02:00'de yedeklenir: `pg_dump` → [restic](https://restic.net) → PC dışındaki şifreli depo (karar #30). PC o saatte kapalıysa veya uykudaysa kaçan yedek açıldıktan sonraki ilk 10 dakikada alınır (risk R-18). Saklama 7 günlük + 4 haftalık; haftada bir depo doğrulanır (son kontrol tarihi `/state/last-check`; PC o gün kapalıysa sonraki yedekte). Hedefler (`docs/go-live.md`): RPO ≤ 24 saat, RTO ≤ 4 saat, aylık geri yükleme testi.
 
 Windows'ta systemd/cron olmadığı için yedek, production compose'unda (`infra/pc/compose.yml`) kendi zamanlayıcısıyla çalışan `backup` konteyneridir.
 
@@ -8,7 +8,7 @@ Windows'ta systemd/cron olmadığı için yedek, production compose'unda (`infra
 |---|---|
 | `Dockerfile` | restic 0.18 + Postgres 16 istemcisi; `deploy.sh` yerelde derler (`careerai/backup:local`) |
 | `scheduler.sh` | Konteynerin ana süreci: 10 dakikada bir son başarılı yedeğe bakar, 02:00'den sonra yedek yoksa `backup.sh`'ı çalıştırır; başarısızsa 30 dk sonra yeniden dener |
-| `backup.sh` | Döküm diske yazılmadan restic'e akar; eski yedekleri siler; başarıda `/state/last-success` yazar |
+| `backup.sh` | Döküm diske yazılmadan restic'e akar; eski yedekleri siler; başarıda `/state/last-success`, haftalık kontrolde `/state/last-check` yazar |
 | `restore-test.sh [ortam] [snapshot]` | PC'de (Git Bash) yedeği geçici bir Postgres kapsayıcısına yükler, satır sayılarını canlıyla karşılaştırır. Canlı veritabanına yazmaz |
 
 **Yedekte ne var, ne yok:** Sadece Postgres (kullanıcılar, rızalar, analiz sonuçları, ilanlar, kaynaklar). CV dosyası ve ham metni veritabanında olmadığı için yedekte de yoktur. Redis (geçici kuyruk) ve Ollama modelleri yedeklenmez, yeniden kurulur. `infra/pc/.env.prod` ve restic parolası yedeğe girmez, ekibin parola yöneticisinde durur: onlar olmadan yedek açılamaz.
