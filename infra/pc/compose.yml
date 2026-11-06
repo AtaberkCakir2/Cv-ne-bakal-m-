@@ -45,8 +45,10 @@ services:
       IP_HASH_SECRET: ${IP_HASH_SECRET:?env dosyasında IP_HASH_SECRET yok}
       CORS_ORIGINS: ${CORS_ORIGINS:-[]}
       FRONTEND_URL: ${FRONTEND_URL:-}
-      # Konteyner host'a kapalı, istemcisi cloudflared: iletilen gerçek IP başlığına güvenilebilir (istek sınırları).
-      FORWARDED_ALLOW_IPS: "*"
+      # İstek sınırları (rate_limits.py) istemci IP'sini X-Forwarded-For'dan alır. Sadece projenin kendi
+      # ağına (cloudflared) güvenilir: uvicorn listeyi sondan okur ve bu alt ağın dışındaki ilk adresi alır,
+      # yani Cloudflare'in eklediği gerçek IP'yi. "*" olsaydı istemcinin uydurduğu ilk adres kullanılırdı.
+      FORWARDED_ALLOW_IPS: ${COMPOSE_SUBNET:?env dosyasında COMPOSE_SUBNET yok}
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/v1/health', timeout=3)"]
       interval: 10s
@@ -127,6 +129,13 @@ services:
     mem_limit: 8g
     logging: *logging
     restart: unless-stopped
+
+networks:
+  default:
+    ipam:
+      config:
+        # Sabit alt ağ: api yalnızca buradan gelen yönlendirme başlıklarına güvenir (FORWARDED_ALLOW_IPS).
+        - subnet: ${COMPOSE_SUBNET:?env dosyasında COMPOSE_SUBNET yok}
 
 volumes:
   pgdata:
