@@ -41,8 +41,12 @@ LABELED = re.compile(
 )
 HONORIFIC = re.compile(
     r"\b(?:Prof\.\s*Dr\.|Doç\.\s*Dr\.|Dr\.\s*Öğr\.\s*Üyesi|Dr\.|Prof\.|Doç\.|Öğr\.\s*Gör\.|Arş\.\s*Gör\.|Av\.|Müh\."
-    rf"|Mr\.|Mrs\.|Ms\.|Sayın|Bay|Bayan){_SP}((?:{_WORD})(?:{_SP}{_NAME_TOKEN}){{0,2}})"
+    # Noktalı unvandan sonra boşluk şart değil ("Dr.Ayhan"); adın önünde baş harfler olabilir ("Prof. Dr. H. Meffert").
+    rf"|Mr\.?|Mrs\.?|Ms\.?|Sayın|Bay|Bayan)(?:{_SP}|(?<=\.))"
+    rf"((?:[{_UPPER}]\.[ \t]*){{0,3}}{_WORD}(?:{_SP}{_NAME_TOKEN}){{0,2}})"
 )
+# "Ms" Türkçe CV'lerde Microsoft kısaltmasıdır ("Ms Excel"): bunlar ad değil, yetkinliktir.
+_MS_PRODUCTS = frozenset("Excel Office Word Outlook Power Access Project Teams Visio Sql Dos Azure Windows".split())
 # Türkçe hitaplar İngilizce metinde ad öneki değildir ("Bay Area", "North Bay").
 _TR_ONLY_TITLES = frozenset({"Sayın", "Bay", "Bayan"})
 # Unvanla başlayan marka adları. Unvandan sonraki her ad maskelenir ("Mr. Johnson", "Prof. Smith"); fazla maskelemenin
@@ -110,7 +114,9 @@ def find_names(
         title, name = text[m.start() : m.start(1)].strip(), m.group(1)
         if lang != "tr" and title in _TR_ONLY_TITLES:
             continue
-        if f"{title.split()[-1]} {name.split()[0]}" in HONORIFIC_BRANDS:
+        last_title = re.split(r"[\s.]+", title.rstrip("."))[-1]
+        first_word = name.split()[0]
+        if f"{last_title}. {first_word}" in HONORIFIC_BRANDS or (last_title == "Ms" and first_word in _MS_PRODUCTS):
             continue
         spans.append(Span(m.start(1), m.end(1), Kind.NAME))
     # Her ilk ad kendi konumundan denenir: "Contact Ayşe Kaya" grubunda önceki büyük harfli kelime ("Contact")
