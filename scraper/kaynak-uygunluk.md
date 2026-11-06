@@ -76,7 +76,7 @@ Bu kurallar T-016, T-033, T-034 ve T-047'nin kabul kriterine eklenir:
 1. **Önce izin:** Sadece bu tabloda ✅ olan kaynaklar `job_sources.is_active = true` olur. `tos_checked = true` ancak bu dosyadaki satır güncel ise işaretlenir.
 2. **robots.txt her çalışmada kontrol edilir** (`urllib.robotparser`); kural değişip yol kapanırsa o kaynağın çalışması `failed` olarak kaydedilir ve atlanır.
 3. **Bot koruması aşılmaz:** 403/429/CAPTCHA görülürse geri çekilinir, kaynak pasife alınır ve ekibe uyarı gider. Proxy, UA sahteciliği ya da CAPTCHA çözme kullanılmaz.
-4. **Kimlik belirten User-Agent:** `CareerAI-Bot/1.0 (+https://<alanadi>/bot; iletisim@<alanadi>)`.
+4. **Kimlik belirten User-Agent:** `CareerAI-Bot/1.0 (+https://cvnebakalim.com/bot; iletisim@cvnebakalim.com)`.
 5. **Hız:** API'lerde kendi limitlerinin altında kalınır (Remotive günde 1); HTML kaynaklarda 3–5 sn rastgele gecikme (T-034).
 6. **İlandaki kişisel veriler saklanmaz (KVKK, karar #9 ruhu):** İK sorumlusunun adı, e-posta, telefon ve kişisel profil linkleri `description_clean`'e yazılmadan önce silinir veya maskelenir. Şirket adı tutulabilir.
 7. **Atıf:** Her ilan `source` ve `url` ile saklanır. Arayüzde ilan veya ilan sayısı gösterilen yerde kaynak listesi ("Veriler: Remotive, Himalayas, Remote OK, Hacker News, Jobicy, Arbeitnow…") ve gerekli linkler bulunur (Anıl'a iletilecek, T-053).

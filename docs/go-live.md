@@ -16,7 +16,7 @@
 - [ ] **1.** ★ Production PC'si hazırlandı (Windows güncel, disk şifreli (BitLocker), güçlü yerel hesap şifresi, uyku/hazırda bekletme kapalı, Docker Desktop oturumla başlıyor, Windows Güvenlik Duvarı açık) — _Doğrulama:_ `infra/pc/README.md` kontrol listesi — _Sorumlu:_ Ataberk
 - [ ] **2.** ★ Postgres, Redis ve Ollama portları ağdan erişilemez; PC'de gelen port açılmadı (modemde port yönlendirme yok) — _Doğrulama:_ production compose'da `ports:` yok (`docker compose config`); aynı ağdaki başka cihazdan nmap: hepsi kapalı — _Sorumlu:_ Ataberk
 - [ ] **3.** ★ HTTPS aktif (Cloudflare: Always Use HTTPS, HSTS, en düşük TLS 1.2) — _Doğrulama:_ SSL Labs testi A veya üstü — _Sorumlu:_ Ataberk
-- [ ] **4.** DNS Cloudflare'de; app. ve api. alt alan adları tünele bağlı — _Doğrulama:_ dig api.<alanadi>; `cloudflared tunnel info` — _Sorumlu:_ Ataberk
+- [ ] **4.** DNS Cloudflare'de; app. ve api. alt alan adları tünele bağlı — _Doğrulama:_ dig api.cvnebakalim.com; `cloudflared tunnel info` — _Sorumlu:_ Ataberk
 - [ ] **5.** Container bellek limitleri ve yeniden başlatma politikası (unless-stopped) tanımlı — _Doğrulama:_ docker compose config — _Sorumlu:_ Ataberk
 - [ ] **6.** C: diskinde en az 40 GB boş (06.11.2026: ~71 GB), Docker log rotasyonu (json-file max-size) aktif — _Doğrulama:_ `docker system df`; `Get-PSDrive C` — _Sorumlu:_ Ataberk
 - [ ] **51.** ★ Sunum düzeni hazır: PC prize takılı, mümkünse kablolu internet, sunum haftası Windows güncellemeleri ertelendi; B planı (aynı sürüm 127.0.0.1'de yerel demo + telefondan internet paylaşımı) denendi — _Doğrulama:_ Prova kaydı — _Sorumlu:_ Ataberk

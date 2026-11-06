@@ -24,7 +24,7 @@ x-logging: &logging
 
 services:
   # Cloudflare Tunnel. Sadece TUNNEL_TOKEN dolu ortamda açılır (COMPOSE_PROFILES=tunnel, env dosyasında).
-  # Alan adı → servis eşlemesi Cloudflare panelinde yapılır: api.<alanadi> → http://api:8000 (infra/pc/deploy.md).
+  # Alan adı → servis eşlemesi Cloudflare panelinde yapılır: api.cvnebakalim.com → http://api:8000 (infra/pc/deploy.md).
   cloudflared:
     profiles: ["tunnel"]
     image: cloudflare/cloudflared:2025.8.1

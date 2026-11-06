@@ -46,13 +46,14 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-010 · Alan adı, Cloudflare DNS ve Tunnel
 
-- **Durum:** Yapılacak
+- **Durum:** Devam Ediyor
 - **Tarih:** 19.10.2026 – 25.10.2026 · **Öncelik:** P1 · **Efor:** 2 saat · **Alan:** DevOps / Altyapı
 - **Bağımlılık:** T-009
 - **Destek:** —
 - **Çıktı:** DNS kayıtları + `cloudflared` servisi (compose)
 - **Kabul kriteri:** Alan adı alındı, ad sunucuları Cloudflare'de (ücretsiz plan). Cloudflare Tunnel kuruldu; `cloudflared` production compose'da konteyner, tünel token'ı sadece PC'deki `.env`'de. app. ve api. tünele bağlı; tanıtım/yasal sayfalar için alan adının kökü Cloudflare Pages'e. Always Use HTTPS + HSTS + en düşük TLS 1.2 açık; SSL ücretsiz (Cloudflare).
 - **Not:** 06.11.2026: karar #30 ile Caddy/Let's Encrypt yerine Cloudflare Tunnel; staging-api. ve status. alt alan adları kaldırıldı.
+- **Devam notu (06.11.2026):** Yapılan: `cvnebakalim.com` Cloudflare Registrar'dan alındı (ad sunucuları otomatik Cloudflare'de); dokümanlardaki yer tutucular gerçek adla değiştirildi. Sıradaki adım: hesapta iki adımlı doğrulama, Zero Trust'ta `careerai-pc` tüneli ve `api.cvnebakalim.com` → `api:8000` (`infra/pc/deploy.md` 3. adım), SSL/TLS ayarları; production (T-075) açılınca uçtan uca deneme. Açık sorular / engeller: web arayüzü (`app.`) Pages'te mi tünelde mi (Anıl); kök alan adı Cloudflare Pages'e (tanıtım/yasal sayfalar, T-070). Branch: ataberk/karar-sunucusuz
 
 ### T-011 · Veri tabanı şeması v1 (ERD)
 
@@ -153,9 +154,15 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 - **Tarih:** 02.11.2026 – 08.11.2026 · **Öncelik:** P0 · **Efor:** 4 saat · **Alan:** DevOps / Altyapı
 - **Bağımlılık:** T-009, T-007
 - **Destek:** —
+<<<<<<< HEAD
 - **Çıktı:** Prova ortamı (`careerai-staging` compose projesi, `infra/pc/compose.yml`)
 - **Kabul kriteri:** PC'de `docker compose -p careerai-staging` ile production'dan ayrı volume'larla açılıp kapatılabilen prova ortamı (`bash infra/pc/deploy.sh <ref> staging` / `make staging-down`); sadece 127.0.0.1, gerektiğinde geçici tünel (staging.<alanadi>); staging verisi production'dan ayrı.
 - **Not:** 06.11.2026: karar #30 ile sürekli açık staging sunucusu kaldırıldı; prova ortamı ihtiyaç olunca açılır. Bu PC'de denendi: 41 sn'de bütün servisler healthy, host'a port açılmadı, `down -v` ortak Ollama modelini silmiyor. Geçici tünel gerekmedikçe kurulmadı. Analiz işçisi/CV Redis #58/#60 ve `ai/Dockerfile` sonrası eklenecek (PR #50).
+=======
+- **Çıktı:** Prova ortamı (`careerai-staging` compose projesi)
+- **Kabul kriteri:** PC'de `docker compose -p careerai-staging` ile production'dan ayrı volume ve portlarla açılıp kapatılabilen prova ortamı (`make staging-up` / `staging-down`); sadece 127.0.0.1, gerektiğinde geçici tünel (staging.cvnebakalim.com); staging verisi production'dan ayrı.
+- **Not:** 06.11.2026: karar #30 ile sürekli açık staging sunucusu kaldırıldı; prova ortamı ihtiyaç olunca açılır.
+>>>>>>> ataberk/karar-sunucusuz
 
 ### T-036 · CD: imaj üretimi ve PC'ye deploy betiği
 
@@ -241,7 +248,7 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 - **Bağımlılık:** T-035
 - **Destek:** —
 - **Çıktı:** İzleme paneli + status sayfası
-- **Kabul kriteri:** PC dışından uptime izleme (UptimeRobot / Better Stack ücretsiz; api.<alanadi>/health/ready her 1-5 dk), Sentry (backend + web + mobil, ücretsiz katman), Prometheus + Grafana PC'de (CPU/RAM/disk/kuyruk; sadece 127.0.0.1). Uyarılar Telegram/e-posta ile ekibe.
+- **Kabul kriteri:** PC dışından uptime izleme (UptimeRobot / Better Stack ücretsiz; api.cvnebakalim.com/health/ready her 1-5 dk), Sentry (backend + web + mobil, ücretsiz katman), Prometheus + Grafana PC'de (CPU/RAM/disk/kuyruk; sadece 127.0.0.1). Uyarılar Telegram/e-posta ile ekibe.
 - **Not:** 06.11.2026: karar #30 ile Uptime Kuma yerine dış izleyici (PC kapanınca içindeki izleyici de kapanır).
 
 ### T-064 · Güvenlik incelemesi (OWASP Top 10)

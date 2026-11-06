@@ -54,7 +54,7 @@ PC her açıldığında (elektrik kesintisi, güncelleme):
 
 1. Windows oturumu aç; Docker Desktop kendisi başlar.
 2. `docker compose -p careerai-prod ps`: bütün servisler `healthy`.
-3. Tarayıcıda `https://api.<alanadi>/health/ready` açılıyor.
+3. Tarayıcıda `https://api.cvnebakalim.com/health/ready` açılıyor.
 4. Gece toplaması ve yedek kaçtıysa açılışta çalıştığını kontrol et (`scrape_runs` son kaydı; restic snapshots).
 
 ## 6. Sunum günü
