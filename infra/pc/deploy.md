@@ -4,7 +4,7 @@ Karar #30: production Ataberk'in PC'sinde Docker Compose ile çalışır, dışa
 
 | Ortam | Compose projesi | Ayar dosyası (repoda yok) | Dış erişim |
 |---|---|---|---|
-| Production | `careerai-prod` | `infra/pc/.env.prod` | Cloudflare Tunnel (`api.<alanadi>`) |
+| Production | `careerai-prod` | `infra/pc/.env.prod` | Cloudflare Tunnel (`api.cvnebakalim.com`) |
 | Prova (staging) | `careerai-staging` | `infra/pc/.env.staging` | Yok (gerekirse geçici tünel) |
 | Geliştirme | `careerai` | `.env` (kök) | Yok, 127.0.0.1 |
 
@@ -38,7 +38,7 @@ Alan adı Cloudflare'e eklendikten (ad sunucuları Cloudflare'de) sonra:
 
 1. Cloudflare paneli → **Zero Trust** → **Networks** → **Tunnels** → **Create a tunnel** → **Cloudflared** → ad: `careerai-pc`.
 2. Kurulum ekranında **Docker** seçin; gösterilen komuttaki `--token` sonrasındaki uzun değeri `.env.prod` içindeki `TUNNEL_TOKEN=` satırına yazın. Komutu çalıştırmayın (cloudflared compose'da).
-3. **Public Hostname** → **Add a public hostname**: Subdomain `api`, Domain `<alanadi>`, Type `HTTP`, URL `api:8000`. Kaydedin.
+3. **Public Hostname** → **Add a public hostname**: Subdomain `api`, Domain `cvnebakalim.com`, Type `HTTP`, URL `api:8000`. Kaydedin.
 4. Cloudflare paneli → alan adı → **SSL/TLS** → **Edge Certificates**: **Always Use HTTPS** açık, **Minimum TLS Version** 1.2, **HSTS** açık.
 
 Admin paneli, Grafana ve veri tabanı için public hostname **eklenmez**.
@@ -75,6 +75,6 @@ Alan adı açılmazsa api'yi sadece bu PC'ye açın: `make prod-local` → `http
 ## Henüz eksik
 
 - `worker-ai` / analiz işçisi ve CV Redis'i: `ai/Dockerfile` (Burak) ve #58/#60 main'e girince eklenecek; o zamana kadar analizler çalışmaz.
-- Web arayüzü (`app.<alanadi>`): Cloudflare Pages'te mi tünelde mi yayınlanacağı Anıl'la kararlaştırılacak.
+- Web arayüzü (`app.cvnebakalim.com`): Cloudflare Pages'te mi tünelde mi yayınlanacağı Anıl'la kararlaştırılacak.
 - Güvenlik başlıkları (nosniff, X-Frame-Options): eskiden Caddy veriyordu; şimdi api'de (Anıl) veya Cloudflare **Rules → Transform Rules** ile eklenmeli (go-live #12).
 - Dış uptime izleme ve yedek uyarısı (T-066).
