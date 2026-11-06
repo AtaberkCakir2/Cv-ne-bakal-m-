@@ -75,7 +75,7 @@ Kurallar:
 - **Lokal geliştirmede `.env`'e `ENVIRONMENT=local` yazın.** Ortam açıkça `local`/`test` yazılmazsa ve `JWT_SECRET` verilmezse giriş/kayıt çalışmaz (repodaki geliştirme anahtarıyla token üretilmez); `/health` açık kalır. `ENVIRONMENT=production` iken `JWT_SECRET` verilmezse uygulama hiç açılmaz.
 - Production'da `.env`: `JWT_SECRET` ve `IP_HASH_SECRET` (ikisi de en az 32 karakter, farklı, rastgele).
 - Bilinen sınırlar: aynı refresh token'la eşzamanlı iki yenileme oturumları kapatır (istemci yenilemeyi tek seferde yapmalı); ayrıntı `app/services/auth.py` başında.
-- **E-posta:** Gerçek e-posta servisi henüz yok. İletiler bellekte tutulur (`OutboxEmailSender`); `ENVIRONMENT=local` iken doğrulama ve sıfırlama bağlantıları API loguna yazılır.
+- **E-posta:** Gerçek e-posta servisi henüz yok. İletiler bellekte tutulur (`OutboxEmailSender`, en fazla son 100 ileti; gitmez, staging'de doğrulama ve sıfırlama e-postası ulaşmaz); `ENVIRONMENT=local` iken doğrulama ve sıfırlama bağlantıları API loguna yazılır.
 
 ### Kalıcı test kullanıcısı
 
