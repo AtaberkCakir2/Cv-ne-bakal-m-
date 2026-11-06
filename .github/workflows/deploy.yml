@@ -1,6 +1,7 @@
-# CD (T-036, sahibi: Ataberk). main'de CI yeşil olunca imajları GHCR'a gönderir ve staging'e deploy eder.
-# Ayarlar ve kurulum: infra/ci.md. Sunucu hazır olana kadar `STAGING_DEPLOY` değişkeni tanımsız bırakılır: otomatik
-# çalışma atlanır, elle çalıştırma (Actions → Deploy → Run workflow) sadece imajları derler.
+# CD (T-036, sahibi: Ataberk, karar #30). main'de CI yeşil olunca api ve worker-data imajlarını GHCR'a gönderir.
+# Deploy CI'dan yapılmaz: production Ataberk'in PC'sinde, PC'ye dışarıdan erişim açılmaz. Sürüm PC'de
+# `bash infra/pc/deploy.sh vX.Y.Z` ile alınır (infra/pc/deploy.md). Elle çalıştırma (Run workflow) seçilen dalın
+# imajlarını derler.
 name: Deploy
 
 on:
@@ -10,9 +11,9 @@ on:
     types: [completed]
   workflow_dispatch:
 
-# Deploy'lar sırayla: yarıda kesilen migration staging'i bozar, bu yüzden iptal yok.
+# İmaj gönderimleri sırayla; eski sürüm silme adımı aynı anda iki kez çalışmasın.
 concurrency:
-  group: deploy-staging
+  group: images
 
 permissions:
   contents: read
@@ -30,8 +31,7 @@ jobs:
       github.event_name == 'workflow_dispatch' ||
       (github.event.workflow_run.conclusion == 'success' &&
        github.event.workflow_run.event == 'push' &&
-       github.event.workflow_run.head_repository.full_name == github.repository &&
-       vars.STAGING_DEPLOY == 'true')
+       github.event.workflow_run.head_repository.full_name == github.repository)
     runs-on: ubuntu-24.04
     permissions:
       contents: read
@@ -61,38 +61,11 @@ jobs:
           provenance: false
           cache-from: type=gha,scope=${{ matrix.name }}
           cache-to: type=gha,mode=max,scope=${{ matrix.name }}
-      # GHCR depolaması kotalı (özel repo): geri dönüş için son sürümler yeter.
+      # GHCR depolaması kotalı (özel repo): son 20 sürüm tutulur. Sürüm etiketi (vX.Y.Z) basılınca o commit'in
+      # imajı PC'de hemen deploy edilir (infra/pc/deploy.md). Eski bir commit gerekiyorsa o commit'e dal açılıp Run workflow çalıştırılır.
       - uses: actions/delete-package-versions@v5
         with:
           package-name: careerai-${{ matrix.name }}
           package-type: container
-          min-versions-to-keep: 5
+          min-versions-to-keep: 20
 
-  deploy:
-    name: Staging'e deploy
-    needs: build
-    # Elle çalıştırma başka daldan seçilirse sadece imaj derlenir; staging'e sadece main gider.
-    if: vars.STAGING_DEPLOY == 'true' && (github.event_name == 'workflow_run' || github.ref == 'refs/heads/main')
-    runs-on: ubuntu-24.04
-    environment: staging
-    permissions:
-      contents: read
-      packages: read
-    steps:
-      - name: SSH ayarı
-        env:
-          KEY: ${{ secrets.STAGING_SSH_KEY }}
-          KNOWN_HOSTS: ${{ secrets.STAGING_KNOWN_HOSTS }}
-        run: |
-          install -d -m 700 ~/.ssh
-          printf '%s\n' "$KEY" > ~/.ssh/id_ed25519
-          chmod 600 ~/.ssh/id_ed25519
-          printf '%s\n' "$KNOWN_HOSTS" > ~/.ssh/known_hosts
-      - name: Deploy
-        env:
-          HOST: ${{ secrets.STAGING_HOST }}
-          TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          ACTOR: ${{ github.actor }}
-        # Anahtar sunucuda sadece infra/staging/ci-deploy.sh'ı çalıştırabilir (forced command). Token bu iş boyunca
-        # geçerli, stdin'den gider ve betik bitince oturum kapatılır.
-        run: printf '%s' "$TOKEN" | ssh "deploy@$HOST" "deploy $SHA $ACTOR"

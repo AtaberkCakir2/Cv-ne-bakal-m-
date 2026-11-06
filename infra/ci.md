@@ -38,30 +38,10 @@ Repo → **Settings** → **Branches** → `main` kuralı (GitHub Pro, Student P
 
 `.github/CODEOWNERS` her PR'a ilgili klasörün sahibini otomatik inceleyici ekler. "Sahibin onayı zorunlu" açık değil: kişi kendi klasöründeki PR'ı kendisi onaylayamayacağı için her PR'da herhangi 1 ekip üyesinin onayı yeter.
 
-## Deploy (T-036)
+## İmajlar ve deploy (T-036, karar #30)
 
-`.github/workflows/deploy.yml`: `main`'de CI yeşil olunca `api` ve `worker-data` imajlarını `ghcr.io/ataberkcakir2/careerai-*:<sha>` olarak gönderir, sunucuda `infra/staging/deploy.sh <sha>` çalıştırır. Betik migration ve smoke test yapar; başarısız olursa önceki imajlara döner (migration'lar geri alınmaz, önceki sürümle uyumlu yazılmalı).
+`.github/workflows/deploy.yml`: `main`'de CI yeşil olunca `api` ve `worker-data` imajlarını `ghcr.io/ataberkcakir2/careerai-*:<commit>` olarak gönderir. Ayar veya sır gerekmez (`GITHUB_TOKEN` yeter). Her imajın son 20 sürümü tutulur (özel repoda GHCR depolaması kotalı).
 
-Sunucu hazır olunca:
+Deploy CI'dan **yapılmaz**: production Ataberk'in PC'sinde çalışır ve PC'ye dışarıdan erişim açılmaz. Sürüm PC'de `bash infra/pc/deploy.sh vX.Y.Z` ile alınır; adımlar `infra/pc/deploy.md`'de.
 
-1. **Settings → Environments → New environment:** adı `staging`. *Deployment branches and tags* → *Selected branches* → `main`. Sırlar repo düzeyinde değil burada durur: başka dallardaki workflow'lar okuyamaz.
-2. Kendi bilgisayarınızda sadece CI için bir anahtar üretin: `ssh-keygen -t ed25519 -N "" -C careerai-ci -f ci_key`
-3. `ci_key.pub` içeriğini sunucuda `/home/deploy/.ssh/authorized_keys` dosyasına **şu önekle** ekleyin (tek satır):
-
-   ```
-   restrict,command="bash /home/deploy/careerai/infra/staging/ci-deploy.sh" ssh-ed25519 AAAA... careerai-ci
-   ```
-
-   Bu anahtar sadece `main`'deki bir commit'i deploy edebilir; kabuk, `sudo` ve port yönlendirme açmaz (`infra/staging/ci-deploy.sh`).
-4. Ayarları girin, sonra `ci_key` dosyasını silin:
-
-| Yer | Ad | Değer |
-|---|---|---|
-| Secrets and variables → Actions → Variables | `STAGING_DEPLOY` | `true` (tanımsızken otomatik deploy kapalı) |
-| Environments → staging → Environment secrets | `STAGING_HOST` | Sunucu IP'si veya adı |
-| Environments → staging → Environment secrets | `STAGING_SSH_KEY` | `ci_key` içeriği |
-| Environments → staging → Environment secrets | `STAGING_KNOWN_HOSTS` | `ssh-keyscan <sunucu-ip>` çıktısı |
-
-Deploy sadece bu repodaki `main`'e yapılan push'un CI'ı yeşil olunca çalışır; fork'tan gelen PR'lar tetiklemez.
-
-İmaj kısmı sunucusuz denenebilir: Actions → Deploy → Run workflow sadece imajları derleyip gönderir. Bu özel repoda GHCR depolaması kotalıdır; her imajın son 5 sürümü tutulur. Sunucuda her servisin son 3 imajı kalır.
+Actions → Deploy → **Run workflow**: seçilen dalın son commit'inin imajlarını elle derleyip gönderir.
