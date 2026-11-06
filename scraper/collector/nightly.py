@@ -19,7 +19,7 @@ from sqlalchemy.orm import Session
 from collector import taxonomy
 from collector.http import PoliteClient
 from collector.posting import Posting, SourceInfo
-from collector.sources import himalayas, hn, remoteok, remotive
+from collector.sources import arbeitnow, himalayas, hn, jobicy, remoteok, remotive
 from collector.store import RunResult, error_summary, run_import
 from etl import stats
 from etl.pipeline import normalize
@@ -46,6 +46,8 @@ NIGHTLY_SOURCES: tuple[NightlySource, ...] = (
     NightlySource(himalayas.SOURCE, lambda c, known: himalayas.fetch(c, pages_per_query=2)),
     NightlySource(remoteok.SOURCE, lambda c, known: remoteok.fetch(c)),
     NightlySource(remotive.SOURCE, lambda c, known: remotive.fetch(c)),  # şart: gecede 1 çağrı
+    NightlySource(jobicy.SOURCE, lambda c, known: jobicy.fetch(c)),
+    NightlySource(arbeitnow.SOURCE, lambda c, known: arbeitnow.fetch(c)),
 )
 
 
