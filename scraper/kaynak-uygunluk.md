@@ -65,6 +65,7 @@ Durum değerleri: ✅ **Kullanılır** (şartlara uyarak) · 🟡 **Teyit / izin
 
 | Site | robots.txt | Kullanım koşulları | Durum |
 |---|---|---|---|
+| [Python.org Jobs](https://www.python.org/jobs/) | `/jobs/` kapalı değil | [Legal](https://www.python.org/about/legal/): üçüncü taraf içeriği sağlayanlar site kullanıcılarına çoğaltma ve yayın lisansı verir; otomatik erişim yasağı yok | ✅ (01.11.2026) İletişim bölümü alınmaz, kaynak linki verilir |
 | LinkedIn | `User-agent: *` → `Disallow: /`; "otomatik erişim açık izin olmadan kesinlikle yasaktır" notu | User Agreement otomatik erişimi yasaklıyor | ⛔ |
 | Indeed | Sayfalar kısmen açık | Site Rules (21): bot, scraper, spider veya yapay zeka ile erişim ve veri madenciliği; tarama, kazıma, kopyalama yasak | ⛔ |
 | Glassdoor | Kısmen açık | Şartlar sayfası 403 (bot korumalı); Indeed ile aynı şirket grubu | ⛔ |

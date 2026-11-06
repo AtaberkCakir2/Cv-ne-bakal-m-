@@ -118,7 +118,7 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-016 · Playwright scraper PoC (1 kaynak)
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 02.11.2026 – 08.11.2026 · **Öncelik:** P1 · **Efor:** 6 saat · **Alan:** Veri Toplama
 - **Bağımlılık:** T-014
 - **Destek:** —
