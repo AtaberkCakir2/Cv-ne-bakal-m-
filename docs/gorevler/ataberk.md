@@ -154,15 +154,9 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 - **Tarih:** 02.11.2026 – 08.11.2026 · **Öncelik:** P0 · **Efor:** 4 saat · **Alan:** DevOps / Altyapı
 - **Bağımlılık:** T-009, T-007
 - **Destek:** —
-<<<<<<< HEAD
 - **Çıktı:** Prova ortamı (`careerai-staging` compose projesi, `infra/pc/compose.yml`)
-- **Kabul kriteri:** PC'de `docker compose -p careerai-staging` ile production'dan ayrı volume'larla açılıp kapatılabilen prova ortamı (`bash infra/pc/deploy.sh <ref> staging` / `make staging-down`); sadece 127.0.0.1, gerektiğinde geçici tünel (staging.<alanadi>); staging verisi production'dan ayrı.
+- **Kabul kriteri:** PC'de `docker compose -p careerai-staging` ile production'dan ayrı volume'larla açılıp kapatılabilen prova ortamı (`bash infra/pc/deploy.sh <ref> staging` / `make staging-down`); sadece 127.0.0.1, gerektiğinde geçici tünel (staging.cvnebakalim.com); staging verisi production'dan ayrı.
 - **Not:** 06.11.2026: karar #30 ile sürekli açık staging sunucusu kaldırıldı; prova ortamı ihtiyaç olunca açılır. Bu PC'de denendi: 41 sn'de bütün servisler healthy, host'a port açılmadı, `down -v` ortak Ollama modelini silmiyor. Geçici tünel gerekmedikçe kurulmadı. Analiz işçisi/CV Redis #58/#60 ve `ai/Dockerfile` sonrası eklenecek (PR #50).
-=======
-- **Çıktı:** Prova ortamı (`careerai-staging` compose projesi)
-- **Kabul kriteri:** PC'de `docker compose -p careerai-staging` ile production'dan ayrı volume ve portlarla açılıp kapatılabilen prova ortamı (`make staging-up` / `staging-down`); sadece 127.0.0.1, gerektiğinde geçici tünel (staging.cvnebakalim.com); staging verisi production'dan ayrı.
-- **Not:** 06.11.2026: karar #30 ile sürekli açık staging sunucusu kaldırıldı; prova ortamı ihtiyaç olunca açılır.
->>>>>>> ataberk/karar-sunucusuz
 
 ### T-036 · CD: imaj üretimi ve PC'ye deploy betiği
 
