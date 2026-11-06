@@ -173,12 +173,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-048 · Analiz sonuç ve katalog endpoint'leri
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 16.11.2026 – 22.11.2026 · **Öncelik:** P0 · **Efor:** 10 saat · **Alan:** Backend API
 - **Bağımlılık:** T-039
 - **Destek:** —
 - **Çıktı:** Endpoint'ler + testler
 - **Kabul kriteri:** GET /analyses, /analyses/{id}, DELETE /analyses/{id}; GET /roles, /roles/{slug}/skills, /skills/{slug}/resources. Kullanıcı sadece kendi analizini görebilir (IDOR testi).
+- **Not:** 06.11.2026: `GET /analyses` (`limit`/`offset`, `{items, total}`, askıdakiler `failed` olur), `GET /analyses/{id}` artık yetkinlikleri ve önerilen kaynakları da döner (ölü linkler gösterilmez, `priority` sıra numarası), `DELETE /analyses/{id}` (soft delete, 30 günde kalıcı silinir). Katalog uçları giriş istemez, 5 dk önbelleklenebilir. Başkasının analizi GET/DELETE'te 404 (testli). Sözleşmedeki `/skills?q=` kabul kriterinde yok, yapılmadı. İşçi henüz `analysis_skills`/`analysis_recommendations` yazmıyor: gerçek akışta listeler T-057'ye (Burak) kadar boş.
 
 ### T-051 · Giriş, kayıt, şifre sıfırlama ve KVKK onay ekranları
 

@@ -4,6 +4,7 @@ import io
 import tempfile
 import uuid
 from types import SimpleNamespace
+from typing import Any
 
 import pytest
 from fastapi import FastAPI
@@ -40,6 +41,22 @@ class FakeRepository:
 
     def get_owned(self, analysis_id: uuid.UUID, user_id: uuid.UUID) -> None:
         return None
+
+    # Liste, silme ve sonuç ayrıntısı (T-048) tests/auth/test_analyses_results.py'de.
+    def fail_stale(self, user_id: uuid.UUID, created_before: object) -> None:
+        raise AssertionError
+
+    def list_owned(self, user_id: uuid.UUID, limit: int, offset: int) -> tuple[list[Any], int]:
+        raise AssertionError
+
+    def soft_delete(self, analysis_id: uuid.UUID, user_id: uuid.UUID) -> bool:
+        raise AssertionError
+
+    def skill_names(self, skill_ids: set[int]) -> dict[int, str]:
+        raise AssertionError
+
+    def resources(self, resource_ids: set[int]) -> dict[int, Any]:
+        raise AssertionError
 
 
 class FakeQueue:
