@@ -17,13 +17,16 @@ Windows'ta systemd/cron olmadığı için yedek, production compose'unda (`infra
 
 Depo PC'den ayrı bir yerde olmalı. Veritabanı küçük (Kasım 2026: ~6,5 MB döküm), ücretsiz 10 GB yeter.
 
-1. backblaze.com → **Sign Up** (B2 Cloud Storage). Hesap ekibin ortak e-postasıyla açılırsa başka biri de erişebilir.
-2. **B2 Cloud Storage → Buckets → Create a Bucket:** ad `careerai-yedek` (dünya genelinde benzersiz olmalı; doluysa sonuna ek yapın), **Private**, Default Encryption **Enable**.
-3. **Application Keys → Add a New Application Key:** ad `careerai-pc`, sadece bu bucket, **Read and Write**. Gösterilen `keyID` ve `applicationKey` yalnızca bir kez görünür.
-4. `infra/pc/.env.prod`:
+**Kuruldu (06.11.2026, Ataberk):** hesap EU Central bölgesinde, bucket `cvnebakalim-yedek`, uygulama anahtarı `careerai-pc`; anahtarlar ve hesap bilgileri parola yöneticisinde. Yeniden kurmak gerekirse:
+
+1. backblaze.com → **Sign Up** (B2 Cloud Storage), bölge **EU Central**. Hesapta iki adımlı doğrulama açılır.
+2. **Caps & Alerts:** bütün sınırlar **$0** (ücretsiz kota aşılırsa ücret yerine işlem durur, uyarı e-postası gelir).
+3. **Buckets → Create a Bucket:** **Private**, Default Encryption **Enable**, Object Lock kapalı. Ardından **Lifecycle Settings → Keep only the last version of the file** (silinen eski yedekler gizlice birikmesin; saklamayı restic yönetir).
+4. **Application Keys → Add a New Application Key:** ad `careerai-pc`, sadece bu bucket, **Read and Write**. Gösterilen `keyID` ve `applicationKey` yalnızca bir kez görünür.
+5. `infra/pc/.env.prod`:
 
    ```
-   RESTIC_REPOSITORY=b2:<bucket-adı>:/careerai
+   RESTIC_REPOSITORY=b2:cvnebakalim-yedek:/careerai
    RESTIC_PASSWORD=<openssl rand -base64 32 çıktısı>
    B2_ACCOUNT_ID=<keyID>
    B2_ACCOUNT_KEY=<applicationKey>
