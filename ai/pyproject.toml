@@ -6,7 +6,8 @@ requires-python = ">=3.12"
 dependencies = [
     "pdfplumber>=0.11",
     # AGPL lisanslı; proje açık kaynak/akademik olduğu sürece uygun. Ticari kullanımda lisans gözden geçirilmeli.
-    "pymupdf>=1.24",
+    # Sürüm sabit: yeni sürüm tip bilgisini değiştirince mypy (CI) kırılıyor, PDF davranışı da değişebilir.
+    "pymupdf==2.1",
 ]
 
 [project.optional-dependencies]

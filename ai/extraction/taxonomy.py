@@ -1,10 +1,12 @@
 """Yetkinlik taksonomisi (scraper/taxonomy/skills.csv) ve metinde geçen yetkinliklerin bulunması.
 
-Eşleme kuralları ilan eşleyicisiyle (scraper/etl/skills.py, Ataberk) aynıdır, CV'de de aynı sonucu versin diye:
+İlan ETL'i de (scraper/etl/skills.py, Ataberk) eşlemeyi bu modülün `Matcher`'ıyla yapar: CV ve ilan aynı kuralla
+etiketlenmezse eşleştirmede yapay eksikler çıkar. Kural değişikliği iki tarafı birlikte etkiler (Burak + Ataberk onayı).
+Kurallar:
 - kelime sınırı: "Java" "JavaScript" içinde bulunmaz; "C++", ".NET", "Node.js" gibi noktalama içeren adlar çalışır;
 - `case_sensitive` yetkinliğin adı sadece yazıldığı gibi eşleşir ("Go", "SOLID"); eş anlamlıları harf duyarsızdır;
-- Türkçe metin iki katlamayla denenir ("İ" → "i"; "I" hem "ı" hem "i"), çünkü teknoloji adları Latin I ile yazılır.
-Ortak paket olunca (T-031 sonrası, Ataberk'le) bu modül ve etl/skills.py birleştirilebilir.
+- Türkçe metin iki katlamayla denenir ("İ" → "i"; "I" hem "ı" hem "i"), çünkü teknoloji adları Latin I ile yazılır;
+- çakışan geçişlerde en uzun eşleşme kalır ("Objective-C" C değil, "Ruby on Rails" Ruby değil).
 """
 
 from __future__ import annotations
