@@ -43,6 +43,16 @@ HONORIFIC = re.compile(
     r"\b(?:Prof\.\s*Dr\.|Doç\.\s*Dr\.|Dr\.\s*Öğr\.\s*Üyesi|Dr\.|Prof\.|Doç\.|Öğr\.\s*Gör\.|Arş\.\s*Gör\.|Av\.|Müh\."
     rf"|Mr\.|Mrs\.|Ms\.|Sayın|Bay|Bayan){_SP}((?:{_WORD})(?:{_SP}{_NAME_TOKEN}){{0,2}})"
 )
+# Türkçe hitaplar İngilizce metinde ad öneki değildir ("Bay Area", "North Bay").
+_TR_ONLY_TITLES = frozenset({"Sayın", "Bay", "Bayan"})
+# Unvanla başlayan marka adları. Unvandan sonraki her ad maskelenir ("Mr. Johnson", "Prof. Smith"); fazla maskelemenin
+# yetkinlik maliyeti yok, kaçırmanın var. İstisna sadece bu küçük liste.
+HONORIFIC_BRANDS = frozenset(
+    {
+        "Dr. Squatch", "Dr. Martens", "Dr. Dre", "Dr. Oetker", "Dr. Pepper", "Dr. Scholl",
+        "Mr. Clean", "Mr. Rooter", "Mr. Electric", "Mr. Bean",
+    }
+)  # fmt: skip
 HEADER_LINE = re.compile(rf"^[ \t]*{_NAME_TOKEN}(?:{_SP}{_NAME_TOKEN}){{1,3}}[ \t]*$")
 # İlk satırlarda ad olmayan başlıklar
 NOT_A_NAME = re.compile(
@@ -96,7 +106,13 @@ def find_names(
             spans.append(Span(m.start(1), m.start(1) + len(value), Kind.NAME))
     if header:
         spans += _header_name(text, skip)
-    spans += [Span(m.start(1), m.end(1), Kind.NAME) for m in HONORIFIC.finditer(text)]
+    for m in HONORIFIC.finditer(text):
+        title, name = text[m.start() : m.start(1)].strip(), m.group(1)
+        if lang != "tr" and title in _TR_ONLY_TITLES:
+            continue
+        if f"{title.split()[-1]} {name.split()[0]}" in HONORIFIC_BRANDS:
+            continue
+        spans.append(Span(m.start(1), m.end(1), Kind.NAME))
     # Her ilk ad kendi konumundan denenir: "Contact Ayşe Kaya" grubunda önceki büyük harfli kelime ("Contact")
     # eşleşmeyi yutup ilk adı atlatmasın.
     for w in _FIRST_NAME_START.finditer(text):
