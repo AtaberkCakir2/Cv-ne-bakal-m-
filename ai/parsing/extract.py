@@ -25,7 +25,7 @@ MAX_BYTES = 5 * 1024 * 1024
 MAX_PAGES = 5
 MIN_TEXT_CHARS = 200
 
-Backend = Literal["pdfplumber", "pymupdf"]
+Backend = Literal["pdfplumber", "pymupdf", "tesseract"]
 
 logger = logging.getLogger(__name__)
 

@@ -14,7 +14,7 @@ python -m venv .venv
 pip install -e ".[dev]"
 pytest
 ruff check . && ruff format --check .
-mypy parsing pii extraction tests eval/scripts
+mypy parsing ocr pii extraction tests eval/scripts
 ```
 
 Testler gerçek CV kullanmaz; PDF'ler test sırasında bellekte üretilir.
@@ -24,7 +24,7 @@ Testler gerçek CV kullanmaz; PDF'ler test sırasında bellekte üretilir.
 | Modül | Görev | Durum |
 |---|---|---|
 | `parsing/` | PDF → metin (T-020) | ✅ |
-| `ocr/` | Taranmış CV için OCR (T-029) | — |
+| `ocr/` | Taranmış CV için OCR (T-029) | Kod hazır, doğruluk ölçümü bekliyor |
 | `pii/` | Kişisel veri maskeleme (T-030) | ✅ |
 | `extraction/` | Yetkinlik çıkarımı (T-031 v1 sözlük + kural; T-032 LLM) | v1 ✅ |
 | `eval/` | Etiketli değerlendirme seti ve araçları (T-019) | Devam ediyor |
@@ -52,6 +52,28 @@ else:
 - **Hatalar:** PDF değil / bozuk / şifreli → `PDF_UNREADABLE`; > 5 MB veya > 5 sayfa → `PDF_TOO_LARGE`. Ayrıntılı sebep `err.reason`'da (loglar için).
 - **KVKK:** girdi bellekte işlenir; CV metni hiçbir yerde loglanmaz (sadece hata türü loglanır). Testlerden biri dosya yazma ve geçici dosya açma çağrılarını engelleyerek bunu doğrular.
 - **Lisans notu:** PyMuPDF AGPL lisanslıdır; akademik/açık kaynak kullanımda sorun yok, ticari kullanımda gözden geçirilmeli.
+
+### `ocr` — taranmış CV için OCR (T-029)
+
+```python
+from ocr import OcrError, extract_with_ocr
+from parsing import PdfError
+
+try:
+    result = extract_with_ocr(pdf_bytes)  # worker'ın giriş noktası; dijital PDF'te OCR çalışmaz
+except PdfError as err:
+    err.code  # PDF_UNREADABLE / PDF_TOO_LARGE / OCR'dan sonra da metin yoksa NO_TEXT_FOUND
+except OcrError:
+    ...  # Tesseract çalışmadı: dosyanın değil sistemin sorunu, sözleşmede INTERNAL
+else:
+    result.text
+    result.backend  # "pdfplumber", "pymupdf" veya OCR kullanıldıysa "tesseract"
+```
+
+- **Akış:** `extract_text` metni 200 karakterden kısa bulursa sayfalar 300 DPI gri görüntüye çevrilip Tesseract'a (`tur+eng`) verilir; uzun olan metin alınır.
+- **KVKK:** görüntü stdin'den gider, metin stdout'tan gelir; geçici dosya yoktur. `pdf2image` ve `pytesseract` bu yüzden kullanılmaz: ikisi de CV'yi geçici dosyaya yazar. OCR metni ve Tesseract'ın stderr'i loglanmaz.
+- **Kurulum:** Tesseract 5 ve Türkçe dil paketi gerekir. Debian/Ubuntu: `apt install tesseract-ocr tesseract-ocr-tur`. Windows: kurulumda Turkish paketini seçin; PATH'te değilse `TESSERACT_CMD` ile yolunu verin. Kurulu değilse gerçek okuma testi atlanır, diğer testler sahte süreçle çalışır.
+- **Ölçüm:** `python eval/scripts/ocr_accuracy.py` (eşik %95, kabul kriteri).
 
 ### `pii` — kişisel veri maskeleme (T-030)
 
