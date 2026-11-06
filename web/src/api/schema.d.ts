@@ -222,6 +222,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/users/me/consents/{consent_type}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Açık rızayı geri al
+         * @description KVKK md. 11. Onay kaydı silinmez, `withdrawn_at` dolar. Tekrar çağrılırsa bir şey değişmez.
+         */
+        delete: operations["withdraw_consent_api_v1_users_me_consents__consent_type__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/users/me/export": {
         parameters: {
             query?: never;
@@ -270,6 +290,8 @@ export interface components {
              * Format: date-time
              */
             accepted_at: string;
+            /** Withdrawn At */
+            withdrawn_at: string | null;
         };
         /**
          * ConsentType
@@ -742,6 +764,15 @@ export interface operations {
                     "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
+            /** @description Çok fazla deneme */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": unknown;
+                };
+            };
         };
     };
     refresh_api_v1_auth_refresh_post: {
@@ -990,6 +1021,15 @@ export interface operations {
                     "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
+            /** @description Çok fazla deneme */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": unknown;
+                };
+            };
         };
     };
     update_me_api_v1_users_me_patch: {
@@ -1074,6 +1114,37 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    withdraw_consent_api_v1_users_me_consents__consent_type__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                consent_type: components["schemas"]["ConsentType"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ConsentOut"][];
+                };
+            };
+            /** @description Bu onay türü geri alınamaz */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": unknown;
                 };
             };
         };

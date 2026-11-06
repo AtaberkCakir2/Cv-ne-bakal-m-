@@ -44,6 +44,7 @@ class ConsentOut(BaseModel):
     consent_type: ConsentType
     version: str
     accepted_at: datetime
+    withdrawn_at: datetime | None
 
 
 class ConsentsIn(BaseModel):
