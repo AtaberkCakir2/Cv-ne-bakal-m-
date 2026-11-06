@@ -27,8 +27,8 @@ cp infra/pc/.env.example infra/pc/.env.prod
 cp infra/pc/.env.example infra/pc/.env.staging
 ```
 
-- `.env.prod`: `APP_ENVIRONMENT=production`; şifreler için her satıra ayrı `openssl rand -hex 32` çıktısı; `TUNNEL_TOKEN` 3. adımdan.
-- `.env.staging`: `APP_ENVIRONMENT=staging`; production'dan **farklı** şifreler; `TUNNEL_TOKEN=` ve `COMPOSE_PROFILES=` boş.
+- `.env.prod`: `APP_ENVIRONMENT=production`; şifreler için her satıra ayrı `openssl rand -hex 32` çıktısı; `TUNNEL_TOKEN` 3. adımdan; yedek ayarları (`RESTIC_*`, `B2_*`) `infra/backup/README.md`'den.
+- `.env.staging`: `APP_ENVIRONMENT=staging`; production'dan **farklı** şifreler; `TUNNEL_TOKEN=`, `RESTIC_*` ve `COMPOSE_PROFILES=` boş.
 
 Postgres şifresi ilk açılışta veri tabanına yazılır; sonradan dosyada değiştirmek yetmez.
 
@@ -54,7 +54,7 @@ bash infra/pc/deploy.sh v1.0.0
 
 Betik sırayla: imajları çeker → postgres/redis/ollama'yı başlatır → veri tabanı dökümü alır (`~/careerai-yedek`, son 5) → `alembic upgrade head` → servisleri yeniler → `/health/ready` ile kontrol eder. Bir adım başarısız olursa önceki imajlara döner ve hata koduyla çıkar. Migration geri alınmaz; gerekirse döküm `pg_restore` ile yüklenir.
 
-İlk kurulumda modeli bir kez indirin: `make prod-model` (~5 GB).
+İlk kurulumda modeli bir kez indirin: `make prod-model` (~5 GB). Yedek deposunu bir kez oluşturun: `make backup-init` (`infra/backup/README.md`).
 
 Durum ve loglar: `make prod-ps`, `make prod-logs`.
 
@@ -77,4 +77,4 @@ Alan adı açılmazsa api'yi sadece bu PC'ye açın: `make prod-local` → `http
 - `worker-ai` / analiz işçisi ve CV Redis'i: `ai/Dockerfile` (Burak) ve #58/#60 main'e girince eklenecek; o zamana kadar analizler çalışmaz.
 - Web arayüzü (`app.<alanadi>`): Cloudflare Pages'te mi tünelde mi yayınlanacağı Anıl'la kararlaştırılacak.
 - Güvenlik başlıkları (nosniff, X-Frame-Options): eskiden Caddy veriyordu; şimdi api'de (Anıl) veya Cloudflare **Rules → Transform Rules** ile eklenmeli (go-live #12).
-- Otomatik yedek (T-068) ve dış uptime izleme (T-066).
+- Dış uptime izleme ve yedek uyarısı (T-066).
