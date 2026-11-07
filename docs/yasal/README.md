@@ -12,7 +12,7 @@ Bu klasördeki metinler **taslaktır** ve hukuki görüş değildir. Yayına alm
 
 ## Sürümleme
 
-Her metnin başında bir sürüm satırı var (`Sürüm: 2026-12-taslak`). Kullanıcının onayladığı sürüm `consents.version` sütununa yazılır. Metin değişince sürüm değişir ve kullanıcıdan yeni sürüm için tekrar onay alınır; eski onay satırı silinmez. Web kayıt ekranındaki sabit (`CONSENT_VERSION`, `web/src/pages/auth/RegisterPage.tsx`) yayın sürümüyle aynı olmalı.
+Her metnin başında bir sürüm satırı var (`Sürüm: 2026-12-taslak`). Kullanıcının onayladığı sürüm `consents.version` sütununa yazılır. Metin değişince sürüm değişir ve kullanıcıdan yeni sürüm için tekrar onay alınır; eski onay satırı silinmez. Web'deki sabit (`CONSENT_VERSION`, `web/src/auth/consents.ts`; #72 ile, öncesinde `RegisterPage.tsx`) yayın sürümüyle aynı olmalı.
 
 ## Yayından önce kesinleşmesi gerekenler
 

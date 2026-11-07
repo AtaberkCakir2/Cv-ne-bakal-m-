@@ -28,4 +28,4 @@ açık rıza veriyorum.
 
 - CV dosyam ve CV metnim kalıcı olarak saklanmaz; CV'm üçüncü taraf yapay zeka hizmetlerine gönderilmez.
 - Rıza vermek zorunda değilim.
-- Rızamı istediğim zaman **Profil → Verilerim** bölümünden geri alabilirim. Geri alırsam yeni analiz başlatılmaz; önceki analiz sonuçlarımı aynı yerden silebilirim. Geri alma, o tarihe kadar yapılan işlemleri hukuka aykırı hale getirmez.
+- Rızamı istediğim zaman **Profil → Verilerim** bölümünden geri alabilirim. Geri alırsam yeni analiz başlatılmaz; önceki analiz sonuçlarımı **Geçmiş** sayfasından silebilirim. Geri alma, o tarihe kadar yapılan işlemleri hukuka aykırı hale getirmez.

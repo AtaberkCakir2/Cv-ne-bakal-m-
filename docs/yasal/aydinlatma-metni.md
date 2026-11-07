@@ -92,6 +92,6 @@ Veri sorumlusuna başvurarak:
 
 haklarına sahipsiniz.
 
-Uygulama içinden de: **Profil → Verilerim** bölümünden verilerinizi indirebilir, analizlerinizi silebilir ve hesabınızı silebilirsiniz.
+Uygulama içinden de: **Profil → Verilerim** bölümünden verilerinizi indirebilir ve açık rızanızı geri alabilir, **Geçmiş** sayfasından analizlerinizi, **Profil → Hesabını sil** ile hesabınızı silebilirsiniz.
 
 **Başvuru:** Talebinizi kayıtlı e-posta adresinizden [kvkk@alanadi] adresine veya yazılı olarak [adres] adresine iletebilirsiniz. Başvurunuzda adınız soyadınız, tebligat adresiniz veya e-posta adresiniz ve talep konunuz bulunmalıdır. Başvurunuz en geç 30 gün içinde ücretsiz olarak sonuçlandırılır (işlemin ayrıca bir maliyet gerektirmesi halinde Kurul'un belirlediği tarife uygulanabilir). Başvurunuzun reddedilmesi, cevabı yetersiz bulmanız veya süresinde cevap verilmemesi halinde, cevabı öğrendiğiniz tarihten itibaren 30 gün, her halde başvuru tarihinden itibaren 60 gün içinde Kişisel Verileri Koruma Kurulu'na şikâyette bulunabilirsiniz (KVKK md. 14).
