@@ -251,11 +251,11 @@ Veri kaynaklarının robots.txt dosyaları ve kullanım koşulları incelenmiş,
 
 ## 4.4. Arka Uç
 
-Katmanlı API iskeleti, standart hata biçimi (RFC 7807), istek kimliği ve kişisel veri içermeyen log yapısı kurulmuştur. Kayıt, giriş, e-posta doğrulama, şifre sıfırlama, argon2id ile parola saklama, kısa ömürlü erişim belirteci ve tek kullanımlık yenileme belirteci tamamlanmıştır. Profil ve hedef pozisyon, sürümlü rıza kaydı, verilerimi indir ve hesabımı sil işlevleri eklenmiştir. Redis tabanlı istek sınırları dakikada genel 100, giriş ve kayıt için 10 istek olarak uygulanmaktadır. PDF özgeçmiş yükleme ucu ve açık rızanın geri alınması tamamlanmıştır. Analiz kuyruğu, özgeçmişin yalnızca bellekte tutulduğu geçici depo, analiz sonucu, geçmiş, silme, geri bildirim ve katalog uçları inceleme aşamasındadır.
+Katmanlı API iskeleti, standart hata biçimi (RFC 7807), istek kimliği ve kişisel veri içermeyen log yapısı kurulmuştur. Kayıt, giriş, e-posta doğrulama, şifre sıfırlama, argon2id ile parola saklama, kısa ömürlü erişim belirteci ve tek kullanımlık yenileme belirteci tamamlanmıştır. Profil ve hedef pozisyon, sürümlü rıza kaydı, verilerimi indir ve hesabımı sil işlevleri eklenmiştir. Redis tabanlı istek sınırları dakikada genel 100, giriş ve kayıt için 10 istek olarak uygulanmaktadır. PDF özgeçmiş yükleme ucu ve açık rızanın geri alınması tamamlanmıştır. Analiz kuyruğu, özgeçmişin yalnızca bellekte tutulduğu geçici depo, analiz sonucu, geçmiş, silme, geri bildirim ve katalog uçları inceleme aşamasındadır. Açık rızasını geri alan kullanıcının yeni özgeçmişi işlenmemekte, kuyrukta bekleyen işi de çalıştırılmamaktadır; bu kural da inceleme aşamasındadır.
 
 ## 4.5. Web Arayüzü
 
-On ekranlık tıklanabilir prototip ve açık ile koyu temalı tasarım sistemi hazırlanmıştır. Web altyapısı ve API tiplerinin otomatik üretimi kurulmuş; giriş, kayıt, KVKK onayı, şifre sıfırlama ve e-posta doğrulama ekranları tamamlanmıştır. Özgeçmiş yükleme, analiz bekleme, sonuç panosu ve geçmiş analizler ekranları inceleme aşamasındadır. Giriş ekranı Şekil 5'te, sonuç panosu prototipi Şekil 6'da gösterilmiştir.
+On ekranlık tıklanabilir prototip ve açık ile koyu temalı tasarım sistemi hazırlanmıştır. Web altyapısı ve API tiplerinin otomatik üretimi kurulmuş; giriş, kayıt, KVKK onayı, şifre sıfırlama ve e-posta doğrulama ekranları tamamlanmıştır. Özgeçmiş yükleme, analiz bekleme, sonuç panosu, geçmiş analizler ve profil (verileri indirme, onayları yönetme, hesap silme) ekranları inceleme aşamasındadır. Aynı arayüzü Windows ve macOS'ta açan Electron masaüstü uygulamasının ilk sürümü hazırlanmış, Windows kurulum dosyası üretilerek denenmiştir. Aydınlatma metni, gizlilik politikası, kullanım koşulları ve hesap silme sayfası taslak olarak yazılmış, uygulamanın çalıştığı bilgisayardan bağımsız yayımlanacak statik sayfalara dönüştürülmüştür; metinler danışman ve hukuk birimi kontrolünü beklemektedir. Giriş ekranı Şekil 5'te, sonuç panosu prototipi Şekil 6'da gösterilmiştir.
 
 [Görsel: ekran görüntüsü alınacak]
 
@@ -341,7 +341,7 @@ Kalan başlıca işler ve hedef tarihleri Tablo 5'te listelenmiştir.
 | Eğitim kaynağı havuzu | Ataberk Çakır | 29 Kasım 2026 |
 | Model değerlendirme raporu, yapay zekâ işçisi | Burak Doğan | 06 Aralık 2026 |
 | Güvenlik incelemesi, yedekleme | Ataberk Çakır | 13 Aralık 2026 |
-| Masaüstü uygulaması | Anıl Akyıl | 13 Aralık 2026 |
+| Masaüstü uygulaması (macOS sürümü, simge) | Anıl Akyıl | 13 Aralık 2026 |
 | Mobil uygulama | Burak Doğan | 20 Aralık 2026 |
 | Uçtan uca testler, yük testi, canlı ortam | Ataberk Çakır | 20 Aralık 2026 |
 | Google Play kapalı test başlangıcı | Anıl Akyıl | 21 Aralık 2026 |
