@@ -34,7 +34,12 @@ PHONE = re.compile(
 )
 _PHONE_MIN_DIGITS = 9
 
-TCKN = re.compile(r"(?<![\d.,])[1-9]\d{10}(?![\d.,]\d|\d)")
+# Hash veya kod içindeki 11 hane TCKN değildir ("a3f91234567890b2c", "id_12345678901"): sadece küçük harf hex
+# ve alt çizgiye bitişikse atlanır. Diğer harflere bitişik olan maskelenir ("TC12345678901", "no12345678901").
+# Önündeki nokta/virgül sadece rakamdan sonra geliyorsa ondalıktır ("3.12345678901"); "T.C.12345678901" maskelenir.
+TCKN = re.compile(r"(?<![0-9a-f_])(?<!\d[.,])[1-9]\d{10}(?![.,]\d|[0-9a-f_])")
+# "tc"/"tckn" önekiyle bitişik yazılan ("tc12345678901"): "c" hex olduğu için yukarıdaki kural atlar.
+TCKN_PREFIXED = re.compile(r"(?<![a-z])tc(?:kn)?[:\s]*([1-9]\d{10})(?![.,]\d|[0-9a-f_])", re.IGNORECASE)
 
 IBAN = re.compile(r"\bTR\s?\d{2}(?:\s?\d{4}){5}\s?\d{2}\b", re.IGNORECASE)
 
@@ -43,6 +48,12 @@ URL = re.compile(
     r"(?:https?://|www\.)\S+"
     rf"|(?<![\w@./-])(?:[a-z0-9-]+\.)+(?:{_TLDS})(?:\.(?:tr|uk))?(?:/[^\s,;)]*)?(?![\w.])"
 )
+
+_WHATSAPP = re.compile(r"(?:wa\.me|whatsapp\.com)/(?:send\?phone=)?\+?(\d{9,15})", re.IGNORECASE)
+# Bağlantı içinde de telefon sayılan sayılar: Türkiye ön ekiyle yazılmış (05…, +90…, 0090…) veya telefon
+# parametresinin değeri ("?phone=…", "&tel=…"). Ön eksiz sayılar (ilan no) bağlantının parçası olarak kalır.
+_URL_PHONE_PREFIX = re.compile(r"^(?:\+90|0090|0)")
+_URL_PHONE_PARAM = re.compile(r"(?:phone|tel|mobile|gsm|telefon|cep)=$", re.IGNORECASE)
 
 # Alan adı gibi görünen teknoloji adları (küçük harfle yazılınca da bağlantı sayılmasın).
 TECH_NAMES = {"socket.io", "asp.net", "ado.net", "vb.net"}
@@ -91,11 +102,29 @@ def find_structured(text: str) -> list[Span]:
     spans: list[Span] = []
     spans += [Span(m.start(), m.end(), Kind.EMAIL) for m in EMAIL.finditer(text)]
     spans += [Span(m.start(), m.end(), Kind.IBAN) for m in IBAN.finditer(text)]
-    spans += [Span(m.start(), m.end(), Kind.URL) for m in URL.finditer(text) if m.group().lower() not in TECH_NAMES]
+    urls = [m for m in URL.finditer(text) if m.group().lower() not in TECH_NAMES]
+    spans += [Span(m.start(), m.end(), Kind.URL) for m in urls]
+    # Bağlantı içindeki sayı (ilan no: linkedin.com/jobs/view/4438695357) telefon/TCKN değildir; ilan maskelemesi
+    # bağlantıyı bıraktığı için bu sayı ayrıca maskelenmesin. Telefon biçimli olanlar (WhatsApp, 05…, ?phone=…)
+    # ise telefondur.
+    in_url = [(m.start(), m.end()) for m in urls if not _WHATSAPP.search(m.group())]
+    for m in urls:
+        if w := _WHATSAPP.search(m.group()):
+            spans.append(Span(m.start() + w.start(1), m.start() + w.end(1), Kind.PHONE))
+
+    def outside_url(m: re.Match[str]) -> bool:
+        return not any(s <= m.start() and m.end() <= e for s, e in in_url)
+
+    def phone_in_url(m: re.Match[str]) -> bool:
+        return bool(
+            _URL_PHONE_PREFIX.match(m.group()) or _URL_PHONE_PARAM.search(text, max(0, m.start() - 10), m.start())
+        )
+
     for m in PHONE.finditer(text):
-        if sum(c.isdigit() for c in m.group()) >= _PHONE_MIN_DIGITS:
+        if sum(c.isdigit() for c in m.group()) >= _PHONE_MIN_DIGITS and (outside_url(m) or phone_in_url(m)):
             spans.append(Span(m.start(), m.end(), Kind.PHONE))
-    spans += [Span(m.start(), m.end(), Kind.TCKN) for m in TCKN.finditer(text)]
+    spans += [Span(m.start(), m.end(), Kind.TCKN) for m in TCKN.finditer(text) if outside_url(m)]
+    spans += [Span(m.start(1), m.end(1), Kind.TCKN) for m in TCKN_PREFIXED.finditer(text) if outside_url(m)]
     spans += [
         Span(m.start(), m.start() + len(m.group().rstrip()), Kind.BIRTH_DATE) for m in BIRTH_LABELED.finditer(text)
     ]

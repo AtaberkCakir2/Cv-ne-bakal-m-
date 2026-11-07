@@ -4,6 +4,9 @@ python -m collector import hn --months 6
 python -m collector import himalayas --pages 5
 python -m collector import remoteok
 python -m collector import remotive
+python -m collector import jobicy
+python -m collector import arbeitnow [--pages 2]
+python -m collector import pythonorg             # Chromium gerekir (README)
 python -m collector import emscad --csv data/fake_job_postings.csv [--active]
 python -m collector stats
 python -m collector seed-taxonomy
@@ -28,7 +31,7 @@ from app.db.session import get_sessionmaker
 from collector import esco, nightly, taxonomy
 from collector.http import PoliteClient
 from collector.posting import Posting, SourceInfo
-from collector.sources import emscad, himalayas, hn, remoteok, remotive
+from collector.sources import arbeitnow, emscad, himalayas, hn, jobicy, pythonorg, remoteok, remotive
 from collector.store import run_import, source_counts
 from etl import stats, template_input
 from etl.pipeline import iter_contract, normalize
@@ -50,6 +53,10 @@ def build_parser() -> argparse.ArgumentParser:
     src.add_parser("himalayas", help="Himalayas yazılım aramaları").add_argument("--pages", type=int, default=5)
     src.add_parser("remoteok", help="Remote OK")
     src.add_parser("remotive", help="Remotive (günde en fazla birkaç kez)")
+    src.add_parser("jobicy", help="Jobicy (son 7 gün)")
+    an = src.add_parser("arbeitnow", help="Arbeitnow (Avrupa)")
+    an.add_argument("--pages", type=int, default=arbeitnow.NIGHTLY_PAGES)
+    src.add_parser("pythonorg", help="Python.org iş ilanları (Playwright)")
     em = src.add_parser("emscad", help="EMSCAD veri seti (yerel CSV)")
     em.add_argument("--csv", type=Path, required=True)
     em.add_argument("--active", action="store_true", help="İstatistiklere dahil et (sadece yedek plan için)")
@@ -180,6 +187,12 @@ def main(argv: list[str] | None = None) -> int:
         info, postings = _api(remoteok.SOURCE, remoteok.fetch)
     elif args.source == "remotive":
         info, postings = _api(remotive.SOURCE, remotive.fetch)
+    elif args.source == "jobicy":
+        info, postings = _api(jobicy.SOURCE, jobicy.fetch)
+    elif args.source == "arbeitnow":
+        info, postings = _api(arbeitnow.SOURCE, lambda c: arbeitnow.fetch(c, pages=args.pages))
+    elif args.source == "pythonorg":
+        info, postings = pythonorg.SOURCE, pythonorg.scrape()
     else:
         info, postings, active = emscad.SOURCE, emscad.fetch(args.csv), args.active
 
