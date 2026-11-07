@@ -58,6 +58,28 @@ Kurallar:
 - Her yanıtta `X-Request-ID` başlığı vardır; hata bildirirken bu kimliği isteyin, loglarda aynı kimlikle aranır.
 - Loglara e-posta, telefon veya CV içeriği yazılmaz (karar #9). Maskeleme filtresi ikinci güvenlik katmanıdır, ilk katman değil.
 
+## Endpoint'ler
+
+| Metot | Yol | Durum |
+|---|---|---|
+| GET | `/api/v1/health` | ✅ |
+| GET | `/api/v1/health/ready` | ✅ |
+| POST | `/api/v1/analyses` | ✅ CV doğrulama (≤ 5 MB, ≤ 5 sayfa, PDF imzası, şifreli/bozuk PDF), SHA-256 · kimlik doğrulama henüz yok (T-048 ile eklenecek) |
+| GET | `/api/v1/analyses/{id}` | ✅ sonuç · liste/silme/geri bildirim T-048 |
+
+**Geliştirme modu (geçici):** Analizler bellekte tutulur (sunucu kapanınca silinir) ve kuyruk hemen `contracts/examples/analysis_result.example.json` örnek sonucunu döner. Böylece web ve mobil ekranlar AI modülünü beklemeden geliştirilebilir. Gerçek veritabanı deposu T-012 (Ataberk), gerçek kuyruk T-039 ile gelecek.
+
+Örnek:
+
+```bash
+curl -F "file=@ozgecmis.pdf;type=application/pdf" -F target_role_id=1 http://localhost:8000/api/v1/analyses
+curl http://localhost:8000/api/v1/analyses/<analysis_id>
+```
+
+### CV diske yazılmaz
+
+Starlette, 1 MB'ı aşan yüklemeleri varsayılan olarak geçici disk dosyasına yazar. `app/core/uploads.py` bu eşiği izin verilen en büyük istek boyutunun üstüne çeker ve 5 MB + 64 KB'tan büyük istekleri gövde okunmadan reddeder (`Content-Length` zorunlu). `tests/test_analyses_upload.py::test_upload_is_never_written_to_disk` bunu doğrular. Production'da Caddy'de de istek gövdesi sınırı (`request_body max_size 6MB`) olmalı (T-075, Ataberk).
+
 ## Kimlik doğrulama (T-037)
 
 | Metot | Yol | Not |
@@ -96,7 +118,7 @@ Kullanıcı doğrulanmış ve KVKK onayları verilmiş olarak oluşturulur; tekr
 | Analiz oluşturma | 5 / saat | kullanıcı | `RATE_LIMIT_ANALYSES_PER_HOUR` |
 
 - Aşılınca `429` + `Retry-After` (saniye), gövde RFC 7807. Sayaçlar Redis'te (`REDIS_URL`); IP açık yazılmaz, tuzlu özeti anahtar olur.
-- Redis'e ulaşılamazsa sınır uygulanmaz, `rate_limit_store_unavailable` uyarısı loglanır ve 30 sn Redis denenmez. Tamamen kapatmak için `RATE_LIMIT_ENABLED=false`.
+- Redis'e ulaşılamazsa sınır uygulanmaz, `rate_limit_store_unavailable` uyarısı loglanır ve 10 sn Redis denenmez. Tamamen kapatmak için `RATE_LIMIT_ENABLED=false`.
 - **Production (T-075):** Caddy arkasında uvicorn'a `FORWARDED_ALLOW_IPS=<Caddy'nin IP'si veya alt ağı>` verilmeli; verilmezse bütün kullanıcılar Caddy'nin IP'siyle tek sayacı paylaşır. Redis ≥ 7 gerekli.
 - Analiz sınırı (`AnalysesRateLimit`, `app/api/rate_limits.py`) analiz oluşturma ucu kimlik doğrulamaya bağlanınca o uca eklenir.
 

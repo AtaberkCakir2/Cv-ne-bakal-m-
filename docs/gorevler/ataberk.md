@@ -53,7 +53,7 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 - **Çıktı:** DNS kayıtları + `cloudflared` servisi (compose)
 - **Kabul kriteri:** Alan adı alındı, ad sunucuları Cloudflare'de (ücretsiz plan). Cloudflare Tunnel kuruldu; `cloudflared` production compose'da konteyner, tünel token'ı sadece PC'deki `.env`'de. app. ve api. tünele bağlı; tanıtım/yasal sayfalar için alan adının kökü Cloudflare Pages'e. Always Use HTTPS + HSTS + en düşük TLS 1.2 açık; SSL ücretsiz (Cloudflare).
 - **Not:** 06.11.2026: karar #30 ile Caddy/Let's Encrypt yerine Cloudflare Tunnel; staging-api. ve status. alt alan adları kaldırıldı.
-- **Devam notu (06.11.2026):** Yapılan: `cvnebakalim.com` Cloudflare Registrar'dan alındı (ad sunucuları otomatik Cloudflare'de); dokümanlardaki yer tutucular gerçek adla değiştirildi. Sıradaki adım: hesapta iki adımlı doğrulama, Zero Trust'ta `careerai-pc` tüneli ve `api.cvnebakalim.com` → `api:8000` (`infra/pc/deploy.md` 3. adım), SSL/TLS ayarları; production (T-075) açılınca uçtan uca deneme. Açık sorular / engeller: web arayüzü (`app.`) Pages'te mi tünelde mi (Anıl); kök alan adı Cloudflare Pages'e (tanıtım/yasal sayfalar, T-070). Branch: ataberk/karar-sunucusuz
+- **Devam notu (06.11.2026):** Yapılan: `cvnebakalim.com` Cloudflare Registrar'dan 560 TL'ye alındı (ad sunucuları Cloudflare'de); dokümanlardaki yer tutucular gerçek adla değiştirildi. Cloudflare'e GitHub ile giriliyor (GitHub'da authenticator 2FA açık; Cloudflare'in kendi 2FA'sı şifre doğrulama sorunu yüzünden sonraya kaldı). Zero Trust'ta `careerai-pc` tüneli oluşturuldu, token parola yöneticisinde (repoda yok); tünel bir kez bağlanıp kapatıldı; `api.cvnebakalim.com` → `http://api:8000` public hostname'i eklendi; SSL/TLS Full, Always Use HTTPS, en düşük TLS 1.2 (HSTS sistem çalışınca açılacak). Sıradaki adım: production (T-075) açılınca token'ı `infra/pc/.env.prod`'a yaz, `https://api.cvnebakalim.com/api/v1/health` ile uçtan uca dene, sonra HSTS; Cloudflare 2FA'yı yeniden dene. Açık sorular / engeller: web arayüzü (`app.`) Pages'te mi tünelde mi (Anıl); kök alan adı Cloudflare Pages'e (tanıtım/yasal sayfalar, T-070). Branch: ataberk/karar-sunucusuz
 
 ### T-011 · Veri tabanı şeması v1 (ERD)
 
@@ -121,7 +121,7 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-016 · Playwright scraper PoC (1 kaynak)
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 02.11.2026 – 08.11.2026 · **Öncelik:** P1 · **Efor:** 6 saat · **Alan:** Veri Toplama
 - **Bağımlılık:** T-014
 - **Destek:** —
@@ -171,13 +171,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-028 · TÜBİTAK 2209-A başvuru dosyası
 
-- **Durum:** Devam Ediyor
+- **Durum:** Engellendi
 - **Tarih:** 27.10.2026 – 11.11.2026 · **Öncelik:** P0 · **Efor:** 16 saat · **Alan:** Kongre / TÜBİTAK
 - **Bağımlılık:** T-000 (Anıl)
 - **Destek:** Burak, Anıl
 - **Çıktı:** Başvuru dosyası
 - **Kabul kriteri:** Özgün değer, yöntem, iş-zaman planı, risk yönetimi, bütçe ve yaygın etki bölümleri; danışman onayı ve sisteme yükleme. Son tarihi güncel çağrı takviminden doğrulayın.
-- **Not:** 2026 çağrısı (TÜBİTAK duyurusu, 27.10.2026'da doğrulandı): başvuru 07.10–**11.11.2026 17:30**, TÜBİTAK Yönetim Bilgi Sistemi üzerinden; danışman onayı başvuru aşamasında tamamlanmalı (danışmanın güncel YÖK kaydı gerekli); kuruluş yetkilisi e-imzası 16–23.11.2026. Planın 15.11 bitişi son tarihi kaçırıyordu, bitiş 11.11'e çekildi.
+- **Not:** 2026 çağrısı (TÜBİTAK duyurusu, 27.10.2026'da doğrulandı): başvuru 07.10–**11.11.2026 17:30**, TÜBİTAK Yönetim Bilgi Sistemi üzerinden; danışman onayı başvuru aşamasında tamamlanmalı (danışmanın güncel YÖK kaydı gerekli); kuruluş yetkilisi e-imzası 16–23.11.2026. Planın 15.11 bitişi son tarihi kaçırıyordu, bitiş 11.11'e çekildi. 05.11.2026: **askıya alındı.** Başvuru dosyası hazır, danışman hocanın dönüşü bekleniyor (hocalarla görüşüldü). Ataberk danışmanla ilgili bilgiyi verince devam edilecek; o zamana kadar bu görevde iş yapılmaz. Son tarih (11.11 17:30) değişmedi.
 - **Devir:** 27.10.2026'da Burak'tan devredildi (karar #18).
 
 ---
