@@ -29,7 +29,7 @@ CareerAI, [üniversite adı] [bölüm adı] bitirme projesi olarak geliştirilen
 
 **CV dosyanızı ve CV'nizin metnini kalıcı olarak saklamıyoruz.** Dosya sadece analiz sırasında işlenir ve analiz biter bitmez silinir; veritabanına, kayıtlara (log) veya yedeklere yazılmaz. Analizden sonra sadece çıkarılan yetkinlikler, dosyanın sayfa sayısı ve dosyanın parmak izi (SHA-256 özeti) hesabınızla ilişkili olarak tutulur; dosya içeriği bu özetten geri elde edilemez.
 
-CV'nizde yer alan ad, telefon, e-posta, adres, T.C. kimlik numarası ve doğum tarihi gibi kişisel veriler, yapay zeka modeline verilmeden önce otomatik olarak maskelenir; otomatik maskelemenin hata payı olabilir. [Liste T-030 ile kesinleşecek.] Analiz, hizmeti barındırdığımız sunucuda çalışan yerel bir yapay zeka modeliyle yapılır; CV'niz OpenAI, Google gibi üçüncü taraf yapay zeka hizmetlerine gönderilmez.
+CV'nizde yer alan ad, telefon, e-posta, adres, T.C. kimlik numarası ve doğum tarihi gibi kişisel veriler, yapay zeka modeline verilmeden önce otomatik olarak maskelenir; otomatik maskelemenin hata payı olabilir. [Liste T-030 ile kesinleşecek.] Analiz, hizmeti barındırdığımız bilgisayarda (Türkiye) çalışan yerel bir yapay zeka modeliyle yapılır; CV'niz OpenAI, Google gibi üçüncü taraf yapay zeka hizmetlerine gönderilmez.
 
 **Lütfen CV'nize sağlık, din, etnik köken, siyasi görüş, dernek/sendika üyeliği gibi özel nitelikli kişisel verileri koymayın; fotoğraf da gerekmez.** Bunlar analiz için gerekmez. Bulunurlarsa da saklanmaz, yetkinlik çıkarımı dışında hiçbir amaçla kullanılmaz.
 
@@ -50,18 +50,20 @@ Verileriniz pazarlama, reklam veya profil satışı amacıyla kullanılmaz. Anal
 
 ## 4. Kimlere aktarılıyor?
 
-Verileriniz satılmaz ve işverenlerle paylaşılmaz. Sadece hizmeti çalıştırmak için gereken ölçüde şu tedarikçilerle paylaşılır:
+Verileriniz satılmaz ve işverenlerle paylaşılmaz.
+
+Uygulama ve veritabanı, proje ekibinden bir üyeye ait, Türkiye'de bulunan bir bilgisayarda çalışır; ayrı bir barındırma şirketi kullanılmaz. Verileriniz sadece hizmeti çalıştırmak için gereken ölçüde şu tedarikçilerle paylaşılır:
 
 | Alıcı | Ne için | Hangi veri | Konum |
 |---|---|---|---|
-| Sunucu sağlayıcı [ad] | Uygulamanın ve veritabanının barındırılması | Tüm hesap verileri | [ülke] |
-| Yedek depolama sağlayıcı [ad] | Şifreli günlük yedek | Veritabanı yedeği (şifreli; sağlayıcı içeriği okuyamaz) | [ülke] |
-| E-posta gönderim servisi [ad] | Doğrulama ve şifre sıfırlama e-postaları | E-posta adresi | [ülke] |
-| Hata izleme servisi [ad] | Uygulama hatalarının tespiti | Hata kaydı (mümkün olduğunca kişisel veri içermeyecek şekilde yapılandırılır) | [ülke] |
+| Cloudflare, Inc. | Alan adı, DNS, HTTPS bağlantısı ve uygulamaya erişim tüneli (Cloudflare Tunnel); tanıtım ve yasal sayfaların yayını (Cloudflare Pages) | Uygulamayla aranızdaki trafiğin tamamı: IP adresiniz, istekleriniz ve yüklediğiniz CV dosyası dahil. Bağlantı şifrelidir; ancak HTTPS Cloudflare'in sunucularında açılıp tünelle yeniden şifrelendiği için içerik aktarım sırasında Cloudflare'in sistemlerinden geçer. Cloudflare bu içeriği hizmet dışında kullanmaz ve saklamaz [Cloudflare'in veri işleme şartlarıyla teyit edilecek]. | ABD; trafik Cloudflare'in size en yakın veri merkezinden geçer |
+| Yedek depolama sağlayıcı [Backblaze B2 öngörülüyor; bölge seçilecek] | Şifreli günlük yedek | Veritabanı yedeği (bizim tarafımızda şifrelenir; sağlayıcı içeriği okuyamaz) | [ABD veya AB bölgesi] |
+| E-posta gönderim servisi [henüz seçilmedi] | Doğrulama ve şifre sıfırlama e-postaları | E-posta adresi | [ülke] |
+| Hata izleme servisi [henüz seçilmedi; kullanılmazsa satır çıkar] | Uygulama hatalarının tespiti | Hata kaydı (mümkün olduğunca kişisel veri içermeyecek şekilde yapılandırılır) | [ülke] |
 
 Yetkili kamu kurum ve kuruluşlarına, kanunen zorunlu olduğu hallerde ve istenen ölçüde aktarılabilir.
 
-[Yurt dışında bulunan sağlayıcı varsa: Yurt dışına aktarım dayanağı KVKK md. 9 kapsamında [yeterlilik kararı / standart sözleşme]. Aktarılan sağlayıcı ve ülke yukarıdaki tablodadır.]
+Cloudflare ABD merkezli olduğu için bu paylaşım KVKK md. 9 kapsamında yurt dışına aktarımdır. Aktarımın dayanağı: [standart sözleşme / uygun güvence — hukuki inceleme bekliyor]. Yedek ve diğer sağlayıcılar yurt dışındaysa aynı kapsamdadır; sağlayıcı ve ülke yukarıdaki tablodadır.
 
 ## 5. Ne kadar süre saklıyoruz?
 
@@ -72,8 +74,8 @@ Yetkili kamu kurum ve kuruluşlarına, kanunen zorunlu olduğu hallerde ve isten
 | Tek bir analizi sildiğinizde | 30 gün sonra kalıcı olarak silinir |
 | Oturum kayıtları | 7 gün geçerli; süresi dolan kayıtlar en geç [X] gün içinde silinir |
 | E-posta doğrulama / şifre sıfırlama bağlantıları | 24 saat / 1 saat geçerli; kullanıldıktan sonra geçersiz |
-| İşlem kayıtları | 180 gün. Hesabınız kalıcı silindiğinde kayıtların hesabınızla bağı koparılır; IP adresinin tuzlanmış özeti 180 güne kadar kayıtta kalabilir ve bu haliyle de kişisel veri sayılır. |
-| Şifreli yedekler | [N] gün; silinen veriler, silme talebinden en geç 30 + [N] gün içinde yedeklerden de çıkar |
+| İşlem kayıtları | [180 gün: temizlik işi yazılınca]. Hesabınız kalıcı silindiğinde kayıtların hesabınızla bağı koparılır; IP adresinin tuzlanmış özeti bu süre boyunca kayıtta kalabilir ve bu haliyle de kişisel veri sayılır. |
+| Şifreli yedekler | En fazla 35 gün (son 7 günün günlük ve son 4 haftanın haftalık yedeği tutulur); silinen veriler, hesabın veya analizin silindiği tarihten itibaren en geç 65 gün içinde yedeklerden de çıkar |
 
 ## 6. Haklarınız (KVKK md. 11)
 

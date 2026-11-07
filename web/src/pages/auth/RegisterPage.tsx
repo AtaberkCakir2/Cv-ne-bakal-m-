@@ -17,7 +17,7 @@ import { Alert, Button, Card, Checkbox, TextField } from "../../ui";
 type ConsentType = components["schemas"]["ConsentType"];
 
 // Kabul edilen metnin sürümü backend'de onayla birlikte saklanır. Metinler T-065'te kesinleşince sürüm değişir.
-const CONSENT_VERSION = "2026-10-taslak";
+const CONSENT_VERSION = "2026-12-taslak";
 
 const CONSENTS: { type: ConsentType; label: string }[] = [
   { type: "kvkk_aydinlatma", label: "KVKK aydınlatma metnini okudum." },

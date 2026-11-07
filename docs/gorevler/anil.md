@@ -248,7 +248,7 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 - **Destek:** Burak
 - **Çıktı:** Yasal metinler (web sayfası)
 - **Kabul kriteri:** Danışman/hukuk birimi kontrolü; uygulama içi onay; consents tablosuna sürüm kaydı; gizlilik politikası URL'si (mağazalar için zorunlu); VERBİS yükümlülüğü değerlendirildi.
-- **Devam notu (29.10.2026):** Yapılan: dört metnin taslağı ve açık noktalar listesi `docs/yasal/` (hukuk inceleme ajanının 15 bulgusu işlendi). · Sıradaki adım: README'deki açık noktaları danışmana götürmek (veri sorumlusu, hukuki sebep, yurt dışı aktarım, VERBİS); karar çıkınca web'de `/yasal/*` sayfaları ve kayıt ekranındaki onayları buna göre değiştirmek. · Açık sorular / engeller: T-030 maskeleme listesi (Burak), sunucu/sağlayıcı ülkeleri (Ataberk). · Branch: anil/kvkk-metinleri
+- **Devam notu (07.11.2026):** Yapılan: dört metnin taslağı + hesap silme sayfası `docs/yasal/`; metinler karar #30'a göre güncellendi (barındırma Türkiye'deki ekip bilgisayarı, Cloudflare = yurt dışı aktarım, yedek en fazla 35 gün); Cloudflare Pages için statik site üreticisi `web/yasal-site/build.mjs` (`npm run build:yasal`); kayıt ekranı onay sürümü `2026-12-taslak`. · Sıradaki adım: README'deki açık noktaları danışmana götürmek (veri sorumlusu, hukuki sebep, yurt dışı aktarım dayanağı, VERBİS); Profil ekranında verileri indirme ve hesap silme düğmeleri; Pages projesini Ataberk'le kurmak. · Açık sorular / engeller: audit_logs ve refresh_tokens temizlik işi yok; disk şifrelemesi teyidi; e-posta servisi seçilmedi. · Branch: anil/kvkk-metinleri
 
 ### T-069 · API entegrasyon testleri
 
