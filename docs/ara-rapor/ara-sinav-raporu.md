@@ -49,12 +49,6 @@ Kasım 2026
 
 [DOLDUR: Resmî metin kılavuzun Ek 5'inde; yayımlanan PDF'te ekler yok. Hocadan veya enstitüden alınmalı. Metin Yapay Zekâ Araçlarının Kullanımı başlığıyla çelişmemeli. İmzalar mavi mürekkepli kalemle atılır.]
 
-# TEŞEKKÜR
-
-[DOLDUR: Projeyi destekleyen kişi ve kurumlara teşekkür; en fazla iki sayfa.]
-
-Kasım 2026                                                  Ataberk ÇAKIR, Burak DOĞAN, Anıl AKYIL
-
 # ÖZET
 
 Ataberk ÇAKIR, Burak DOĞAN, Anıl AKYIL
