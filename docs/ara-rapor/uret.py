@@ -154,7 +154,8 @@ def cover_html(groups: list[list[str]], tops: list[int], logo: bool) -> str:
     for i, (group, top) in enumerate(zip(groups, tops)):
         lines = "<br>".join(h(x) for x in group)
         if logo and i == 0:
-            lines = "<mark>[DOLDUR: üniversite logosu, 2 cm]</mark><br>" + lines
+            logo_uri = (IMG / "logo.png").resolve().as_uri()  # nisantasi.edu.tr Kurumsal Kimlik, lacivert tik
+            lines = f'<img src="{logo_uri}" alt="İstanbul Nişantaşı Üniversitesi" style="height:2cm;display:block;margin:0 auto 0.3cm">' + lines
         parts.append(f'<div style="top:{top - 2}cm">{lines}</div>')
     return f'<section class="cover">{"".join(parts)}</section>'
 
@@ -405,7 +406,14 @@ def table_borders(table) -> None:
 def cover_docx(doc, groups: list[list[str]], tops: list[int], logo: bool) -> None:
     previous = 2.0
     for i, (group, top) in enumerate(zip(groups, tops)):
-        lines = (["[DOLDUR: üniversite logosu, 2 cm]"] if logo and i == 0 else []) + group
+        lines = group
+        if logo and i == 0:
+            par = doc.add_paragraph()
+            par.add_run().add_picture(str(IMG / "logo.png"), height=Cm(2))
+            fmt(par, line=1.0, before=0, after=0, align=WD_ALIGN_PARAGRAPH.CENTER)
+            par.paragraph_format.space_before = Cm(max(top - previous, 0))
+            previous = top + 2.3
+            top = previous
         for j, line in enumerate(lines):
             par = doc.add_paragraph()
             add_text(par, line)
