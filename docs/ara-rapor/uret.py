@@ -6,6 +6,7 @@ Gerekli: pymupdf, python-docx, Google Chrome, Times New Roman yazı tipi.
 """
 
 import html
+import json
 import re
 import subprocess
 import sys
@@ -568,9 +569,27 @@ def build_docx(outer: list[list[str]], inner: list[list[str]], blocks: list[Bloc
 
 
 def main() -> int:
+    """`python uret.py` → cikti/ (repoda, öğrenci numarasız).
+
+    `python uret.py --teslim KLASOR` → basılacak kopya KLASOR'e üretilir; öğrenci numaraları KLASOR/kapak.json'dan
+    ({"Ataberk ÇAKIR": "...", ...}) okunur. Numaralar kişisel veri olduğu için repoya girmez (CLAUDE.md kural 4);
+    KLASOR repo dışında olmalı.
+    """
+    global OUT
     sys.stdout.reconfigure(encoding="utf-8")
+    text = (ROOT / "ara-sinav-raporu.md").read_text(encoding="utf-8")
+    if "--teslim" in sys.argv:
+        OUT = Path(sys.argv[sys.argv.index("--teslim") + 1]).resolve()
+        if ROOT.parents[1] in OUT.parents or OUT == ROOT.parents[1]:
+            raise SystemExit("Teslim klasörü repo dışında olmalı: öğrenci numaraları commit'lenmesin.")
+        numbers = json.loads((OUT / "kapak.json").read_text(encoding="utf-8"))
+        for name, number in numbers.items():
+            marker = f"{name} ([DOLDUR: öğrenci no])"
+            if marker not in text:
+                raise SystemExit(f"Kapakta bulunamadı: {marker}")
+            text = text.replace(marker, f"{name} ({number})")
     OUT.mkdir(exist_ok=True)
-    outer, inner, blocks = parse((ROOT / "ara-sinav-raporu.md").read_text(encoding="utf-8"))
+    outer, inner, blocks = parse(text)
     _, pages = build_pdf(outer, inner, blocks)
     build_docx(outer, inner, blocks, pages)
     return 0

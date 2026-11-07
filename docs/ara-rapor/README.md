@@ -11,6 +11,7 @@ Kaynak: [İstanbul Nişantaşı Üniversitesi LEE Tez ve Proje Yazım Kılavuzu]
 - `cikti/CareerAI_Ara_Sinav_Raporu.docx`: düzenlenebilir sürüm. Sayfa numaraları dizinlere PDF'ten yazıldı; Word'de düzenlenirse dizinler elle güncellenmeli.
 - `img/` ve `diyagram/`: şekiller. Şekil 2 ve 4, 8 punto okunabilsin diye `docs/diagrams/` altındaki tam sürümlerin sadeleştirilmiş halidir; Şekil 4'te `user_tokens`, `analysis_unverified_skills` da var.
 - Yeniden üretmek için repo kökünde: `python docs/ara-rapor/uret.py` (pymupdf, python-docx, Chrome gerekir).
+- **Basılacak kopya:** öğrenci numaraları kişisel veri olduğu için repoya girmez. Repo dışında bir klasöre `kapak.json` koyun (`{"Ataberk ÇAKIR": "<no>", "Burak DOĞAN": "<no>", "Anıl AKYIL": "<no>"}`) ve `python docs/ara-rapor/uret.py --teslim <klasör>` çalıştırın. Numaralı PDF ve Word o klasöre üretilir. Betik, klasör repo içindeyse durur.
 
 ## Hocaya sorulacaklar
 
