@@ -1647,6 +1647,15 @@ export interface operations {
                     "application/problem+json": unknown;
                 };
             };
+            /** @description Açık rıza geri alınmış */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": unknown;
+                };
+            };
             /** @description Content-Length yok */
             411: {
                 headers: {
