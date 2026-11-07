@@ -121,12 +121,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-038 · CV yükleme endpoint'i
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 02.11.2026 – 08.11.2026 · **Öncelik:** P0 · **Efor:** 8 saat · **Alan:** Backend API
 - **Bağımlılık:** T-023
 - **Destek:** Burak
 - **Çıktı:** POST /analyses
 - **Kabul kriteri:** Multipart, en fazla 5 MB ve 5 sayfa, MIME + magic byte kontrolü (sadece PDF). Dosya diske yazılmaz; bellekten kuyruğa aktarılır; SHA-256 hash kaydedilir.
+- **Not:** 24.10.2026: doğrulamalar, SHA-256 ve diske yazmama (testle kanıtlı) tamam. Kuyruk şimdilik örnek sonuç döndüren geçici sınıf; gerçek kuyruk T-039. Kimlik doğrulama T-037.
 
 ### T-026 · Poster baskı kontrolü ve teslim alma
 
