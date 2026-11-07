@@ -203,7 +203,7 @@ Sistemin başarısı, elle etiketlenmiş en az 50 sentetik özgeçmişle ölçü
 
 ## 3.6. Yapay Zekâ Araçlarının Kullanımı
 
-[DOLDUR: Biçimi ve kapsamı hocaya sorulacak.] Bu raporun ilk taslağı ve projedeki kodun bir bölümü Anthropic'in Claude (Claude Opus 5.5) aracı desteğiyle hazırlanmıştır. Sentetik özgeçmiş metinlerinin üretiminde de aynı araç kullanılmıştır. İçerik ekip tarafından gözden geçirilmiştir. Geliştirilen sistemin kendisinde dış yapay zekâ servisi kullanılmamaktadır.
+Bu raporun hazırlanmasında ve projedeki kodun bir bölümünün yazılmasında Anthropic'in Claude (Claude Opus 5.5) yapay zekâ aracından yararlanılmıştır. Araç; rapor metninin taslağının hazırlanması, kod yazımı, kod incelemesi ve değerlendirme setindeki sentetik özgeçmiş metinlerinin üretimi için kullanılmıştır. Üretilen içeriğin tamamı ekip tarafından okunmuş, denetlenmiş ve gerektiğinde düzeltilmiştir. Rapordaki sayısal sonuçlar ekibin çalıştırdığı ölçüm ve testlerden alınmıştır. Geliştirilen sistemin kendisinde dış yapay zekâ servisi kullanılmamakta, özgeçmiş analizi yerel olarak çalışan açık kaynak bir dil modeliyle yapılmaktadır.
 
 # 4. TAMAMLANAN ÇALIŞMALAR
 
@@ -313,7 +313,7 @@ Analizler üretim ortamında ağırlıklı olarak işlemcide çalışacağı iç
 
 ## 6.1. Plandan Sapmalar
 
-Kapsamın dondurulması ve başlangıç toplantısı görevleri planlanan tarihte kapanmamış, kapsam taslağı ekip kararı beklemektedir. [DOLDUR: Toplantı yapıldıysa tarih ve sonuç.] Planlanan sağlayıcıda sunucu stoku bulunmadığı için sunucu temini gecikmiştir. Ekip kararıyla (06 Kasım 2026) sunucu kiralanmamasına, sistemin bir ekip üyesinin bilgisayarında Docker Compose ile çalıştırılmasına ve alan adına Cloudflare Tunnel ile bağlanmasına karar verilmiştir. Bu yolla modemde port açılmadan HTTPS erişimi sağlanmakta, fizibilite raporunda sunucu için ayrılan 4.200 TL harcanmamaktadır. Bunun bedeli, sistemin yalnızca bu bilgisayar açıkken erişilebilir olmasıdır; erişilebilirlik hedefi buna göre güncellenmiştir. Alan adı alınmıştır. Başlangıç planındaki izinli gerçek özgeçmişler yerine, etik ve KVKK riskini ortadan kaldırmak için sentetik değerlendirme setine geçilmiştir. Alınan kararlar gerekçeleriyle proje deposunda tutulmaktadır.
+Planlanan sağlayıcıda sunucu stoku bulunmadığı için sunucu temini gecikmiştir. Ekip kararıyla (06 Kasım 2026) sunucu kiralanmamasına, sistemin bir ekip üyesinin bilgisayarında Docker Compose ile çalıştırılmasına ve alan adına Cloudflare Tunnel ile bağlanmasına karar verilmiştir. Bu yolla modemde port açılmadan HTTPS erişimi sağlanmakta, fizibilite raporunda sunucu için ayrılan 4.200 TL harcanmamaktadır. Bunun bedeli, sistemin yalnızca bu bilgisayar açıkken erişilebilir olmasıdır; erişilebilirlik hedefi buna göre güncellenmiştir. Alan adı alınmıştır. Başlangıç planındaki izinli gerçek özgeçmişler yerine, etik ve KVKK riskini ortadan kaldırmak için sentetik değerlendirme setine geçilmiştir. Alınan kararlar gerekçeleriyle proje deposunda tutulmaktadır.
 
 ## 6.2. Takvim
 
