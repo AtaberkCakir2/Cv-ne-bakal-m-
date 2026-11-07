@@ -1,13 +1,16 @@
 """T-033 normalizasyonu: pozisyon eşleme, yetkinlik etiketleme ve benzer ilan tespiti (veritabanı gerekmez)."""
 
 import json
+import subprocess
+import sys
 from datetime import date
 from pathlib import Path
 
 import pytest
 
-from collector.taxonomy import load_roles, load_skills
+from collector.taxonomy_rows import load_roles, load_skills
 from etl.dedup import DedupItem, near_duplicates
+from etl.pipeline import mask_posting_once
 from etl.roles import RoleMatcher
 from etl.skills import SkillTagger
 from etl.text import fold, fold_phrase
@@ -17,6 +20,21 @@ EXAMPLE = Path(__file__).resolve().parents[2] / "contracts" / "examples" / "job_
 SKILLS = load_skills()
 MATCHER = RoleMatcher(load_roles(), SKILLS)
 TAGGER = SkillTagger(SKILLS)
+
+
+def test_matchers_do_not_import_the_database_layer() -> None:
+    # Burak'ın AI worker'ı (T-031) eşleyiciyi backend paketi ve SQLAlchemy olmadan kullanabilmeli (#20 incelemesi).
+    code = (
+        "import sys\n"
+        "import collector.taxonomy_rows, etl.dedup, etl.roles, etl.skills, etl.text\n"
+        "print(sorted(m for m in sys.modules if m.split('.')[0] in {'app', 'sqlalchemy', 'alembic'}))"
+    )
+    # cwd: pytest scraper/ dışından çalıştırılsa da collector ve etl bulunsun.
+    scraper_dir = Path(__file__).resolve().parents[1]
+    out = subprocess.run(  # noqa: S603
+        [sys.executable, "-c", code], capture_output=True, text=True, check=True, cwd=scraper_dir
+    )
+    assert out.stdout.strip() == "[]"
 
 
 def test_fold_handles_turkish_dotted_capital() -> None:
@@ -110,6 +128,22 @@ def test_case_sensitive_names() -> None:
     assert "Go" in tags("Services are written in Go and golang tooling.")
 
 
+@pytest.mark.parametrize(
+    ("text", "kept", "dropped"),
+    [
+        ("Experience with Objective-C and Swift.", "Objective-C", "C"),
+        ("We build on Ruby on Rails.", "Ruby on Rails", "Ruby"),
+        ("Pipelines run on Azure DevOps.", "Azure DevOps", "DevOps"),
+    ],
+)
+def test_overlapping_names_keep_the_longest(text: str, kept: str, dropped: str) -> None:
+    # CV tarafıyla aynı kural (extraction.taxonomy.Matcher): uzun ad içindeki kısa ad ayrı yetkinlik sayılmaz.
+    found = tags(text)
+    assert kept in found
+    assert dropped not in found
+    assert "Ruby" in tags("Ruby on Rails and plain Ruby scripts.")  # ayrıca yazılmışsa yine bulunur
+
+
 def test_synonyms_map_to_canonical() -> None:
     assert "JavaScript" in tags("Modern JS and ECMAScript")
     assert "PostgreSQL" in tags("postgres, psql")
@@ -168,3 +202,13 @@ def test_near_duplicates_need_same_company_and_role() -> None:
 def test_different_postings_are_kept() -> None:
     half = " ".join(f"other{i}" for i in range(100)) + " " + " ".join(f"word{i}" for i in range(100))
     assert near_duplicates([item(1, BASE), item(2, half, day=2)]) == set()
+
+
+def test_masking_twice_does_not_nest_placeholders() -> None:
+    # pii.mask_posting kendi etiketini yeniden maskeleyebiliyor ("name: X" → [AD SOYAD], sonra "SOYAD" yayılıyor);
+    # normalize her gece çalıştığı için mask_posting_once eski etiketlere dokunmamalı.
+    text = "About Acme\n\nWe build the database of the same name: Acme\n\nContact Ayşe Kaya at hr@acme.example"
+    once = mask_posting_once(text, "en")
+    assert "Ayşe" not in once and "[E-POSTA]" in once
+    assert mask_posting_once(once, "en") == once
+    assert "[AD [AD SOYAD]]" not in mask_posting_once(mask_posting_once(once, "en"), "en")

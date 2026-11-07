@@ -16,21 +16,24 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-018 · Ollama kurulumu ve model benchmark'ı
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 19.10.2026 – 01.11.2026 · **Öncelik:** P0 · **Efor:** 10 saat · **Alan:** AI / NLP
 - **Bağımlılık:** T-007 (Ataberk)
 - **Destek:** —
 - **Çıktı:** Benchmark raporu (poster için de kullanılacak)
 - **Kabul kriteri:** Aday modeller: Llama 3.x 8B Instruct (q4_K_M), Gemma 9B, Qwen 7B. 10 Türkçe CV ile: JSON uyumu, yetkinlik doğruluğu, token/sn, RAM. CPU ve (varsa) GPU ölçümü. Kazanan model + yedek model seçildi.
+- **Not:** Rapor `ai/eval/benchmark/README.md`, karar #26: Llama 3.1 8B (yedek Gemma 2 9B), JSON şeması zorunlu. Referans etiketler geçici (Claude); T-019 gold gelince ve VPS'te (T-056) tekrar ölçülmeli. Docker gerekmedi: Ollama Windows'a doğrudan kuruldu (0.40.13).
 
 ### T-019 · Etiketli değerlendirme veri seti (altın standart)
 
 - **Durum:** Devam Ediyor
-- **Tarih:** 19.10.2026 – 01.11.2026 · **Öncelik:** P0 · **Efor:** 12 saat · **Alan:** AI / NLP
+- **Tarih:** 19.10.2026 – 28.11.2026 · **Öncelik:** P0 · **Efor:** 12 saat (Burak; ekipçe toplam ~26–36 kişi-saat) · **Alan:** AI / NLP
 - **Bağımlılık:** —
-- **Destek:** Ataberk, Anıl
-- **Çıktı:** eval/dataset (anonim)
-- **Kabul kriteri:** En az 50 anonimleştirilmiş CV (TR + EN, farklı formatlar, 5 taranmış). Her CV'nin yetkinlikleri 2 kişi tarafından elle etiketlendi; anlaşmazlıklar 3. kişiyle çözüldü. Gerçek CV'ler için sahiplerinden yazılı izin.
+- **Destek:** Ataberk (şablon girdisi, etiketleme), Anıl (etiketleme)
+- **Çıktı:** ai/eval/dataset (sentetik)
+- **Kabul kriteri:** 50 sentetik CV (karar #20: gerçek kişilere ait CV toplanmaz): 25 TR + 25 EN; 10 pozisyon × 5; tek ve çok sütunlu; en az 5 taranmış; yeni mezun / stajyer / deneyimli dengeli. Tamamı en az 1 kişi, 20'si 2 kişi tarafından bağımsız elle etiketlendi; anlaşmazlıklar 3. kişiyle çözüldü; çift etiketlenen alt kümede etiketleyiciler arası F1 ≥ 0,85. Çift etiketlenen 20 CV dengeli seçilir: en az 8 TR + 8 EN, en az 6 çok sütunlu, en az 2 taranmış, üç deneyim düzeyinden de. Etiketler sıfırdan verilir; şablonun yetkinlik listesi veya bir eşleyicinin çıktısı cevap anahtarı olarak kullanılmaz.
+- **Not:** Plan #30'da Ataberk'le kararlaştırıldı (29.10.2026). İlk 10 Türkçe CV T-018 benchmark'ı için öncelikli (hedef 03.11). Şablon betiği `ai/eval/`'de; girdi listesi (pozisyon × yetkinlik × eş anlamlı, `role_skill_stats` oranlarıyla) Ataberk'ten JSON olarak gelir. CV üretiminde ÜYZ kullanılırsa araç adı ve sürümü TÜBİTAK beyanına eklenir.
+- **Devam notu (30.10.2026):** Yapılan: plan ve `agreement.py --write-gold` düzeltmesi main'de (#34); Ataberk'in şablon girdisi main'de (#38, `scraper/exports/template_input.json`); `ai/eval/scripts/generate_cvs.py` (JSON → tek/çok sütunlu PDF, taranmış benzetimi, manifest) ve **ilk 10 TR CV** (`syn-004`…`syn-013`; metinleri Claude Opus 5.5 ile yazıldı, ÜYZ beyanında) bu branch'te (PR #35). · Sıradaki adım: (1) 10 TR CV'yi etiketle → T-018 referansını (`ai/eval/benchmark/reference_draft.json`) gerçek etiketle değiştir; (2) kalan 37 CV (25 EN dahil) `template_input.json`'dan; low_data pozisyonlarda (game-developer 4, data-analyst 5 ilan) yetkinlik listesi yakın pozisyonla tamamlanır; (3) çift etiketlenecek 20 CV'yi dengeli seç (`double: true`; bu 10 CV'nin hepsi şu an false, en az 8 TR gerekli); ilerleme: `.venv\Scripts\python ai/eval/scripts/check_labels.py`. · Açık sorular / engeller: Ataberk'in önerisi, kalan taranmış CV'lerde ±1–2° eğim ve hafif gürültü (T-029 için). · Branch: `burak/sentetik-cv-uretimi` (PR #35)
 
 ### T-024 · UML diyagramları
 
@@ -67,21 +70,23 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-030 · Kişisel veri anonimleştirme (PII maskeleme)
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 02.11.2026 – 08.11.2026 · **Öncelik:** P0 · **Efor:** 10 saat · **Alan:** Güvenlik & KVKK
 - **Bağımlılık:** T-020
 - **Destek:** —
 - **Çıktı:** ai/pii modülü + testler
 - **Kabul kriteri:** LLM'e gitmeden ÖNCE ad-soyad, telefon, e-posta, adres, TC kimlik no, doğum tarihi maskelenir (regex + NER). Test: telefon/e-posta/TCKN için %100 maskeleme.
+- **Not:** Ad tespiti kurallar + yerel BERTurk NER (karar #24). #37 incelemesi (Ataberk) düzeltildi: unvan satırındaki yetkinlikler ad sayılmıyor, adres ipucu tek başına adres değil, NER kütüphaneleri sabit sürümde. Ataberk'e devredilenler: worker-ai imajına `ai[ner]` (CPU torch) kurulup model derleme sırasında indirilmeli (`HF_HUB_OFFLINE=1`) (CI'daki mypy komutu ve ilan maskelemesi `pii.mask_posting` Ataberk'te yapıldı). #43 incelemesinde (Ataberk, gerçek ilanlar) bulunanlar düzeltildi: maskeleme idempotent (etiketler tekrar maskelenmez), İngilizce metinde "Bay" hitap değil, unvanla başlayan marka adları küçük bir istisna listesinde ("Dr. Squatch"), bağlantı içindeki ön eksiz sayı telefon/TCKN değil, hash içindeki 11 hane TCKN değil. #44 incelemesindeki üç sızıntı da kapatıldı: harfe bitişik TCKN ("TC12345678901") ve unvandan sonra tek soyadı ("Mr. Johnson") maskeleniyor, bağlantıdaki telefon biçimli numara (05…, +90…, `?phone=`) telefon sayılıyor.
 
 ### T-031 · Yetkinlik çıkarımı v1 (sözlük + kural)
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 02.11.2026 – 15.11.2026 · **Öncelik:** P0 · **Efor:** 12 saat · **Alan:** AI / NLP
 - **Bağımlılık:** T-017 (Ataberk), T-020
 - **Destek:** Ataberk
 - **Çıktı:** ai/extraction v1
 - **Kabul kriteri:** Taksonomi + eş anlamlılarla hızlı eşleme (FlashText/regex); deneyim yılı ve seviye ipuçları ("ileri düzey", "3 yıl"). LLM çalışmasa bile sonuç üretir (yedek yol).
+- **Not:** `ai/extraction` (sözlük + kural, LLM'siz). 10 TR sentetik CV'de geçici referansa göre P 0,98 / R 0,97 (referans da sözlükle üretildiği için iyimser; T-019 gold ile tekrar ölç). Referans düzeltme önerileri: syn-012 Kriptografi CTF cümlesinde de geçiyor (geri eklenmeli); "GitHub Actions" içindeki GitHub ayrı sayılmamalı; MLOps/DevOps başlıkları tutarlı olmalı. Ataberk'le ortaklaştırma: `extraction/taxonomy.py` ve `scraper/etl/skills.py` aynı kurallar; CI mypy komutuna `extraction` eklenmeli.
 
 ### T-044 · Prompt versiyonlama
 

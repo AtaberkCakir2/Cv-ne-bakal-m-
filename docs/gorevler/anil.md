@@ -87,12 +87,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-022 · Tasarım sistemi
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 26.10.2026 – 01.11.2026 · **Öncelik:** P1 · **Efor:** 6 saat · **Alan:** UI / UX
 - **Bağımlılık:** T-021
 - **Destek:** —
 - **Çıktı:** Figma bileşen kütüphanesi
 - **Kabul kriteri:** Renk paleti, tipografi, buton/kart/grafik bileşenleri, açık/koyu tema, erişilebilirlik (kontrast AA).
+- **Not:** Figma yerine doğrudan kodda yapıldı (tek kaynak kod; Figma kütüphanesi istenirse buradan çıkarılabilir): `web/src/ui/` — renk/tipografi/boşluk değerleri (`tokens.css`), açık/koyu tema (sistem tercihi + elle seçim), buton, kart, form alanı, onay kutusu, uyarı, etiket, ilerleme çubuğu, skor halkası ve talep çubuk grafiği. AA kontrastı `npm run check:contrast` ile iki temada ölçülüyor. Canlı örnekler: `/tasarim` sayfası.
 
 ### T-023 · FastAPI proje iskeleti
 
@@ -102,7 +103,7 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 - **Destek:** Ataberk
 - **Çıktı:** backend/ iskeleti
 - **Kabul kriteri:** Katmanlı yapı (routers / services / repositories / schemas), pydantic-settings, yapılandırılmış JSON log, /health ve /health/ready, otomatik OpenAPI, global hata formatı.
-- **Not:** 24.10.2026: 19 test, ruff, mypy (strict) temiz. /health/ready gerçek Postgres/Redis/Ollama ile henüz denenmedi (Docker bu bilgisayarda çalışmıyor; T-007 ile birlikte doğrulanacak).
+- **Not:** 24.10.2026: Ataberk'in compose ortamıyla (PR #10) gerçek Postgres/Redis/Ollama üzerinde doğrulandı: konteynerde ve Windows'ta /health/ready 200; Redis durdurulunca 503, geri gelince 200. Windows'ta servis adresleri `localhost` değil `127.0.0.1` olmalı (IPv6 sorunu, PR #12).
 
 ---
 
@@ -110,21 +111,23 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-037 · Kimlik doğrulama ve yetkilendirme
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 02.11.2026 – 15.11.2026 · **Öncelik:** P0 · **Efor:** 16 saat · **Alan:** Backend API
 - **Bağımlılık:** T-023, T-012 (Ataberk)
 - **Destek:** —
 - **Çıktı:** /auth endpoint'leri + testler
 - **Kabul kriteri:** Kayıt/giriş, argon2 parola hash, JWT access (15 dk) + refresh (7 gün, rotasyonlu, DB'de hash), e-posta doğrulama, şifre sıfırlama, user/admin rolleri.
+- **Not:** 28.10.2026: 17 kimlik doğrulama testi (gerçek Postgres) + 5 güvenlik testi, toplam 50 geçti. code-reviewer incelemesindeki 7 bulgunun 5'i düzeltildi, 2'si (eşzamanlı yenileme, şifremi unuttum yanıt süresi) belgelendi. Ekip: `.env`'e `ENVIRONMENT=local` gerekli.
 
 ### T-038 · CV yükleme endpoint'i
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 02.11.2026 – 08.11.2026 · **Öncelik:** P0 · **Efor:** 8 saat · **Alan:** Backend API
 - **Bağımlılık:** T-023
 - **Destek:** Burak
 - **Çıktı:** POST /analyses
 - **Kabul kriteri:** Multipart, en fazla 5 MB ve 5 sayfa, MIME + magic byte kontrolü (sadece PDF). Dosya diske yazılmaz; bellekten kuyruğa aktarılır; SHA-256 hash kaydedilir.
+- **Not:** 24.10.2026: doğrulamalar, SHA-256 ve diske yazmama (testle kanıtlı) tamam. Kuyruk şimdilik örnek sonuç döndüren geçici sınıf; gerçek kuyruk T-039. Kimlik doğrulama T-037.
 
 ### T-026 · Poster baskı kontrolü ve teslim alma
 
@@ -155,12 +158,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-040 · Web arayüzü altyapısı (Electron ile ortak)
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 09.11.2026 – 15.11.2026 · **Öncelik:** P0 · **Efor:** 8 saat · **Alan:** Web / Masaüstü
 - **Bağımlılık:** T-023, T-022
 - **Destek:** —
 - **Çıktı:** web/ iskeleti
 - **Kabul kriteri:** React + Vite + TypeScript, TanStack Query, React Router; OpenAPI'den otomatik TS istemci (openapi-typescript); ortam değişkenleri.
+- **Not:** Vite 6 + React 18 + TS (strict), React Router 6, TanStack Query 5, openapi-fetch + openapi-typescript (`npm run gen:api`), `VITE_API_URL`. Sayfalar yer tutucu; `/durum` backend sağlığını tipli istemciyle gösterir. CORS için #12 gerekli (127.0.0.1:5173).
 
 ---
 
@@ -177,12 +181,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-051 · Giriş, kayıt, şifre sıfırlama ve KVKK onay ekranları
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 16.11.2026 – 22.11.2026 · **Öncelik:** P0 · **Efor:** 10 saat · **Alan:** Web / Masaüstü
 - **Bağımlılık:** T-040, T-037
 - **Destek:** —
 - **Çıktı:** Auth ekranları
 - **Kabul kriteri:** Form doğrulama, hata mesajları, token yenileme (otomatik), KVKK/açık rıza onay kutuları zorunlu.
+- **Not:** Ekranlar: giriş, kayıt (3 zorunlu onay), şifremi unuttum, şifre sıfırlama, e-posta doğrulama; korumalı sayfalar girişe yönlendirir (`?sonra=`). Token otomatik yenilenir (`web/src/auth/session.ts`: süresi bitmeden ve 401 gelince, tek seferde). Gerçek backend (#24) ile uçtan uca denendi. Onay metni sürümü şimdilik `2026-10-taslak`; metinler T-065 ile kesinleşince değişecek.
 
 ### T-052 · CV yükleme ve analiz bekleme ekranı
 
@@ -195,12 +200,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-049 · Profil ve KVKK endpoint'leri
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 23.11.2026 – 29.11.2026 · **Öncelik:** P0 · **Efor:** 10 saat · **Alan:** Backend API
 - **Bağımlılık:** T-037
 - **Destek:** —
 - **Çıktı:** /users/me endpoint'leri
 - **Kabul kriteri:** Profil güncelleme, hedef pozisyon; rıza kaydı (sürümlü); verilerimi indir (JSON); hesabımı sil (anında anonimleştirme, 30 gün içinde kalıcı silme).
+- **Not:** 29.10.2026: `GET/PATCH /users/me` (hedef pozisyon dahil), `GET/POST /users/me/consents` (sürümlü, eski sürüm silinmez), `GET /users/me/export` (profil, onaylar, oturumlar, analizler, işlem kayıtları), `DELETE /users/me` (şifre tekrar istenir; e-posta/ad/şifre hemen anonimleşir, oturumlar kapanır) ve `scripts/purge_deleted_users.py` (30 günü geçen hesap ve analizleri kalıcı siler; Celery beat T-039'a bağlanana kadar cron). 04.11.2026: `DELETE /users/me/consents/acik_riza` eklendi (#33'teki `withdrawn_at` ile; kayıt silinmez, denetim kaydına yazılır, aynı sürüm yeniden onaylanabilir). **T-048'e bağlı:** geçerli açık rıza yoksa yeni analiz başlatılmamalı (açık rıza metni taslağı, branch `anil/kvkk-metinleri`; danışman kararına göre).
 
 ### T-053 · Sonuç panosu
 
@@ -217,12 +223,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-050 · Rate limit ve hata yönetimi
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 30.11.2026 – 06.12.2026 · **Öncelik:** P1 · **Efor:** 6 saat · **Alan:** Backend API
 - **Bağımlılık:** T-037
 - **Destek:** —
 - **Çıktı:** Middleware
 - **Kabul kriteri:** Redis tabanlı sınır: analiz 5/saat/kullanıcı, giriş 10/dk/IP, genel 100/dk. RFC 7807 hata formatı; 429 için Retry-After başlığı.
+- **Not:** 29.10.2026: `app/core/rate_limit.py` (Redis sabit pencere, fail-open, IP özetli anahtar) ve `app/api/rate_limits.py`. Genel 100/dk/IP ve giriş-kayıt-sıfırlama 10/dk/IP uçlara bağlı; analiz 5/saat/kullanıcı (`AnalysesRateLimit`) hazır, analiz oluşturma ucu kimlik doğrulamaya bağlanınca (#9, T-048) eklenecek. Production'da `FORWARDED_ALLOW_IPS` (Caddy) şart (T-075, Ataberk).
 
 ### T-059 · Electron masaüstü uygulaması
 

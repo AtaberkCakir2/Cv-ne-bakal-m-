@@ -1,0 +1,21 @@
+{
+  "cv_id": "syn-005", "language": "tr", "layout": "multi_column", "scanned": false,
+  "target_role": "frontend-developer", "experience": "intern", "double": false,
+  "header": {"name": "Zeynep Kılıç", "title": "Frontend Geliştirici Adayı · 3. sınıf öğrencisi", "contact": ["zeynep.kilic@example.org", "0543 000 11 22", "Ankara"]},
+  "sidebar": [
+    {"title": "Teknik Beceriler", "list": ["HTML5 / CSS3 ★★★★★", "JavaScript (ES6+) ★★★★☆", "TypeScript ★★★☆☆", "React ★★★★☆", "Vue ★★☆☆☆", "Tailwind ★★★☆☆", "Figma ★★★☆☆"]},
+    {"title": "Araçlar", "list": ["Git & GitHub", "VS Code", "Jest (temel)", "npm, Vite"]},
+    {"title": "Diller", "list": ["Türkçe — ana dil", "İngilizce — B1", "Almanca — A2"]},
+    {"title": "İlgi Alanları", "list": ["Erişilebilir arayüzler", "Fotoğrafçılık"]}
+  ],
+  "main": [
+    {"title": "Profil", "text": ["Kullanıcı deneyimi iyi olan, hızlı açılan web arayüzleri geliştirmeye odaklanıyorum. Şu an Next.js öğreniyorum; ilk projemi bu dönem bitirmeyi planlıyorum."]},
+    {"title": "Staj Deneyimi", "items": [{"heading": "Frontend Stajyeri — Pikselsoft (örnek şirket)", "meta": "Haziran 2026 – Ağustos 2026 · Ankara", "bullets": ["React ve TS ile müşteri paneline 6 yeni ekran geliştirdim; bileşenleri Storybook'ta belgeledim.", "REST API'den gelen verileri React Query ile önbelleğe aldım.", "Lighthouse erişilebilirlik puanını 71'den 94'e çıkaran düzeltmeler yaptım (WCAG AA kontrastı, klavye ile gezinme)."]}]},
+    {"title": "Projeler", "items": [
+      {"heading": "Kampüs Yemekhane Menüsü", "text": ["Vue 3 ile yazılmış, Firebase üzerinde barındırılan menü ve puanlama uygulaması. 1.200+ aylık kullanıcı."]},
+      {"heading": "Portfolyo sitesi", "text": ["Saf HTML/CSS/JS, responsive tasarım; koyu tema desteği."]}
+    ]},
+    {"title": "Eğitim", "items": [{"heading": "Yazılım Mühendisliği, Lisans (devam ediyor)", "meta": "2024 – 2028 (beklenen)", "text": ["Aldığım dersler: Web Programlama, İnsan-Bilgisayar Etkileşimi, Veritabanı Sistemleri."]}]},
+    {"title": "Sertifikalar", "list": ["Meta Front-End Developer — Coursera (2025)", "BTK Akademi — Modern JavaScript"]}
+  ]
+}

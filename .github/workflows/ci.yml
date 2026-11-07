@@ -1,4 +1,4 @@
-# CI (T-008, sahibi: Ataberk). Her PR'da ve main/develop'a her push'ta çalışır.
+# CI (T-008, sahibi: Ataberk). Her PR'da ve main'e her push'ta çalışır.
 # Her modülde, sahibinin README'sinde yazan komutlar birebir çalıştırılır: CI'da geçen, yerelde de geçer.
 # Henüz kurulmamış modüller (web, mobile, ai worker imajı) dosyaları eklendiği anda otomatik devreye girer.
 # "Kırmızı CI ile merge yok" kuralı GitHub'daki branch protection ile zorunlu kılınır (infra/ci.md).
@@ -7,7 +7,7 @@ name: CI
 on:
   pull_request:
   push:
-    branches: [main, develop]
+    branches: [main]
 
 concurrency:
   group: ci-${{ github.ref }}
@@ -120,8 +120,9 @@ jobs:
           cache-dependency-path: |
             scraper/pyproject.toml
             backend/pyproject.toml
-      # Modeller backend paketinden gelir (scraper/README.md'deki kurulumla aynı).
-      - run: pip install -e ../backend -e ".[dev]"
+            ai/pyproject.toml
+      # Modeller backend, ilan maskeleme (pii) ai paketinden gelir (scraper/README.md kurulumu).
+      - run: pip install -e ../backend -e ../ai -e ".[dev]"
       - run: ruff check .
       - run: ruff format --check .
       - run: mypy collector etl tests
@@ -146,7 +147,7 @@ jobs:
       - run: ruff check .
       - run: ruff format --check .
       # Yollar ai/README.md'deki komutla aynı; orası değişirse burası da değişir.
-      - run: mypy parsing tests eval/scripts
+      - run: mypy parsing pii extraction tests eval/scripts
       - run: pytest -rs
 
   web:
@@ -195,7 +196,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: docker-compose.yml geçerli mi
-        run: cp .env.example .env && docker compose --profile api --profile worker config --quiet
+        run: cp .env.example .env && docker compose --profile api --profile worker --profile data config --quiet
       - name: API imajı
         run: docker build -t careerai/api:ci backend
       - name: API imajı açılıyor mu (smoke test)
@@ -207,6 +208,11 @@ jobs:
           done
           docker logs api-smoke
           exit 1
+      - name: Veri işçisi imajı (worker-data)
+        run: |
+          docker build -t careerai/worker-data:ci -f scraper/Dockerfile .
+          # Celery uygulaması ve gece görevi yükleniyor mu (broker'a bağlanmadan)
+          docker run --rm careerai/worker-data:ci python -c             "from collector.tasks import app; assert 'collector.nightly' in app.tasks; print(app.conf.beat_schedule)"
       - name: AI worker imajı
         if: needs.detect.outputs.ai_docker == 'true'
         run: docker build -t careerai/worker:ci ai

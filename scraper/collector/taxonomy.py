@@ -5,7 +5,6 @@ ekle/güncelle); CSV'den çıkarılan kayıt silinmez, pasife alınır (ilan ve 
 Eş anlamlılar küçük harf; bir eş anlamlı tek bir yetkinliğe ait olmalı (eşleme belirsiz olmasın).
 """
 
-import csv
 import json
 import re
 from dataclasses import dataclass
@@ -16,66 +15,19 @@ from app.db.models import Role, Skill
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-TAXONOMY_DIR = Path(__file__).resolve().parents[1] / "taxonomy"
-SKILLS_CSV = TAXONOMY_DIR / "skills.csv"
-ROLES_CSV = TAXONOMY_DIR / "roles.csv"
+# CSV okuma DB'siz modülde; eski importlar (collector.taxonomy.load_skills vb.) çalışmaya devam etsin.
+from collector.taxonomy_rows import ROLES_CSV as ROLES_CSV
+from collector.taxonomy_rows import SKILLS_CSV as SKILLS_CSV
+from collector.taxonomy_rows import TAXONOMY_DIR as TAXONOMY_DIR
+from collector.taxonomy_rows import RoleRow as RoleRow
+from collector.taxonomy_rows import SkillRow as SkillRow
+from collector.taxonomy_rows import load_roles as load_roles
+from collector.taxonomy_rows import load_skills as load_skills
+
 VERSION = "1"
 
 _SLUG = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")
 CATEGORIES = {c.value for c in SkillCategory}
-
-
-@dataclass(frozen=True)
-class SkillRow:
-    canonical_name: str
-    slug: str
-    category: str
-    synonyms: tuple[str, ...]
-    esco_uri: str | None
-    # Adı sıradan bir kelimeyle aynı (Go, Swift, SOLID, Spring...): ad sadece bu yazımla eşleşmeli,
-    # "solid understanding" SOLID sayılmamalı. Eş anlamlılar (golang, spring boot...) yine harf duyarsız.
-    # Veritabanında sütunu yok; eşleyici (T-031) için CSV ve JSON çıktısında taşınır.
-    case_sensitive: bool = False
-
-
-@dataclass(frozen=True)
-class RoleRow:
-    name: str
-    slug: str
-    synonyms: tuple[str, ...]
-    description: str
-
-
-def _split(cell: str) -> tuple[str, ...]:
-    return tuple(s.strip() for s in cell.split("|") if s.strip())
-
-
-def load_skills(path: Path = SKILLS_CSV) -> list[SkillRow]:
-    with path.open(encoding="utf-8", newline="") as f:
-        return [
-            SkillRow(
-                canonical_name=row["canonical_name"].strip(),
-                slug=row["slug"].strip(),
-                category=row["category"].strip(),
-                synonyms=_split(row["synonyms"]),
-                esco_uri=row["esco_uri"].strip() or None,
-                case_sensitive=row.get("case_sensitive", "").strip() == "1",
-            )
-            for row in csv.DictReader(f)
-        ]
-
-
-def load_roles(path: Path = ROLES_CSV) -> list[RoleRow]:
-    with path.open(encoding="utf-8", newline="") as f:
-        return [
-            RoleRow(
-                name=row["name"].strip(),
-                slug=row["slug"].strip(),
-                synonyms=_split(row["synonyms"]),
-                description=row["description"].strip(),
-            )
-            for row in csv.DictReader(f)
-        ]
 
 
 def validate(skills: list[SkillRow], roles: list[RoleRow]) -> list[str]:

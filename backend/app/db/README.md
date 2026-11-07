@@ -54,4 +54,4 @@ PowerShell'de: `$env:TEST_DATABASE_URL = "postgresql+psycopg://postgres:test@127
 - CV dosyası ve ham CV metni hiçbir sütunda tutulmaz (karar #9); `test_no_cv_content_columns` bunu denetler.
 - Kullanıcıya bağlı silmeler DB'deki `ON DELETE CASCADE` ile olur (`passive_deletes=True`); ORM ilişkileri tek tek yüklemez.
 - `updated_at` ORM güncellemelerinde otomatik değişir; elle SQL ile güncellerken siz verin.
-- HNSW vektör indeksleri T-013'te ayrı migration ile gelir.
+- `skills.embedding` ve `job_postings.embedding` HNSW (kosinüs) indeksli (`0003`). Benzerlik sorgusu `embedding <=> :v` ile `ORDER BY ... LIMIT` biçiminde yazılmalı; `1 - (a <=> b)` gibi ifadeyle sıralamak indeksi devre dışı bırakır.
