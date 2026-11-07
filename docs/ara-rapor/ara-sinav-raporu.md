@@ -8,7 +8,7 @@ Yapı ve metin LEE Tez ve Proje Yazım Kılavuzu'na (Eylül 2022) göre düzenle
 
 T.C.
 İSTANBUL NİŞANTAŞI ÜNİVERSİTESİ
-MÜHENDİSLİK VE MİMARLIK FAKÜLTESİ
+MÜHENDİSLİK MİMARLIK FAKÜLTESİ
 BİLGİSAYAR MÜHENDİSLİĞİ BÖLÜMÜ
 
 YAPAY ZEKÂ DESTEKLİ KARİYER VE EĞİTİM YÖNLENDİRME SİSTEMİ
@@ -33,12 +33,12 @@ Burak DOĞAN ([DOLDUR: öğrenci no])
 Anıl AKYIL ([DOLDUR: öğrenci no])
 
 İstanbul Nişantaşı Üniversitesi
-Mühendislik ve Mimarlık Fakültesi
+Mühendislik Mimarlık Fakültesi
 Bilgisayar Mühendisliği Bölümü
 
 Bitirme Projesi Ara Sınav Raporu
 
-Danışman: [DOLDUR: unvan] Yaşar HOŞCAN
+Danışman: Prof. Dr. Yaşar HOŞCAN
 
 İstanbul
 Kasım 2026
