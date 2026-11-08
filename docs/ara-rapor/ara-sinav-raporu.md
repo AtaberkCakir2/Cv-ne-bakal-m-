@@ -207,7 +207,7 @@ Bu raporun hazırlanmasında ve projedeki kodun bir bölümünün yazılmasında
 
 # 4. TAMAMLANAN ÇALIŞMALAR
 
-Bu bölümdeki durumlar 07 Kasım 2026, ilan ve kaynak sayıları 05 Kasım 2026 tarihlidir. Ana dala birleşmiş işler tamamlandı, kodu yazılmış ancak ekip incelemesi süren işler inceleme aşamasında olarak belirtilmiştir.
+Bu bölümdeki durumlar ve kaynak sayıları 07 Kasım 2026, ilan sayıları 05 Kasım 2026 tarihlidir. Ana dala birleşmiş işler tamamlandı, kodu yazılmış ancak ekip incelemesi süren işler inceleme aşamasında olarak belirtilmiştir.
 
 ## 4.1. Proje Yönetimi ve Altyapı
 
@@ -217,9 +217,9 @@ Fizibilite raporu hazırlanarak danışmana teslim edilmiş, 20. Bilişim Kongre
 
 Veri kaynaklarının robots.txt dosyaları ve kullanım koşulları incelenmiş, Türk iş sitelerinin yazılı izin olmadan kullanılamayacağı görülmüştür. Bu nedenle ilanlar resmî API'lerden toplanmaktadır. Yapılan çalışmalar aşağıda özetlenmiştir:
 
-• Kullanım koşullarına uygun yedi kaynaktan 2.733 aktif ilan toplanmıştır (Mayıs–Ekim 2026; 05 Kasım 2026 itibarıyla). Açık lisanslı bir veri seti (Vidros vd., 2017) yedek olarak pasif tutulmaktadır. Jobicy ve Arbeitnow API'leri eklenmiş; dinamik sayfalar için tarayıcı tabanlı toplayıcının (Playwright) ilk örneği Python.org iş ilanlarıyla denenmektedir.
+• Kullanım koşullarına uygun yedi kaynaktan 2.733 aktif ilan toplanmıştır (Mayıs–Ekim 2026; 05 Kasım 2026 itibarıyla). Açık lisanslı bir veri seti (Vidros vd., 2017) yedek olarak pasif tutulmaktadır. Jobicy ve Arbeitnow API'leri eklenmiş; dinamik sayfalar için tarayıcı tabanlı bir toplayıcı (Playwright) eklenmiş ve Python.org iş ilanlarıyla ilk örneği tamamlanmıştır.
 
-• ESCO sınıflandırması (Avrupa Komisyonu, t.y.) ve elle derlenen teknoloji listesinden 374 yetkinlik, sekiz kategori ve 12 pozisyon içeren iki dilli bir taksonomi oluşturulmuştur.
+• ESCO sınıflandırması (Avrupa Komisyonu, t.y.) ve elle derlenen teknoloji listesinden 374 yetkinlik, sekiz kategori ve 12 pozisyon içeren iki dilli bir taksonomi oluşturulmuştur. Pozisyonların 10'u kullanıcının seçebileceği hedef pozisyonlardır; veri mühendisi ve veri analisti ilanların sınıflandırılması için ayrıca eklenmiştir.
 
 • HTML temizleme, dil tespiti, kişisel verilerin maskelenmesi, başlıktan pozisyon atama ve yinelenen ilanların ayıklanması (Broder, 1997) tamamlanmıştır. Pozisyon yalnızca başlıktan belirlenmektedir; yetkinliklerden tahmin edilseydi talep oranları yapay olarak yükselirdi.
 
@@ -227,7 +227,7 @@ Veri kaynaklarının robots.txt dosyaları ve kullanım koşulları incelenmiş,
 
 • Toplama, normalizasyon ve istatistik yenileme adımları her gece saat 03.00'te çalışacak şekilde hazırlanmıştır.
 
-• Doğrulanmış eğitim kaynağı havuzunda 753 kaynak bulunmaktadır; 374 yetkinliğin 355'inde en az bir kaynak vardır. Çalışma sürmektedir.
+• Doğrulanmış eğitim kaynağı havuzunda 1.172 kaynak (342'si Türkçe) bulunmaktadır; 374 yetkinliğin 360'ında en az bir kaynak vardır (07 Kasım 2026). Çalışma sürmektedir.
 
 ## 4.3. Yapay Zekâ Modülleri
 
@@ -313,7 +313,7 @@ Analizler üretim ortamında ağırlıklı olarak işlemcide çalışacağı iç
 
 ## 6.1. Plandan Sapmalar
 
-Planlanan sağlayıcıda sunucu stoku bulunmadığı için sunucu temini gecikmiştir. Ekip kararıyla (06 Kasım 2026) sunucu kiralanmamasına, sistemin bir ekip üyesinin bilgisayarında Docker Compose ile çalıştırılmasına ve alan adına Cloudflare Tunnel ile bağlanmasına karar verilmiştir. Bu yolla modemde port açılmadan HTTPS erişimi sağlanmakta, fizibilite raporunda sunucu için ayrılan 4.200 TL harcanmamaktadır. Bunun bedeli, sistemin yalnızca bu bilgisayar açıkken erişilebilir olmasıdır; erişilebilirlik hedefi buna göre güncellenmiştir. Alan adı alınmıştır. Başlangıç planındaki izinli gerçek özgeçmişler yerine, etik ve KVKK riskini ortadan kaldırmak için sentetik değerlendirme setine geçilmiştir. Alınan kararlar gerekçeleriyle proje deposunda tutulmaktadır.
+Ekip kararıyla (06 Kasım 2026) sunucu kiralanmamasına, sistemin bir ekip üyesinin bilgisayarında Docker Compose ile çalıştırılmasına ve alan adına Cloudflare Tunnel ile bağlanmasına karar verilmiştir. Gerekçe, projenin amacının jüriye ve hocalara çalışan sistemi göstermek olması ve altı aylık sunucu kirasının (4.200 TL) bu kullanım için gereksiz bulunmasıdır. Kullanılan bilgisayarda planlanan sunucunun iki katı bellek (32 GB) ve bir grafik işlemci bulunmakta, tünel sayesinde modemde port açılmadan HTTPS erişimi sağlanmaktadır. Bunun bedeli, sistemin yalnızca bu bilgisayar açıkken erişilebilir olmasıdır; erişilebilirlik hedefi buna göre güncellenmiştir. Alan adı alınmıştır. Başlangıç planındaki izinli gerçek özgeçmişler yerine, etik ve KVKK riskini ortadan kaldırmak için sentetik değerlendirme setine geçilmiştir. Alınan kararlar gerekçeleriyle proje deposunda tutulmaktadır.
 
 ## 6.2. Takvim
 
