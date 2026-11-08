@@ -1,0 +1,71 @@
+{
+  "name": "careerai-desktop",
+  "productName": "CareerAI",
+  "version": "0.1.0",
+  "private": true,
+  "description": "CareerAI masaüstü uygulaması (Electron, T-059)",
+  "author": "CareerAI ekibi",
+  "main": "main.cjs",
+  "scripts": {
+    "web": "npm --prefix .. run build",
+    "start": "electron .",
+    "smoke": "electron . --smoke",
+    "check:api": "node check-api.cjs",
+    "dist:win": "npm run check:api && npm run web && electron-builder --win nsis",
+    "dist:mac": "npm run check:api && npm run web && electron-builder --mac",
+    "release:win": "npm run check:api && npm run web && electron-builder --win nsis --publish always",
+    "release:mac": "npm run check:api && npm run web && electron-builder --mac --publish always"
+  },
+  "dependencies": {
+    "electron-updater": "6.8.10"
+  },
+  "devDependencies": {
+    "electron": "44.9.0",
+    "electron-builder": "26.17.0"
+  },
+  "build": {
+    "appId": "com.cvnebakalim.careerai",
+    "productName": "CareerAI",
+    "directories": {
+      "output": "release",
+      "buildResources": "resources"
+    },
+    "files": [
+      "main.cjs",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "../dist",
+        "to": "web"
+      }
+    ],
+    "win": {
+      "target": "nsis"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true
+    },
+    "mac": {
+      "target": [
+        "dmg",
+        "zip"
+      ],
+      "category": "public.app-category.education"
+    },
+    "publish": {
+      "provider": "github",
+      "owner": "AtaberkCakir2",
+      "repo": "Cv-ne-bakal-m-"
+    },
+    "electronFuses": {
+      "runAsNode": false,
+      "enableNodeOptionsEnvironmentVariable": false,
+      "enableNodeCliInspectArguments": false,
+      "enableCookieEncryption": true,
+      "onlyLoadAppFromAsar": true
+    }
+  }
+}
