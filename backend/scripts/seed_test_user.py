@@ -29,8 +29,8 @@ CONSENT_VERSION = "test"
 
 def main() -> int:
     settings = get_settings()
-    if settings.environment not in ("local", "test"):
-        print(f"Sadece local/test ortamında çalışır (şu an: {settings.environment}).")
+    if not settings.is_explicit_dev:  # ENVIRONMENT hiç verilmemişse de çalışmaz (canlı veri tabanına yazmasın)
+        print(f"Sadece ENVIRONMENT=local/test açıkça verildiğinde çalışır (şu an: {settings.environment}).")
         return 1
     email = os.environ.get("E2E_TEST_EMAIL", "").strip().lower()
     password = os.environ.get("E2E_TEST_PASSWORD", "")

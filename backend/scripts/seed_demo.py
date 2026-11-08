@@ -10,6 +10,7 @@ Kullanım (backend/ klasöründe; önce `python scripts/seed_test_user.py`):
 - Pozisyon, yetkinlik ve kaynaklar yoksa eklenir, varsa olduğu gibi kullanılır (taksonomi yüklü veri tabanında da
   çalışır). Kaynaklar URL'ye göre eşleşir.
 - Her çalıştırmada kullanıcıya yeni bir tamamlanmış analiz eklenir; eski demo analizleri silinmez.
+- Boş bir veri tabanında eklenen örnek kaynaklar (example.com) katalog uçlarında da görünür; sadece lokal içindir.
 - Sadece local/test ortamında çalışır.
 """
 
@@ -23,7 +24,7 @@ from typing import Any
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))  # backend/ (app paketi)
 
-from sqlalchemy import select  # noqa: E402
+from sqlalchemy import or_, select  # noqa: E402
 from sqlalchemy.orm import Session  # noqa: E402
 
 from app.core.config import get_settings  # noqa: E402
@@ -67,7 +68,8 @@ def role_for(session: Session, slug: str, name: str) -> Role:
 
 
 def skill_for(session: Session, name: str) -> Skill:
-    skill = session.scalar(select(Skill).where(Skill.canonical_name == name))
+    # Taksonomi yetkinlikleri slug'la yükler; ad değişmiş olsa da aynı slug bulunur, unique çakışması olmaz.
+    skill = session.scalar(select(Skill).where(or_(Skill.slug == slugify(name), Skill.canonical_name == name)))
     if skill is None:
         # Kategori demo için önemsiz; taksonomi yüklüyse bu dala hiç girilmez.
         skill = Skill(canonical_name=name, slug=slugify(name), category=SkillCategory.ARAC, synonyms=[])
@@ -91,13 +93,16 @@ def resource_for(session: Session, skill: Skill, data: dict[str, Any]) -> Resour
         )
         session.add(resource)
         session.flush()
+    elif resource.skill_id != skill.id or not resource.is_alive:
+        # Havuz Ataberk'in (karar #10): değiştirilmez, sadece haber verilir. Ölü kaynak panoda görünmez.
+        print(f"Uyarı: {data['url']} başka bir yetkinliğe bağlı ya da ölü işaretli; panoda eksik çıkabilir.")
     return resource
 
 
 def main() -> int:
     settings = get_settings()
-    if settings.environment not in ("local", "test"):
-        print(f"Sadece local/test ortamında çalışır (şu an: {settings.environment}).")
+    if not settings.is_explicit_dev:  # ENVIRONMENT hiç verilmemişse de çalışmaz (canlı veri tabanına yazmasın)
+        print(f"Sadece ENVIRONMENT=local/test açıkça verildiğinde çalışır (şu an: {settings.environment}).")
         return 1
     email = os.environ.get("E2E_TEST_EMAIL", "").strip().lower()
     if not email.endswith("@example.com"):
@@ -172,7 +177,8 @@ def main() -> int:
                     )
                 )
         session.commit()
-        print(f"Demo analizi eklendi: {analysis.id} ({email}, {role.name}). Web'de: /analiz/{analysis.id}")
+        print(f"Demo analizi eklendi: {analysis.id} ({email}, {role.name}).")
+        print(f"Web'de: /analiz/{analysis.id}")
     return 0
 
 
