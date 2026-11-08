@@ -57,6 +57,17 @@ Stantta internet veya sunucu sorun çıkarırsa bu video oynatılır. Tam analiz
 | 1:45–1:55 | Kaynak detayı penceresi | Gerçek uygulama, örnek veri | "Her eksik için ücretsiz kaynak önerisi." |
 | 1:55–2:00 | Kapanış kartı: ekip, GitHub, QR | Video düzenleyici | "Yerel yapay zeka · KVKK uyumlu · Ocak 2027'de yayında." |
 
+### Demo ortamını kurma
+
+Çekimden önce bir kez, yerel bilgisayarda (servisler `make up` ile açık, `backend/` klasöründe):
+
+```bash
+python scripts/seed_test_user.py   # sahte hesap: E2E_TEST_EMAIL (@example.com) / E2E_TEST_PASSWORD
+python scripts/seed_demo.py        # contracts/examples'taki örnek sonucu bu hesaba yazar, adresini yazdırır
+```
+
+Sonra web'de bu hesapla giriş yapılır. Geçmiş sayfasında "Backend Developer · 63/100" analizi görünür ve sonuç panosu, kaynak detayı, geri bildirim ve profil ekranları buradan çekilir. Betik #72'nin dalında (`anil/demo-verisi`); yığın main'e birleşmeden önce çekim o daldan yapılır.
+
 ### Çekim notları
 
 - Sadece sahte hesap (`…@example.com`) ve `contracts/examples/` altındaki anonim CV kullanılır. Gerçek CV, gerçek e-posta, tarayıcı yer imleri veya bildirimler kadrajda olmamalı.
