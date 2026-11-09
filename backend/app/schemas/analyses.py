@@ -2,7 +2,7 @@ import uuid
 from datetime import datetime
 from typing import Literal
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field, field_validator
 
 from app.db.enums import AnalysisErrorCode, AnalysisStatus, LangCode, ResourceLevel, ResourceProvider, SkillLevel
 
@@ -63,8 +63,23 @@ class MissingSkillOut(BaseModel):
     resources: list[ResourceOut]
 
 
+class FeedbackIn(BaseModel):
+    rating: int = Field(ge=1, le=5, description="1-5 yıldız")
+    comment: str | None = Field(default=None, max_length=1000, description="İsteğe bağlı yorum")
+
+    @field_validator("comment")
+    @classmethod
+    def _blank_is_none(cls, value: str | None) -> str | None:
+        return value.strip() or None if value is not None else None
+
+
+class FeedbackOut(BaseModel):
+    rating: int
+    comment: str | None
+
+
 class AnalysisOut(BaseModel):
-    """contracts/analysis_result.schema.json."""
+    """contracts/analysis_result.schema.json. `feedback` API'nin eki (sözleşmede yok): verildiyse yanıtta yer alır."""
 
     analysis_id: uuid.UUID
     status: AnalysisStatus
@@ -77,6 +92,7 @@ class AnalysisOut(BaseModel):
     error: AnalysisErrorOut | None = None
     created_at: datetime
     completed_at: datetime | None = None
+    feedback: FeedbackOut | None = None
 
 
 class AnalysisSummaryOut(BaseModel):
