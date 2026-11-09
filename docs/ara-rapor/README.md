@@ -19,7 +19,7 @@ Kaynak: [İstanbul Nişantaşı Üniversitesi LEE Tez ve Proje Yazım Kılavuzu]
 2. **Kapak bilgileri:** Lisansüstüne özgü "Enstitü, Anabilim Dalı" satırları yerine Fakülte ve Bölüm yazılsın mı? Üç öğrenci adı kapakta nasıl yer alsın?
 3. **Cilt ve kopya:** Kılavuzun ciltli 3 nüsha, 2 mm mukavva kapak, kırmızı/mavi kapak rengi, CD/USB kuralları ara rapor için de geçerli mi? Yoksa tek basılı kopya yeterli mi? Rapor grup başına tek mi?
 4. **Kabul ve onay:** Savunma olmadığı için taslağa konmadı (kılavuz projelerde de istemiyor). Doğru mu?
-5. **Yapay zekâ beyanı:** Kılavuzda yapay zekâ ve benzerlik oranı kuralı yok. Bölüm 3.6'ya ekip kararıyla kesin beyan yazıldı (07.11.2026); etik beyan metni gelince onunla çelişmediğine bakılmalı.
+5. **Yapay zekâ beyanı:** Kılavuzda yapay zekâ ve benzerlik oranı kuralı yok. Bölüm 3.6'ya ekip kararıyla kesin beyan yazıldı (07.11.2026). Etik beyan sayfası ekip kararıyla ara rapordan çıkarıldı (10.11.2026); final raporunda gerekirse eklenir.
 6. **Kaynakçada `&` mi `ve` mi:** Kılavuz madde 2.13 `&` istiyor, Bölüm 4.4'teki örnekler `ve` kullanıyor. Taslakta madde 2.13'e uyuldu (`&`).
 
 ## Word'e aktarırken uygulanacak biçim

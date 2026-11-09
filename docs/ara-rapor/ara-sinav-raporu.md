@@ -45,10 +45,6 @@ Kasım 2026
 
 ---
 
-# ETİK BEYAN
-
-[DOLDUR: Resmî metin kılavuzun Ek 5'inde; yayımlanan PDF'te ekler yok. Hocadan veya enstitüden alınmalı. Metin Yapay Zekâ Araçlarının Kullanımı başlığıyla çelişmemeli. İmzalar mavi mürekkepli kalemle atılır.]
-
 # ÖZET
 
 Ataberk ÇAKIR, Burak DOĞAN, Anıl AKYIL
