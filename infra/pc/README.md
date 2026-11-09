@@ -8,7 +8,7 @@ Karar #30: CareerAI için sunucu kiralanmaz. Production Ataberk'in bilgisayarın
 | İşlemci | Intel i7-9750H, 6 çekirdek / 12 iş parçacığı |
 | Bellek | 32 GB |
 | Ekran kartı | NVIDIA GTX 1650 (4 GB) + Intel UHD 630 |
-| Disk | 476 GB SSD, C: üzerinde ~71 GB boş |
+| Disk | 476 GB SSD, C: üzerinde ~53 GB boş (10.11.2026) |
 | İşletim sistemi | Windows 10 Pro 19045 |
 | Pil | Algılanmıyor: elektrik kesilince PC kapanır |
 
@@ -21,21 +21,21 @@ Karar #30: CareerAI için sunucu kiralanmaz. Production Ataberk'in bilgisayarın
 
 ## 2. Windows Update
 
-- [ ] Ayarlar → Güncelleştirme ve Güvenlik → Windows Update → **Etkin saatleri değiştir**: 09:00–23:00.
+- Etkin saatler ayarlanmaz (karar #31): Windows güncelleme sonrası yeniden başlatabilir; 5. bölümdeki kontrol elle yapılır.
 - [ ] Sunum veya demo haftasında aynı ekrandan **Güncelleştirmeleri 7 gün duraklat**.
 - [ ] Ayda bir, sunum olmayan bir günde güncellemeleri elle yükle ve yeniden başlat; sonra 5. bölümdeki kontrolü yap.
 
 ## 3. Güvenlik
 
 - [ ] Windows hesabının güçlü bir şifresi var; otomatik oturum açma kapalı.
-- [ ] Ayarlar → Güncelleştirme ve Güvenlik → Cihaz şifrelemesi / **BitLocker** C: için açık. Kurtarma anahtarı PC dışında saklanır (repoda değil).
+- [ ] **Canlıya çıkmadan önce** (karar #31, go-live #1): Başlat → "BitLocker'ı yönet" → C: için **BitLocker'ı aç** → kurtarma anahtarı Microsoft hesabına veya parola yöneticisine (PC dışında, repoda değil) → tüm sürücü, yeni şifreleme modu. Durum yönetici olmadan okunur: `(New-Object -ComObject Shell.Application).NameSpace('C:').Self.ExtendedProperty('System.Volume.BitLockerProtection')` → `1` açık, `2` kapalı, `3` şifreleniyor.
 - [ ] Windows Güvenlik Duvarı açık. Modemde port yönlendirme **yok**; dış erişim sadece Cloudflare Tunnel ile.
 - [ ] Production compose'da hiçbir servis `ports:` ile host'a açılmaz (`docker compose -p careerai-prod config` ile kontrol).
 - [ ] Production `.env` sadece bu PC'de; Windows'ta sadece bu kullanıcı okuyabilir.
 
 ## 4. Docker Desktop
 
-- [ ] Docker Desktop → Settings → General → **Start Docker Desktop when you sign in** açık.
+- Docker Desktop oturumla başlamaz, gerektiğinde elle açılır (karar #31).
 - [ ] `%UserProfile%\.wslconfig` dosyası:
 
   ```ini
@@ -52,7 +52,7 @@ Karar #30: CareerAI için sunucu kiralanmaz. Production Ataberk'in bilgisayarın
 
 PC her açıldığında (elektrik kesintisi, güncelleme):
 
-1. Windows oturumu aç; Docker Desktop kendisi başlar.
+1. Windows oturumu aç; Docker Desktop'u aç (oturumla başlamaz, karar #31).
 2. `docker compose -p careerai-prod ps`: bütün servisler `healthy`.
 3. Tarayıcıda `https://api.cvnebakalim.com/health/ready` açılıyor.
 4. Gece toplaması ve yedek kaçtıysa açılışta çalıştığını kontrol et (`scrape_runs` son kaydı; restic snapshots).
