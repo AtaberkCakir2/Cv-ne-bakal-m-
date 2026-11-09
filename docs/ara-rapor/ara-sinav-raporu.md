@@ -53,7 +53,7 @@ Yapay Zekâ Destekli Kariyer ve Eğitim Yönlendirme Sistemi
 
 Bitirme Projesi Ara Sınav Raporu, İstanbul, 2026
 
-Yazılım sektöründe işverenlerin aradığı teknolojiler hızla değişmekte, öğrenciler ise hangi yetkinliğe öncelik vermeleri gerektiğini nesnel verilere dayanarak belirlemekte zorlanmaktadır. Bu projede geliştirilen CareerAI, öğrencinin özgeçmişini hedef pozisyona ait güncel iş ilanlarıyla karşılaştırmakta, eksik yetkinlikleri talep oranlarıyla birlikte göstermekte ve doğrulanmış eğitim kaynakları önermektedir. Dil modeli yerel olarak çalıştırılmakta, kişisel veriler modele gönderilmeden önce maskelenmekte, özgeçmiş dosyası ve ham metni saklanmamaktadır. Öneri bağlantıları yalnızca doğrulanmış bir veri tabanından alındığı için dil modelinin uydurma bağlantı üretmesi engellenmektedir. Bu raporda 07 Kasım 2026 tarihine kadar yapılan çalışmalar sunulmaktadır. Kullanım koşullarına uygun kaynaklardan ilan toplanmış, iki dilli bir yetkinlik taksonomisi oluşturulmuş; ilan normalizasyonu, talep istatistikleri, PDF metin çıkarma, kişisel veri maskeleme, sözlük tabanlı yetkinlik çıkarımı, kimlik doğrulama, özgeçmiş yükleme ucu ve web arayüzünün giriş ekranları tamamlanmıştır. Üç açık kaynak dil modelinin ön kıyası sonucunda Llama 3.1 8B seçilmiştir. Uçtan uca analiz akışı henüz bağlanmamış, doğruluk ölçümü elle etiketlenen değerlendirme seti tamamlanmadığı için yapılmamıştır. Planlanan görevlerin 30'u tamamlanmış olup canlıya çıkış Ocak 2027 için hedeflenmektedir.
+Yazılım sektöründe işverenlerin aradığı teknolojiler hızla değişmekte, öğrenciler ise hangi yetkinliğe öncelik vermeleri gerektiğini nesnel verilere dayanarak belirlemekte zorlanmaktadır. Bu projede geliştirilen CareerAI, öğrencinin özgeçmişini hedef pozisyona ait güncel iş ilanlarıyla karşılaştırmakta, eksik yetkinlikleri talep oranlarıyla birlikte göstermekte ve doğrulanmış eğitim kaynakları önermektedir. Dil modeli yerel olarak çalıştırılmakta, kişisel veriler modele gönderilmeden önce maskelenmekte, özgeçmiş dosyası ve ham metni saklanmamaktadır. Öneri bağlantılarının yalnızca doğrulanmış bir veri tabanından alınmasıyla dil modelinin uydurma bağlantı üretmesinin engellenmesi hedeflenmektedir. Bu raporda 07 Kasım 2026 tarihine kadar yapılan çalışmalar sunulmaktadır. Kullanım koşullarına uygun kaynaklardan ilan toplanmış, iki dilli bir yetkinlik taksonomisi oluşturulmuş; ilan normalizasyonu, talep istatistikleri, PDF metin çıkarma, kişisel veri maskeleme, sözlük tabanlı yetkinlik çıkarımı, kimlik doğrulama, özgeçmiş yükleme ucu ve web arayüzünün giriş ekranları tamamlanmıştır. Üç açık kaynak dil modelinin ön kıyası sonucunda Llama 3.1 8B seçilmiştir. Uçtan uca analiz akışı henüz bağlanmamış, doğruluk ölçümü elle etiketlenen değerlendirme seti tamamlanmadığı için yapılmamıştır. Planlanan görevlerin 30'u tamamlanmış olup canlıya çıkış Ocak 2027 için hedeflenmektedir.
 
 Anahtar Kelimeler: Yetkinlik çıkarımı, iş ilanı analizi, yerel dil modeli, kişisel verilerin korunması, kariyer yönlendirme
 
@@ -65,7 +65,7 @@ AI-Assisted Career and Education Guidance System
 
 Graduation Project Interim Report, Istanbul, 2026
 
-In the software industry, the technologies employers require change quickly, and students find it difficult to decide on objective grounds which skills to prioritize. CareerAI, developed in this project, compares a student's résumé with current job postings for a target position, shows missing skills together with their demand rates, and recommends verified learning resources. The language model runs locally, personal data is masked before reaching the model, and neither the résumé file nor its raw text is stored. This report presents the work completed up to 7 November 2026. Postings have been collected from sources whose terms permit it and a bilingual skill taxonomy has been built. Posting normalization, demand statistics, PDF text extraction, personal data masking, dictionary-based skill extraction, authentication, the résumé upload endpoint and the web sign-in screens have been completed. Llama 3.1 8B was selected after a preliminary comparison of three open-source language models. The end-to-end analysis flow is not yet connected, and accuracy has not been measured because the manually labeled evaluation set is incomplete. Thirty of the planned tasks are complete, and release is targeted for January 2027.
+In the software industry, the technologies employers require change quickly, and students find it difficult to decide on objective grounds which skills to prioritize. CareerAI, developed in this project, compares a student's résumé with current job postings for a target position, shows missing skills together with their demand rates, and recommends verified learning resources. The language model runs locally, personal data is masked before reaching the model, and neither the résumé file nor its raw text is stored. Recommendation links are intended to come only from a verified database, so that the language model cannot invent links. This report presents the work completed up to 7 November 2026. Postings have been collected from sources whose terms permit it and a bilingual skill taxonomy has been built. Posting normalization, demand statistics, PDF text extraction, personal data masking, dictionary-based skill extraction, authentication, the résumé upload endpoint and the web sign-in screens have been completed. Llama 3.1 8B was selected after a preliminary comparison of three open-source language models. The end-to-end analysis flow is not yet connected, and accuracy has not been measured because the manually labeled evaluation set is incomplete. Thirty of the planned tasks are complete, and release is targeted for January 2027.
 
 Keywords: Skill extraction, job posting analysis, local language model, personal data protection, career guidance
 
@@ -89,6 +89,8 @@ ESCO: Avrupa beceri, yeterlilik ve meslek sınıflandırması (*European Skills,
 
 HNSW: Hiyerarşik gezinilebilir küçük dünya (*hierarchical navigable small world*)
 
+HTML: Hiper metin işaretleme dili (*hypertext markup language*)
+
 HTTPS: Güvenli hiper metin aktarım protokolü (*hypertext transfer protocol secure*)
 
 JSON: JavaScript nesne gösterimi (*JavaScript object notation*)
@@ -102,6 +104,8 @@ PDF: Taşınabilir belge biçimi (*portable document format*)
 RFC: Yorum talebi (*request for comments*)
 
 SHA-256: 256 bitlik güvenli özet algoritması (*secure hash algorithm*)
+
+TÜBİTAK: Türkiye Bilimsel ve Teknolojik Araştırma Kurumu
 
 UUID: Evrensel benzersiz tanımlayıcı (*universally unique identifier*)
 
@@ -169,7 +173,7 @@ Temel teknoloji seçimleri ve gerekçeleri Tablo 1'de özetlenmiştir.
 | Mobil | React Native (Expo) | Web ile aynı dil ve API istemcisi |
 | Altyapı | Docker Compose, Cloudflare Tunnel | Kiralık sunucu yerine ekip bilgisayarında çalışma, port açmadan HTTPS |
 
-Vektör gösterimi için çok dilli cümle gömme modelleri (Reimers ve Gurevych, 2019, 2020), vektör araması için HNSW indeksi (Malkov ve Yashunin, 2020) kullanılmaktadır.
+Vektör gösterimi için çok dilli cümle gömme modelleri (Reimers ve Gurevych, 2019, 2020), vektör araması için HNSW indeksi (Malkov ve Yashunin, 2020) seçilmiştir.
 
 ## 3.3. Veri Modeli
 
@@ -211,15 +215,15 @@ Fizibilite raporu hazırlanarak danışmana teslim edilmiş, 20. Bilişim Kongre
 
 ## 4.2. Veri Toplama ve İşleme
 
-Veri kaynaklarının robots.txt dosyaları ve kullanım koşulları incelenmiş, Türk iş sitelerinin yazılı izin olmadan kullanılamayacağı görülmüştür. Bu nedenle ilanlar resmî API'lerden toplanmaktadır. Yapılan çalışmalar aşağıda özetlenmiştir:
+Veri kaynaklarının robots.txt dosyaları ve kullanım koşulları incelenmiş, Türk iş sitelerinin yazılı izin olmadan kullanılamayacağı görülmüştür. Bu nedenle ilanlar ağırlıklı olarak resmî API'lerden, otomatik erişime izin veren bir siteden ise kurallara uyan bir tarayıcı toplayıcıyla alınmaktadır. Yapılan çalışmalar aşağıda özetlenmiştir:
 
-• Kullanım koşullarına uygun yedi kaynaktan 2.733 aktif ilan toplanmıştır (Mayıs–Ekim 2026; 05 Kasım 2026 itibarıyla). Açık lisanslı bir veri seti (Vidros vd., 2017) yedek olarak pasif tutulmaktadır. Jobicy ve Arbeitnow API'leri eklenmiş; dinamik sayfalar için tarayıcı tabanlı bir toplayıcı (Playwright) eklenmiş ve Python.org iş ilanlarıyla ilk örneği tamamlanmıştır.
+• Kullanım koşullarına uygun yedi kaynaktan 2.733 aktif ilan toplanmıştır (Mayıs–Ekim 2026; 05 Kasım 2026 itibarıyla). Açık lisanslı bir veri seti (Vidros vd., 2017) yedek olarak pasif tutulmaktadır. Jobicy ve Arbeitnow API'leri ile dinamik sayfalar için tarayıcı tabanlı bir toplayıcı (Playwright) eklenmiş; toplayıcının ilk örneği Python.org iş ilanlarıyla tamamlanmıştır.
 
 • ESCO sınıflandırması (Avrupa Komisyonu, t.y.) ve elle derlenen teknoloji listesinden 374 yetkinlik, sekiz kategori ve 12 pozisyon içeren iki dilli bir taksonomi oluşturulmuştur. Pozisyonların 10'u kullanıcının seçebileceği hedef pozisyonlardır; veri mühendisi ve veri analisti ilanların sınıflandırılması için ayrıca eklenmiştir.
 
 • HTML temizleme, dil tespiti, kişisel verilerin maskelenmesi, başlıktan pozisyon atama ve yinelenen ilanların ayıklanması (Broder, 1997) tamamlanmıştır. Pozisyon yalnızca başlıktan belirlenmektedir; yetkinliklerden tahmin edilseydi talep oranları yapay olarak yükselirdi.
 
-• Her pozisyon ve yetkinlik çifti için son 6 ayın aktif ilanlarından talep oranı hesaplanmakta, 50'den az ilanla hesaplanan pozisyonlar düşük güven olarak işaretlenmektedir.
+• Her pozisyon ve yetkinlik çifti için son altı ayın aktif ilanlarından talep oranı hesaplanmakta, 50'den az ilanla hesaplanan pozisyonlar düşük güven olarak işaretlenmektedir.
 
 • Toplama, normalizasyon ve istatistik yenileme adımları her gece saat 03.00'te çalışacak şekilde hazırlanmıştır.
 
@@ -245,9 +249,9 @@ Katmanlı API iskeleti, standart hata biçimi (RFC 7807), istek kimliği ve kiş
 
 ## 4.5. Web Arayüzü
 
-On ekranlık tıklanabilir prototip ve açık ile koyu temalı tasarım sistemi hazırlanmıştır. Web altyapısı ve API tiplerinin otomatik üretimi kurulmuş; giriş, kayıt, KVKK onayı, şifre sıfırlama ve e-posta doğrulama ekranları tamamlanmıştır. Özgeçmiş yükleme, analiz bekleme, sonuç panosu, geçmiş analizler ve profil (verileri indirme, onayları yönetme, hesap silme) ekranları inceleme aşamasındadır. Aynı arayüzü Windows ve macOS'ta açan Electron masaüstü uygulamasının ilk sürümü hazırlanmış, Windows kurulum dosyası üretilerek denenmiştir. Aydınlatma metni, gizlilik politikası, kullanım koşulları ve hesap silme sayfası taslak olarak yazılmış, uygulamanın çalıştığı bilgisayardan bağımsız yayımlanacak statik sayfalara dönüştürülmüştür; metinler danışman ve hukuk birimi kontrolünü beklemektedir. Giriş ekranı Şekil 5'te, sonuç panosu prototipi Şekil 6'da gösterilmiştir.
+On ekranlık tıklanabilir prototip ve açık ile koyu temalı tasarım sistemi hazırlanmıştır. Web altyapısı ve API tiplerinin otomatik üretimi kurulmuş; giriş, kayıt, KVKK onayı, şifre sıfırlama ve e-posta doğrulama ekranları tamamlanmıştır. Özgeçmiş yükleme, analiz bekleme, sonuç panosu, geçmiş analizler ve profil (verileri indirme, onayları yönetme, hesap silme) ekranları inceleme aşamasındadır. Aynı arayüzü Windows ve macOS için masaüstüne taşıyan Electron uygulamasının ilk sürümü hazırlanmış, Windows kurulum dosyası üretilerek denenmiştir. Aydınlatma metni, gizlilik politikası, kullanım koşulları ve hesap silme sayfası taslak olarak yazılmış, uygulamanın çalıştığı bilgisayardan bağımsız yayımlanacak statik sayfalara dönüştürülmüş olup inceleme aşamasındadır; metinler danışman ve hukuk birimi kontrolünü beklemektedir. Giriş ekranı Şekil 5'te, sonuç panosu prototipi Şekil 6'da gösterilmiştir.
 
-[Görsel: ekran görüntüsü alınacak]
+[Görsel: `docs/ara-rapor/img/sekil5.png`]
 
 **Şekil 5. Giriş ekranı**
 
@@ -274,7 +278,7 @@ Bu bölümdeki sonuçlar ön çalışmadır. Yöntemin uygulanabilirliğini gös
 
 ## 5.1. İlan Verisi
 
-05 Kasım 2026 tarihindeki 2.733 aktif ilanın %90,8'inde en az bir yetkinlik bulunmuş, ilan başına ortalama 8,9 yetkinlik çıkarılmıştır. İlanların %40,2'si başlıktan bir hedef pozisyona eşlenmiş, elle yapılan 30 ilanlık kontrolde atamalar doğru çıkmıştır. Örnek pozisyonlardaki ilan sayıları ve en çok istenen yetkinliğin talep oranı Tablo 3'te verilmiştir.
+05 Kasım 2026 tarihindeki 2.733 aktif ilanın %90,8'inde en az bir yetkinlik bulunmuş, ilan başına ortalama 8,9 yetkinlik çıkarılmıştır. İlanların %40,2'si başlıktan bir hedef pozisyona eşlenmiş, elle yapılan 30 ilanlık kontrolde atamaların tamamı doğru bulunmuştur. Örnek pozisyonlardaki ilan sayıları ve en çok istenen yetkinliğin talep oranı Tablo 3'te verilmiştir.
 
 **Tablo 3. Örnek pozisyonlarda ilan sayısı ve en çok istenen yetkinliğin talep oranı (05 Kasım 2026)**
 
@@ -309,18 +313,18 @@ Analizler üretim ortamında ağırlıklı olarak işlemcide çalışacağı iç
 
 ## 6.1. Plandan Sapmalar
 
-Ekip kararıyla (06 Kasım 2026) sunucu kiralanmamasına, sistemin bir ekip üyesinin bilgisayarında Docker Compose ile çalıştırılmasına ve alan adına Cloudflare Tunnel ile bağlanmasına karar verilmiştir. Gerekçe, projenin amacının jüriye ve hocalara çalışan sistemi göstermek olması ve altı aylık sunucu kirasının (4.200 TL) bu kullanım için gereksiz bulunmasıdır. Kullanılan bilgisayarda planlanan sunucunun iki katı bellek (32 GB) ve bir grafik işlemci bulunmakta, tünel sayesinde modemde port açılmadan HTTPS erişimi sağlanmaktadır. Bunun bedeli, sistemin yalnızca bu bilgisayar açıkken erişilebilir olmasıdır; erişilebilirlik hedefi buna göre güncellenmiştir. Alan adı alınmıştır. Başlangıç planındaki izinli gerçek özgeçmişler yerine, etik ve KVKK riskini ortadan kaldırmak için sentetik değerlendirme setine geçilmiştir. Alınan kararlar gerekçeleriyle proje deposunda tutulmaktadır.
+06 Kasım 2026 tarihli ekip önerisiyle sunucu kiralanmaması, sistemin bir ekip üyesinin bilgisayarında Docker Compose ile çalıştırılması ve alan adına Cloudflare Tunnel ile bağlanması benimsenmiştir. Gerekçe, projenin amacının jüriye ve hocalara çalışan sistemi göstermek olması ve altı aylık sunucu kirasının (4.200 TL) bu kullanım için gereksiz bulunmasıdır. Kullanılan bilgisayarda planlanan sunucunun iki katı bellek (32 GB) ve bir grafik işlemci bulunmakta, tünel sayesinde modemde port açılmadan HTTPS erişimi sağlanmaktadır. Bunun bedeli, sistemin yalnızca bu bilgisayar açıkken erişilebilir olmasıdır; erişilebilirlik hedefi buna göre güncellenmiştir. Başlangıç planındaki izinli gerçek özgeçmişler yerine, etik ve KVKK riskini ortadan kaldırmak için sentetik değerlendirme setine geçilmiştir. Alınan kararlar gerekçeleriyle proje deposunda tutulmaktadır.
 
 ## 6.2. Takvim
 
-Kalan başlıca işler ve hedef tarihleri Tablo 5'te listelenmiştir.
+Kalan başlıca işler ve hedef tarihleri Tablo 5'te listelenmiştir. TÜBİTAK başvurusu danışmanın görüşü beklendiği için askıya alınmış, OCR yedek akışı ise ilk hedef tarihinden (08 Kasım 2026) ertelenmiştir.
 
 **Tablo 5. Kalan başlıca işler**
 
 | İş | Sorumlu | Hedef tarih |
 |---|---|---|
-| OCR yedek akışı | Burak Doğan | 08 Kasım 2026 |
-| TÜBİTAK 2209-A başvurusu | Ataberk Çakır | 11 Kasım 2026 |
+| OCR yedek akışı | Burak Doğan | Ertelendi |
+| TÜBİTAK 2209-A başvurusu | Ataberk Çakır | Askıda |
 | Kongre sunumu ve demo | Anıl Akyıl | 15 Kasım 2026 |
 | Analiz kuyruğu | Anıl Akyıl | 15 Kasım 2026 |
 | Dil modeli tabanlı çıkarım, vektör servisi | Burak Doğan | 22 Kasım 2026 |
@@ -359,9 +363,9 @@ Başlıca riskler ve alınan önlemler Tablo 6'da özetlenmiştir.
 
 Bu çalışmanın amacı, öğrencinin özgeçmişini güncel iş ilanlarıyla karşılaştırarak eksik yetkinlikleri gösteren ve doğrulanmış kaynaklara yönlendiren bir sistem geliştirmektir. Bu amaçla ilanlar kullanım koşullarına uygun kaynaklardan toplanmış, iki dilli bir taksonomiyle etiketlenmiş ve pozisyon bazlı talep istatistiklerine dönüştürülmüş; özgeçmiş tarafında metin çıkarma, kişisel veri maskeleme ve sözlük tabanlı yetkinlik çıkarımı tamamlanmıştır.
 
-Ön bulgular, JSON şemasıyla yerel modelden yapılandırılmış çıktı alınabildiğini ve işlemci üzerinde yetkinlik çıkarımının özgeçmiş başına yaklaşık bir dakikada tamamlanabildiğini göstermektedir. Bu sonuçlar doğruluk hakkında bir kanıt sunmamaktadır. Khaouja vd. (2021) ve Zhang vd. (2022) çalışmalarının büyük ölçüde ilan tarafına ve İngilizce metinlere odaklanmasına karşın, bu proje bulguları öğrencinin gelişimine yönelik bir çıktıya dönüştürmeyi ve Türkçe özgeçmişleri kapsamayı hedeflemektedir. Ancak bu katkı, elle etiketlenmiş setle yapılacak ölçüm tamamlanmadan karşılaştırmalı olarak ileri sürülemez.
+Ön bulgular, JSON şemasıyla yerel modelden yapılandırılmış çıktı alınabildiğini ve geliştirici bilgisayarının işlemcisinde yetkinlik çıkarımının özgeçmiş başına yaklaşık bir dakikada tamamlanabildiğini göstermektedir. Bu sonuçlar doğruluk hakkında bir kanıt sunmamaktadır. Zhang vd. (2022) İngilizce ilanlara odaklanırken Khaouja vd. (2021) dil çeşitliliğini açık bir sorun olarak belirtmiştir; iki çalışma da ilan tarafını ele almaktadır. Bu proje ise bulguları öğrencinin gelişimine yönelik bir çıktıya dönüştürmeyi ve Türkçe özgeçmişleri kapsamayı hedeflemektedir. Ancak bu katkı, elle etiketlenmiş setle yapılacak ölçüm tamamlanmadan karşılaştırmalı olarak ileri sürülemez.
 
-Çalışmanın başlıca sınırlılıkları ilan havuzunun İngilizce ağırlıklı olması, değerlendirme setinin sentetik olması ve uçtan uca akışın henüz bağlanmamış olmasıdır. Bir sonraki aşamada öncelikle analiz kuyruğu, dil modeli tabanlı çıkarım, eşleştirme, kaynak önerisi ve sonuç panosu tamamlanacak, ardından doğruluk ve performans hedefleri ölçülecektir. Türkçe ilan kaynakları için yazılı izin çalışmalarının sürdürülmesi önerilmektedir.
+Çalışmanın başlıca sınırlılıkları ilan havuzunun tamamen İngilizce olması, değerlendirme setinin sentetik olması ve uçtan uca akışın henüz bağlanmamış olmasıdır. Bir sonraki aşamada öncelikle analiz kuyruğu, dil modeli tabanlı çıkarım, eşleştirme, kaynak önerisi ve sonuç panosu tamamlanacak, ardından doğruluk ve performans hedefleri ölçülecektir. Türkçe ilan kaynaklarından yazılı izin istenmesi önerilmektedir.
 
 # KAYNAKLAR
 
@@ -377,7 +381,7 @@ Lewis, P., Perez, E., Piktus, A., Petroni, F., Karpukhin, V., Goyal, N., Küttle
 
 Malkov, Y. A. & Yashunin, D. A. (2020). Efficient and robust approximate nearest neighbor search using hierarchical navigable small world graphs. *IEEE Transactions on Pattern Analysis and Machine Intelligence*, 42(4), 824-836. Erişim adresi: https://doi.org/10.1109/TPAMI.2018.2889473.
 
-Reimers, N. & Gurevych, I. (2019). Sentence-BERT: Sentence embeddings using Siamese BERT-networks. *Proceedings of the 2019 Conference on Empirical Methods in Natural Language Processing and the 9th International Joint Conference on Natural Language Processing (EMNLP-IJCNLP)* içinde (ss. 3980-3990). Erişim adresi: https://doi.org/10.18653/v1/D19-1410.
+Reimers, N. & Gurevych, I. (2019). Sentence-BERT: Sentence embeddings using Siamese BERT-networks. *Proceedings of the 2019 Conference on Empirical Methods in Natural Language Processing and the 9th International Joint Conference on Natural Language Processing (EMNLP-IJCNLP)* içinde (ss. 3982-3992). Erişim adresi: https://doi.org/10.18653/v1/D19-1410.
 
 Reimers, N. & Gurevych, I. (2020). Making monolingual sentence embeddings multilingual using knowledge distillation. *Proceedings of the 2020 Conference on Empirical Methods in Natural Language Processing (EMNLP)* içinde (ss. 4512-4525). Erişim adresi: https://doi.org/10.18653/v1/2020.emnlp-main.365.
 
