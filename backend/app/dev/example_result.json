@@ -1,0 +1,54 @@
+{
+  "analysis_id": "3f6c2a9e-8d1b-4c7a-9e2f-1a2b3c4d5e6f",
+  "status": "done",
+  "target_role": { "slug": "backend-developer", "name": "Backend Developer" },
+  "postings_analyzed": 150,
+  "match_score": 62.5,
+  "present_skills": [
+    { "skill": "Python", "level": "advanced", "confidence": 0.94, "verified": true },
+    { "skill": "SQL", "level": "beginner", "confidence": 0.81, "verified": true },
+    { "skill": "Git", "level": "intermediate", "confidence": 0.88, "verified": true }
+  ],
+  "missing_skills": [
+    {
+      "skill": "Docker",
+      "demand_ratio": 0.75,
+      "priority": 1,
+      "resources": [
+        {
+          "resource_id": 101,
+          "title": "Örnek: Docker'a Giriş (Türkçe)",
+          "url": "https://example.com/docker-giris",
+          "provider": "youtube",
+          "language": "tr",
+          "level": "beginner",
+          "duration_min": 90,
+          "is_free": true,
+          "reason": "İncelenen 150 Backend Developer ilanının %75'i Docker istiyor; CV'nde Docker bulunamadı."
+        }
+      ]
+    },
+    {
+      "skill": "PostgreSQL",
+      "demand_ratio": 0.62,
+      "priority": 2,
+      "resources": [
+        {
+          "resource_id": 205,
+          "title": "Örnek: PostgreSQL Temelleri",
+          "url": "https://example.com/postgresql-temelleri",
+          "provider": "docs",
+          "language": "en",
+          "level": "beginner",
+          "duration_min": 120,
+          "is_free": true,
+          "reason": "İlanların %62'si PostgreSQL istiyor; temel SQL bilgin bu konuya hızlı geçmeni sağlar."
+        }
+      ]
+    }
+  ],
+  "model": { "name": "llama3.1:8b", "prompt_version": "v1" },
+  "error": null,
+  "created_at": "2026-11-20T10:00:00Z",
+  "completed_at": "2026-11-20T10:01:12Z"
+}

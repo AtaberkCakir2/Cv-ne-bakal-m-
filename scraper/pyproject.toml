@@ -17,6 +17,7 @@ dev = [
     "ruff==0.17.2",
     "mypy==2.4.0",
 ]
+browser = ["playwright>=1.64,<2"]  # HTML kaynaklar (T-016); Chromium ayrıca kurulur
 
 [project.scripts]
 careerai-collect = "collector.cli:main"
@@ -47,7 +48,7 @@ mypy_path = "$MYPY_CONFIG_FILE_DIR/../backend:$MYPY_CONFIG_FILE_DIR/../ai"
 
 # Celery tip bilgisi yayınlamıyor (py.typed yok); görev dekoratörü bu yüzden tipsiz sayılır.
 [[tool.mypy.overrides]]
-module = ["celery", "celery.*"]
+module = ["celery", "celery.*", "playwright.*"]
 ignore_missing_imports = true
 
 [[tool.mypy.overrides]]

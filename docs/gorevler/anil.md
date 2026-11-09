@@ -121,12 +121,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-038 · CV yükleme endpoint'i
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 02.11.2026 – 08.11.2026 · **Öncelik:** P0 · **Efor:** 8 saat · **Alan:** Backend API
 - **Bağımlılık:** T-023
 - **Destek:** Burak
 - **Çıktı:** POST /analyses
 - **Kabul kriteri:** Multipart, en fazla 5 MB ve 5 sayfa, MIME + magic byte kontrolü (sadece PDF). Dosya diske yazılmaz; bellekten kuyruğa aktarılır; SHA-256 hash kaydedilir.
+- **Not:** 24.10.2026: doğrulamalar, SHA-256 ve diske yazmama (testle kanıtlı) tamam. Kuyruk şimdilik örnek sonuç döndüren geçici sınıf; gerçek kuyruk T-039. Kimlik doğrulama T-037.
 
 ### T-026 · Poster baskı kontrolü ve teslim alma
 
@@ -148,12 +149,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-039 · Asenkron analiz işi (Celery + Redis)
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 09.11.2026 – 15.11.2026 · **Öncelik:** P0 · **Efor:** 14 saat · **Alan:** Backend API
 - **Bağımlılık:** T-038
 - **Destek:** Burak
 - **Çıktı:** Kuyruk altyapısı
 - **Kabul kriteri:** POST /analyses → 202 + analysis_id; durum: queued/processing/done/failed; ilerleme SSE veya polling ile; görev zaman aşımı 180 sn; otomatik 1 tekrar deneme.
+- **Not:** 05.11.2026: Celery `analysis` kuyruğu (`app/worker/`), CV baytları kalıcılığı kapalı ayrı Redis'te (`CV_REDIS_URL`, 1 saat), mesajda sadece kimlik. Soft 180 sn, geçici hatada 1 tekrar. `POST /analyses` artık giriş ve saatlik sınır istiyor, kayıt PostgreSQL'de; ilerleme `GET /analyses/{id}` ile yoklama (SSE yok). Askıda kalan analiz 65 dk sonra ilk yoklamada `failed` olur. Gerçek akış T-057'de `app/services/analyzer.py`'ye bağlanır; local/test dışında o zamana kadar analiz `failed` olur. Yetkinlik listeleri T-048'de. Docker'da gerçek API, Linux işçisi, PostgreSQL ve iki Redis ile denendi. Ataberk: compose ve staging'e CV Redis'i (`--save "" --appendonly no`, `maxmemory`, `noeviction`), `.env.example`'a `CV_REDIS_URL`, analiz işçisi servisi.
 
 ### T-040 · Web arayüzü altyapısı (Electron ile ortak)
 
@@ -205,7 +207,7 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 - **Destek:** —
 - **Çıktı:** /users/me endpoint'leri
 - **Kabul kriteri:** Profil güncelleme, hedef pozisyon; rıza kaydı (sürümlü); verilerimi indir (JSON); hesabımı sil (anında anonimleştirme, 30 gün içinde kalıcı silme).
-- **Not:** 29.10.2026: `GET/PATCH /users/me` (hedef pozisyon dahil), `GET/POST /users/me/consents` (sürümlü, eski sürüm silinmez), `GET /users/me/export` (profil, onaylar, oturumlar, analizler, işlem kayıtları), `DELETE /users/me` (şifre tekrar istenir; e-posta/ad/şifre hemen anonimleşir, oturumlar kapanır) ve `scripts/purge_deleted_users.py` (30 günü geçen hesap ve analizleri kalıcı siler; Celery beat T-039'a bağlanana kadar cron). Açık rızanın geri alınması için `consents` tablosuna geri alma alanı gerekiyor (Ataberk).
+- **Not:** 29.10.2026: `GET/PATCH /users/me` (hedef pozisyon dahil), `GET/POST /users/me/consents` (sürümlü, eski sürüm silinmez), `GET /users/me/export` (profil, onaylar, oturumlar, analizler, işlem kayıtları), `DELETE /users/me` (şifre tekrar istenir; e-posta/ad/şifre hemen anonimleşir, oturumlar kapanır) ve `scripts/purge_deleted_users.py` (30 günü geçen hesap ve analizleri kalıcı siler; Celery beat T-039'a bağlanana kadar cron). 04.11.2026: `DELETE /users/me/consents/acik_riza` eklendi (#33'teki `withdrawn_at` ile; kayıt silinmez, denetim kaydına yazılır, aynı sürüm yeniden onaylanabilir). **T-048'e bağlı:** geçerli açık rıza yoksa yeni analiz başlatılmamalı (açık rıza metni taslağı, branch `anil/kvkk-metinleri`; danışman kararına göre).
 
 ### T-053 · Sonuç panosu
 
@@ -232,12 +234,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-059 · Electron masaüstü uygulaması
 
-- **Durum:** Yapılacak
+- **Durum:** Devam Ediyor
 - **Tarih:** 30.11.2026 – 13.12.2026 · **Öncelik:** P0 · **Efor:** 14 saat · **Alan:** Web / Masaüstü
 - **Bağımlılık:** T-053
 - **Destek:** —
 - **Çıktı:** Kurulum dosyaları
 - **Kabul kriteri:** Web arayüzünü sarmalar; contextIsolation açık, nodeIntegration kapalı; electron-builder ile Windows (NSIS) ve macOS (dmg); electron-updater + GitHub Releases ile otomatik güncelleme.
+- **Devam notu (07.11.2026):** Yapılan: `web/desktop/` (Electron 44, app://careerai protokolü, güvenli webPreferences, CSP, dış bağlantılar sistem tarayıcısında, izinler kapalı, electron-updater); Windows NSIS kurulum dosyası üretildi ve paketli uygulama `--smoke` ile denendi. · Sıradaki adım: simge; macOS dmg'yi bir Mac'te üretmek; backend `CORS_ORIGINS`'e `app://careerai`; güncellemenin çalışması için repo/yayın yeri kararı (özel repo token'sız indirilemez). · Açık sorular / engeller: Mac erişimi; kod imzalama yok (uyarılar README'de). · Branch: anil/electron
 
 ### T-065 · KVKK aydınlatma metni, açık rıza, gizlilik politikası, kullanım koşulları
 
