@@ -265,12 +265,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-068 · Yedekleme
 
-- **Durum:** Yapılacak
+- **Durum:** Devam Ediyor
 - **Tarih:** 07.12.2026 – 13.12.2026 · **Öncelik:** P0 · **Efor:** 8 saat · **Alan:** Operasyon / İzleme
 - **Bağımlılık:** T-035
 - **Destek:** —
 - **Çıktı:** Yedekleme scriptleri + zamanlayıcı
 - **Kabul kriteri:** pg_dump her gün 02:00 (PC o saatte kapalıysa açılışta); 7 günlük + 4 haftalık saklama; restic ile şifreli olarak PC dışına (Backblaze B2 ücretsiz katman vb.). Zamanlayıcı Windows'ta çalışır (compose içinde yedek konteyneri veya Görev Zamanlayıcı; PR #57'deki systemd birimleri PC'de kullanılmaz). Geri yükleme testi yapıldı.
+- **Devam notu (06.11.2026):** Yapılan: karar #30 ile PC'ye uyarlandı. systemd birimleri kaldırıldı; yedek `infra/pc/compose.yml`'de `backup` konteyneri (restic 0.18 + pg16 istemcisi, `infra/backup/Dockerfile`), zamanlayıcı içinde (`scheduler.sh`: 02:00, PC kapalıysa açılışta, başarısızsa 30 dk sonra tekrar). Prova ortamında dev verisiyle denendi: 6,5 MB yedek ~3 sn, kaçan yedek yeniden başlatınca alındı, güncel yedek varken tekrar alınmadı, yanlış parolada hata verdi; `restore-test.sh staging` 11 sn, 11 tablo eşleşti; shellcheck temiz. Backblaze B2 hesabı açıldı (EU Central, sınırlar $0, bucket `cvnebakalim-yedek`, anahtar `careerai-pc`; anahtarlar parola yöneticisinde). Sıradaki adım: production açılınca (T-075) anahtarları ve RESTIC_PASSWORD'ü `.env.prod`'a yaz, `make backup-init`, ilk gerçek yedek ve `restore-test.sh production`. Açık sorular / engeller: gerçek B2 deposu henüz denenmedi (sadece yerel restic deposu). PR #57, #50'nin üstüne kurulu (`infra/pc`). Branch: ataberk/t068-yedekleme
 
 ### T-070 · Tanıtım (landing) sayfası
 
