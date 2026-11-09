@@ -16,7 +16,7 @@ from app.api.deps import get_current_user
 from app.api.routers.analyses import get_analysis_service
 from app.core.uploads import MAX_PDF_BYTES, UploadSizeLimitMiddleware
 from app.services import cv_validation
-from app.services.analyses import AnalysisService
+from app.services.analyses import AnalysisService, ConsentWithdrawn
 
 URL = "/api/v1/analyses"
 PROBLEM = "application/problem+json"
@@ -28,6 +28,10 @@ class FakeRepository:
 
     def __init__(self) -> None:
         self.added: list[tuple[uuid.UUID, int, str, int]] = []
+        self.consent = True
+
+    def has_explicit_consent(self, user_id: uuid.UUID) -> bool:
+        return self.consent
 
     def role_exists(self, role_id: int) -> bool:
         return True
@@ -56,6 +60,9 @@ class FakeRepository:
         raise AssertionError
 
     def resources(self, resource_ids: set[int]) -> dict[int, Any]:
+        raise AssertionError
+
+    def save_feedback(self, analysis_id: uuid.UUID, rating: int, comment: str | None) -> None:
         raise AssertionError
 
 
@@ -221,3 +228,13 @@ def test_unknown_analysis_is_404(client: TestClient) -> None:
     assert response.status_code == 404
     assert response.json()["detail"] == "Analiz bulunamadı."
     assert client.get(f"{URL}/uuid-degil").status_code == 422
+
+
+def test_without_explicit_consent_the_cv_is_not_even_read() -> None:
+    repository = FakeRepository()
+    repository.consent = False
+    service = AnalysisService(repository, FakeQueue())
+    with pytest.raises(ConsentWithdrawn):
+        # Bozuk içerik: rıza önce bakılmasaydı CvRejected fırlardı.
+        service.create(uuid.uuid4(), b"bozuk", "application/pdf", 1)
+    assert repository.added == []

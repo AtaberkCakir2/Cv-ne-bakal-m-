@@ -9,6 +9,7 @@ import { RegisterPage } from "./pages/auth/RegisterPage";
 import { ResetPasswordPage } from "./pages/auth/ResetPasswordPage";
 import { VerifyEmailPage } from "./pages/auth/VerifyEmailPage";
 import { DesignSystemPage } from "./pages/DesignSystemPage";
+import { HistoryPage } from "./pages/HistoryPage";
 import { NotFoundPage } from "./pages/NotFoundPage";
 import { PlaceholderPage } from "./pages/PlaceholderPage";
 import { ProfilePage } from "./pages/ProfilePage";
@@ -37,7 +38,7 @@ export const router = createBrowserRouter([
           { path: "pozisyon", element: <PlaceholderPage title="Hedef pozisyon" /> },
           { path: "yukle", element: <UploadPage /> },
           { path: "analiz/:id", element: <AnalysisPage /> },
-          { path: "gecmis", element: <PlaceholderPage title="Geçmiş analizler" /> },
+          { path: "gecmis", element: <HistoryPage /> },
           { path: "profil", element: <ProfilePage /> },
         ],
       },

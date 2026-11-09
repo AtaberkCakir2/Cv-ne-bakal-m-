@@ -156,12 +156,6 @@
               "application/problem+json": {}
             }
           },
-          "429": {
-            "description": "Çok fazla deneme",
-            "content": {
-              "application/problem+json": {}
-            }
-          },
           "422": {
             "description": "Validation Error",
             "content": {
@@ -170,6 +164,12 @@
                   "$ref": "#/components/schemas/HTTPValidationError"
                 }
               }
+            }
+          },
+          "429": {
+            "description": "Çok fazla deneme",
+            "content": {
+              "application/problem+json": {}
             }
           }
         }
@@ -448,12 +448,6 @@
               "application/problem+json": {}
             }
           },
-          "429": {
-            "description": "Çok fazla deneme",
-            "content": {
-              "application/problem+json": {}
-            }
-          },
           "422": {
             "description": "Validation Error",
             "content": {
@@ -462,6 +456,12 @@
                   "$ref": "#/components/schemas/HTTPValidationError"
                 }
               }
+            }
+          },
+          "429": {
+            "description": "Çok fazla deneme",
+            "content": {
+              "application/problem+json": {}
             }
           }
         },
@@ -772,6 +772,12 @@
               "application/problem+json": {}
             }
           },
+          "403": {
+            "description": "Açık rıza geri alınmış",
+            "content": {
+              "application/problem+json": {}
+            }
+          },
           "411": {
             "description": "Content-Length yok",
             "content": {
@@ -919,6 +925,79 @@
                   "$ref": "#/components/schemas/HTTPValidationError"
                 }
               }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/analyses/{analysis_id}/feedback": {
+      "post": {
+        "tags": [
+          "Analiz"
+        ],
+        "summary": "Analize geri bildirim (1-5 yıldız + yorum)",
+        "description": "Analiz başına tek geri bildirim; tekrar gönderilirse öncekinin yerine geçer.",
+        "operationId": "give_feedback_api_v1_analyses__analysis_id__feedback_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "analysis_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Analysis Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FeedbackIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FeedbackOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Giriş gerekli",
+            "content": {
+              "application/problem+json": {}
+            }
+          },
+          "404": {
+            "description": "Analiz bulunamadı",
+            "content": {
+              "application/problem+json": {}
+            }
+          },
+          "409": {
+            "description": "Analiz henüz tamamlanmadı",
+            "content": {
+              "application/problem+json": {}
+            }
+          },
+          "422": {
+            "description": "Puan 1-5 dışında veya yorum 1000 karakterden uzun",
+            "content": {
+              "application/problem+json": {}
             }
           }
         }
@@ -1258,6 +1337,16 @@
               }
             ],
             "title": "Completed At"
+          },
+          "feedback": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/FeedbackOut"
+              },
+              {
+                "type": "null"
+              }
+            ]
           }
         },
         "type": "object",
@@ -1268,7 +1357,7 @@
           "created_at"
         ],
         "title": "AnalysisOut",
-        "description": "contracts/analysis_result.schema.json."
+        "description": "contracts/analysis_result.schema.json. `feedback` API'nin eki (sözleşmede yok): verildiyse yanıtta yer alır."
       },
       "AnalysisStatus": {
         "type": "string",
@@ -1352,7 +1441,7 @@
           },
           "target_role_id": {
             "type": "integer",
-            "minimum": 1.0,
+            "minimum": 1,
             "title": "Target Role Id",
             "description": "Hedef pozisyon kimliği"
           }
@@ -1970,6 +2059,60 @@
           "priority"
         ],
         "title": "ExportSkill"
+      },
+      "FeedbackIn": {
+        "properties": {
+          "rating": {
+            "type": "integer",
+            "maximum": 5,
+            "minimum": 1,
+            "title": "Rating",
+            "description": "1-5 yıldız"
+          },
+          "comment": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 1000
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Comment",
+            "description": "İsteğe bağlı yorum"
+          }
+        },
+        "type": "object",
+        "required": [
+          "rating"
+        ],
+        "title": "FeedbackIn"
+      },
+      "FeedbackOut": {
+        "properties": {
+          "rating": {
+            "type": "integer",
+            "title": "Rating"
+          },
+          "comment": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Comment"
+          }
+        },
+        "type": "object",
+        "required": [
+          "rating",
+          "comment"
+        ],
+        "title": "FeedbackOut"
       },
       "HTTPValidationError": {
         "properties": {

@@ -18,6 +18,14 @@ class UnknownRole(Exception):
     pass
 
 
+class ConsentWithdrawn(Exception):
+    """Açık rıza geri alınmış: CV işlenmez (KVKK md. 11; docs/yasal/acik-riza.md)."""
+
+
+class AnalysisNotFinished(Exception):
+    """Geri bildirim sadece tamamlanmış analize verilir."""
+
+
 @dataclass(frozen=True)
 class ResultCatalog:
     skill_names: dict[int, str]
@@ -30,7 +38,12 @@ class AnalysisService:
         self.queue = queue
 
     def create(self, user_id: uuid.UUID, content: bytes, content_type: str | None, target_role_id: int) -> uuid.UUID:
-        """CV'yi doğrular, kaydı oluşturur ve kuyruğa verir. CvRejected, UnknownRole veya QueueUnavailable fırlatır."""
+        """CV'yi doğrular, kaydı oluşturur ve kuyruğa verir.
+
+        ConsentWithdrawn, CvRejected, UnknownRole veya QueueUnavailable fırlatır. Rıza, CV okunmadan önce bakılır.
+        """
+        if not self.repository.has_explicit_consent(user_id):
+            raise ConsentWithdrawn
         cv = validate_cv(content, content_type)
         if not self.repository.role_exists(target_role_id):
             raise UnknownRole
@@ -69,6 +82,16 @@ class AnalysisService:
     def delete(self, analysis_id: uuid.UUID, user_id: uuid.UUID) -> bool:
         """Başkasının analizi veya zaten silinmiş analiz için False (404)."""
         return self.repository.soft_delete(analysis_id, user_id)
+
+    def give_feedback(self, analysis_id: uuid.UUID, user_id: uuid.UUID, rating: int, comment: str | None) -> bool:
+        """Başkasının veya silinmiş analiz için False (404); bitmemiş analizde AnalysisNotFinished (409)."""
+        analysis = self.repository.get_owned(analysis_id, user_id)
+        if analysis is None:
+            return False
+        if analysis.status != AnalysisStatus.DONE:
+            raise AnalysisNotFinished
+        self.repository.save_feedback(analysis_id, rating, comment)
+        return True
 
     def catalog_for(self, analysis: Analysis) -> ResultCatalog:
         """Sonuçtaki yetkinlik adları ve önerilen kaynaklar (analiz tabloları sadece kimlik tutar)."""
