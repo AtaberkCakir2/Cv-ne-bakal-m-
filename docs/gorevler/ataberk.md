@@ -160,14 +160,14 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-036 · CD: imaj üretimi ve PC'ye deploy betiği
 
-- **Durum:** Devam Ediyor
+- **Durum:** Tamamlandı
 - **Tarih:** 09.11.2026 – 15.11.2026 · **Öncelik:** P0 · **Efor:** 10 saat · **Alan:** DevOps / Altyapı
 - **Bağımlılık:** T-008, T-035
 - **Destek:** —
 - **Çıktı:** `.github/workflows/deploy.yml` + `infra/pc/deploy.sh` + `infra/pc/deploy.md`
 - **Kabul kriteri:** `main` birleştirmesi image'ları commit adıyla GHCR'a push eder; `vX.Y.Z` etiketi o commit'i gösterir. PC'de tek komutla (Git Bash: `bash infra/pc/deploy.sh vX.Y.Z`): image çek, önce yedek, alembic upgrade, `docker compose -p careerai-prod up -d`, smoke test; başarısızsa önceki image etiketine dönüş. PC'ye dışarıdan SSH/deploy erişimi açılmaz.
 - **Not:** 06.11.2026: karar #30 ile SSH'li otomatik staging deploy'u kaldırıldı.
-- **Devam notu (10.11.2026):** Yapılan: workflow'dan SSH/deploy işi çıkarıldı, sadece imaj üretimi kaldı; `infra/pc/deploy.sh` yerel imajlarla prova ortamında denendi (bozuk api imajında önceki imaja döndü). #50 birleşince (20395d5) CI api ve worker-data imajlarını GHCR'a gönderdi; PC'de `docker login ghcr.io` (read:packages token'ı) yapıldı ve `bash infra/pc/deploy.sh 20395d5 staging` GHCR'dan çekerek 75 sn'de tamamlandı: 5 servis healthy, host'a port yok, `/api/v1/health/ready` db/redis/ollama hazır, çalışan imajın özeti CI'ınkiyle aynı. Sonraki iki birleştirmede (57fdb0a Anıl, b6703cc Ataberk) imaj push'u 403 / `write_package` ile düştü: paketleri ilk çalışma oluşturdu ama repoya bağlı değiller, iş akışının GITHUB_TOKEN'ı bağlı olmayan pakete yazamıyor (birleştiren kim olursa olsun). Asıl çözüm paket ayarı (aşağıda); bu PR ayrıca `org.opencontainers.image.source` etiketini ekliyor ki yeni paketler oluşurken repoya bağlansın. Sıradaki adım: GitHub → profil → Packages → `careerai-api` ve `careerai-worker-data` → Package settings → Manage Actions access → `Cv-ne-bakal-m-` reposunu **Admin** rolüyle ekle (sürüm silme adımı admin ister); sonra Deploy iş akışının b6703cc için başarısız çalışmasını yeniden çalıştır (main'in son hâli, #58'i de içerir), push'un geçtiğini gör; ardından görev Tamamlandı. Açık sorular / engeller: production dökümü gerçek `careerai-prod`'da denenmedi (T-075). Branch: ataberk/ghcr-paket-baglantisi
+- **Not:** 10.11.2026: main birleştirmesi imajları GHCR'a gönderiyor (b6703cc, api + worker-data); PC'de GHCR'dan çekilip `bash infra/pc/deploy.sh <ref> staging` ile prova ortamına alındı (5 servis healthy, `/health/ready` hazır). GHCR paketlerine repo Admin rolüyle bağlandı (Manage Actions access); bağlı olmayan pakete GITHUB_TOKEN yazamıyordu. Production dökümü gerçek `careerai-prod`'da T-075'te denenecek.
 
 ### T-028 · TÜBİTAK 2209-A başvuru dosyası
 
