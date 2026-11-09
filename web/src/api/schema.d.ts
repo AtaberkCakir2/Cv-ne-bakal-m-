@@ -262,15 +262,140 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/analyses": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * CV yükle ve analiz başlat
+         * @description CV dosyası diske yazılmaz ve saklanmaz; sadece SHA-256 özeti ve sayfa sayısı kaydedilir.
+         *     Sonuç için `GET /analyses/{id}` yoklanır.
+         */
+        post: operations["create_analysis_api_v1_analyses_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/analyses/{analysis_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Analiz durumu ve sonucu
+         * @description Durum: queued, processing, done, failed. Başkasının analizi de 404 döner. (Liste, silme: T-048.)
+         */
+        get: operations["get_analysis_api_v1_analyses__analysis_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** AnalysisCreated */
+        AnalysisCreated: {
+            /**
+             * Analysis Id
+             * Format: uuid
+             */
+            analysis_id: string;
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "queued" | "processing" | "done" | "failed";
+        };
+        /**
+         * AnalysisErrorCode
+         * @enum {string}
+         */
+        AnalysisErrorCode: "PDF_UNREADABLE" | "PDF_TOO_LARGE" | "NO_TEXT_FOUND" | "LLM_TIMEOUT" | "INTERNAL";
+        /** AnalysisErrorOut */
+        AnalysisErrorOut: {
+            code: components["schemas"]["AnalysisErrorCode"];
+            /** Message */
+            message: string;
+        };
+        /** AnalysisModelOut */
+        AnalysisModelOut: {
+            /** Name */
+            name: string;
+            /** Prompt Version */
+            prompt_version: string;
+        };
+        /**
+         * AnalysisOut
+         * @description contracts/analysis_result.schema.json. Yetkinlik ve öneri listeleri T-048'de doldurulacak.
+         */
+        AnalysisOut: {
+            /**
+             * Analysis Id
+             * Format: uuid
+             */
+            analysis_id: string;
+            status: components["schemas"]["AnalysisStatus"];
+            target_role: components["schemas"]["TargetRoleOut"];
+            /** Postings Analyzed */
+            postings_analyzed?: number | null;
+            /** Match Score */
+            match_score?: number | null;
+            /**
+             * Present Skills
+             * @default []
+             */
+            present_skills: {
+                [key: string]: unknown;
+            }[];
+            /**
+             * Missing Skills
+             * @default []
+             */
+            missing_skills: {
+                [key: string]: unknown;
+            }[];
+            model?: components["schemas"]["AnalysisModelOut"] | null;
+            error?: components["schemas"]["AnalysisErrorOut"] | null;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Completed At */
+            completed_at?: string | null;
+        };
         /**
          * AnalysisStatus
          * @enum {string}
          */
         AnalysisStatus: "queued" | "processing" | "done" | "failed";
+        /** Body_create_analysis_api_v1_analyses_post */
+        Body_create_analysis_api_v1_analyses_post: {
+            /**
+             * File
+             * @description CV (PDF, en fazla 5 MB ve 5 sayfa)
+             */
+            file: string;
+            /**
+             * Target Role Id
+             * @description Hedef pozisyon kimliği
+             */
+            target_role_id: number;
+        };
         /** ConsentIn */
         ConsentIn: {
             consent_type: components["schemas"]["ConsentType"];
@@ -576,6 +701,13 @@ export interface components {
         RoleRef: {
             /** Id */
             id: number;
+            /** Slug */
+            slug: string;
+            /** Name */
+            name: string;
+        };
+        /** TargetRoleOut */
+        TargetRoleOut: {
             /** Slug */
             slug: string;
             /** Name */
@@ -1165,6 +1297,142 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ExportOut"];
+                };
+            };
+        };
+    };
+    create_analysis_api_v1_analyses_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": components["schemas"]["Body_create_analysis_api_v1_analyses_post"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AnalysisCreated"];
+                };
+            };
+            /** @description Giriş gerekli */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": unknown;
+                };
+            };
+            /** @description Content-Length yok */
+            411: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": unknown;
+                };
+            };
+            /** @description Dosya 5 MB'tan büyük (PDF_TOO_LARGE) */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": unknown;
+                };
+            };
+            /** @description PDF değil (PDF_UNREADABLE) */
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": unknown;
+                };
+            };
+            /** @description Bozuk/şifreli PDF (PDF_UNREADABLE), 5 sayfadan uzun (PDF_TOO_LARGE) veya eksik alan */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": unknown;
+                };
+            };
+            /** @description Saatlik analiz sınırı */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": unknown;
+                };
+            };
+            /** @description Kuyruk dolu veya kullanılamıyor */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": unknown;
+                };
+            };
+        };
+    };
+    get_analysis_api_v1_analyses__analysis_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                analysis_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AnalysisOut"];
+                };
+            };
+            /** @description Giriş gerekli */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": unknown;
+                };
+            };
+            /** @description Analiz bulunamadı */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };

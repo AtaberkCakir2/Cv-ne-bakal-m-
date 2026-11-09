@@ -665,10 +665,322 @@
           }
         ]
       }
+    },
+    "/api/v1/analyses": {
+      "post": {
+        "tags": [
+          "Analiz"
+        ],
+        "summary": "CV yükle ve analiz başlat",
+        "description": "CV dosyası diske yazılmaz ve saklanmaz; sadece SHA-256 özeti ve sayfa sayısı kaydedilir.\nSonuç için `GET /analyses/{id}` yoklanır.",
+        "operationId": "create_analysis_api_v1_analyses_post",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_create_analysis_api_v1_analyses_post"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AnalysisCreated"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Giriş gerekli",
+            "content": {
+              "application/problem+json": {}
+            }
+          },
+          "411": {
+            "description": "Content-Length yok",
+            "content": {
+              "application/problem+json": {}
+            }
+          },
+          "413": {
+            "description": "Dosya 5 MB'tan büyük (PDF_TOO_LARGE)",
+            "content": {
+              "application/problem+json": {}
+            }
+          },
+          "415": {
+            "description": "PDF değil (PDF_UNREADABLE)",
+            "content": {
+              "application/problem+json": {}
+            }
+          },
+          "422": {
+            "description": "Bozuk/şifreli PDF (PDF_UNREADABLE), 5 sayfadan uzun (PDF_TOO_LARGE) veya eksik alan",
+            "content": {
+              "application/problem+json": {}
+            }
+          },
+          "429": {
+            "description": "Saatlik analiz sınırı",
+            "content": {
+              "application/problem+json": {}
+            }
+          },
+          "503": {
+            "description": "Kuyruk dolu veya kullanılamıyor",
+            "content": {
+              "application/problem+json": {}
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/analyses/{analysis_id}": {
+      "get": {
+        "tags": [
+          "Analiz"
+        ],
+        "summary": "Analiz durumu ve sonucu",
+        "description": "Durum: queued, processing, done, failed. Başkasının analizi de 404 döner. (Liste, silme: T-048.)",
+        "operationId": "get_analysis_api_v1_analyses__analysis_id__get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "analysis_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Analysis Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AnalysisOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Giriş gerekli",
+            "content": {
+              "application/problem+json": {}
+            }
+          },
+          "404": {
+            "description": "Analiz bulunamadı",
+            "content": {
+              "application/problem+json": {}
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
     "schemas": {
+      "AnalysisCreated": {
+        "properties": {
+          "analysis_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Analysis Id"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "queued",
+              "processing",
+              "done",
+              "failed"
+            ],
+            "title": "Status"
+          }
+        },
+        "type": "object",
+        "required": [
+          "analysis_id",
+          "status"
+        ],
+        "title": "AnalysisCreated"
+      },
+      "AnalysisErrorCode": {
+        "type": "string",
+        "enum": [
+          "PDF_UNREADABLE",
+          "PDF_TOO_LARGE",
+          "NO_TEXT_FOUND",
+          "LLM_TIMEOUT",
+          "INTERNAL"
+        ],
+        "title": "AnalysisErrorCode"
+      },
+      "AnalysisErrorOut": {
+        "properties": {
+          "code": {
+            "$ref": "#/components/schemas/AnalysisErrorCode"
+          },
+          "message": {
+            "type": "string",
+            "title": "Message"
+          }
+        },
+        "type": "object",
+        "required": [
+          "code",
+          "message"
+        ],
+        "title": "AnalysisErrorOut"
+      },
+      "AnalysisModelOut": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "prompt_version": {
+            "type": "string",
+            "title": "Prompt Version"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "prompt_version"
+        ],
+        "title": "AnalysisModelOut"
+      },
+      "AnalysisOut": {
+        "properties": {
+          "analysis_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Analysis Id"
+          },
+          "status": {
+            "$ref": "#/components/schemas/AnalysisStatus"
+          },
+          "target_role": {
+            "$ref": "#/components/schemas/TargetRoleOut"
+          },
+          "postings_analyzed": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Postings Analyzed"
+          },
+          "match_score": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Match Score"
+          },
+          "present_skills": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "type": "array",
+            "title": "Present Skills",
+            "default": []
+          },
+          "missing_skills": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "type": "array",
+            "title": "Missing Skills",
+            "default": []
+          },
+          "model": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/AnalysisModelOut"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "error": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/AnalysisErrorOut"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "completed_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Completed At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "analysis_id",
+          "status",
+          "target_role",
+          "created_at"
+        ],
+        "title": "AnalysisOut",
+        "description": "contracts/analysis_result.schema.json. Yetkinlik ve öneri listeleri T-048'de doldurulacak."
+      },
       "AnalysisStatus": {
         "type": "string",
         "enum": [
@@ -678,6 +990,28 @@
           "failed"
         ],
         "title": "AnalysisStatus"
+      },
+      "Body_create_analysis_api_v1_analyses_post": {
+        "properties": {
+          "file": {
+            "type": "string",
+            "contentMediaType": "application/octet-stream",
+            "title": "File",
+            "description": "CV (PDF, en fazla 5 MB ve 5 sayfa)"
+          },
+          "target_role_id": {
+            "type": "integer",
+            "minimum": 1.0,
+            "title": "Target Role Id",
+            "description": "Hedef pozisyon kimliği"
+          }
+        },
+        "type": "object",
+        "required": [
+          "file",
+          "target_role_id"
+        ],
+        "title": "Body_create_analysis_api_v1_analyses_post"
       },
       "ConsentIn": {
         "properties": {
@@ -1505,6 +1839,24 @@
           "name"
         ],
         "title": "RoleRef"
+      },
+      "TargetRoleOut": {
+        "properties": {
+          "slug": {
+            "type": "string",
+            "title": "Slug"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          }
+        },
+        "type": "object",
+        "required": [
+          "slug",
+          "name"
+        ],
+        "title": "TargetRoleOut"
       },
       "TokenIn": {
         "properties": {
