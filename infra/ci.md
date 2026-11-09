@@ -37,3 +37,11 @@ Repo → **Settings** → **Branches** → `main` kuralı (GitHub Pro, Student P
 - **Yöneticiler dahil atlanamaz;** force push ve `main`'i silme kapalı.
 
 `.github/CODEOWNERS` her PR'a ilgili klasörün sahibini otomatik inceleyici ekler. "Sahibin onayı zorunlu" açık değil: kişi kendi klasöründeki PR'ı kendisi onaylayamayacağı için her PR'da herhangi 1 ekip üyesinin onayı yeter.
+
+## İmajlar ve deploy (T-036, karar #30)
+
+`.github/workflows/deploy.yml`: `main`'de CI yeşil olunca `api` ve `worker-data` imajlarını `ghcr.io/ataberkcakir2/careerai-*:<commit>` olarak gönderir. Ayar veya sır gerekmez (`GITHUB_TOKEN` yeter). Her imajın son 20 sürümü tutulur (özel repoda GHCR depolaması kotalı).
+
+Deploy CI'dan **yapılmaz**: production Ataberk'in PC'sinde çalışır ve PC'ye dışarıdan erişim açılmaz. Sürüm PC'de `bash infra/pc/deploy.sh vX.Y.Z` ile alınır; adımlar `infra/pc/deploy.md`'de.
+
+Actions → Deploy → **Run workflow**: seçilen dalın son commit'inin imajlarını elle derleyip gönderir.

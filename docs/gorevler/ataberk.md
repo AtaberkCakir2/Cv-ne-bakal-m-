@@ -16,13 +16,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-006 · Monorepo ve Git akışı
 
-- **Durum:** Tamamlandı
+- **Durum:** Devam Ediyor
 - **Tarih:** 19.10.2026 – 25.10.2026 · **Öncelik:** P0 · **Efor:** 4 saat · **Alan:** DevOps / Altyapı
 - **Bağımlılık:** T-001 (Anıl)
 - **Destek:** —
 - **Çıktı:** GitHub repo
 - **Kabul kriteri:** Klasörler: /backend /ai /scraper /web /mobile /infra /docs (Electron `web/`'i kullanır). Tek ana dal `main` (karar #27); branch protection (1 onay + yeşil CI zorunlu), PR şablonu, conventional commits, CODEOWNERS.
-- **Not:** 05.11.2026: `main` koruması açıldı ve `.github/CODEOWNERS` eklendi; kural `infra/ci.md` "main koruması" bölümünde. `AI` kontrolü `main`'de yeşile dönünce zorunlu kontrollere eklenecek.
+- **Not:** Repo, klasör yapısı ve PR şablonu hazır. Kalan: ana dal koruması ve CODEOWNERS; özel repoda GitHub Pro gerektiriyor (Student Pack başvurusu 30.10'da yapıldı, onay bekleniyor).
 
 ### T-007 · Lokal geliştirme ortamı (docker-compose)
 
@@ -150,23 +150,24 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-035 · Prova (staging) ortamı
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 02.11.2026 – 08.11.2026 · **Öncelik:** P0 · **Efor:** 4 saat · **Alan:** DevOps / Altyapı
 - **Bağımlılık:** T-009, T-007
 - **Destek:** —
-- **Çıktı:** Prova ortamı (`careerai-staging` compose projesi)
-- **Kabul kriteri:** PC'de `docker compose -p careerai-staging` ile production'dan ayrı volume ve portlarla açılıp kapatılabilen prova ortamı (`make staging-up` / `staging-down`); sadece 127.0.0.1, gerektiğinde geçici tünel (staging.cvnebakalim.com); staging verisi production'dan ayrı.
-- **Not:** 06.11.2026: karar #30 ile sürekli açık staging sunucusu kaldırıldı; prova ortamı ihtiyaç olunca açılır.
+- **Çıktı:** Prova ortamı (`careerai-staging` compose projesi, `infra/pc/compose.yml`)
+- **Kabul kriteri:** PC'de `docker compose -p careerai-staging` ile production'dan ayrı volume'larla açılıp kapatılabilen prova ortamı (`bash infra/pc/deploy.sh <ref> staging` / `make staging-down`); sadece 127.0.0.1, gerektiğinde geçici tünel (staging.cvnebakalim.com); staging verisi production'dan ayrı.
+- **Not:** 06.11.2026: karar #30 ile sürekli açık staging sunucusu kaldırıldı; prova ortamı ihtiyaç olunca açılır. Bu PC'de denendi: 41 sn'de bütün servisler healthy, host'a port açılmadı, `down -v` ortak Ollama modelini silmiyor. Geçici tünel gerekmedikçe kurulmadı. Analiz işçisi/CV Redis #58/#60 ve `ai/Dockerfile` sonrası eklenecek (PR #50).
 
 ### T-036 · CD: imaj üretimi ve PC'ye deploy betiği
 
-- **Durum:** Yapılacak
+- **Durum:** Devam Ediyor
 - **Tarih:** 09.11.2026 – 15.11.2026 · **Öncelik:** P0 · **Efor:** 10 saat · **Alan:** DevOps / Altyapı
 - **Bağımlılık:** T-008, T-035
 - **Destek:** —
-- **Çıktı:** `.github/workflows/images.yml` + `infra/deploy` betiği
-- **Kabul kriteri:** `main` birleştirmesi ve `vX.Y.Z` etiketi image'ları GHCR'a push eder. PC'de tek komutla (`make deploy TAG=vX.Y.Z`): image çek, önce yedek, alembic upgrade, `docker compose -p careerai-prod up -d`, smoke test; başarısızsa önceki image etiketine dönüş. PC'ye dışarıdan SSH/deploy erişimi açılmaz.
+- **Çıktı:** `.github/workflows/deploy.yml` + `infra/pc/deploy.sh` + `infra/pc/deploy.md`
+- **Kabul kriteri:** `main` birleştirmesi image'ları commit adıyla GHCR'a push eder; `vX.Y.Z` etiketi o commit'i gösterir. PC'de tek komutla (Git Bash: `bash infra/pc/deploy.sh vX.Y.Z`): image çek, önce yedek, alembic upgrade, `docker compose -p careerai-prod up -d`, smoke test; başarısızsa önceki image etiketine dönüş. PC'ye dışarıdan SSH/deploy erişimi açılmaz.
 - **Not:** 06.11.2026: karar #30 ile SSH'li otomatik staging deploy'u kaldırıldı.
+- **Devam notu (06.11.2026):** Yapılan: workflow'dan SSH/deploy işi çıkarıldı, sadece imaj üretimi kaldı (actionlint temiz). `infra/pc/deploy.sh` yerelde derlenen imajlarla prova ortamında denendi: deploy tamam, bozuk api imajında önceki imaja döndü; pg_dump yönlendirmesi denendi (shellcheck temiz). Sıradaki adım: PR #50 main'e girince Actions'ta imaj gönderimini gör, `docker login ghcr.io` ile PC'de GHCR'dan çekerek prova deploy'u (`infra/pc/deploy.md` 1. ve 5. adım). Açık sorular / engeller: production dökümü gerçek `careerai-prod`'da denenmedi (T-075). Branch: ataberk/sunucu-hazirlik
 
 ### T-028 · TÜBİTAK 2209-A başvuru dosyası
 
