@@ -28,7 +28,7 @@ from app.schemas.analyses import (
     ResourceOut,
     TargetRoleOut,
 )
-from app.services.analyses import AnalysisNotFinished, AnalysisService, ResultCatalog, UnknownRole
+from app.services.analyses import AnalysisNotFinished, AnalysisService, ConsentWithdrawn, ResultCatalog, UnknownRole
 from app.services.analysis_queue import QueueUnavailable
 from app.services.cv_validation import CvRejected
 
@@ -179,6 +179,7 @@ def list_analyses(
     dependencies=[AnalysesRateLimit],
     responses={
         401: {"description": "Giriş gerekli", **_PROBLEM},
+        403: {"description": "Açık rıza geri alınmış", **_PROBLEM},
         411: {"description": "Content-Length yok", **_PROBLEM},
         413: {"description": "Dosya 5 MB'tan büyük (PDF_TOO_LARGE)", **_PROBLEM},
         415: {"description": "PDF değil (PDF_UNREADABLE)", **_PROBLEM},
@@ -206,6 +207,13 @@ def create_analysis(
         analysis_id = service.create(user.id, content, file.content_type, target_role_id)
     except CvRejected as exc:
         return problem(exc.status, exc.detail, request, code=exc.code)
+    except ConsentWithdrawn:
+        return problem(
+            403,
+            "CV analizi için açık rızan geri alınmış. Profil → Verilerim bölümünden yeniden verebilirsin.",
+            request,
+            code="CONSENT_WITHDRAWN",
+        )
     except UnknownRole:
         return problem(422, "Pozisyon bulunamadı.", request)
     except QueueUnavailable:

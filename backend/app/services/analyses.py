@@ -18,6 +18,10 @@ class UnknownRole(Exception):
     pass
 
 
+class ConsentWithdrawn(Exception):
+    """Açık rıza geri alınmış: CV işlenmez (KVKK md. 11; docs/yasal/acik-riza.md)."""
+
+
 class AnalysisNotFinished(Exception):
     """Geri bildirim sadece tamamlanmış analize verilir."""
 
@@ -34,7 +38,12 @@ class AnalysisService:
         self.queue = queue
 
     def create(self, user_id: uuid.UUID, content: bytes, content_type: str | None, target_role_id: int) -> uuid.UUID:
-        """CV'yi doğrular, kaydı oluşturur ve kuyruğa verir. CvRejected, UnknownRole veya QueueUnavailable fırlatır."""
+        """CV'yi doğrular, kaydı oluşturur ve kuyruğa verir.
+
+        ConsentWithdrawn, CvRejected, UnknownRole veya QueueUnavailable fırlatır. Rıza, CV okunmadan önce bakılır.
+        """
+        if not self.repository.has_explicit_consent(user_id):
+            raise ConsentWithdrawn
         cv = validate_cv(content, content_type)
         if not self.repository.role_exists(target_role_id):
             raise UnknownRole

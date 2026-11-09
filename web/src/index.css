@@ -193,3 +193,18 @@ code { font-family: var(--font-mono); font-size: 0.9em; }
 .details { display: grid; grid-template-columns: max-content 1fr; gap: var(--space-2) var(--space-6); margin: 0; }
 .details dt { color: var(--text-muted); }
 .details dd { margin: 0; }
+
+/* Profil (KVKK: verilerim, onaylar, hesap silme) */
+.profile__facts { margin-bottom: var(--space-4); }
+.profile__subtitle { font-size: var(--text-md); margin: var(--space-6) 0 var(--space-2); }
+.profile__consents { padding-left: var(--space-6); margin: 0 0 var(--space-3); }
+.profile__note { font-size: var(--text-sm); margin: var(--space-3) 0 0; }
+.profile select.field__input { max-width: 24rem; }
+
+/* Dar ekranda (telefon) menü ikinci satıra iner ve yatay kayar; marka, tema ve çıkış ilk satırda kalır. */
+@media (max-width: 40rem) {
+  .topbar { gap: var(--space-2) var(--space-3); }
+  .topbar .brand { margin-right: auto; }
+  .topbar nav { order: 3; flex: 1 0 100%; flex-wrap: nowrap; overflow-x: auto; margin: 0 calc(-1 * var(--space-2)); }
+  .topbar nav a { white-space: nowrap; }
+}

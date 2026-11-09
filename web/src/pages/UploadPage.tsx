@@ -237,5 +237,8 @@ function uploadErrorMessage(error: unknown, response: Response): string {
   }
   if (problem?.code === "PDF_TOO_LARGE") return `Dosya 5 MB veya ${MAX_CV_PAGES} sayfadan büyük olamaz.`;
   if (problem?.code === "PDF_UNREADABLE") return "PDF okunamadı. Dosya bozuk ya da şifreli olabilir.";
+  if (problem?.code === "CONSENT_WITHDRAWN") {
+    return "CV analizi için açık rızan geri alınmış. Profil → Verilerim bölümünden yeniden verebilirsin.";
+  }
   return problemMessage(error);
 }

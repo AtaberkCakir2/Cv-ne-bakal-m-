@@ -156,12 +156,6 @@
               "application/problem+json": {}
             }
           },
-          "429": {
-            "description": "Çok fazla deneme",
-            "content": {
-              "application/problem+json": {}
-            }
-          },
           "422": {
             "description": "Validation Error",
             "content": {
@@ -170,6 +164,12 @@
                   "$ref": "#/components/schemas/HTTPValidationError"
                 }
               }
+            }
+          },
+          "429": {
+            "description": "Çok fazla deneme",
+            "content": {
+              "application/problem+json": {}
             }
           }
         }
@@ -448,12 +448,6 @@
               "application/problem+json": {}
             }
           },
-          "429": {
-            "description": "Çok fazla deneme",
-            "content": {
-              "application/problem+json": {}
-            }
-          },
           "422": {
             "description": "Validation Error",
             "content": {
@@ -462,6 +456,12 @@
                   "$ref": "#/components/schemas/HTTPValidationError"
                 }
               }
+            }
+          },
+          "429": {
+            "description": "Çok fazla deneme",
+            "content": {
+              "application/problem+json": {}
             }
           }
         },
@@ -768,6 +768,12 @@
           },
           "401": {
             "description": "Giriş gerekli",
+            "content": {
+              "application/problem+json": {}
+            }
+          },
+          "403": {
+            "description": "Açık rıza geri alınmış",
             "content": {
               "application/problem+json": {}
             }
@@ -1435,7 +1441,7 @@
           },
           "target_role_id": {
             "type": "integer",
-            "minimum": 1.0,
+            "minimum": 1,
             "title": "Target Role Id",
             "description": "Hedef pozisyon kimliği"
           }
@@ -2058,8 +2064,8 @@
         "properties": {
           "rating": {
             "type": "integer",
-            "maximum": 5.0,
-            "minimum": 1.0,
+            "maximum": 5,
+            "minimum": 1,
             "title": "Rating",
             "description": "1-5 yıldız"
           },

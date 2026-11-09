@@ -8,13 +8,14 @@ from sqlalchemy import ColumnElement, func, select, update
 from sqlalchemy.dialects.postgresql import insert as pg_insert
 from sqlalchemy.orm import Session, joinedload, selectinload
 
-from app.db.enums import AnalysisErrorCode, AnalysisStatus
-from app.db.models import Analysis, Feedback, Resource, Role, Skill
+from app.db.enums import AnalysisErrorCode, AnalysisStatus, ConsentType
+from app.db.models import Analysis, Consent, Feedback, Resource, Role, Skill
 
 _UNFINISHED = (AnalysisStatus.QUEUED, AnalysisStatus.PROCESSING)
 
 
 class AnalysisRepository(Protocol):
+    def has_explicit_consent(self, user_id: uuid.UUID) -> bool: ...
     def role_exists(self, role_id: int) -> bool: ...
     def add(self, user_id: uuid.UUID, target_role_id: int, cv_sha256: str, cv_pages: int) -> uuid.UUID: ...
     def mark_failed(self, analysis_id: uuid.UUID, code: AnalysisErrorCode) -> None: ...
@@ -35,6 +36,15 @@ def _owned(user_id: uuid.UUID) -> tuple[ColumnElement[bool], ...]:
 class SqlAnalysisRepository:
     def __init__(self, session: Session) -> None:
         self.session = session
+
+    def has_explicit_consent(self, user_id: uuid.UUID) -> bool:
+        """Yürürlükte (geri alınmamış) açık rıza var mı? Geri alınınca yeni analiz başlatılmaz (KVKK md. 11)."""
+        stmt = select(Consent.id).where(
+            Consent.user_id == user_id,
+            Consent.consent_type == ConsentType.ACIK_RIZA,
+            Consent.withdrawn_at.is_(None),
+        )
+        return self.session.scalar(stmt.limit(1)) is not None
 
     def role_exists(self, role_id: int) -> bool:
         return self.session.scalar(select(Role.id).where(Role.id == role_id, Role.is_active)) is not None
