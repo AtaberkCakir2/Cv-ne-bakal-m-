@@ -16,13 +16,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-006 · Monorepo ve Git akışı
 
-- **Durum:** Tamamlandı
+- **Durum:** Devam Ediyor
 - **Tarih:** 19.10.2026 – 25.10.2026 · **Öncelik:** P0 · **Efor:** 4 saat · **Alan:** DevOps / Altyapı
 - **Bağımlılık:** T-001 (Anıl)
 - **Destek:** —
 - **Çıktı:** GitHub repo
 - **Kabul kriteri:** Klasörler: /backend /ai /scraper /web /mobile /infra /docs (Electron `web/`'i kullanır). Tek ana dal `main` (karar #27); branch protection (1 onay + yeşil CI zorunlu), PR şablonu, conventional commits, CODEOWNERS.
-- **Not:** 05.11.2026: `main` koruması açıldı ve `.github/CODEOWNERS` eklendi; kural `infra/ci.md` "main koruması" bölümünde. `AI` kontrolü `main`'de yeşile dönünce zorunlu kontrollere eklenecek.
+- **Not:** Repo, klasör yapısı ve PR şablonu hazır. Kalan: ana dal koruması ve CODEOWNERS; özel repoda GitHub Pro gerektiriyor (Student Pack başvurusu 30.10'da yapıldı, onay bekleniyor).
 
 ### T-007 · Lokal geliştirme ortamı (docker-compose)
 
@@ -34,23 +34,26 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 - **Kabul kriteri:** Servisler: postgres(+pgvector), redis, ollama, api, worker. Tek komutla ayağa kalkar (make up). .env.example dolu, gerçek sır yok. README'de 10 dakikada kurulum.
 - **Not:** postgres/redis/ollama `make up` ile Windows'ta test edildi (healthy, pgvector çalışıyor, veri kalıcı). api ve worker compose'da `api`/`worker` profillerinde tanımlı; `backend/Dockerfile` (Anıl, T-023, port 8000) ve `ai/Dockerfile` (Burak, Celery worker) eklenince `make up` onları otomatik başlatır.
 
-### T-009 · VPS tedariki ve sunucu sertleştirme
+### T-009 · Production PC'si hazırlığı ve sertleştirme
 
 - **Durum:** Yapılacak
 - **Tarih:** 19.10.2026 – 25.10.2026 · **Öncelik:** P0 · **Efor:** 6 saat · **Alan:** DevOps / Altyapı
 - **Bağımlılık:** —
 - **Destek:** —
-- **Çıktı:** Sunucu erişim dokümanı (sırlar hariç)
-- **Kabul kriteri:** Ubuntu 24.04 LTS, en az 8 vCPU / 16 GB RAM / 160 GB SSD. SSH sadece anahtar ile, root girişi kapalı, ufw (22/80/443), fail2ban, unattended-upgrades, 4 GB swap, saat dilimi Europe/Istanbul.
+- **Çıktı:** `infra/pc/README.md` (PC kurulum ve kontrol listesi, sırlar hariç)
+- **Kabul kriteri:** Karar #30: VPS yok, production Ataberk'in PC'sinde (i7-9750H, 32 GB RAM, GTX 1650, Windows 10 Pro). Docker Desktop (WSL2) oturumla başlar, `.wslconfig` ile en fazla 20 GB RAM; uyku/hazırda bekletme kapalı, kapak kapanınca "hiçbir şey yapma"; Windows Update etkin saatleri ayarlı; BitLocker açık; Windows Güvenlik Duvarı açık, gelen port yok (modemde yönlendirme yok); saat dilimi Europe/Istanbul; C: diskinde en az 40 GB boş.
+- **Not:** 06.11.2026: karar #30 ile VPS tedariki kaldırıldı, görev PC hazırlığına dönüştü.
 
-### T-010 · Alan adı ve DNS
+### T-010 · Alan adı, Cloudflare DNS ve Tunnel
 
-- **Durum:** Yapılacak
+- **Durum:** Devam Ediyor
 - **Tarih:** 19.10.2026 – 25.10.2026 · **Öncelik:** P1 · **Efor:** 2 saat · **Alan:** DevOps / Altyapı
 - **Bağımlılık:** T-009
 - **Destek:** —
-- **Çıktı:** DNS kayıtları
-- **Kabul kriteri:** Alan adı alındı; DNS kayıtları: app., api., staging-api., status. alt alan adları. SSL Caddy/Let's Encrypt ile ücretsiz.
+- **Çıktı:** DNS kayıtları + `cloudflared` servisi (compose)
+- **Kabul kriteri:** Alan adı alındı, ad sunucuları Cloudflare'de (ücretsiz plan). Cloudflare Tunnel kuruldu; `cloudflared` production compose'da konteyner, tünel token'ı sadece PC'deki `.env`'de. app. ve api. tünele bağlı; tanıtım/yasal sayfalar için alan adının kökü Cloudflare Pages'e. Always Use HTTPS + HSTS + en düşük TLS 1.2 açık; SSL ücretsiz (Cloudflare).
+- **Not:** 06.11.2026: karar #30 ile Caddy/Let's Encrypt yerine Cloudflare Tunnel; staging-api. ve status. alt alan adları kaldırıldı.
+- **Devam notu (06.11.2026):** Yapılan: `cvnebakalim.com` Cloudflare Registrar'dan 560 TL'ye alındı (ad sunucuları Cloudflare'de); dokümanlardaki yer tutucular gerçek adla değiştirildi. Cloudflare'e GitHub ile giriliyor (GitHub'da authenticator 2FA açık; Cloudflare'in kendi 2FA'sı şifre doğrulama sorunu yüzünden sonraya kaldı). Zero Trust'ta `careerai-pc` tüneli oluşturuldu, token parola yöneticisinde (repoda yok); tünel bir kez bağlanıp kapatıldı; `api.cvnebakalim.com` → `http://api:8000` public hostname'i eklendi; SSL/TLS Full, Always Use HTTPS, en düşük TLS 1.2 (HSTS sistem çalışınca açılacak). Sıradaki adım: production (T-075) açılınca token'ı `infra/pc/.env.prod`'a yaz, `https://api.cvnebakalim.com/api/v1/health` ile uçtan uca dene, sonra HSTS; Cloudflare 2FA'yı yeniden dene. Açık sorular / engeller: web arayüzü (`app.`) Pages'te mi tünelde mi (Anıl); kök alan adı Cloudflare Pages'e (tanıtım/yasal sayfalar, T-070). Branch: ataberk/karar-sunucusuz
 
 ### T-011 · Veri tabanı şeması v1 (ERD)
 
@@ -145,23 +148,26 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 - **Kabul kriteri:** HTML temizleme, dil tespiti, pozisyon başlığı normalizasyonu ("Back-end Geliştirici" = Backend Developer), tekrar kayıt temizleme (hash + benzerlik), yetkinlik etiketleme (Burak'ın v1 modülü).
 - **Not:** `scraper/etl/` + `python -m collector normalize` / `export-postings` (26.10). HTML temizleme ve dil tespiti T-015'ten (`collector/clean.py`). Pozisyon sadece başlıktan (ekip kararı 26.10: yetkinlikten tahmin yok, istatistik döngüsel olmasın); genel başlıklar ("Software Engineer") `role_id = NULL`. Benzer ilan: aynı şirket + pozisyonda Jaccard ≥ 0,9 → eski kopya pasif. 2.002 aktif ilanda pozisyonu belli **%39,6 (792)**, yetkinlik bulunan %88 (ilan başına 7,5), 46 benzer ilan pasife alındı; 30 ilanlık elle kontrolde pozisyon ataması doğru. Burak'ın T-031'i başlamadığı için ilan etiketleyicisi sözlük tabanlı olarak burada yazıldı (`etl/skills.py`, arayüz `tag(text, lang)`); 30.10'da T-031 ile ortaklaştırıldı: eşleme Burak'ın `extraction.taxonomy.Matcher`'ıyla, önem (required/preferred) burada (karar #28). Gerçek veride 248 hatalı bağ silindi (Objective-C → C 112, Ruby on Rails → Ruby 117, Azure DevOps → DevOps 19), başka bağ değişmedi. Kişisel veri maskeleme 30.10'da bağlandı: `pii.mask_posting` (Burak, T-030) `normalize`'ın varsayılanı, `mask_posting_once` sarmalayıcısı önceki etiketleri korur (6.632 ilandan 338'i maskelendi, 2 yetkinlik bağı kaybı, istatistik değişmedi). Açık: ince pozisyonlar (oyun 4, veri analisti 5 ilan) Türkçe kaynaklar gelince artar.
 
-### T-035 · Staging ortamı
+### T-035 · Prova (staging) ortamı
 
-- **Durum:** Yapılacak
-- **Tarih:** 02.11.2026 – 08.11.2026 · **Öncelik:** P0 · **Efor:** 8 saat · **Alan:** DevOps / Altyapı
+- **Durum:** Tamamlandı
+- **Tarih:** 02.11.2026 – 08.11.2026 · **Öncelik:** P0 · **Efor:** 4 saat · **Alan:** DevOps / Altyapı
 - **Bağımlılık:** T-009, T-007
 - **Destek:** —
-- **Çıktı:** staging ortamı (HTTPS)
-- **Kabul kriteri:** VPS'te docker compose ile staging; Caddy reverse proxy + otomatik HTTPS; staging verisi production'dan ayrı.
+- **Çıktı:** Prova ortamı (`careerai-staging` compose projesi, `infra/pc/compose.yml`)
+- **Kabul kriteri:** PC'de `docker compose -p careerai-staging` ile production'dan ayrı volume'larla açılıp kapatılabilen prova ortamı (`bash infra/pc/deploy.sh <ref> staging` / `make staging-down`); sadece 127.0.0.1, gerektiğinde geçici tünel (staging.cvnebakalim.com); staging verisi production'dan ayrı.
+- **Not:** 06.11.2026: karar #30 ile sürekli açık staging sunucusu kaldırıldı; prova ortamı ihtiyaç olunca açılır. Bu PC'de denendi: 41 sn'de bütün servisler healthy, host'a port açılmadı, `down -v` ortak Ollama modelini silmiyor. Geçici tünel gerekmedikçe kurulmadı. Analiz işçisi/CV Redis #58/#60 ve `ai/Dockerfile` sonrası eklenecek (PR #50).
 
-### T-036 · CD: main → staging otomatik deploy
+### T-036 · CD: imaj üretimi ve PC'ye deploy betiği
 
-- **Durum:** Yapılacak
+- **Durum:** Devam Ediyor
 - **Tarih:** 09.11.2026 – 15.11.2026 · **Öncelik:** P0 · **Efor:** 10 saat · **Alan:** DevOps / Altyapı
 - **Bağımlılık:** T-008, T-035
 - **Destek:** —
-- **Çıktı:** .github/workflows/deploy.yml
-- **Kabul kriteri:** Image'lar GHCR'a push; SSH ile deploy; alembic upgrade; smoke test; başarısızsa önceki image'a dönüş.
+- **Çıktı:** `.github/workflows/deploy.yml` + `infra/pc/deploy.sh` + `infra/pc/deploy.md`
+- **Kabul kriteri:** `main` birleştirmesi image'ları commit adıyla GHCR'a push eder; `vX.Y.Z` etiketi o commit'i gösterir. PC'de tek komutla (Git Bash: `bash infra/pc/deploy.sh vX.Y.Z`): image çek, önce yedek, alembic upgrade, `docker compose -p careerai-prod up -d`, smoke test; başarısızsa önceki image etiketine dönüş. PC'ye dışarıdan SSH/deploy erişimi açılmaz.
+- **Not:** 06.11.2026: karar #30 ile SSH'li otomatik staging deploy'u kaldırıldı.
+- **Devam notu (06.11.2026):** Yapılan: workflow'dan SSH/deploy işi çıkarıldı, sadece imaj üretimi kaldı (actionlint temiz). `infra/pc/deploy.sh` yerelde derlenen imajlarla prova ortamında denendi: deploy tamam, bozuk api imajında önceki imaja döndü; pg_dump yönlendirmesi denendi (shellcheck temiz). Sıradaki adım: PR #50 main'e girince Actions'ta imaj gönderimini gör, `docker login ghcr.io` ile PC'de GHCR'dan çekerek prova deploy'u (`infra/pc/deploy.md` 1. ve 5. adım). Açık sorular / engeller: production dökümü gerçek `careerai-prod`'da denenmedi (T-075). Branch: ataberk/sunucu-hazirlik
 
 ### T-028 · TÜBİTAK 2209-A başvuru dosyası
 
@@ -236,7 +242,8 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 - **Bağımlılık:** T-035
 - **Destek:** —
 - **Çıktı:** İzleme paneli + status sayfası
-- **Kabul kriteri:** Uptime Kuma (/health/ready her 1 dk), Sentry (backend + web + mobil, ücretsiz katman), Prometheus node-exporter + Grafana (CPU/RAM/disk/kuyruk). Uyarılar Telegram/e-posta ile ekibe.
+- **Kabul kriteri:** PC dışından uptime izleme (UptimeRobot / Better Stack ücretsiz; api.cvnebakalim.com/health/ready her 1-5 dk), Sentry (backend + web + mobil, ücretsiz katman), Prometheus + Grafana PC'de (CPU/RAM/disk/kuyruk; sadece 127.0.0.1). Uyarılar Telegram/e-posta ile ekibe.
+- **Not:** 06.11.2026: karar #30 ile Uptime Kuma yerine dış izleyici (PC kapanınca içindeki izleyici de kapanır).
 
 ### T-064 · Güvenlik incelemesi (OWASP Top 10)
 
@@ -262,8 +269,8 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 - **Tarih:** 07.12.2026 – 13.12.2026 · **Öncelik:** P0 · **Efor:** 8 saat · **Alan:** Operasyon / İzleme
 - **Bağımlılık:** T-035
 - **Destek:** —
-- **Çıktı:** Yedekleme scriptleri + cron
-- **Kabul kriteri:** pg_dump her gün 02:00; 7 günlük + 4 haftalık saklama; restic ile şifreli olarak sunucu dışına (Backblaze B2 / Storage Box). Geri yükleme testi yapıldı.
+- **Çıktı:** Yedekleme scriptleri + zamanlayıcı
+- **Kabul kriteri:** pg_dump her gün 02:00 (PC o saatte kapalıysa açılışta); 7 günlük + 4 haftalık saklama; restic ile şifreli olarak PC dışına (Backblaze B2 ücretsiz katman vb.). Zamanlayıcı Windows'ta çalışır (compose içinde yedek konteyneri veya Görev Zamanlayıcı; PR #57'deki systemd birimleri PC'de kullanılmaz). Geri yükleme testi yapıldı.
 
 ### T-070 · Tanıtım (landing) sayfası
 
@@ -285,7 +292,7 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 - **Bağımlılık:** T-053 (Anıl)
 - **Destek:** Anıl
 - **Çıktı:** tests/e2e
-- **Kabul kriteri:** Kritik akışlar: kayıt → CV yükle → sonuç → kaynak aç → hesap sil. CI'da staging'e karşı gece çalışır.
+- **Kabul kriteri:** Kritik akışlar: kayıt → CV yükle → sonuç → kaynak aç → hesap sil. CI'da docker compose ile ayağa kaldırılan geçici ortama karşı gece çalışır (karar #30: ayrı staging sunucusu yok).
 
 ### T-072 · Yük testi (k6 / Locust)
 
@@ -303,7 +310,7 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 - **Bağımlılık:** T-036, T-064
 - **Destek:** —
 - **Çıktı:** Production ortamı
-- **Kabul kriteri:** Ayrı compose profili; en az yetkili DB kullanıcıları; sırlar .env (chmod 600, repoda yok); Postgres/Redis/Ollama dış dünyaya kapalı (sadece iç ağ); kaynak limitleri (mem_limit).
+- **Kabul kriteri:** PC'de ayrı compose projesi (`careerai-prod`, kendi volume'ları); en az yetkili DB kullanıcıları; sırlar `.env` (sadece bu PC'de, Windows kullanıcı izinleriyle korunur, repoda yok); hiçbir servis host'a port açmaz, dış erişim sadece `cloudflared`; kaynak limitleri (mem_limit), `restart: unless-stopped`. PC kapalıyken kaçan gece toplaması açılışta telafi edilir (R-18).
 
 ### T-079 · Mimari doküman ve ADR'ler
 
@@ -334,7 +341,7 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 - **Bağımlılık:** T-068, T-075
 - **Destek:** —
 - **Çıktı:** DR tatbikat raporu
-- **Kabul kriteri:** Boş bir sunucuya yedekten sıfırdan kurulum. Hedef: RTO < 4 saat, RPO < 24 saat. Süre ölçülüp runbook'a yazıldı.
+- **Kabul kriteri:** Başka bir bilgisayara (ör. Burak'ın veya Anıl'ın) yedekten sıfırdan kurulum ve tünelin oraya taşınması. Hedef: RTO < 4 saat, RPO < 24 saat. Süre ölçülüp runbook'a yazıldı.
 
 ### T-088 · Operasyon runbook'u
 
@@ -352,7 +359,7 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 - **Bağımlılık:** T-075, T-088
 - **Destek:** Burak, Anıl
 - **Çıktı:** Prova notu
-- **Kabul kriteri:** Staging'de production'ın birebir kopyasıyla deploy + rollback provası; checklist üzerinden kuru çalıştırma.
+- **Kabul kriteri:** PC'de prova projesinde (`careerai-staging`) production'ın birebir kopyasıyla deploy + rollback provası; checklist üzerinden kuru çalıştırma; sunum B planı (127.0.0.1'de yerel demo, telefondan internet paylaşımı) denendi.
 
 ---
 
@@ -365,7 +372,7 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 - **Bağımlılık:** T-093 (Anıl)
 - **Destek:** Burak, Anıl
 - **Çıktı:** Canlı sistem
-- **Kabul kriteri:** Düşük trafikli saatte deploy; migration; smoke test; DNS/SSL kontrolü; başarısızlıkta 15 dk içinde rollback.
+- **Kabul kriteri:** v1.0.0 etiketi; PC'de `make deploy TAG=v1.0.0`; migration; smoke test alan adı üzerinden; DNS/tünel/SSL kontrolü; başarısızlıkta 15 dk içinde rollback.
 
 ### T-097 · Hypercare (2 hafta yakın izleme)
 
@@ -374,4 +381,4 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 - **Bağımlılık:** T-094
 - **Destek:** Burak, Anıl
 - **Çıktı:** Hypercare raporu
-- **Kabul kriteri:** Günlük: hata oranı, analiz süresi, kuyruk, disk, yedek kontrolü; nöbet çizelgesi (her gün 1 kişi); kritik hatalara 4 saat içinde müdahale.
+- **Kabul kriteri:** Günlük: hata oranı, analiz süresi, kuyruk, disk, yedek kontrolü; PC açık saatleri (09:00–23:00) duyuruldu; nöbet çizelgesi (her gün 1 kişi); kritik hatalara 4 saat içinde müdahale.

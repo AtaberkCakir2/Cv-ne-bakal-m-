@@ -9,6 +9,7 @@ dependencies = [
     "pydantic-settings>=2.6",
     "httpx>=0.27",
     "redis>=5.2",
+    "celery[redis]>=5.4,<6",
     "psycopg[binary]>=3.2",
     # CV yükleme (T-038)
     "python-multipart>=0.0.18",
@@ -58,3 +59,7 @@ ignore = ["S101"]
 python_version = "3.12"
 strict = true
 plugins = ["pydantic.mypy"]
+
+[[tool.mypy.overrides]]
+module = ["celery", "celery.*", "kombu.*"]
+ignore_missing_imports = true

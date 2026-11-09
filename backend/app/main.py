@@ -14,9 +14,7 @@ from app.core.logging import configure_logging
 from app.core.middleware import RequestContextMiddleware
 from app.core.rate_limit import GeneralRateLimitMiddleware, Limit, MemoryCounterStore, RateLimiter, redis_lifespan
 from app.core.uploads import UploadSizeLimitMiddleware, keep_uploads_in_memory
-from app.repositories.analyses import InMemoryAnalysisRepository
-from app.services.analyses import AnalysisService
-from app.services.analysis_queue import ExampleResultQueue
+from app.services.analysis_queue import build_analysis_queue
 from app.services.email import OutboxEmailSender
 
 
@@ -60,8 +58,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     # En dışta: istek kimliği her yanıta (hatalar dahil) eklenir.
     app.add_middleware(RequestContextMiddleware)
 
-    # GEÇİCİ: bellek içi depo ve örnek sonuç kuyruğu (T-012 ve T-039 gelince değişecek).
-    app.state.analysis_service = AnalysisService(InMemoryAnalysisRepository(), ExampleResultQueue())
+    app.state.analysis_queue = build_analysis_queue(settings)
     # GEÇİCİ: gerçek e-posta servisi seçilene kadar iletiler bellekte; bağlantı sadece local'de loglanır.
     app.state.email_sender = OutboxEmailSender(log_links=settings.is_explicit_dev and settings.environment == "local")
 
