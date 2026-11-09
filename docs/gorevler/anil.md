@@ -237,12 +237,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-059 · Electron masaüstü uygulaması
 
-- **Durum:** Yapılacak
+- **Durum:** Devam Ediyor
 - **Tarih:** 30.11.2026 – 13.12.2026 · **Öncelik:** P0 · **Efor:** 14 saat · **Alan:** Web / Masaüstü
 - **Bağımlılık:** T-053
 - **Destek:** —
 - **Çıktı:** Kurulum dosyaları
 - **Kabul kriteri:** Web arayüzünü sarmalar; contextIsolation açık, nodeIntegration kapalı; electron-builder ile Windows (NSIS) ve macOS (dmg); electron-updater + GitHub Releases ile otomatik güncelleme.
+- **Devam notu (07.11.2026):** Yapılan: `web/desktop/` (Electron 44, app://careerai protokolü, güvenli webPreferences, CSP, dış bağlantılar sistem tarayıcısında, izinler kapalı, electron-updater); Windows NSIS kurulum dosyası üretildi ve paketli uygulama `--smoke` ile denendi. · Sıradaki adım: simge; macOS dmg'yi bir Mac'te üretmek; backend `CORS_ORIGINS`'e `app://careerai`; güncellemenin çalışması için repo/yayın yeri kararı (özel repo token'sız indirilemez). · Açık sorular / engeller: Mac erişimi; kod imzalama yok (uyarılar README'de). · Branch: anil/electron
 
 ### T-065 · KVKK aydınlatma metni, açık rıza, gizlilik politikası, kullanım koşulları
 
