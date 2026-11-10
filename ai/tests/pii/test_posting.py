@@ -112,6 +112,68 @@ def test_single_surname_after_title_is_masked(text: str, lang: Literal["tr", "en
     assert "[AD SOYAD]" in out
 
 
+@pytest.mark.parametrize(
+    ("text", "names"),
+    [
+        ("Contact Ms Nadja Hantschel today.", ["Nadja", "Hantschel"]),
+        ("Contact Mr John Doe today.", ["John", "Doe"]),
+        ("Mr. J. Smith leads the team.", ["Smith"]),
+        ("Supervised by Prof. Dr. H. Meffert.", ["Meffert"]),
+        ("Danışman: Dr.Ayhan Yıldırım", ["Ayhan", "Yıldırım"]),
+        ("Prof.Dr.H.Meffert ile çalıştım", ["Meffert"]),
+    ],
+)
+def test_undotted_titles_initials_and_missing_spaces_are_masked(text: str, names: list[str]) -> None:
+    out = mask_posting(text, "en")
+    assert "[AD SOYAD]" in out
+    for name in names:
+        assert name not in out, out
+    # Baş harf de kişiyi tanıtır.
+    assert "J." not in out and "H." not in out
+
+
+@pytest.mark.parametrize(
+    "text",
+    [
+        "Ms Excel ve Ms Office biliyorum",
+        "Ms Word, Ms Sql, Ms. PowerPoint",
+        "Mr. Clean",
+        "Mr Clean",
+        # #66 incelemesi: noktasız "Ms" bunları ad sayıp yetkinliği siliyordu.
+        "Ms Visual Studio, Ms SharePoint, Ms Share Point, Ms Dynamics, Ms Exchange, Ms Paint",
+        "Ms Server, Ms Edge, Ms Fabric, Ms Intune, Ms PowerBI, Ms PowerShell, Ms OneDrive",
+    ],
+)
+def test_microsoft_products_and_brands_after_title_are_kept(text: str) -> None:
+    assert mask_posting(text, "tr") == text
+    assert mask_posting(text, "en") == text
+
+
+@pytest.mark.parametrize(
+    ("text", "masked"),
+    [
+        ("Dr. McDonald ile çalıştım", "Dr. [AD SOYAD] ile çalıştım"),
+        ("Mr. DeVito leads", "Mr. [AD SOYAD] leads"),
+        ("Ms. MacLeod", "Ms. [AD SOYAD]"),
+        ("Prof. O'Brien", "Prof. [AD SOYAD]"),
+        ("Prof. O’Brien", "Prof. [AD SOYAD]"),
+        ("Dr. Ayşe McDonald", "Dr. [AD SOYAD]"),
+        ("Mr. J. McDonald", "Mr. [AD SOYAD]"),
+        ("ekip lideri Ayşe McDonald ile", "ekip lideri [AD SOYAD] ile"),
+        ("Mert O'Brien ile", "[AD SOYAD] ile"),
+    ],
+)
+def test_surname_with_inner_capital_or_prefix_is_fully_masked(text: str, masked: str) -> None:
+    # Eşleşme kelimenin ortasında durup soyadın geri kalanını açıkta bırakmasın ("[AD SOYAD]Donald").
+    assert mask_posting(text, "en") == masked
+
+
+def test_turkish_suffix_after_title_name_is_kept() -> None:
+    assert (
+        mask_posting("Dr. McDonald'a ve Dr. Ayşe'ye ilettim", "tr") == "Dr. [AD SOYAD]'a ve Dr. [AD SOYAD]'ye ilettim"
+    )
+
+
 def test_numbers_inside_links_are_not_phone_or_tckn() -> None:
     text = "Apply: https://www.linkedin.com/jobs/view/4438695357"
     assert mask_posting("https://www.linkedin.com/jobs/view/4438695357", "en") == (
@@ -129,6 +191,8 @@ def test_numbers_inside_links_are_not_phone_or_tckn() -> None:
         "https://acme.com/call/05321234567",
         "https://acme.com/c?tel=+905321234567",
         "https://acme.com/c?mobile=5321234567&x=1",
+        "https://acme.com/form?contact=905321234567",
+        "https://acme.com/form?a=1&whatsapp=%2B905321234567",
     ],
 )
 def test_phone_shaped_numbers_inside_links_are_masked(url: str) -> None:
@@ -138,8 +202,21 @@ def test_phone_shaped_numbers_inside_links_are_masked(url: str) -> None:
     assert "[TELEFON]" in out
 
 
+@pytest.mark.parametrize("param", ["tckn", "tc", "TC_No", "kimlik", "national_id"])
+def test_tckn_parameter_inside_link_is_masked(param: str) -> None:
+    out = mask_posting(f"Form: https://x.com/form?{param}=12345678901&a=1", "tr")
+    assert "12345678901" not in out
+    assert f"{param}=[TCKN]&a=1" in out
+
+
+def test_other_numbers_inside_links_are_kept() -> None:
+    url = "https://x.com/form?job=12345678901&id=905321234567"
+    assert mask_posting(url, "tr") == url
+
+
 def test_digits_inside_hashes_are_not_tckn() -> None:
     assert mask_posting("build a3f91234567890b2c, id_12345678901", "en") == "build a3f91234567890b2c, id_12345678901"
+    assert mask_posting("commit 12345678901abc, abc12345678901", "en") == "commit 12345678901abc, abc12345678901"
     assert mask_posting("TCKN: 12345678901", "tr") == "TCKN: [TCKN]"
 
 
@@ -156,6 +233,12 @@ def test_digits_inside_hashes_are_not_tckn() -> None:
         "T.C. 12345678901",
         "No.12345678901",
         "TCKN,12345678901",
+        "kimlikde12345678901",
+        # Kısa hex önek hash değildir (#66 incelemesi).
+        "de12345678901",
+        "a12345678901",
+        "12345678901a",
+        "kimlik: de12345678901",
     ],
 )
 def test_tckn_attached_to_letters_is_masked(text: str) -> None:
