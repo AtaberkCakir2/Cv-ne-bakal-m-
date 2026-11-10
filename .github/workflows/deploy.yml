@@ -1,0 +1,71 @@
+# CD (T-036, sahibi: Ataberk, karar #30). main'de CI yeşil olunca api ve worker-data imajlarını GHCR'a gönderir.
+# Deploy CI'dan yapılmaz: production Ataberk'in PC'sinde, PC'ye dışarıdan erişim açılmaz. Sürüm PC'de
+# `bash infra/pc/deploy.sh vX.Y.Z` ile alınır (infra/pc/deploy.md). Elle çalıştırma (Run workflow) seçilen dalın
+# imajlarını derler.
+name: Deploy
+
+on:
+  workflow_run:
+    workflows: [CI]
+    branches: [main]
+    types: [completed]
+  workflow_dispatch:
+
+# İmaj gönderimleri sırayla; eski sürüm silme adımı aynı anda iki kez çalışmasın.
+concurrency:
+  group: images
+
+permissions:
+  contents: read
+
+env:
+  SHA: ${{ github.event.workflow_run.head_sha || github.sha }}
+  IMAGE_PREFIX: ghcr.io/ataberkcakir2/careerai
+
+jobs:
+  build:
+    name: İmaj (${{ matrix.name }})
+    # `branches: [main]` sadece dal adına bakar: fork'taki `main` dalından gelen PR'ın CI'ı da eşleşir. Bu yüzden
+    # sadece bu repoya yapılan push'lar.
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.workflow_run.conclusion == 'success' &&
+       github.event.workflow_run.event == 'push' &&
+       github.event.workflow_run.head_repository.full_name == github.repository)
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      packages: write
+    strategy:
+      matrix:
+        include:
+          - { name: api, context: backend, file: backend/Dockerfile }
+          - { name: worker-data, context: ., file: scraper/Dockerfile }
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.SHA }}
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/build-push-action@v6
+        with:
+          context: ${{ matrix.context }}
+          file: ${{ matrix.file }}
+          push: true
+          tags: ${{ env.IMAGE_PREFIX }}-${{ matrix.name }}:${{ env.SHA }}
+          # İmza kaydı (attestation) GHCR'da ayrı sürüm sayılır; sürüm silme adımı imajları yarım bırakmasın.
+          provenance: false
+          cache-from: type=gha,scope=${{ matrix.name }}
+          cache-to: type=gha,mode=max,scope=${{ matrix.name }}
+      # GHCR depolaması kotalı (özel repo): son 20 sürüm tutulur. Sürüm etiketi (vX.Y.Z) basılınca o commit'in
+      # imajı PC'de hemen deploy edilir (infra/pc/deploy.md). Eski bir commit gerekiyorsa o commit'e dal açılıp Run workflow çalıştırılır.
+      - uses: actions/delete-package-versions@v5
+        with:
+          package-name: careerai-${{ matrix.name }}
+          package-type: container
+          min-versions-to-keep: 20
+
