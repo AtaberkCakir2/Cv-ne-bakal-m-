@@ -1,0 +1,6 @@
+# Sunum B planı (go-live olay prosedürü "Sunum sırasında dış erişim yok"): api'yi sadece bu PC'ye açar.
+# 127.0.0.1'e bağlı olduğu için ağdaki başka cihazlar erişemez. Kullanım: make prod-local (infra/pc/deploy.md).
+services:
+  api:
+    ports:
+      - "127.0.0.1:${LOCAL_API_PORT:-8100}:8000"

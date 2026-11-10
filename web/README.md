@@ -1,6 +1,6 @@
 # web/ — Sahibi: Anıl
 
-React + Vite + TypeScript arayüzü. Electron masaüstü uygulaması da bu kodu kullanacak.
+React + Vite + TypeScript arayüzü. Electron masaüstü uygulaması da bu kodu kullanır: [`desktop/`](desktop/README.md).
 
 - **Yönlendirme:** React Router 6 (`src/routes.tsx`). Ekran adları wireframe ile aynı (`prototip/`, T-021).
 - **Veri çekme:** TanStack Query 5 (`src/main.tsx`).
