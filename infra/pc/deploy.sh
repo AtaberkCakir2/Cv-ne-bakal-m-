@@ -90,6 +90,7 @@ fi
 
 echo "Deploy: $REF ($SHA) → $PROJECT"
 docker volume create careerai-ollama-models >/dev/null  # iki ortamın ortak model volume'u (varsa dokunmaz)
+compose build --quiet  # yerelde derlenen servisler (backup); profilde kapalıysa bir şey yapmaz
 use_images new
 if roll_out; then
   prune_images

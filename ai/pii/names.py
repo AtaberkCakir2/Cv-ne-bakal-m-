@@ -34,6 +34,10 @@ _WORD = rf"[{_UPPER}][{_LOWER}]+(?:-[{_UPPER}][{_LOWER}]+)?"
 _CAPS_WORD = rf"[{_UPPER}]{{2,}}"
 _NAME_TOKEN = rf"(?:{_WORD}|{_CAPS_WORD})"
 _SP = r"[ \t]+"  # ad kelimeleri arasında boşluk; satır sonu adı bitirir (alt satırdaki unvan ada katılmaz)
+# Unvandan veya ilk addan sonraki soyadı ortada büyük harf ya da önek taşıyabilir: "McDonald", "DeVito", "O'Brien".
+# Sadece bu konumlarda: başlık satırı kuralına girerse "GitHub Actions" gibi satırlar ad sayılır.
+_SURNAME = rf"(?:[{_UPPER}]['’])?[{_UPPER}][{_LOWER}]+(?:[{_UPPER}][{_UPPER}{_LOWER}]*)?(?:-[{_UPPER}][{_LOWER}]+)?"
+_SURNAME_TOKEN = rf"(?:{_SURNAME}|{_CAPS_WORD})"
 
 LABELED = re.compile(
     r"\b(?:ad[ıi]?\s*(?:ve\s*)?soyad[ıi]?|ad\s*-\s*soyad|isim|full\s+name|name|aday)\s*:\s*([^\n·|•;]+)",
@@ -41,7 +45,16 @@ LABELED = re.compile(
 )
 HONORIFIC = re.compile(
     r"\b(?:Prof\.\s*Dr\.|Doç\.\s*Dr\.|Dr\.\s*Öğr\.\s*Üyesi|Dr\.|Prof\.|Doç\.|Öğr\.\s*Gör\.|Arş\.\s*Gör\.|Av\.|Müh\."
-    rf"|Mr\.|Mrs\.|Ms\.|Sayın|Bay|Bayan){_SP}((?:{_WORD})(?:{_SP}{_NAME_TOKEN}){{0,2}})"
+    # Noktalı unvandan sonra boşluk şart değil ("Dr.Ayhan"); adın önünde baş harfler olabilir ("Prof. Dr. H. Meffert").
+    rf"|Mr\.?|Mrs\.?|Ms\.?|Sayın|Bay|Bayan)(?:{_SP}|(?<=\.))"
+    rf"((?:[{_UPPER}]\.[ \t]*){{0,3}}{_SURNAME}(?:{_SP}{_SURNAME_TOKEN}){{0,2}})"
+)
+# "Ms" Türkçe CV'lerde Microsoft kısaltmasıdır ("Ms Excel"): bunlar ad değil, yetkinliktir.
+_MS_PRODUCTS = frozenset(
+    """
+    Excel Office Word Outlook Power PowerPoint PowerBI PowerApps PowerShell Access Project Teams Visio Sql Dos Azure
+    Windows Visual Dynamics Exchange Share SharePoint Paint Server Edge Fabric Intune OneDrive OneNote
+    """.split()
 )
 # Türkçe hitaplar İngilizce metinde ad öneki değildir ("Bay Area", "North Bay").
 _TR_ONLY_TITLES = frozenset({"Sayın", "Bay", "Bayan"})
@@ -83,7 +96,7 @@ FIRST_NAMES = frozenset(
     John James Michael David Robert Mary Sarah Emily Anna Laura
     """.split()
 )
-_FIRST_NAME_PHRASE = re.compile(rf"\b({_WORD})((?:{_SP}{_NAME_TOKEN}){{1,2}})")
+_FIRST_NAME_PHRASE = re.compile(rf"\b({_WORD})((?:{_SP}{_SURNAME_TOKEN}){{1,2}})")
 _FIRST_NAME_START = re.compile(rf"(?<![\w-]){_WORD}")
 _MIN_PROPAGATE_LEN = 3
 
@@ -110,7 +123,9 @@ def find_names(
         title, name = text[m.start() : m.start(1)].strip(), m.group(1)
         if lang != "tr" and title in _TR_ONLY_TITLES:
             continue
-        if f"{title.split()[-1]} {name.split()[0]}" in HONORIFIC_BRANDS:
+        last_title = re.split(r"[\s.]+", title.rstrip("."))[-1]
+        first_word = name.split()[0]
+        if f"{last_title}. {first_word}" in HONORIFIC_BRANDS or (last_title == "Ms" and first_word in _MS_PRODUCTS):
             continue
         spans.append(Span(m.start(1), m.end(1), Kind.NAME))
     # Her ilk ad kendi konumundan denenir: "Contact Ayşe Kaya" grubunda önceki büyük harfli kelime ("Contact")

@@ -30,6 +30,7 @@ from _common import use_utf8_stdout  # noqa: E402
 
 from parsing import extract_text  # noqa: E402
 from pii import mask  # noqa: E402
+from prompts import get_prompt  # noqa: E402
 
 EVAL_DIR = Path(__file__).resolve().parent.parent
 DATASET = EVAL_DIR / "dataset"
@@ -40,23 +41,8 @@ TAXONOMY = EVAL_DIR.parents[1] / "scraper" / "taxonomy" / "skills.csv"
 OLLAMA = "http://localhost:11434"
 LEVELS = ["beginner", "intermediate", "advanced", "unknown"]
 
-SYSTEM_PROMPT = """Sen bir CV analiz asistanısın. Sana kişisel verileri maskelenmiş bir CV metni verilecek.
-Görevin: adayın SAHİP OLDUĞU teknik ve mesleki yetkinlikleri çıkarmak.
-
-Kurallar:
-- Sadece metinde açıkça geçen yetkinlikleri yaz; tahmin etme, metinde olmayanı ekleme.
-- "öğrenmek istiyorum", "hedefim" gibi istek cümlelerindeki yetkinlikleri ALMA.
-- Tek başına ders adlarını ("Veri Yapıları dersi") alma.
-- Her yetkinliği bir kez yaz; standart adını kullan (ör. "JS" → "JavaScript", "k8s" → "Kubernetes").
-- CV'de yazıyorsa konuşulan diller de yetkinliktir.
-- level: beginner (temel/başlangıç), intermediate (orta), advanced (ileri/uzman), belirtilmemişse unknown.
-- years: metinde yıl açıkça yazıyorsa tam sayı, yoksa null.
-
-Sadece şu biçimde JSON döndür, başka hiçbir şey yazma:
-{"skills": [{"skill": "<yetkinlik adı>", "level": "<beginner|intermediate|advanced|unknown>",
-             "years": <tam sayı veya null>}]}
-"""
-# Not: örnekte gerçek bir yetkinlik adı ("Python", "İngilizce") olunca modeller onu CV'de yokken de yazıyordu.
+# T-018 ölçümleri bu sürümle yapıldı; karşılaştırılabilir olması için sabit.
+SYSTEM_PROMPT = get_prompt("skill_extraction", "v1").text
 
 SCHEMA: dict[str, Any] = {
     "type": "object",
