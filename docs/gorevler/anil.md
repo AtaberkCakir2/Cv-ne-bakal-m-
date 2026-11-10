@@ -256,12 +256,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-069 · API entegrasyon testleri
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 07.12.2026 – 13.12.2026 · **Öncelik:** P0 · **Efor:** 10 saat · **Alan:** Test & QA
 - **Bağımlılık:** T-048, T-049
 - **Destek:** —
 - **Çıktı:** tests/api
 - **Kabul kriteri:** pytest + httpx + testcontainers (gerçek Postgres/Redis); auth, yükleme, analiz, silme, yetki (IDOR) akışları. Kapsama ≥ %70.
+- **Not:** 10.11.2026: testler `backend/tests/` altında (ayrı `tests/api` açılmadı). `TEST_DATABASE_URL` / `TEST_REDIS_URL` yoksa testcontainers geçici PostgreSQL ve Redis başlatır; uçtan uca senaryo ve gerçek Redis testleri eklendi; kapsam eşiği %70 `pyproject.toml`'da (ölçülen %97,5). IDOR: her analiz ucu için başkasının analizi 404.
 
 ---
 

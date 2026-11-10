@@ -33,7 +33,14 @@ ruff check . && ruff format --check .
 mypy app tests
 ```
 
-Testler hiçbir servis (Postgres, Redis, Ollama) çalışmadan geçer. Veritabanı isteyen testler (`tests/db`, `tests/auth`) sadece `TEST_DATABASE_URL` verilince çalışır; boş test veritabanı için `app/db/README.md` → "Testler". CI bunları her PR'da çalıştırır.
+Testler hiçbir servis (Postgres, Redis, Ollama) çalışmadan geçer. Veritabanı isteyen testler (`tests/db`, `tests/auth`) ve Redis testleri (`tests/test_redis_integration.py`) gerçek servis ister (T-069):
+
+- **Docker açıksa** ayar gerekmez: `pytest` testcontainers ile geçici PostgreSQL (pgvector) ve Redis başlatır, sonunda kapatır.
+- **Kendi servisinizi kullanmak için:** `TEST_DATABASE_URL` / `TEST_REDIS_URL` verin; boş test veritabanı için `app/db/README.md` → "Testler". `TEST_REDIS_URL`'deki veritabanı her testte boşaltılır: ayrı bir Redis/DB numarası verin. CI veritabanını kendi servisiyle verir; Redis CI'da testcontainers ile açılır.
+- **Docker yoksa** bu testler atlanır. Testcontainers'ı kapatmak için: `CAREERAI_NO_TESTCONTAINERS=1`.
+- **Kapsam:** her çalıştırmada ölçülür (`pytest-cov`); %70'in altına düşerse pytest başarısız olur. 10.11.2026'da servislerle %97,5, servissiz %73,6. Tek test veya alt klasör çalıştırırken kapsam eşiğin altında kalır: `pytest --no-cov tests/...`. İlk çalıştırmada imajlar (Ryuk dahil) indirilir.
+
+Uçtan uca senaryo (kayıt → yükleme → işçi → sonuç → geri bildirim → silme → hesap silme): `tests/auth/test_analyses_queue.py::test_end_to_end_register_upload_analyze_result_feedback_delete` (kuyruk, CV deposu ve analiz motoru test çiftleri; işçi doğrudan çağrılır). Başkasının verisine erişim (IDOR) her analiz ucu için `tests/auth/test_analyses_results.py`'de denenir.
 
 ## Yapı
 
