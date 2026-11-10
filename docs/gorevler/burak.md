@@ -104,12 +104,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-032 · Yetkinlik çıkarımı v2 (LLM)
 
-- **Durum:** Yapılacak
+- **Durum:** Devam Ediyor
 - **Tarih:** 16.11.2026 – 22.11.2026 · **Öncelik:** P0 · **Efor:** 14 saat · **Alan:** AI / NLP
 - **Bağımlılık:** T-031, T-018, T-030
 - **Destek:** —
 - **Çıktı:** ai/extraction v2
 - **Kabul kriteri:** Ollama structured output (JSON şeması), temperature 0.1. v1 sonucu ile birleştirilir; taksonomide olmayan yetkinlik "doğrulanmamış" işaretlenir (halüsinasyon filtresi).
+- **Devam notu (10.11.2026):** Yapılan: `ai/extraction/llm.py` (`extract_skills_v2`, `merge`, `llm_skills`, `ollama_transport`) ve `tests/extraction/test_llm.py` (sahte transport); 10 TR sentetik CV'de gerçek llama3.1:8b ile hatasız çalıştı (README'de sayılar). #68'in (T-044) üzerine kurulu. · Sıradaki adım: #68 birleşince dalı main ile güncelle ve PR aç; T-019 altın standardı gelince v1 ve v2'yi F1 ile karşılaştır, LLM'in v1'de bilinmeyen seviyeye verdiği değerin doğruluğunu ölç (doğru değilse seviye tamamlamayı kapat). · Açık sorular / engeller: Ataberk'e taksonomi önerisi: "Express" (Express.js) tek başına eşleşmiyor, LLM'de doğrulanmamış çıkıyor. · Branch: burak/llm-cikarim
 
 ### T-041 · Embedding servisi
 
