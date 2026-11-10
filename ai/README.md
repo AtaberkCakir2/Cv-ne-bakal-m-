@@ -86,7 +86,7 @@ mask_text(text, "en")  # sadece metin, sadece kurallar; scraper/etl/pipeline.py 
 ### `extraction` v2 — yerel LLM ile birleşik çıkarım (T-032)
 
 ```python
-from extraction import extract_skills_v2
+from extraction.llm import extract_skills_v2
 
 result = extract_skills_v2(masked_text, "tr")  # OLLAMA_URL, OLLAMA_MODEL ortam değişkenleri; yoksa yerel llama3.1:8b
 result.present_skills()  # sözleşmedeki present_skills (verified dahil)

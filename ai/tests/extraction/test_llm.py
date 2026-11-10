@@ -4,12 +4,21 @@ from __future__ import annotations
 
 import json
 import os
+import subprocess
+import sys
 from typing import Any
 
 import pytest
 
-from extraction import ExtractionResult, LlmError, extract_skills_v2
-from extraction.llm import SCHEMA, TEMPERATURE, Transport, ollama_transport
+from extraction.llm import (
+    SCHEMA,
+    TEMPERATURE,
+    ExtractionResult,
+    LlmError,
+    Transport,
+    extract_skills_v2,
+    ollama_transport,
+)
 from extraction.taxonomy import DEFAULT_TAXONOMY
 from prompts import get_prompt
 
@@ -139,3 +148,11 @@ def test_real_ollama_returns_skills() -> None:
     result = extract_skills_v2(CV)
     assert result.llm_error is None
     assert "Python" in by_name(result)
+
+
+def test_extraction_package_does_not_pull_in_llm_or_prompts() -> None:
+    # Scraper imajı ai/'den sadece pii ve extraction'ı kopyalıyor (scraper/Dockerfile); prompts orada yok.
+    code = "import sys, extraction; assert 'prompts' not in sys.modules and 'extraction.llm' not in sys.modules"
+    subprocess.run(  # noqa: S603 (sabit kod, sys.executable)
+        [sys.executable, "-c", code], check=True, env={**os.environ, "PYTHONPATH": os.pathsep.join(sys.path)}
+    )

@@ -1,6 +1,6 @@
 """Yetkinlik çıkarımı v2: yerel LLM (Ollama) + v1 sözlük sonucu (T-032).
 
-    from extraction import extract_skills_v2
+    from extraction.llm import extract_skills_v2
     result = extract_skills_v2(masked_text, "tr")
     result.present_skills()   # contracts/analysis_result.schema.json: present_skills
     result.model              # {"name": ..., "prompt_version": ...} (T-044)
