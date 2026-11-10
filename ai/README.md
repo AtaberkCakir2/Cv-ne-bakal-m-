@@ -27,6 +27,7 @@ Testler gerçek CV kullanmaz; PDF'ler test sırasında bellekte üretilir.
 | `ocr/` | Taranmış CV için OCR (T-029) | — |
 | `pii/` | Kişisel veri maskeleme (T-030) | ✅ |
 | `extraction/` | Yetkinlik çıkarımı (T-031 v1 sözlük + kural; T-032 LLM) | v1 ✅ |
+| `prompts/` | Versiyonlu LLM prompt'ları (T-044) | Devam ediyor |
 | `eval/` | Etiketli değerlendirme seti ve araçları (T-019) | Devam ediyor |
 | `eval/benchmark/` | Yerel LLM benchmark'ı (T-018): Llama 3.1 8B seçildi, karar #26 | ✅ |
 
@@ -81,6 +82,19 @@ mask_text(text, "en")  # sadece metin, sadece kurallar; scraper/etl/pipeline.py 
   - Ölçüm (58 öğelik sentetik set, 63 ad kelimesi): kurallar %44 → kurallar + NER + filtre %100, gerçek yanlış pozitif 3. ~420 MB disk, ~760 MB bellek, CV başına ~170 ms (CPU).
   - Kurulum isteğe bağlı: `pip install -e ".[ner]"` (sunucuda torch'un CPU sürümü). Kurulu değilse `default_detector()` None döner ve sadece kurallar çalışır; CI bu şekilde çalışır, gerçek model testi atlanır.
   - Model ilk kullanımda Hugging Face'ten bir kez indirilir; sunucuda imaj derlenirken indirilip `HF_HUB_OFFLINE=1` ile çalıştırılmalı. Metin hiçbir zaman dışarı gönderilmez.
+
+### `prompts` — versiyonlu LLM prompt'ları (T-044)
+
+```python
+from prompts import get_prompt, model_info
+
+prompt = get_prompt("skill_extraction")  # CURRENT'taki sürüm; ("skill_extraction", "v1") ile sabitlenebilir
+model = model_info("llama3.1:8b", prompt)  # {"name": "llama3.1:8b", "prompt_version": "v1"}
+```
+
+- Her prompt `prompts/<ad>/<sürüm>.txt` dosyasıdır. Yayımlanmış dosya değiştirilmez: yeni sürüm aç, `CURRENT`'ı güncelle, özetini `tests/prompts/test_library.py` içine ekle.
+- `model_info` çıktısı `contracts/analysis_result.schema.json` içindeki `model` nesnesi ve `analyses.model_name` / `analyses.prompt_version` değerleridir.
+- Örneklerde gerçek yetkinlik adı yazılmaz (karar #26).
 
 ### `extraction` — yetkinlik çıkarımı v1 (T-031)
 
