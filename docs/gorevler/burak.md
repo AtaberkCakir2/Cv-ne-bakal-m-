@@ -113,12 +113,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-041 · Embedding servisi
 
-- **Durum:** Yapılacak
+- **Durum:** Devam Ediyor
 - **Tarih:** 16.11.2026 – 22.11.2026 · **Öncelik:** P0 · **Efor:** 10 saat · **Alan:** AI / NLP
 - **Bağımlılık:** T-013 (Ataberk), T-033 (Ataberk)
 - **Destek:** Ataberk
 - **Çıktı:** ai/embedding modülü
 - **Kabul kriteri:** Çok dilli model (paraphrase-multilingual-MiniLM-L12-v2 veya multilingual-e5-small, 384 boyut). Yetkinlik ve ilan vektörleri toplu üretilip pgvector'e yazılır.
+- **Devam notu (10.11.2026):** Yapılan: `ai/embedding/` (`SentenceEncoder`, `skill_text`/`posting_text`, `embed_table`, `python -m embedding [--hepsi]`), sahte model/bağlantıyla birim testleri; gerçek modelle ölçüm README'de. Model MiniLM yerine multilingual-e5-small (leave-one-out doğruluk %53 → %65); T-042 eşiği bu modelde 0,90 olmalı (0,80 her şeyi eşler). · Sıradaki adım: Docker açılınca `TEST_DATABASE_URL=postgresql://...` ile `pytest tests/embedding` (pgvector'e yazma testi, şu an atlanıyor), sonra geliştirme veritabanında `python -m embedding` çalıştırıp yetkinlik/ilan sayısını ve süreyi README'ye yaz; T-013 ölçümünün gerçek vektörlerle tekrarı için Ataberk'e haber ver. · Açık sorular / engeller: Docker Desktop yerelde açılmıyor ("unable to start"); model seçimi `docs/kararlar.md`'ye karar olarak yazılmalı (ekip onayı); gece toplamasına `python -m embedding` adımı ve işçi imajına model indirme Ataberk'te. · Branch: burak/embedding-servisi
 
 ### T-042 · Eşleştirme algoritması
 
