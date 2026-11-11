@@ -79,4 +79,4 @@ Alan adı açılmazsa api'yi sadece bu PC'ye açın: `make prod-local` → `http
 - `worker-ai` / analiz işçisi ve CV Redis'i: `ai/Dockerfile` (Burak) ve #58/#60 main'e girince eklenecek; o zamana kadar analizler çalışmaz.
 - Web arayüzü (`app.cvnebakalim.com`): Cloudflare Pages'te mi tünelde mi yayınlanacağı Anıl'la kararlaştırılacak.
 - Güvenlik başlıkları (nosniff, X-Frame-Options): eskiden Caddy veriyordu; şimdi api'de (Anıl) veya Cloudflare **Rules → Transform Rules** ile eklenmeli (go-live #12).
-- Dış uptime izleme ve yedek uyarısı (T-066).
+- Dış uptime izleyici (UptimeRobot), Telegram botu ve Sentry hesapları: kurulum adımları `infra/monitoring/README.md` (T-066).
