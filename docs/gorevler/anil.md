@@ -288,12 +288,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-080 · API dokümantasyonu ve README'ler
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 21.12.2026 – 27.12.2026 · **Öncelik:** P1 · **Efor:** 4 saat · **Alan:** Dokümantasyon
 - **Bağımlılık:** T-048
 - **Destek:** —
 - **Çıktı:** docs/api + README
 - **Kabul kriteri:** OpenAPI açıklamaları ve örnekler; her modül için README (kurulum, çalıştırma, test).
+- **Not:** 11.11.2026: `docs/api/README.md` (kimlik doğrulama, örnek akış, CV kuralları, hata biçimi, sınırlar) ve `docs/api/openapi.json` (`backend/scripts/export_openapi.py` üretir, web kopyasıyla birlikte; eskiyse `tests/test_openapi.py` kırılır). Her uçta özet + açıklama, her JSON gövdesinde örnek, tüm 4xx/5xx yanıtlarında RFC 7807 `Problem` şeması, health dışı her uçta 429 belgelendi. README'ler: backend (endpoint tablosu güncellendi) ve web; `scraper/`, `ai/`, `infra/`, `mobile/` README'leri sahiplerinde.
 
 ---
 
