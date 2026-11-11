@@ -14,7 +14,7 @@ Tarih: 29.10.2026 · Ölçen: Burak (Claude Code ile) · Script: [`../scripts/be
 | Ayarlar | temperature 0.1, seed 42, num_ctx 8192. CPU ölçümü `num_gpu: 0` ile |
 | Veri | 10 Türkçe sentetik CV (`syn-004`…`syn-013`, 10 pozisyondan 1'er; 3 çok sütunlu, 2 taranmış) |
 | Akış | PDF → `parsing.extract_text` → `pii.mask` → Ollama → JSON → taksonomiye eşleme. Taranmış 2 CV'de OCR (T-029) henüz olmadığı için metin CV tanımından alındı |
-| Prompt | Sistem mesajı scriptte (`SYSTEM_PROMPT`): sadece açıkça geçen yetkinlikler; istek cümleleri ve ders adları alınmaz; seviye + yıl |
+| Prompt | Sistem mesajı `prompts/skill_extraction/v1.txt`: sadece açıkça geçen yetkinlikler; istek cümleleri ve ders adları alınmaz; seviye + yıl |
 
 **Referans:** ekibin etiketi (T-019 gold) henüz yok. [`reference_draft.json`](reference_draft.json), CV metninin taksonomiyle sözlük eşlemesi ve etiketleme kılavuzuna göre elle düzeltilmesiyle Claude tarafından hazırlandı (10 CV, 196 yetkinlik). İnsan etiketi değildir; gold gelince ölçüm tekrarlanmalı. Seviye doğruluğu bu yüzden ölçülmedi.
 

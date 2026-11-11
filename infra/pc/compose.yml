@@ -114,6 +114,33 @@ services:
     logging: *logging
     restart: unless-stopped
 
+  # Günlük şifreli yedek (T-068): restic → PC dışı depo. Zamanlayıcı konteynerin içinde (02:00, kaçarsa açılışta).
+  # Sadece RESTIC_REPOSITORY dolu ortamda açılır (COMPOSE_PROFILES=...,backup). Ayrıntı: infra/backup/README.md
+  backup:
+    profiles: ["backup"]
+    build: ../backup
+    image: careerai/backup:local
+    environment:
+      BACKUP_TAG: ${APP_ENVIRONMENT}
+      PGHOST: postgres
+      PGUSER: ${POSTGRES_USER}
+      PGPASSWORD: ${POSTGRES_PASSWORD}
+      PGDATABASE: ${POSTGRES_DB}
+      RESTIC_REPOSITORY: ${RESTIC_REPOSITORY:-}
+      RESTIC_PASSWORD: ${RESTIC_PASSWORD:-}
+      B2_ACCOUNT_ID: ${B2_ACCOUNT_ID:-}
+      B2_ACCOUNT_KEY: ${B2_ACCOUNT_KEY:-}
+      TZ: Europe/Istanbul
+    volumes:
+      - backup-state:/state
+      - restic-cache:/root/.cache/restic
+    mem_limit: 512m
+    logging: *logging
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+
   ollama:
     image: ollama/ollama:0.40.13  # docker-compose.yml ile aynı sürüm
     environment:
@@ -141,6 +168,8 @@ volumes:
   pgdata:
   redis-data:
   scraper-data:
+  backup-state:
+  restic-cache:
   # Model dosyaları (~5 GB) iki ortamda ortak: disk sınırlı (C: ~71 GB boş), model iki kez indirilmesin.
   # Dış volume: `down -v` ile prova kapatılırken production'ın modeli silinmesin. deploy.sh oluşturur.
   ollama:
