@@ -82,7 +82,7 @@ celery -A app.worker.celery_app worker -Q analysis --concurrency 1 --loglevel IN
 
 ### CV diske yazılmaz
 
-Starlette, 1 MB'ı aşan yüklemeleri varsayılan olarak geçici disk dosyasına yazar. `app/core/uploads.py` bu eşiği izin verilen en büyük istek boyutunun üstüne çeker ve 5 MB + 64 KB'tan büyük istekleri gövde okunmadan reddeder (`Content-Length` zorunlu). `tests/test_analyses_upload.py::test_upload_is_never_written_to_disk` bunu doğrular. Production'da Caddy'de de istek gövdesi sınırı (`request_body max_size 6MB`) olmalı (T-075, Ataberk).
+Starlette, 1 MB'ı aşan yüklemeleri varsayılan olarak geçici disk dosyasına yazar. `app/core/uploads.py` bu eşiği izin verilen en büyük istek boyutunun üstüne çeker ve 5 MB + 64 KB'tan büyük istekleri gövde okunmadan reddeder (`Content-Length` zorunlu). `tests/test_analyses_upload.py::test_upload_is_never_written_to_disk` bunu doğrular. Production'da önde Caddy yok (karar #30): istek Cloudflare'den (ücretsiz planda 100 MB sınırı) cloudflared üzerinden gelir, bu yüzden 5 MB sınırını sadece bu ara katman uygular.
 
 ## Kimlik doğrulama (T-037)
 
@@ -123,7 +123,7 @@ Kullanıcı doğrulanmış ve KVKK onayları verilmiş olarak oluşturulur; tekr
 
 - Aşılınca `429` + `Retry-After` (saniye), gövde RFC 7807. Sayaçlar Redis'te (`REDIS_URL`); IP açık yazılmaz, tuzlu özeti anahtar olur.
 - Redis'e ulaşılamazsa sınır uygulanmaz, `rate_limit_store_unavailable` uyarısı loglanır ve 10 sn Redis denenmez. Tamamen kapatmak için `RATE_LIMIT_ENABLED=false`.
-- **Production (T-075):** Caddy arkasında uvicorn'a `FORWARDED_ALLOW_IPS=<Caddy'nin IP'si veya alt ağı>` verilmeli; verilmezse bütün kullanıcılar Caddy'nin IP'siyle tek sayacı paylaşır. Redis ≥ 7 gerekli.
+- **Production (T-075, karar #30):** API cloudflared arkasında. uvicorn'a `FORWARDED_ALLOW_IPS=<compose ağının alt ağı>` verilir (`infra/pc/compose.yml`, `COMPOSE_SUBNET`). Verilmezse bütün kullanıcılar cloudflared'in IP'siyle tek sayacı paylaşır. `*` verilirse istemcinin uydurduğu `X-Forwarded-For` kullanılır ve sınırlar aşılabilir: Cloudflare gelen başlığı silmez, gerçek IP'yi sona ekler, uvicorn da `*` iken ilk adresi alır. Redis ≥ 7 gerekli.
 - Analiz sınırı başarısız yüklemeleri de sayar; sadece kuyruğa alınanların sayılması T-048'de değerlendirilecek.
 
 ## Sıradaki işler
