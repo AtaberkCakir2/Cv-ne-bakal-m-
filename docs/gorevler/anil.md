@@ -173,12 +173,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-048 · Analiz sonuç ve katalog endpoint'leri
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 16.11.2026 – 22.11.2026 · **Öncelik:** P0 · **Efor:** 10 saat · **Alan:** Backend API
 - **Bağımlılık:** T-039
 - **Destek:** —
 - **Çıktı:** Endpoint'ler + testler
 - **Kabul kriteri:** GET /analyses, /analyses/{id}, DELETE /analyses/{id}; GET /roles, /roles/{slug}/skills, /skills/{slug}/resources. Kullanıcı sadece kendi analizini görebilir (IDOR testi).
+- **Not:** 06.11.2026: `GET /analyses` (`limit`/`offset`, `{items, total}`, askıdakiler `failed` olur), `GET /analyses/{id}` artık yetkinlikleri ve önerilen kaynakları da döner (ölü linkler gösterilmez, `priority` sıra numarası), `DELETE /analyses/{id}` (soft delete, 30 günde kalıcı silinir). Katalog uçları giriş istemez, 5 dk önbelleklenebilir. Başkasının analizi GET/DELETE'te 404 (testli). Sözleşmedeki `/skills?q=` kabul kriterinde yok, yapılmadı. İşçi henüz `analysis_skills`/`analysis_recommendations` yazmıyor: gerçek akışta listeler T-057'ye (Burak) kadar boş.
 
 ### T-051 · Giriş, kayıt, şifre sıfırlama ve KVKK onay ekranları
 
@@ -192,12 +193,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-052 · CV yükleme ve analiz bekleme ekranı
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 16.11.2026 – 22.11.2026 · **Öncelik:** P0 · **Efor:** 8 saat · **Alan:** Web / Masaüstü
 - **Bağımlılık:** T-040, T-039
 - **Destek:** —
 - **Çıktı:** Yükleme ekranı
 - **Kabul kriteri:** Sürükle-bırak, dosya kontrolü, hedef pozisyon seçimi, ilerleme durumu (kuyrukta / analiz ediliyor), zaman aşımında anlamlı mesaj.
+- **Not:** 06.11.2026: `/yukle` (pozisyon seçimi, profildeki hedef varsayılan; az ilan uyarısı; sürükle-bırak veya dosya seç; istemcide boyut + `%PDF-` kontrolü; 413/415/422/429/503 için Türkçe mesaj, `Retry-After` ile kalan süre; 60 sn yükleme zaman aşımı) ve `/analiz/:id` (3 sn'de bir yoklama; Sırada → Analiz ediliyor → Tamamlandı; 7 dk'yı geçince "uzun sürüyor" uyarısı; hata koduna göre ipucu ve "Tekrar dene"; bitince skor özeti, sonuç panosu T-053). Gerçek API + Celery işçisi + ayrı CV Redis ile uçtan uca denendi. SSE (`/analyses/{id}/events`) yok, yoklama kullanılıyor.
 
 ### T-049 · Profil ve KVKK endpoint'leri
 
@@ -211,12 +213,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-053 · Sonuç panosu
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 23.11.2026 – 29.11.2026 · **Öncelik:** P0 · **Efor:** 16 saat · **Alan:** Web / Masaüstü
 - **Bağımlılık:** T-052, T-048
 - **Destek:** —
 - **Çıktı:** Sonuç ekranı
 - **Kabul kriteri:** Uyum skoru göstergesi; mevcut / eksik yetkinlik grafiği; "150 ilanın %75'i" ifadeleri; kaynak kartları; pop-up detay; geri bildirim (1-5 yıldız); geçmiş analizler.
+- **Not:** 06.11.2026: `/analiz/:id` bitince pano: skor halkası, mevcut yetkinlik etiketleri (taksonomide olmayanlar "tahmini"), eksiklerin talep çubukları, "150 ilanın %75'i" (Türkçe ek sayıya göre), öncelik sırasıyla kaynak kartları ve `<dialog>` detay, 1-5 yıldız + yorum (`POST /analyses/{id}/feedback`, tekrar gönderilirse güncellenir; `GET` yanıtında `feedback` API eki), ilan kaynağı + ESCO atfı (`scraper/kaynak-uygunluk.md` kural 7). `/gecmis`: 20'şer liste, aç / tekrar dene / onaylı silme. DB'den gelen kaynak linkleri sadece http(s). Gerçek akışta yetkinlik listeleri T-057'ye (Burak) kadar boş.
 
 ---
 

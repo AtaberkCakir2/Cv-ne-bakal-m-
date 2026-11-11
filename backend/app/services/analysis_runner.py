@@ -10,10 +10,11 @@ from datetime import UTC, datetime
 
 from celery.exceptions import SoftTimeLimitExceeded
 from redis.exceptions import RedisError
+from sqlalchemy import select
 from sqlalchemy.orm import Session, sessionmaker
 
-from app.db.enums import AnalysisErrorCode, AnalysisStatus
-from app.db.models import Analysis
+from app.db.enums import AnalysisErrorCode, AnalysisStatus, ConsentType
+from app.db.models import Analysis, Consent
 from app.services.analyzer import AnalysisFailed, AnalysisOutput, Analyzer
 from app.services.cv_store import CvStore
 
@@ -65,6 +66,13 @@ class AnalysisRunner:
             analysis = session.get(Analysis, analysis_id, with_for_update=True)
             if analysis is None or analysis.deleted_at is not None or analysis.status in _FINISHED:
                 return None
+            # Yüklemeden sonra açık rıza geri alındıysa CV işlenmez (KVKK md. 11): analiz başarısız sayılır.
+            if not _has_explicit_consent(session, analysis.user_id):
+                analysis.status = AnalysisStatus.FAILED
+                analysis.error_code = AnalysisErrorCode.INTERNAL
+                analysis.completed_at = datetime.now(UTC)
+                session.commit()
+                return None
             analysis.status = AnalysisStatus.PROCESSING
             target_role_id = analysis.target_role_id
             session.commit()
@@ -112,3 +120,10 @@ class AnalysisRunner:
             self.store.delete(analysis_id)
         except (RedisError, OSError) as exc:
             logger.warning("analysis_cv_delete_failed: %s", type(exc).__name__)  # süre aşımıyla silinir
+
+
+def _has_explicit_consent(session: Session, user_id: uuid.UUID) -> bool:
+    stmt = select(Consent.id).where(
+        Consent.user_id == user_id, Consent.consent_type == ConsentType.ACIK_RIZA, Consent.withdrawn_at.is_(None)
+    )
+    return session.scalar(stmt.limit(1)) is not None
