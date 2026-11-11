@@ -13,7 +13,7 @@
 
 ### Altyapı
 
-- [ ] **1.** ★ Production PC'si hazırlandı (Windows güncel, disk şifreli (BitLocker), güçlü yerel hesap şifresi, uyku/hazırda bekletme kapalı, Docker Desktop oturumla başlıyor, Windows Güvenlik Duvarı açık) — _Doğrulama:_ `infra/pc/README.md` kontrol listesi — _Sorumlu:_ Ataberk
+- [ ] **1.** ★ Production PC'si hazırlandı (Windows güncel, disk şifreli (BitLocker; karar #31 ile canlıya çıkıştan hemen önce açılır, kurtarma anahtarı PC dışında), güçlü yerel hesap şifresi, uyku/hazırda bekletme kapalı, Windows Güvenlik Duvarı açık; Docker Desktop elle açılır, karar #31) — _Doğrulama:_ `infra/pc/README.md` kontrol listesi — _Sorumlu:_ Ataberk
 - [ ] **2.** ★ Postgres, Redis ve Ollama portları ağdan erişilemez; PC'de gelen port açılmadı (modemde port yönlendirme yok) — _Doğrulama:_ production compose'da `ports:` yok (`docker compose config`); aynı ağdaki başka cihazdan nmap: hepsi kapalı — _Sorumlu:_ Ataberk
 - [ ] **3.** ★ HTTPS aktif (Cloudflare: Always Use HTTPS, HSTS, en düşük TLS 1.2) — _Doğrulama:_ SSL Labs testi A veya üstü — _Sorumlu:_ Ataberk
 - [ ] **4.** DNS Cloudflare'de; app. ve api. alt alan adları tünele bağlı — _Doğrulama:_ dig api.cvnebakalim.com; `cloudflared tunnel info` — _Sorumlu:_ Ataberk

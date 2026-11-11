@@ -90,7 +90,7 @@ Production PC'sinde (i7-9750H, CPU) bir analiz yaklaşık 1–2 dakika sürer; b
 
 **Bellek bütçesi:** production konteynerleri toplam ~15,5 GB. PC'de 32 GB RAM var ama Windows ve geliştirme ortamı da aynı makinede: Docker Desktop'a (WSL2, `.wslconfig`) en fazla 20 GB verilir, production açıkken geliştirme ortamının Ollama'sı kapatılır. AI worker eşzamanlılığı 1; RAM %85'i aşınca uyarı. Kullanıcı sayısı artarsa ilk adım Ollama'yı GPU'ya (GTX 1650 kısmi veya ayrı makine) almaktır.
 
-**PC'nin sunucu gibi çalışması için:** uyku ve hazırda bekletme kapalı, kapak kapanınca "hiçbir şey yapma", Windows Update etkin saatleri ayarlı ve sunum öncesi hafta güncellemeler ertelenir, Docker Desktop oturum açılınca başlar, konteynerler `restart: unless-stopped`. Kontrol listesi: `infra/pc/README.md` (T-009).
+**PC'nin sunucu gibi çalışması için:** uyku ve hazırda bekletme kapalı, kapak kapanınca "hiçbir şey yapma", sunum öncesi hafta Windows güncellemeleri ertelenir, Docker Desktop elle açılır (karar #31), konteynerler `restart: unless-stopped`; disk şifrelemesi (BitLocker) canlıya çıkıştan önce açılır. Kontrol listesi: `infra/pc/README.md` (T-009).
 
 ## API
 

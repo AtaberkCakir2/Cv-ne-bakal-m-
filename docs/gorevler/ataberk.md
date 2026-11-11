@@ -36,13 +36,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-009 · Production PC'si hazırlığı ve sertleştirme
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 19.10.2026 – 25.10.2026 · **Öncelik:** P0 · **Efor:** 6 saat · **Alan:** DevOps / Altyapı
 - **Bağımlılık:** —
 - **Destek:** —
 - **Çıktı:** `infra/pc/README.md` (PC kurulum ve kontrol listesi, sırlar hariç)
-- **Kabul kriteri:** Karar #30: VPS yok, production Ataberk'in PC'sinde (i7-9750H, 32 GB RAM, GTX 1650, Windows 10 Pro). Docker Desktop (WSL2) oturumla başlar, `.wslconfig` ile en fazla 20 GB RAM; uyku/hazırda bekletme kapalı, kapak kapanınca "hiçbir şey yapma"; Windows Update etkin saatleri ayarlı; BitLocker açık; Windows Güvenlik Duvarı açık, gelen port yok (modemde yönlendirme yok); saat dilimi Europe/Istanbul; C: diskinde en az 40 GB boş.
-- **Not:** 06.11.2026: karar #30 ile VPS tedariki kaldırıldı, görev PC hazırlığına dönüştü.
+- **Kabul kriteri:** Karar #30: VPS yok, production Ataberk'in PC'sinde (i7-9750H, 32 GB RAM, GTX 1650, Windows 10 Pro). Docker Desktop (WSL2) elle açılır, `.wslconfig` ile en fazla 20 GB RAM; uyku/hazırda bekletme kapalı, kapak kapanınca "hiçbir şey yapma"; BitLocker canlıya çıkıştan önce açılır (go-live #1); etkin saatler ayarlanmaz (karar #31); Windows Güvenlik Duvarı açık, gelen port yok (modemde yönlendirme yok); saat dilimi Europe/Istanbul; C: diskinde en az 40 GB boş.
+- **Not:** 06.11.2026: karar #30 ile VPS tedariki kaldırıldı, görev PC hazırlığına dönüştü. 10.11.2026: PC kontrol edildi (salt okunur): prizde uyku/hazırda bekletme hiçbir zaman, kapak kapanınca "hiçbir şey yapma" (Ataberk teyit etti), saat dilimi Türkiye, C: 53 GB boş, güvenlik duvarı üç profilde açık (ağ "Ortak"), otomatik oturum açma kapalı, `.wslconfig` `memory=20GB` yazıldı. Docker'ın oturumla başlaması, etkin saatler ve BitLocker karar #31 ile değişti; BitLocker go-live #1'de açılacak.
 
 ### T-010 · Alan adı, Cloudflare DNS ve Tunnel
 
