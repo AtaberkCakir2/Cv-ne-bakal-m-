@@ -12,6 +12,7 @@ x-app-env: &app-env
   # (Eksik değişken hatasını postgres servisi verir; burada tekrar uyarı basılmasın diye :- kullanılır.)
   DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-}:${POSTGRES_PASSWORD:-}@postgres:5432/${POSTGRES_DB:-}
   REDIS_URL: redis://redis:6379/0
+  CV_REDIS_URL: redis://cv-redis:6379/0
   OLLAMA_URL: http://ollama:11434
 
 services:
@@ -37,6 +38,23 @@ services:
     image: redis:7
     ports:
       - "127.0.0.1:6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    restart: unless-stopped
+
+  # Kuyruktaki CV baytlarının geçici deposu (T-039, karar #9). Kuyruk Redis'inden AYRI ve kalıcılığı kapalı:
+  # RDB/AOF yok, /data bellekte (tmpfs); kapsayıcı durunca içindekiler silinir. Bellek dolunca anahtar
+  # silinmez, yazma reddedilir (noeviction) ve API 503 döner. 256 MB: en fazla 8 bekleyen CV × 5 MB'ın çok üstü.
+  cv-redis:
+    image: redis:7
+    command: ["redis-server", "--save", "", "--appendonly", "no", "--maxmemory", "256mb", "--maxmemory-policy", "noeviction"]
+    tmpfs:
+      - /data
+    ports:
+      - "127.0.0.1:6380:6379"
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 5s
@@ -71,6 +89,36 @@ services:
       postgres:
         condition: service_healthy
       redis:
+        condition: service_healthy
+      cv-redis:
+        condition: service_healthy
+
+  # Analiz işçisi (T-039; kod: backend/app/worker, sahibi Anıl). API imajını kullanır. `backend/app/worker/`
+  # main'e gelince `make up` bunu da başlatır. -E (olaylar) kullanılmaz: hata izini broker Redis'ine yazardı.
+  worker-analysis:
+    profiles: ["analysis"]
+    image: careerai/api:dev
+    build: ./backend
+    command: ["celery", "-A", "app.worker.celery_app", "worker", "-Q", "analysis", "--concurrency", "1",
+              "-n", "analysis@%h", "--loglevel", "INFO"]
+    env_file: .env
+    environment: *app-env
+    healthcheck:
+      # İmajdaki API sağlık kontrolü (8000 portu) işçi için geçersiz.
+      test: ["CMD-SHELL", "celery -A app.worker.celery_app inspect ping -d analysis@$$HOSTNAME --timeout 5"]
+      interval: 30s
+      timeout: 15s
+      start_period: 20s
+      retries: 3
+    # Kapanırken süren analiz bitsin (en fazla 200 sn); yoksa iş 10 dk sonra yeniden teslim edilir.
+    stop_grace_period: 210s
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      cv-redis:
         condition: service_healthy
 
   # Celery AI worker'ı (sahibi: Burak). ai/Dockerfile eklenince aktif olur.
