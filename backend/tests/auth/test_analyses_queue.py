@@ -10,7 +10,7 @@ from decimal import Decimal
 import pytest
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.exc import OperationalError
 from sqlalchemy.orm import Session, sessionmaker
 
@@ -118,6 +118,29 @@ def test_upload_saves_only_hash_and_pages_then_queues(
     assert saved.cv_pages == 3
 
 
+def test_withdrawn_explicit_consent_blocks_new_analysis_until_given_again(
+    client: TestClient, queue: Queue, role: int, db_sessionmaker: sessionmaker[Session]
+) -> None:
+    headers = signed_in(client)
+    consents = "/api/v1/users/me/consents"
+    assert client.delete(f"{consents}/acik_riza", headers=headers).status_code == 200
+
+    def analyses() -> int | None:
+        with db_sessionmaker() as session:
+            return session.scalar(select(func.count()).select_from(Analysis))
+
+    before = analyses()
+    response = upload(client, headers, role)
+    assert response.status_code == 403
+    assert response.json()["code"] == "CONSENT_WITHDRAWN"
+    assert queue.calls == []
+    assert analyses() == before  # CV okunmadı, kayıt açılmadı
+
+    body = {"consents": [{"consent_type": "acik_riza", "version": "2026-12-taslak"}]}
+    assert client.post(consents, headers=headers, json=body).status_code == 200
+    assert upload(client, headers, role).status_code == 202
+
+
 def test_unknown_role_is_rejected(client: TestClient, queue: Queue) -> None:
     assert upload(client, signed_in(client), 999_999).status_code == 422
     assert queue.calls == []
@@ -157,6 +180,22 @@ def test_status_is_visible_only_to_the_owner(client: TestClient, queue: Queue, r
 def runner(sessions: sessionmaker[Session], analyzer: Analyzer) -> tuple[AnalysisRunner, Store]:
     store = Store()
     return AnalysisRunner(sessions, store, analyzer), store
+
+
+def test_queued_cv_is_not_analyzed_after_consent_is_withdrawn(
+    client: TestClient, queue: Queue, role: int, db_sessionmaker: sessionmaker[Session]
+) -> None:
+    analysis_id = queued(client, queue, role)
+    owner = bearer(login(client, "kuyruk@example.com")["access_token"])
+    assert client.delete("/api/v1/users/me/consents/acik_riza", headers=owner).status_code == 200
+    analyzer = Analyzer()
+    work, store = runner(db_sessionmaker, analyzer)
+    store.put(analysis_id, b"%PDF")
+    work.run(analysis_id, last_attempt=False)
+    saved = row(db_sessionmaker, analysis_id)
+    assert saved.status is AnalysisStatus.FAILED
+    assert analyzer.calls == 0
+    assert store.items == {}
 
 
 def test_success_writes_result_and_deletes_the_cv(
