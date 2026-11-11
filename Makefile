@@ -4,7 +4,9 @@
 -include .env
 
 # backend/ veya ai/ altında Dockerfile varsa api / worker servisleri de başlatılır.
-PROFILES := $(if $(wildcard backend/Dockerfile),--profile api) $(if $(wildcard ai/Dockerfile),--profile worker)
+# Analiz işçisi (T-039) backend/app/worker/ main'e gelince eklenir.
+PROFILES := $(if $(wildcard backend/Dockerfile),--profile api) $(if $(wildcard ai/Dockerfile),--profile worker) \
+            $(if $(wildcard backend/app/worker/celery_app.py),--profile analysis)
 COMPOSE  := docker compose $(PROFILES)
 MODEL    ?= $(or $(OLLAMA_MODEL),llama3.1:8b)
 

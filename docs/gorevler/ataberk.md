@@ -160,14 +160,14 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-036 · CD: imaj üretimi ve PC'ye deploy betiği
 
-- **Durum:** Devam Ediyor
+- **Durum:** Tamamlandı
 - **Tarih:** 09.11.2026 – 15.11.2026 · **Öncelik:** P0 · **Efor:** 10 saat · **Alan:** DevOps / Altyapı
 - **Bağımlılık:** T-008, T-035
 - **Destek:** —
 - **Çıktı:** `.github/workflows/deploy.yml` + `infra/pc/deploy.sh` + `infra/pc/deploy.md`
 - **Kabul kriteri:** `main` birleştirmesi image'ları commit adıyla GHCR'a push eder; `vX.Y.Z` etiketi o commit'i gösterir. PC'de tek komutla (Git Bash: `bash infra/pc/deploy.sh vX.Y.Z`): image çek, önce yedek, alembic upgrade, `docker compose -p careerai-prod up -d`, smoke test; başarısızsa önceki image etiketine dönüş. PC'ye dışarıdan SSH/deploy erişimi açılmaz.
 - **Not:** 06.11.2026: karar #30 ile SSH'li otomatik staging deploy'u kaldırıldı.
-- **Devam notu (06.11.2026):** Yapılan: workflow'dan SSH/deploy işi çıkarıldı, sadece imaj üretimi kaldı (actionlint temiz). `infra/pc/deploy.sh` yerelde derlenen imajlarla prova ortamında denendi: deploy tamam, bozuk api imajında önceki imaja döndü; pg_dump yönlendirmesi denendi (shellcheck temiz). Sıradaki adım: PR #50 main'e girince Actions'ta imaj gönderimini gör, `docker login ghcr.io` ile PC'de GHCR'dan çekerek prova deploy'u (`infra/pc/deploy.md` 1. ve 5. adım). Açık sorular / engeller: production dökümü gerçek `careerai-prod`'da denenmedi (T-075). Branch: ataberk/sunucu-hazirlik
+- **Not:** 10.11.2026: main birleştirmesi imajları GHCR'a gönderiyor (b6703cc, api + worker-data); PC'de GHCR'dan çekilip `bash infra/pc/deploy.sh <ref> staging` ile prova ortamına alındı (5 servis healthy, `/health/ready` hazır). GHCR paketlerine repo Admin rolüyle bağlandı (Manage Actions access); bağlı olmayan pakete GITHUB_TOKEN yazamıyordu. Production dökümü gerçek `careerai-prod`'da T-075'te denenecek.
 
 ### T-028 · TÜBİTAK 2209-A başvuru dosyası
 
