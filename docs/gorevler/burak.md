@@ -76,7 +76,7 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 - **Destek:** —
 - **Çıktı:** ai/pii modülü + testler
 - **Kabul kriteri:** LLM'e gitmeden ÖNCE ad-soyad, telefon, e-posta, adres, TC kimlik no, doğum tarihi maskelenir (regex + NER). Test: telefon/e-posta/TCKN için %100 maskeleme.
-- **Not:** Ad tespiti kurallar + yerel BERTurk NER (karar #24). #37 incelemesi (Ataberk) düzeltildi: unvan satırındaki yetkinlikler ad sayılmıyor, adres ipucu tek başına adres değil, NER kütüphaneleri sabit sürümde. Ataberk'e devredilenler: worker-ai imajına `ai[ner]` (CPU torch) kurulup model derleme sırasında indirilmeli (`HF_HUB_OFFLINE=1`); CI'daki mypy komutuna `pii` eklenmeli; `scraper/etl/pipeline.py`'deki ad maskeleme `pii.mask_text` ile değiştirilebilir.
+- **Not:** Ad tespiti kurallar + yerel BERTurk NER (karar #24). #37 incelemesi (Ataberk) düzeltildi: unvan satırındaki yetkinlikler ad sayılmıyor, adres ipucu tek başına adres değil, NER kütüphaneleri sabit sürümde. Ataberk'e devredilenler: worker-ai imajına `ai[ner]` (CPU torch) kurulup model derleme sırasında indirilmeli (`HF_HUB_OFFLINE=1`) (CI'daki mypy komutu ve ilan maskelemesi `pii.mask_posting` Ataberk'te yapıldı). #43 incelemesinde (Ataberk, gerçek ilanlar) bulunanlar düzeltildi: maskeleme idempotent (etiketler tekrar maskelenmez), İngilizce metinde "Bay" hitap değil, unvanla başlayan marka adları küçük bir istisna listesinde ("Dr. Squatch"), bağlantı içindeki ön eksiz sayı telefon/TCKN değil, hash içindeki 11 hane TCKN değil. #44 incelemesindeki üç sızıntı da kapatıldı: harfe bitişik TCKN ("TC12345678901") ve unvandan sonra tek soyadı ("Mr. Johnson") maskeleniyor, bağlantıdaki telefon biçimli numara (05…, +90…, `?phone=`) telefon sayılıyor.
 
 ### T-031 · Yetkinlik çıkarımı v1 (sözlük + kural)
 
@@ -90,12 +90,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-044 · Prompt versiyonlama
 
-- **Durum:** Yapılacak
+- **Durum:** Devam Ediyor
 - **Tarih:** 09.11.2026 – 15.11.2026 · **Öncelik:** P1 · **Efor:** 4 saat · **Alan:** AI / NLP
 - **Bağımlılık:** T-031
 - **Destek:** —
 - **Çıktı:** Prompt kütüphanesi
 - **Kabul kriteri:** Prompt'lar /ai/prompts altında versiyonlu; her analizde model_name ve prompt_version kaydedilir (tekrarlanabilirlik).
+- **Devam notu (07.11.2026):** Yapılan: `ai/prompts/` (`get_prompt`, `model_info`, `skill_extraction/v1.txt`); v1, T-018 benchmark prompt'unun birebir aynısı ve `benchmark_llm.py` onu kütüphaneden okuyor. · Sıradaki adım: analiz akışı henüz yok; T-032'de LLM çağrısı `get_prompt("skill_extraction")` kullanacak, T-057'de işçi `model_info` değerlerini sonuca ve `analyses` tablosuna yazacak. Kriterin "her analizde kaydedilir" kısmı bu yüzden açık. · Açık sorular / engeller: T-043 ikinci prompt'u getirince sözleşmedeki tek `prompt_version` alanının nasıl kullanılacağı karar ister. · Branch: burak/prompt-versiyonlama
 
 ---
 
@@ -103,12 +104,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-032 · Yetkinlik çıkarımı v2 (LLM)
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 16.11.2026 – 22.11.2026 · **Öncelik:** P0 · **Efor:** 14 saat · **Alan:** AI / NLP
 - **Bağımlılık:** T-031, T-018, T-030
 - **Destek:** —
 - **Çıktı:** ai/extraction v2
 - **Kabul kriteri:** Ollama structured output (JSON şeması), temperature 0.1. v1 sonucu ile birleştirilir; taksonomide olmayan yetkinlik "doğrulanmamış" işaretlenir (halüsinasyon filtresi).
+- **Not:** v1 ile v2'nin F1 karşılaştırması ve LLM'in tamamladığı seviyelerin doğruluğu T-019 altın standardı gelince ölçülecek (doğru değilse seviye tamamlama kapatılır). Ataberk'e taksonomi önerisi: "Express" (Express.js) tek başına eşleşmiyor.
 
 ### T-041 · Embedding servisi
 

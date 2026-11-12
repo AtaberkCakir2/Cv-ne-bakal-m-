@@ -1,0 +1,177 @@
+# Production ve prova ortamı (karar #30, T-035, T-075). Aynı dosya iki ayrı compose projesiyle çalışır:
+#   production: docker compose -p careerai-prod    --env-file infra/pc/.env.prod    -f infra/pc/compose.yml ...
+#   prova:      docker compose -p careerai-staging --env-file infra/pc/.env.staging -f infra/pc/compose.yml ...
+# Elle yazmak yerine `bash infra/pc/deploy.sh` veya make hedefleri kullanılır (infra/pc/deploy.md).
+#
+# Hiçbir servis host'a port açmaz. Dışarıdan tek giriş cloudflared'dir (Cloudflare Tunnel, sadece dışarıya bağlantı
+# kurar). Sunum B planı için api'yi sadece bu PC'ye açan ek dosya: compose.local.yml.
+# worker-ai / worker-analysis ve cv-redis, ai/Dockerfile (Burak) ve #58/#60 main'e girince buraya gelecek.
+
+x-app-env: &app-env
+  ENVIRONMENT: ${APP_ENVIRONMENT:?env dosyasında APP_ENVIRONMENT yok (production veya staging)}
+  DATABASE_URL: postgresql+psycopg://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+  REDIS_URL: redis://:${REDIS_PASSWORD}@redis:6379/0
+  OLLAMA_URL: http://ollama:11434
+  # Ayarlar ortak olduğu için worker-data da bunu ister: geliştirme anahtarıyla açılmaz.
+  JWT_SECRET: ${JWT_SECRET:?env dosyasında JWT_SECRET yok}
+  TZ: Europe/Istanbul
+
+x-logging: &logging
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "3"
+
+services:
+  # Cloudflare Tunnel. Sadece TUNNEL_TOKEN dolu ortamda açılır (COMPOSE_PROFILES=tunnel, env dosyasında).
+  # Alan adı → servis eşlemesi Cloudflare panelinde yapılır: api.cvnebakalim.com → http://api:8000 (infra/pc/deploy.md).
+  cloudflared:
+    profiles: ["tunnel"]
+    image: cloudflare/cloudflared:2025.8.1
+    command: ["tunnel", "--no-autoupdate", "run"]
+    environment:
+      TUNNEL_TOKEN: ${TUNNEL_TOKEN:-}
+    mem_limit: 128m
+    logging: *logging
+    restart: unless-stopped
+    depends_on:
+      api:
+        condition: service_healthy
+
+  api:
+    image: careerai/api:${APP_ENVIRONMENT}  # deploy.sh GHCR imajını bu ada bağlar
+    environment:
+      <<: *app-env
+      IP_HASH_SECRET: ${IP_HASH_SECRET:?env dosyasında IP_HASH_SECRET yok}
+      CORS_ORIGINS: ${CORS_ORIGINS:-[]}
+      FRONTEND_URL: ${FRONTEND_URL:-}
+      # İstek sınırları (rate_limits.py) istemci IP'sini X-Forwarded-For'dan alır. Sadece projenin kendi
+      # ağına (cloudflared) güvenilir: uvicorn listeyi sondan okur ve bu alt ağın dışındaki ilk adresi alır,
+      # yani Cloudflare'in eklediği gerçek IP'yi. "*" olsaydı istemcinin uydurduğu ilk adres kullanılırdı.
+      FORWARDED_ALLOW_IPS: ${COMPOSE_SUBNET:?env dosyasında COMPOSE_SUBNET yok}
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/v1/health', timeout=3)"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 20s
+    mem_limit: 1g
+    logging: *logging
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  worker-data:
+    image: careerai/worker-data:${APP_ENVIRONMENT}
+    environment:
+      <<: *app-env
+      YOUTUBE_API_KEY: ${YOUTUBE_API_KEY:-}
+    volumes:
+      - scraper-data:/srv/scraper/data
+    mem_limit: 1536m
+    logging: *logging
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  postgres:
+    image: pgvector/pgvector:pg16
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:?env dosyasında POSTGRES_USER yok}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?env dosyasında POSTGRES_PASSWORD yok}
+      POSTGRES_DB: ${POSTGRES_DB:?env dosyasında POSTGRES_DB yok}
+      TZ: Europe/Istanbul
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    mem_limit: 2g
+    logging: *logging
+    restart: unless-stopped
+
+  redis:
+    image: redis:7
+    command: ["redis-server", "--appendonly", "yes", "--requirepass", "${REDIS_PASSWORD:?env dosyasında REDIS_PASSWORD yok}"]
+    environment:
+      REDISCLI_AUTH: ${REDIS_PASSWORD}
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    mem_limit: 256m
+    logging: *logging
+    restart: unless-stopped
+
+  # Günlük şifreli yedek (T-068): restic → PC dışı depo. Zamanlayıcı konteynerin içinde (02:00, kaçarsa açılışta).
+  # Sadece RESTIC_REPOSITORY dolu ortamda açılır (COMPOSE_PROFILES=...,backup). Ayrıntı: infra/backup/README.md
+  backup:
+    profiles: ["backup"]
+    build: ../backup
+    image: careerai/backup:local
+    environment:
+      BACKUP_TAG: ${APP_ENVIRONMENT}
+      PGHOST: postgres
+      PGUSER: ${POSTGRES_USER}
+      PGPASSWORD: ${POSTGRES_PASSWORD}
+      PGDATABASE: ${POSTGRES_DB}
+      RESTIC_REPOSITORY: ${RESTIC_REPOSITORY:-}
+      RESTIC_PASSWORD: ${RESTIC_PASSWORD:-}
+      B2_ACCOUNT_ID: ${B2_ACCOUNT_ID:-}
+      B2_ACCOUNT_KEY: ${B2_ACCOUNT_KEY:-}
+      TZ: Europe/Istanbul
+    volumes:
+      - backup-state:/state
+      - restic-cache:/root/.cache/restic
+    mem_limit: 512m
+    logging: *logging
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  ollama:
+    image: ollama/ollama:0.40.13  # docker-compose.yml ile aynı sürüm
+    environment:
+      OLLAMA_NUM_PARALLEL: "1"
+      OLLAMA_MAX_LOADED_MODELS: "1"
+    volumes:
+      - ollama:/root/.ollama
+    healthcheck:
+      test: ["CMD", "ollama", "list"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    mem_limit: 8g
+    logging: *logging
+    restart: unless-stopped
+
+networks:
+  default:
+    ipam:
+      config:
+        # Sabit alt ağ: api yalnızca buradan gelen yönlendirme başlıklarına güvenir (FORWARDED_ALLOW_IPS).
+        - subnet: ${COMPOSE_SUBNET:?env dosyasında COMPOSE_SUBNET yok}
+
+volumes:
+  pgdata:
+  redis-data:
+  scraper-data:
+  backup-state:
+  restic-cache:
+  # Model dosyaları (~5 GB) iki ortamda ortak: disk sınırlı (C: ~71 GB boş), model iki kez indirilmesin.
+  # Dış volume: `down -v` ile prova kapatılırken production'ın modeli silinmesin. deploy.sh oluşturur.
+  ollama:
+    name: careerai-ollama-models
+    external: true

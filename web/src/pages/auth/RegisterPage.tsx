@@ -2,7 +2,7 @@ import { useState, type FormEvent } from "react";
 import { Link } from "react-router-dom";
 
 import { api, fieldErrors, problemMessage } from "../../api/client";
-import type { components } from "../../api/schema";
+import { CONSENT_VERSION, CONSENTS, type ConsentType } from "../../auth/consents";
 import {
   confirmError,
   emailError,
@@ -13,17 +13,6 @@ import {
   type Errors,
 } from "../../auth/validation";
 import { Alert, Button, Card, Checkbox, TextField } from "../../ui";
-
-type ConsentType = components["schemas"]["ConsentType"];
-
-// Kabul edilen metnin sürümü backend'de onayla birlikte saklanır. Metinler T-065'te kesinleşince sürüm değişir.
-const CONSENT_VERSION = "2026-10-taslak";
-
-const CONSENTS: { type: ConsentType; label: string }[] = [
-  { type: "kvkk_aydinlatma", label: "KVKK aydınlatma metnini okudum." },
-  { type: "acik_riza", label: "CV'mdeki yetkinliklerin analiz için işlenmesine açık rıza veriyorum." },
-  { type: "kullanim_kosullari", label: "Kullanım koşullarını kabul ediyorum." },
-];
 
 type Field = "full_name" | "email" | "password" | "confirm" | ConsentType;
 

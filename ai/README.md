@@ -26,7 +26,8 @@ Testler gerçek CV kullanmaz; PDF'ler test sırasında bellekte üretilir.
 | `parsing/` | PDF → metin (T-020) | ✅ |
 | `ocr/` | Taranmış CV için OCR (T-029) | — |
 | `pii/` | Kişisel veri maskeleme (T-030) | ✅ |
-| `extraction/` | Yetkinlik çıkarımı (T-031 v1 sözlük + kural; T-032 LLM) | v1 ✅ |
+| `extraction/` | Yetkinlik çıkarımı (T-031 v1 sözlük + kural; T-032 LLM) | v1 ✅, v2 devam ediyor |
+| `prompts/` | Versiyonlu LLM prompt'ları (T-044) | Devam ediyor |
 | `eval/` | Etiketli değerlendirme seti ve araçları (T-019) | Devam ediyor |
 | `eval/benchmark/` | Yerel LLM benchmark'ı (T-018): Llama 3.1 8B seçildi, karar #26 | ✅ |
 
@@ -82,6 +83,36 @@ mask_text(text, "en")  # sadece metin, sadece kurallar; scraper/etl/pipeline.py 
   - Kurulum isteğe bağlı: `pip install -e ".[ner]"` (sunucuda torch'un CPU sürümü). Kurulu değilse `default_detector()` None döner ve sadece kurallar çalışır; CI bu şekilde çalışır, gerçek model testi atlanır.
   - Model ilk kullanımda Hugging Face'ten bir kez indirilir; sunucuda imaj derlenirken indirilip `HF_HUB_OFFLINE=1` ile çalıştırılmalı. Metin hiçbir zaman dışarı gönderilmez.
 
+### `extraction` v2 — yerel LLM ile birleşik çıkarım (T-032)
+
+```python
+from extraction.llm import extract_skills_v2
+
+result = extract_skills_v2(masked_text, "tr")  # OLLAMA_URL, OLLAMA_MODEL ortam değişkenleri; yoksa yerel llama3.1:8b
+result.present_skills()  # sözleşmedeki present_skills (verified dahil)
+result.model  # {"name": "llama3.1:8b", "prompt_version": "v1"}
+result.llm_error  # None, "LLM_TIMEOUT" veya "INTERNAL"; hata olursa sonuç v1'dir
+```
+
+- İstek: JSON şeması (`format`), `temperature` 0,1, prompt `prompts/skill_extraction` (T-044). Zaman aşımı 150 sn.
+- **v1 temeldir.** LLM'in taksonomiye eşlenen yetkinliği sadece v1'de de varsa kullanılır ve v1'in bilinmeyen seviye/yılını tamamlar. v1'de olmayan taksonomi yetkinliği alınmaz: ya v1 kuralı onu bilerek eledi (istek cümlesi, ders satırı) ya da metinde yok.
+- **Halüsinasyon filtresi:** taksonomide olmayan yetkinlik `verified: false` ile eklenir, ama sadece adı CV metninde geçiyorsa. Metinde olmayan ad atılır.
+- Model yanıtı ve CV metni loglanmaz; hata ayrıntısı da istisnaya taşınmaz.
+- **Deneme (10.11.2026, 10 TR sentetik CV, llama3.1:8b, geliştirici bilgisayarında GPU):** hata 0; CV başına ~6–9 sn (ilk çağrı model yüklemesiyle 46 sn); v1'in seviyesi bilinmeyen 44 yetkinliğine LLM seviye verdi; 12 doğrulanmamış ad eklendi (ör. Room, DVC, Plastic SCM, "Manuel test"). LLM'in verdiği seviyelerin doğruluğu ölçülmedi: T-019 altın standardı bekleniyor.
+
+### `prompts` — versiyonlu LLM prompt'ları (T-044)
+
+```python
+from prompts import get_prompt, model_info
+
+prompt = get_prompt("skill_extraction")  # CURRENT'taki sürüm; ("skill_extraction", "v1") ile sabitlenebilir
+model = model_info("llama3.1:8b", prompt)  # {"name": "llama3.1:8b", "prompt_version": "v1"}
+```
+
+- Her prompt `prompts/<ad>/<sürüm>.txt` dosyasıdır. Yayımlanmış dosya değiştirilmez: yeni sürüm aç, `CURRENT`'ı güncelle, özetini `tests/prompts/test_library.py` içine ekle.
+- `model_info` çıktısı `contracts/analysis_result.schema.json` içindeki `model` nesnesi ve `analyses.model_name` / `analyses.prompt_version` değerleridir.
+- Örneklerde gerçek yetkinlik adı yazılmaz (karar #26).
+
 ### `extraction` — yetkinlik çıkarımı v1 (T-031)
 
 ```python
@@ -92,7 +123,7 @@ skills[0].skill, skills[0].level, skills[0].years, skills[0].confidence  # "Pyth
 to_present_skills(skills)  # contracts/analysis_result.schema.json → present_skills
 ```
 
-- **Sözlük:** `scraper/taxonomy/skills.csv` (başka yol için `CAREERAI_TAXONOMY`). Eşleme kuralları ilan eşleyicisiyle (`scraper/etl/skills.py`) aynı: kelime sınırı ("Java" ≠ "JavaScript"), "C++"/"Node.js"/".NET", harf duyarlı adlar ("Go", "SOLID"), Türkçe harf katlama, çakışmada uzun ad ("Spring Boot" > "Spring"). LLM gerektirmez; LLM çalışmazsa yedek yoldur.
+- **Sözlük:** `scraper/taxonomy/skills.csv` (başka yol için `CAREERAI_TAXONOMY`). İlan ETL'i (`scraper/etl/skills.py`) de aynı `Matcher`'ı kullanır; kural değişikliği iki tarafı etkiler. Kurallar: kelime sınırı ("Java" ≠ "JavaScript"), "C++"/"Node.js"/".NET", harf duyarlı adlar ("Go", "SOLID"), Türkçe harf katlama, çakışmada uzun ad ("Spring Boot" > "Spring"). LLM gerektirmez; LLM çalışmazsa yedek yoldur.
 - **CV kuralları** (`eval/etiketleme-kilavuzu.md` ile aynı): istek cümlesi ("ileride Go öğrenmek istiyorum", "Next.js öğreniyorum") ve ders listesi ("Dersler: Kriptografi") alınmaz; "DevOps: Docker, …" başlığı yetkinlik sayılmaz; konuşulan dil sadece Diller bölümünde veya seviyesiyle ("İngilizce: B2") alınır.
 - **Seviye:** adın hemen yanındaki ipucu: "Python (ileri düzey)", "Java — orta", "ileri düzey SQL", CEFR (A1–A2 beginner, B1–B2 intermediate, C1–C2/ana dil advanced). Yoksa `unknown`.
 - **Deneyim yılı:** ipucundan ("(4 yıl)") veya aynı cümle parçasındaki "N yıl/yıllık/yıldır/years"; "2022 – 2026" gibi tarih aralıkları sayılmaz.
