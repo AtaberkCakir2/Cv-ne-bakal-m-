@@ -16,13 +16,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-006 · Monorepo ve Git akışı
 
-- **Durum:** Devam Ediyor
+- **Durum:** Tamamlandı
 - **Tarih:** 19.10.2026 – 25.10.2026 · **Öncelik:** P0 · **Efor:** 4 saat · **Alan:** DevOps / Altyapı
 - **Bağımlılık:** T-001 (Anıl)
 - **Destek:** —
 - **Çıktı:** GitHub repo
 - **Kabul kriteri:** Klasörler: /backend /ai /scraper /web /mobile /infra /docs (Electron `web/`'i kullanır). Tek ana dal `main` (karar #27); branch protection (1 onay + yeşil CI zorunlu), PR şablonu, conventional commits, CODEOWNERS.
-- **Not:** Repo, klasör yapısı ve PR şablonu hazır. Kalan: ana dal koruması ve CODEOWNERS; özel repoda GitHub Pro gerektiriyor (Student Pack başvurusu 30.10'da yapıldı, onay bekleniyor).
+- **Not:** 13.11.2026 kontrolü: klasör yapısı, PR şablonu ve `.github/CODEOWNERS` (CLAUDE.md'deki klasör sahipliğiyle aynı) repoda. `main` koruması açık: 1 onay zorunlu, yeni push'ta eski onay düşer, CI zorunlu (Backend, Scraper, Web, Docker) ve dal güncel olmalı, kurallar adminler için de geçerli.
 
 ### T-007 · Lokal geliştirme ortamı (docker-compose)
 
