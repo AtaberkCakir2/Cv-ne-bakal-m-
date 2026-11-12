@@ -206,12 +206,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-046 · Eğitim kaynağı havuzu
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 16.11.2026 – 29.11.2026 · **Öncelik:** P0 · **Efor:** 16 saat · **Alan:** Veri Toplama
 - **Bağımlılık:** T-017
 - **Destek:** Burak
 - **Çıktı:** resources tablosu (≥ 900 kayıt)
 - **Kabul kriteri:** YouTube Data API v3 + elle küratörlük. Her yetkinlik için en az 3 kaynak (Türkçe öncelikli; seviye, süre, ücretsiz/ücretli). Haftalık link sağlık kontrolü (ölü link → pasif).
+- **Not:** 12.11.2026 itibarıyla 1570 canlı kaynak (tr 470, en 1100; 1040 YouTube videosu + `resources.csv`'de elle derlenmiş linkler). 374/374 yetkinlikte ≥ 3 kaynak, 230 yetkinlikte en az 1 Türkçe kaynak. Seviye/süre/ücretsiz alanları dolu. Haftalık `collector.resources_check` ölü linkleri pasife alıyor.
 
 ### T-047 · 2. ve 3. veri kaynağı entegrasyonu
 
