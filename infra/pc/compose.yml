@@ -174,19 +174,6 @@ services:
     logging: *logging
     restart: unless-stopped
 
-  alertmanager:
-    profiles: ["monitoring"]
-    image: prom/alertmanager:v0.28.1
-    entrypoint: ["/bin/sh", "/etc/alertmanager/entrypoint.sh"]
-    environment:
-      TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN:-}
-      TELEGRAM_CHAT_ID: ${TELEGRAM_CHAT_ID:-}
-    volumes:
-      - ../monitoring/alertmanager:/etc/alertmanager:ro
-      - alertmanager-data:/alertmanager
-    mem_limit: 64m
-    logging: *logging
-    restart: unless-stopped
 
   grafana:
     profiles: ["monitoring"]
@@ -286,7 +273,6 @@ volumes:
   backup-state:
   restic-cache:
   prometheus-data:
-  alertmanager-data:
   grafana-data:
   # Model dosyaları (~5 GB) iki ortamda ortak: disk sınırlı (C: ~71 GB boş), model iki kez indirilmesin.
   # Dış volume: `down -v` ile prova kapatılırken production'ın modeli silinmesin. deploy.sh oluşturur.

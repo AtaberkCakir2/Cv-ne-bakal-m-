@@ -8,12 +8,85 @@
   "refresh": "1m",
   "schemaVersion": 39,
   "time": {
-    "from": "now-24h",
+    "from": "now-6h",
     "to": "now"
   },
   "panels": [
     {
       "id": 1,
+      "type": "table",
+      "title": "Aktif uyarılar",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 0,
+        "w": 24,
+        "h": 5
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "ALERTS{alertstate=\"firing\"}",
+          "legendFormat": "",
+          "refId": "A",
+          "instant": true,
+          "range": false,
+          "format": "table"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "noValue": "Aktif uyarı yok"
+        },
+        "overrides": []
+      },
+      "options": {
+        "showHeader": true,
+        "footer": {
+          "show": false
+        }
+      },
+      "description": "infra/monitoring/prometheus/alerts.yml. Boşsa sorun yok.",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true,
+              "Value": true,
+              "__name__": true,
+              "alertstate": true,
+              "job": true,
+              "probe": true,
+              "server": true,
+              "db": true,
+              "key": true,
+              "mountpoint": true,
+              "device": true,
+              "fstype": true
+            },
+            "indexByName": {
+              "alertname": 0,
+              "severity": 1,
+              "instance": 2
+            },
+            "renameByName": {
+              "alertname": "uyarı",
+              "severity": "önem",
+              "instance": "hedef"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": 2,
       "type": "stat",
       "title": "API (içeriden)",
       "datasource": {
@@ -22,7 +95,7 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 0,
+        "y": 5,
         "w": 4,
         "h": 4
       },
@@ -79,7 +152,7 @@
       "description": "Konteyner ağından /api/v1/health/ready"
     },
     {
-      "id": 2,
+      "id": 3,
       "type": "stat",
       "title": "API (dışarıdan, tünel)",
       "datasource": {
@@ -88,7 +161,7 @@
       },
       "gridPos": {
         "x": 4,
-        "y": 0,
+        "y": 5,
         "w": 4,
         "h": 4
       },
@@ -145,7 +218,7 @@
       "description": "https://api.cvnebakalim.com/api/v1/health/ready"
     },
     {
-      "id": 3,
+      "id": 4,
       "type": "stat",
       "title": "PostgreSQL",
       "datasource": {
@@ -154,7 +227,7 @@
       },
       "gridPos": {
         "x": 8,
-        "y": 0,
+        "y": 5,
         "w": 4,
         "h": 4
       },
@@ -210,7 +283,7 @@
       "options": {}
     },
     {
-      "id": 4,
+      "id": 5,
       "type": "stat",
       "title": "Analiz kuyruğu",
       "datasource": {
@@ -219,7 +292,7 @@
       },
       "gridPos": {
         "x": 12,
-        "y": 0,
+        "y": 5,
         "w": 4,
         "h": 4
       },
@@ -265,7 +338,7 @@
       "description": "Bekleyen analiz işi (sınır 8)"
     },
     {
-      "id": 5,
+      "id": 6,
       "type": "stat",
       "title": "Son başarılı toplama",
       "datasource": {
@@ -274,7 +347,7 @@
       },
       "gridPos": {
         "x": 16,
-        "y": 0,
+        "y": 5,
         "w": 4,
         "h": 4
       },
@@ -313,7 +386,20 @@
           },
           "color": {
             "mode": "thresholds"
-          }
+          },
+          "mappings": [
+            {
+              "type": "range",
+              "options": {
+                "from": 100000000.0,
+                "to": null,
+                "result": {
+                  "text": "hiç yok",
+                  "color": "red"
+                }
+              }
+            }
+          ]
         },
         "overrides": []
       },
@@ -321,7 +407,7 @@
       "description": "Ne kadar önce (30 saati geçerse uyarı)"
     },
     {
-      "id": 6,
+      "id": 7,
       "type": "stat",
       "title": "C: boş alan",
       "datasource": {
@@ -330,7 +416,7 @@
       },
       "gridPos": {
         "x": 20,
-        "y": 0,
+        "y": 5,
         "w": 4,
         "h": 4
       },
@@ -376,7 +462,7 @@
       "options": {}
     },
     {
-      "id": 7,
+      "id": 8,
       "type": "timeseries",
       "title": "CPU (Docker)",
       "datasource": {
@@ -385,7 +471,7 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 4,
+        "y": 9,
         "w": 8,
         "h": 8
       },
@@ -397,7 +483,9 @@
           },
           "expr": "100 * (1 - avg(rate(node_cpu_seconds_total{mode=\"idle\"}[5m])))",
           "legendFormat": "CPU %",
-          "refId": "A"
+          "refId": "A",
+          "instant": false,
+          "range": true
         }
       ],
       "fieldConfig": {
@@ -419,7 +507,7 @@
       }
     },
     {
-      "id": 8,
+      "id": 9,
       "type": "timeseries",
       "title": "RAM (Docker'a ayrılan)",
       "datasource": {
@@ -428,7 +516,7 @@
       },
       "gridPos": {
         "x": 8,
-        "y": 4,
+        "y": 9,
         "w": 8,
         "h": 8
       },
@@ -440,7 +528,9 @@
           },
           "expr": "node_memory_MemTotal_bytes - node_memory_MemAvailable_bytes",
           "legendFormat": "kullanılan",
-          "refId": "A"
+          "refId": "A",
+          "instant": false,
+          "range": true
         },
         {
           "datasource": {
@@ -449,7 +539,9 @@
           },
           "expr": "node_memory_MemTotal_bytes",
           "legendFormat": "toplam",
-          "refId": "B"
+          "refId": "B",
+          "instant": false,
+          "range": true
         }
       ],
       "fieldConfig": {
@@ -470,7 +562,7 @@
       "description": "Uyarı: %85 (docs/mimari.md bellek bütçesi)"
     },
     {
-      "id": 9,
+      "id": 10,
       "type": "timeseries",
       "title": "Disk boş alan",
       "datasource": {
@@ -479,7 +571,7 @@
       },
       "gridPos": {
         "x": 16,
-        "y": 4,
+        "y": 9,
         "w": 8,
         "h": 8
       },
@@ -491,7 +583,9 @@
           },
           "expr": "100 * node_filesystem_avail_bytes{mountpoint=\"/host/c\"} / node_filesystem_size_bytes{mountpoint=\"/host/c\"}",
           "legendFormat": "C:",
-          "refId": "A"
+          "refId": "A",
+          "instant": false,
+          "range": true
         }
       ],
       "fieldConfig": {
@@ -514,7 +608,7 @@
       "description": "Uyarı: %10'un altı"
     },
     {
-      "id": 10,
+      "id": 11,
       "type": "timeseries",
       "title": "Celery kuyrukları",
       "datasource": {
@@ -523,7 +617,7 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 12,
+        "y": 17,
         "w": 8,
         "h": 8
       },
@@ -535,7 +629,9 @@
           },
           "expr": "redis_key_size",
           "legendFormat": "{{key}}",
-          "refId": "A"
+          "refId": "A",
+          "instant": false,
+          "range": true
         }
       ],
       "fieldConfig": {
@@ -555,7 +651,7 @@
       }
     },
     {
-      "id": 11,
+      "id": 12,
       "type": "timeseries",
       "title": "/health/ready yanıt süresi",
       "datasource": {
@@ -564,7 +660,7 @@
       },
       "gridPos": {
         "x": 8,
-        "y": 12,
+        "y": 17,
         "w": 8,
         "h": 8
       },
@@ -576,7 +672,9 @@
           },
           "expr": "probe_duration_seconds",
           "legendFormat": "{{probe}}",
-          "refId": "A"
+          "refId": "A",
+          "instant": false,
+          "range": true
         }
       ],
       "fieldConfig": {
@@ -596,7 +694,7 @@
       }
     },
     {
-      "id": 12,
+      "id": 13,
       "type": "timeseries",
       "title": "Redis bellek",
       "datasource": {
@@ -605,7 +703,7 @@
       },
       "gridPos": {
         "x": 16,
-        "y": 12,
+        "y": 17,
         "w": 8,
         "h": 8
       },
@@ -617,7 +715,9 @@
           },
           "expr": "redis_memory_used_bytes",
           "legendFormat": "kullanılan",
-          "refId": "A"
+          "refId": "A",
+          "instant": false,
+          "range": true
         }
       ],
       "fieldConfig": {
@@ -637,7 +737,7 @@
       }
     },
     {
-      "id": 13,
+      "id": 14,
       "type": "timeseries",
       "title": "Analiz süresi",
       "datasource": {
@@ -646,7 +746,7 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 20,
+        "y": 25,
         "w": 12,
         "h": 8
       },
@@ -681,7 +781,7 @@
       "description": "Başarılı analizler, saatlik (analyses.duration_ms)"
     },
     {
-      "id": 14,
+      "id": 15,
       "type": "timeseries",
       "title": "Analiz sayısı",
       "datasource": {
@@ -690,7 +790,7 @@
       },
       "gridPos": {
         "x": 12,
-        "y": 20,
+        "y": 25,
         "w": 12,
         "h": 8
       },
@@ -724,7 +824,7 @@
       }
     },
     {
-      "id": 15,
+      "id": 16,
       "type": "timeseries",
       "title": "PostgreSQL",
       "datasource": {
@@ -733,7 +833,7 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 28,
+        "y": 33,
         "w": 12,
         "h": 8
       },
@@ -745,7 +845,9 @@
           },
           "expr": "sum(pg_stat_database_numbackends)",
           "legendFormat": "bağlantı",
-          "refId": "A"
+          "refId": "A",
+          "instant": false,
+          "range": true
         }
       ],
       "fieldConfig": {
@@ -765,7 +867,7 @@
       }
     },
     {
-      "id": 16,
+      "id": 17,
       "type": "table",
       "title": "Son ilan toplamaları",
       "datasource": {
@@ -774,7 +876,7 @@
       },
       "gridPos": {
         "x": 12,
-        "y": 28,
+        "y": 33,
         "w": 12,
         "h": 8
       },

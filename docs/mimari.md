@@ -86,7 +86,7 @@ Production PC'sinde (i7-9750H, CPU) bir analiz yaklaşık 1–2 dakika sürer; b
 | postgres | pgvector/pgvector:pg16 | 5432 | HAYIR | 2 GB | 1 | pg_isready | Ataberk |
 | redis | redis:7 (AOF açık, şifreli) | 6379 | HAYIR | 256 MB | 1 | redis-cli ping | Ataberk |
 | cv-redis | redis:7 (kalıcılık kapalı, tmpfs; kuyruktaki CV baytları, karar #9) | 6379 | HAYIR | 256 MB | 1 | redis-cli ping | Ataberk |
-| grafana, prometheus, alertmanager + exporter'lar (node, redis, postgres, blackbox) | `monitoring` profili, `infra/monitoring/` | 3000 (sadece Grafana) | Hayır (Grafana sadece 127.0.0.1) | toplam ~1,1 GB sınır (ölçülen ~180 MB) | 1 | — | Ataberk |
+| grafana, prometheus + exporter'lar (node, redis, postgres, blackbox) | `monitoring` profili, `infra/monitoring/` | 3000 (sadece Grafana) | Hayır (Grafana sadece 127.0.0.1) | toplam ~1 GB sınır (ölçülen ~170 MB) | 1 | — | Ataberk |
 
 **Bellek bütçesi:** production konteynerleri toplam ~15,5 GB. PC'de 32 GB RAM var ama Windows ve geliştirme ortamı da aynı makinede: Docker Desktop'a (WSL2, `.wslconfig`) en fazla 20 GB verilir, production açıkken geliştirme ortamının Ollama'sı kapatılır. AI worker eşzamanlılığı 1; RAM %85'i aşınca uyarı. Kullanıcı sayısı artarsa ilk adım Ollama'yı GPU'ya (GTX 1650 kısmi veya ayrı makine) almaktır.
 

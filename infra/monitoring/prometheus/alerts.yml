@@ -1,4 +1,4 @@
-# Uyarı kuralları (T-066). Alertmanager Telegram'a gönderir (TELEGRAM_* env dosyasında doluysa).
+# Uyarı kuralları (T-066). Bildirim gönderilmez (karar #32); tetiklenenler Grafana panosunun en üstünde görünür.
 # Eşikler: docs/mimari.md bellek bütçesi (RAM %85), docs/go-live.md SLO'ları, karar #30 (gece toplaması).
 groups:
   - name: erisim

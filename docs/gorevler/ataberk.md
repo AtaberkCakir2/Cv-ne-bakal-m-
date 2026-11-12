@@ -243,7 +243,7 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 - **Destek:** —
 - **Çıktı:** İzleme paneli + status sayfası
 - **Kabul kriteri:** PC dışından uptime izleme (UptimeRobot / Better Stack ücretsiz; api.cvnebakalim.com/health/ready her 1-5 dk), Sentry (backend + web + mobil, ücretsiz katman), Prometheus + Grafana PC'de (CPU/RAM/disk/kuyruk; sadece 127.0.0.1). Uyarılar Telegram/e-posta ile ekibe.
-- **Not:** 06.11.2026: karar #30 ile Uptime Kuma yerine dış izleyici (PC kapanınca içindeki izleyici de kapanır). 12.11.2026: PC tarafı hazır (`infra/monitoring/`, `monitoring` profili): Prometheus + Grafana (127.0.0.1:3000) + Alertmanager → Telegram, 12 uyarı kuralı; geçici bir compose projesinde denendi (tüm hedefler up, 16 pano sorgusu çalışıyor, salt okunur `careerai_monitor` rolü kullanıcı tablosunu okuyamıyor). Kalan: Telegram botu, UptimeRobot hesabı + status sayfası, Sentry hesabı (adımlar `infra/monitoring/README.md` 2-4); production `.env.prod`'a şifreler. Sentry entegrasyon kodu Anıl (backend, web) ve Burak (mobil).
+- **Not:** 06.11.2026: karar #30 ile Uptime Kuma yerine dış izleyici (PC kapanınca içindeki izleyici de kapanır). 12.11.2026: PC tarafı hazır (`infra/monitoring/`, `monitoring` profili): Prometheus + Grafana (127.0.0.1:3000), 12 uyarı kuralı (bildirim yok, panoda görünür; karar #32); geçici bir compose projesinde denendi (tüm hedefler up, 16 pano sorgusu çalışıyor, salt okunur `careerai_monitor` rolü kullanıcı tablosunu okuyamıyor). Kalan: UptimeRobot hesabı + status sayfası, Sentry hesabı (adımlar `infra/monitoring/README.md` 2-3); production `.env.prod`'a şifreler. Sentry entegrasyon kodu Anıl (backend, web) ve Burak (mobil).
 
 ### T-064 · Güvenlik incelemesi (OWASP Top 10)
 

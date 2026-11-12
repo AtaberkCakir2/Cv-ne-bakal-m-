@@ -1,14 +1,14 @@
-# İzleme ve uyarılar (T-066)
+# İzleme (T-066)
 
 Üç katman var. Her biri farklı bir soruyu cevaplar:
 
 | Katman | Nerede | Ne söyler | Kim kurar |
 |---|---|---|---|
 | Dış uptime izleyici (UptimeRobot) | PC dışı (bulut) | Site dışarıdan açılıyor mu? PC kapansa da çalışır, status sayfası buradan | Ataberk (hesap) |
-| Prometheus + Grafana + Alertmanager | Production PC'si, `careerai-prod` projesi | CPU, RAM, disk, kuyruk, analiz süresi, toplama; eşik aşılınca Telegram | Bu klasör |
+| Prometheus + Grafana | Production PC'si, `careerai-prod` projesi | CPU, RAM, disk, kuyruk, analiz süresi, toplama; eşik aşılınca panonun en üstünde uyarı | Bu klasör |
 | Sentry | Bulut (ücretsiz katman) | Uygulama hataları (backend, web, mobil) | Hesap: Ataberk · kod: Anıl (backend, web), Burak (mobil) |
 
-PC içindeki izleme, PC kapanınca kendisi de kapanır; "site çöktü" uyarısını bu yüzden dış izleyici verir (karar #30).
+PC içindeki izleme, PC kapanınca kendisi de kapanır; "site çöktü" bildirimini bu yüzden dış izleyici verir (karar #30). PC'deki uyarılar kimseye gönderilmez, sadece Grafana'da görünür (karar #32).
 
 ## PC'deki servisler
 
@@ -17,18 +17,19 @@ PC içindeki izleme, PC kapanınca kendisi de kapanır; "site çöktü" uyarıs�
 | Servis | Ne yapar | Dışa açık mı |
 |---|---|---|
 | prometheus | Metrikleri 30 sn'de bir toplar, 30 gün / 2 GB saklar, `prometheus/alerts.yml` kurallarını değerlendirir | Hayır |
-| alertmanager | Uyarıları gruplar, Telegram'a gönderir (4 saatte bir hatırlatır, düzelince "resolved" yazar) | Hayır |
 | grafana | Pano: http://127.0.0.1:3000 (kullanıcı `admin`) | Sadece bu PC (127.0.0.1) |
 | node-exporter | Docker'ın WSL2 makinesi: CPU, RAM (`.wslconfig` sınırı, 20 GB); Windows C: boş alanı | Hayır |
 | redis-exporter | Celery kuyruk uzunlukları (`analysis`, `data`), Redis belleği | Hayır |
 | postgres-exporter | Bağlantılar, analiz hata oranı ve süresi, son başarılı toplama (`postgres-exporter/queries.yaml`) | Hayır |
 | blackbox-exporter | `/api/v1/health/ready`: içeriden (`api:8000`) ve dışarıdan (`api.cvnebakalim.com`, tünel) | Hayır |
 
-Toplam bellek sınırı ~1,1 GB; 12.11.2026 denemesinde toplam ~180 MB kullandı. Grafana'ya tünelden public hostname **eklenmez** (`infra/pc/deploy.md`).
+Toplam bellek sınırı ~1 GB; 12.11.2026 denemesinde toplam ~170 MB kullandı. Grafana'ya tünelden public hostname **eklenmez** (`infra/pc/deploy.md`).
 
 Grafana ve postgres-exporter veri tabanına `careerai_monitor` rolüyle bağlanır. Rol salt okunurdur ve sadece şu sütunları görür: `analyses(status, duration_ms, created_at, completed_at)`, `scrape_runs` sayaçları, `job_sources(id, name)`. Kullanıcı, CV hash'i ve yetkinlik verisi okunamaz (karar #5). Rolü `deploy.sh` her deploy'da oluşturur veya şifresini günceller.
 
 ### Uyarılar
+
+Tetiklenen uyarılar panonun en üstündeki **Aktif uyarılar** tablosunda görünür; bildirim (Telegram, e-posta) gönderilmez (karar #32). Panoya göz atmak yeterli; sunum ve hypercare döneminde nöbetçi günde bir kez bakar.
 
 | Uyarı | Koşul | Önem |
 |---|---|---|
@@ -61,28 +62,19 @@ COMPOSE_PROFILES=tunnel,backup,monitoring
 
 Sonra normal deploy: `bash infra/pc/deploy.sh <sürüm> production`. Deploy rolü oluşturur ve izleme servislerini açar.
 
-### 2. Telegram uyarıları
-
-1. Telegram'da **@BotFather**'a yazın → `/newbot` → isim: `CareerAI Uyarı`, kullanıcı adı: `cvnebakalim_uyari_bot` (alınmışsa başka bir `_bot` ile biten ad).
-2. BotFather'ın verdiği token'ı `.env.prod` içine `TELEGRAM_BOT_TOKEN=` satırına yapıştırın. Token'ı sohbete, terminale veya repoya yazmayın.
-3. Ekip için bir Telegram grubu açın (ör. `CareerAI Nöbet`), Burak ve Anıl'ı ve botu gruba ekleyin. Grupta bir mesaj yazın (ör. `/start`).
-4. Tarayıcıda şu adresi açın (TOKEN yerine token'ı yazın): `https://api.telegram.org/botTOKEN/getUpdates`. Çıkan metinde `"chat":{"id":-100...` gibi eksiyle başlayan sayıyı bulun.
-5. Bu sayıyı `.env.prod` içine `TELEGRAM_CHAT_ID=` satırına yazın.
-6. `make prod-monitoring-reload` → `make prod-test-alert`. Gruba bir dakika içinde "TestUyarisi" mesajı gelmeli.
-
-### 3. Dış uptime izleyici ve status sayfası (UptimeRobot, ücretsiz)
+### 2. Dış uptime izleyici ve status sayfası (UptimeRobot, ücretsiz)
 
 1. https://uptimerobot.com → **Register for FREE** ile hesap açın (ekibin ortak e-postası varsa onunla).
 2. **+ New monitor** → Monitor type: **HTTP(s)**.
    - Friendly name: `CareerAI API`
    - URL: `https://api.cvnebakalim.com/api/v1/health/ready`
    - Monitoring interval: **5 minutes** (ücretsiz katmandaki en kısa süre)
-3. **Integrations & Team** (veya Alert contacts) → ekip üyelerinin e-postalarını ekleyin; Telegram entegrasyonu sunuluyorsa 2. adımdaki grubu da bağlayın. Monitörde bu kişileri işaretleyin → **Create monitor**.
+3. Bildirim olarak hesabın e-postası varsayılan gelir; istenirse **Integrations & Team** altından ekip e-postaları eklenir → **Create monitor**.
 4. Web arayüzü yayına çıkınca aynı şekilde `https://app.cvnebakalim.com` için ikinci monitör.
 5. **Status pages** → **+ New status page** → ad: `CareerAI Durum`, monitörleri seçin → oluşturun. Linki `docs/go-live.md` iletişim planına ekleyin.
-6. Bildirimi deneme: go-live provasında (T-091) tüneli 6 dakika durdurun (`docker compose -p careerai-prod stop cloudflared`). E-posta geldikten sonra `docker compose -p careerai-prod start cloudflared`. Aynı sırada Telegram'a da `DisErisimYok` uyarısı gelmeli.
+6. Bildirimi deneme: go-live provasında (T-091) tüneli 6 dakika durdurun (`docker compose -p careerai-prod stop cloudflared`). E-posta geldikten sonra `docker compose -p careerai-prod start cloudflared`. Aynı sırada Grafana'da `DisErisimYok` uyarısı görünmeli.
 
-### 4. Sentry
+### 3. Sentry
 
 1. https://sentry.io → ücretsiz hesap → organizasyon `cvnebakalim`.
 2. Üç proje açın: `api` (Python / FastAPI), `web` (React), `mobile` (React Native).
@@ -94,9 +86,8 @@ Sonra normal deploy: `bash infra/pc/deploy.sh <sürüm> production`. Deploy rol�
 | Ne | Nasıl |
 |---|---|
 | Panoyu aç | http://127.0.0.1:3000 → CareerAI panosu (giriş sayfası) |
-| Aktif uyarılar | `make prod-alerts` |
+| Aktif uyarılar | Panonun en üstündeki tablo |
 | Kural/ayar değişikliğini uygula | `make prod-monitoring-reload` |
-| Telegram'ı dene | `make prod-test-alert` |
 | Kuralları kontrol et | `make monitoring-check` (promtool; CI'a gerek yok) |
 
 ## Bilinen sınırlar

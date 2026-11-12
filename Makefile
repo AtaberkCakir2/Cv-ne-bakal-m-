@@ -10,7 +10,7 @@ PROFILES := $(if $(wildcard backend/Dockerfile),--profile api) $(if $(wildcard a
 COMPOSE  := docker compose $(PROFILES)
 MODEL    ?= $(or $(OLLAMA_MODEL),llama3.1:8b)
 
-.PHONY: help up down restart ps logs model psql redis-cli reset check-env prod-ps prod-logs prod-local prod-model staging-ps staging-down prod-alerts prod-test-alert prod-monitoring-reload monitoring-check backup-init backup-now backup-list
+.PHONY: help up down restart ps logs model psql redis-cli reset check-env prod-ps prod-logs prod-local prod-model staging-ps staging-down prod-monitoring-reload monitoring-check backup-init backup-now backup-list
 
 # $(info) kabuk kullanmaz; Windows (cmd) ve macOS/Linux'ta aynı çıktıyı verir.
 help:
@@ -26,7 +26,7 @@ help:
 	$(info make prod-ps   make prod-logs   make prod-model   make prod-local (sunum B plani))
 	$(info make staging-ps   make staging-down)
 	$(info Izleme (T-066, infra/monitoring/README.md): Grafana http://127.0.0.1:3000)
-	$(info make prod-alerts   make prod-test-alert   make prod-monitoring-reload   make monitoring-check)
+	$(info make prod-monitoring-reload   make monitoring-check)
 	$(info make backup-init (bir kez)   make backup-now   make backup-list   Geri yukleme testi: bash infra/backup/restore-test.sh)
 	@cd .
 
@@ -93,19 +93,9 @@ staging-down:
 	$(PC_STAGING) down
 
 # --- İzleme (T-066, infra/monitoring/README.md). Production'da monitoring profiliyle açılır. ---
-AM := --alertmanager.url=http://127.0.0.1:9093
-
-# Şu an tetiklenmiş uyarılar.
-prod-alerts:
-	$(PC_PROD) exec alertmanager amtool alert query $(AM)
-
-# Telegram'a deneme uyarısı gönderir; tekrar gönderilmediği için 5 dk sonra "resolved" olur.
-prod-test-alert:
-	$(PC_PROD) exec alertmanager amtool alert add TestUyarisi severity=uyari --annotation=summary="Deneme uyarisi (make prod-test-alert)" $(AM)
-
-# alerts.yml, prometheus.yml, pano veya TELEGRAM_* değişince.
+# alerts.yml, prometheus.yml veya pano değişince.
 prod-monitoring-reload:
-	$(PC_PROD) up -d --no-build --force-recreate prometheus alertmanager grafana
+	$(PC_PROD) up -d --no-build --force-recreate prometheus grafana
 
 # Prometheus ayarını ve uyarı kurallarını promtool ile denetler (Docker gerekir).
 monitoring-check:

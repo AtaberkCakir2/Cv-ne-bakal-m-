@@ -4,13 +4,9 @@ global:
   scrape_interval: 30s
   evaluation_interval: 30s
 
+# Uyarılar kimseye gönderilmez (karar #32): tetiklenenler Grafana panosundaki "Aktif uyarılar" tablosunda görünür.
 rule_files:
   - /etc/prometheus/alerts.yml
-
-alerting:
-  alertmanagers:
-    - static_configs:
-        - targets: ["alertmanager:9093"]
 
 scrape_configs:
   - job_name: prometheus
