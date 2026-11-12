@@ -46,15 +46,15 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-010 · Alan adı, Cloudflare DNS ve Tunnel
 
-- **Durum:** Devam Ediyor
+- **Durum:** Tamamlandı
 - **Tarih:** 19.10.2026 – 25.10.2026 · **Öncelik:** P1 · **Efor:** 2 saat · **Alan:** DevOps / Altyapı
 - **Bağımlılık:** T-009
 - **Destek:** —
 - **Çıktı:** DNS kayıtları + `cloudflared` servisi (compose)
 - **Kabul kriteri:** Alan adı alındı, ad sunucuları Cloudflare'de (ücretsiz plan). Cloudflare Tunnel kuruldu; `cloudflared` production compose'da konteyner, tünel token'ı sadece PC'deki `.env`'de. app. ve api. tünele bağlı; tanıtım/yasal sayfalar için alan adının kökü Cloudflare Pages'e. Always Use HTTPS + HSTS + en düşük TLS 1.2 açık; SSL ücretsiz (Cloudflare).
 - **Not:** 06.11.2026: karar #30 ile Caddy/Let's Encrypt yerine Cloudflare Tunnel; staging-api. ve status. alt alan adları kaldırıldı.
-- **Devam notu (06.11.2026):** Yapılan: `cvnebakalim.com` Cloudflare Registrar'dan 560 TL'ye alındı (ad sunucuları Cloudflare'de); dokümanlardaki yer tutucular gerçek adla değiştirildi. Cloudflare'e GitHub ile giriliyor (GitHub'da authenticator 2FA açık; Cloudflare'in kendi 2FA'sı şifre doğrulama sorunu yüzünden sonraya kaldı). Zero Trust'ta `careerai-pc` tüneli oluşturuldu, token parola yöneticisinde (repoda yok); tünel bir kez bağlanıp kapatıldı; `api.cvnebakalim.com` → `http://api:8000` public hostname'i eklendi; SSL/TLS Full, Always Use HTTPS, en düşük TLS 1.2 (HSTS sistem çalışınca açılacak). Sıradaki adım: production (T-075) açılınca token'ı `infra/pc/.env.prod`'a yaz, `https://api.cvnebakalim.com/api/v1/health` ile uçtan uca dene, sonra HSTS; Cloudflare 2FA'yı yeniden dene. Açık sorular / engeller: web arayüzü (`app.`) Pages'te mi tünelde mi (Anıl); kök alan adı Cloudflare Pages'e (tanıtım/yasal sayfalar, T-070). Branch: ataberk/karar-sunucusuz
 
+- **Not (13.11.2026):** Alan adı `cvnebakalim.com` Cloudflare'de (Registrar, 560 TL); `careerai-pc` tüneli production compose'da `cloudflared` konteyneri, token sadece PC'deki `infra/pc/.env.prod`'da. Uçtan uca denendi: `https://api.cvnebakalim.com/api/v1/health` ve `/health/ready` dışarıdan 200 (Cloudflare → tünel → `http://api:8000`; paneldeki servis türü HTTPS'ten HTTP'ye düzeltildi). `http://` → 301 `https://`, en düşük TLS 1.2 (TLS 1.1 reddediliyor), HSTS 6 ay + includeSubDomains (preload yok), `X-Content-Type-Options: nosniff` Cloudflare'den. Tanımsız alt alan adları açılmıyor. Kök alan adı → Cloudflare Pages T-070'e (tanıtım sayfası) devredildi; `app.` Pages'te mi tünelde mi Anıl'la karar verilecek. Cloudflare hesabında 2FA henüz yok (GitHub girişi 2FA'lı).
 ### T-011 · Veri tabanı şeması v1 (ERD)
 
 - **Durum:** Tamamlandı
@@ -282,6 +282,7 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 - **Destek:** Anıl
 - **Çıktı:** Landing sayfası
 - **Kabul kriteri:** Ürün tanıtımı, ekran görüntüleri, indirme linkleri (Windows/macOS/Android), gizlilik politikası ve KVKK linkleri, iletişim.
+- **Not:** 13.11.2026: T-010'dan devralındı: sayfa Cloudflare Pages'te yayınlanır ve kök alan adı `cvnebakalim.com` Pages projesine bağlanır (Anıl'ın yasal sayfaları #71 ile aynı Pages projesi olabilir).
 
 ---
 
