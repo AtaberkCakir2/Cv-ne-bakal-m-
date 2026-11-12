@@ -16,13 +16,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-006 · Monorepo ve Git akışı
 
-- **Durum:** Devam Ediyor
+- **Durum:** Tamamlandı
 - **Tarih:** 19.10.2026 – 25.10.2026 · **Öncelik:** P0 · **Efor:** 4 saat · **Alan:** DevOps / Altyapı
 - **Bağımlılık:** T-001 (Anıl)
 - **Destek:** —
 - **Çıktı:** GitHub repo
 - **Kabul kriteri:** Klasörler: /backend /ai /scraper /web /mobile /infra /docs (Electron `web/`'i kullanır). Tek ana dal `main` (karar #27); branch protection (1 onay + yeşil CI zorunlu), PR şablonu, conventional commits, CODEOWNERS.
-- **Not:** Repo, klasör yapısı ve PR şablonu hazır. Kalan: ana dal koruması ve CODEOWNERS; özel repoda GitHub Pro gerektiriyor (Student Pack başvurusu 30.10'da yapıldı, onay bekleniyor).
+- **Not:** 13.11.2026 kontrolü: klasör yapısı, PR şablonu ve `.github/CODEOWNERS` (CLAUDE.md'deki klasör sahipliğiyle aynı) repoda. `main` koruması açık: 1 onay zorunlu, yeni push'ta eski onay düşer, CI zorunlu (Backend, Scraper, Web, Docker) ve dal güncel olmalı, kurallar adminler için de geçerli.
 
 ### T-007 · Lokal geliştirme ortamı (docker-compose)
 
@@ -206,12 +206,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-046 · Eğitim kaynağı havuzu
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 16.11.2026 – 29.11.2026 · **Öncelik:** P0 · **Efor:** 16 saat · **Alan:** Veri Toplama
 - **Bağımlılık:** T-017
 - **Destek:** Burak
 - **Çıktı:** resources tablosu (≥ 900 kayıt)
 - **Kabul kriteri:** YouTube Data API v3 + elle küratörlük. Her yetkinlik için en az 3 kaynak (Türkçe öncelikli; seviye, süre, ücretsiz/ücretli). Haftalık link sağlık kontrolü (ölü link → pasif).
+- **Not:** 12.11.2026 itibarıyla 1570 canlı kaynak (tr 470, en 1100; 1040 YouTube videosu + `resources.csv`'de elle derlenmiş linkler). 374/374 yetkinlikte ≥ 3 kaynak, 230 yetkinlikte en az 1 Türkçe kaynak. Seviye/süre/ücretsiz alanları dolu. Haftalık `collector.resources_check` ölü linkleri pasife alıyor.
 
 ### T-047 · 2. ve 3. veri kaynağı entegrasyonu
 

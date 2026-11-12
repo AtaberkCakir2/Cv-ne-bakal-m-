@@ -146,6 +146,8 @@ services:
     env_file: .env
     environment: *app-env
     mem_limit: 1536m  # docs/mimari.md: 1,5 GB (Playwright gelince)
+    volumes:
+      - scraper-data:/srv/scraper/data  # YouTube arama durumu (T-046)
     restart: unless-stopped
     depends_on:
       postgres:
@@ -156,3 +158,4 @@ services:
 volumes:
   pgdata:
   ollama:
+  scraper-data:
