@@ -1,0 +1,25 @@
+sequenceDiagram
+    actor O as Öğrenci
+    participant C as İstemci
+    participant A as API
+    participant Q as Kuyruk
+    participant W as Yapay zekâ işçisi
+    participant L as Yerel dil modeli
+    participant D as Veri tabanı
+    O->>C: Pozisyon seç, özgeçmiş yükle
+    C->>A: PDF ve hedef pozisyon
+    A->>A: Dosyayı doğrula
+    A->>D: Analiz kaydı (yalnızca SHA-256)
+    A->>Q: İşi kuyruğa ekle
+    A-->>C: 202 ve analiz kimliği
+    Q->>W: İşi al
+    W->>W: Metin çıkar, kişisel veriyi maskele
+    W->>L: Maskelenmiş metinden yetkinlik çıkar
+    L-->>W: Yetkinlikler (JSON)
+    W->>D: Talep oranları ve aday kaynaklar
+    W->>L: Adaylardan seç, gerekçe yaz
+    L-->>W: Seçilen kaynaklar
+    W->>D: Sonucu kaydet, PDF'i bellekten at
+    C->>A: Durumu izle, sonucu iste
+    A-->>C: Sonuç
+    C-->>O: Uyum, eksikler, kaynaklar
