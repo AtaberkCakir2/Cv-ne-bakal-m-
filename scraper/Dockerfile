@@ -28,7 +28,9 @@ COPY scraper/collector scraper/collector
 COPY scraper/etl scraper/etl
 COPY scraper/taxonomy scraper/taxonomy
 
-RUN useradd --create-home --uid 10001 careerai
+# data/: YouTube arama durumu (T-046), compose'da kalıcı volume.
+RUN useradd --create-home --uid 10001 careerai \
+    && mkdir -p scraper/data && chown careerai scraper/data
 USER careerai
 WORKDIR /srv/scraper
 
