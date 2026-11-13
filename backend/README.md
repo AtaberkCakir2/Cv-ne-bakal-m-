@@ -33,7 +33,14 @@ ruff check . && ruff format --check .
 mypy app tests
 ```
 
-Testler hiçbir servis (Postgres, Redis, Ollama) çalışmadan geçer. Veritabanı isteyen testler (`tests/db`, `tests/auth`) sadece `TEST_DATABASE_URL` verilince çalışır; boş test veritabanı için `app/db/README.md` → "Testler". CI bunları her PR'da çalıştırır.
+Testler hiçbir servis (Postgres, Redis, Ollama) çalışmadan geçer. Veritabanı isteyen testler (`tests/db`, `tests/auth`) ve Redis testleri (`tests/test_redis_integration.py`) gerçek servis ister (T-069):
+
+- **Docker açıksa** ayar gerekmez: `pytest` testcontainers ile geçici PostgreSQL (pgvector) ve Redis başlatır, sonunda kapatır.
+- **Kendi servisinizi kullanmak için:** `TEST_DATABASE_URL` / `TEST_REDIS_URL` verin; boş test veritabanı için `app/db/README.md` → "Testler". `TEST_REDIS_URL`'deki veritabanı her testte boşaltılır: ayrı bir Redis/DB numarası verin. CI veritabanını kendi servisiyle verir; Redis CI'da testcontainers ile açılır.
+- **Docker yoksa** bu testler atlanır. Testcontainers'ı kapatmak için: `CAREERAI_NO_TESTCONTAINERS=1`.
+- **Kapsam:** her çalıştırmada ölçülür (`pytest-cov`); %70'in altına düşerse pytest başarısız olur. 10.11.2026'da servislerle %97,5, servissiz %73,6. Tek test veya alt klasör çalıştırırken kapsam eşiğin altında kalır: `pytest --no-cov tests/...`. İlk çalıştırmada imajlar (Ryuk dahil) indirilir.
+
+Uçtan uca senaryo (kayıt → yükleme → işçi → sonuç → geri bildirim → silme → hesap silme): `tests/auth/test_analyses_queue.py::test_end_to_end_register_upload_analyze_result_feedback_delete` (kuyruk, CV deposu ve analiz motoru test çiftleri; işçi doğrudan çağrılır). Başkasının verisine erişim (IDOR) her analiz ucu için `tests/auth/test_analyses_results.py`'de denenir.
 
 ## Yapı
 
@@ -64,21 +71,25 @@ Kurallar:
 |---|---|---|
 | GET | `/api/v1/health` | ✅ |
 | GET | `/api/v1/health/ready` | ✅ |
-| POST | `/api/v1/analyses` | ✅ CV doğrulama (≤ 5 MB, ≤ 5 sayfa, PDF imzası, şifreli/bozuk PDF), SHA-256 · kimlik doğrulama henüz yok (T-048 ile eklenecek) |
-| GET | `/api/v1/analyses/{id}` | ✅ sonuç · liste/silme/geri bildirim T-048 |
+| POST | `/api/v1/analyses` | ✅ Giriş ve saatlik sınır gerekir. CV doğrulama (≤ 5 MB, ≤ 5 sayfa, PDF imzası, şifreli/bozuk PDF), SHA-256, kuyruğa alma |
+| GET | `/api/v1/analyses/{id}` | ✅ Durum yoklama (sadece sahibi); yetkinlik listeleri, geçmiş, silme, geri bildirim T-048 |
 
-**Geliştirme modu (geçici):** Analizler bellekte tutulur (sunucu kapanınca silinir) ve kuyruk hemen `contracts/examples/analysis_result.example.json` örnek sonucunu döner. Böylece web ve mobil ekranlar AI modülünü beklemeden geliştirilebilir. Gerçek veritabanı deposu T-012 (Ataberk), gerçek kuyruk T-039 ile gelecek.
+### Analiz kuyruğu (T-039)
 
-Örnek:
+`POST /analyses` satırı PostgreSQL'e yazar, işi Celery ile `analysis` kuyruğuna verir ve `202` döner. İstemci `GET /analyses/{id}` ile `queued → processing → done / failed` durumunu yoklar. Görev en fazla 180 sn sürer, geçici hatada bir kez daha denenir.
 
 ```bash
-curl -F "file=@ozgecmis.pdf;type=application/pdf" -F target_role_id=1 http://localhost:8000/api/v1/analyses
-curl http://localhost:8000/api/v1/analyses/<analysis_id>
+celery -A app.worker.celery_app worker -Q analysis --concurrency 1 --loglevel INFO
 ```
+
+- **CV baytları Celery mesajına ve kalıcı Redis'e girmez (karar #9).** Mesaj sadece analiz kimliğini taşır; baytlar kalıcılığı kapalı ayrı Redis'te (`CV_REDIS_URL`) durur, 1 saatte kendiliğinden, iş bitince hemen silinir. `ENVIRONMENT=local/test` dışında ayar yoksa analiz başlamaz (503). Lokalde `REDIS_URL`'in 1. veritabanı kullanılır (sadece sahte CV).
+- CV Redis'i örneği: `redis-server --save "" --appendonly no --maxmemory 256mb --maxmemory-policy noeviction`. Bekleyen iş sınırı `ANALYSIS_QUEUE_LIMIT` (varsayılan 8) belleğe göre ayarlanır; dolunca 503 + `Retry-After`.
+- Askıda kalan analiz (işçi öldü, sert süre sınırı) `ANALYSIS_STALE_AFTER_S` (65 dk) sonra ilk yoklamada `failed` olur. İşçiyi `-E` ile çalıştırmayın: olaylar hata izini broker Redis'ine yazar.
+- **Gerçek analiz akışı henüz bağlı değil (T-057).** Local/test'te örnek değerler döner (`ExampleAnalyzer`); diğer ortamlarda sahte sonuç gösterilmez, analiz `failed` olur.
 
 ### CV diske yazılmaz
 
-Starlette, 1 MB'ı aşan yüklemeleri varsayılan olarak geçici disk dosyasına yazar. `app/core/uploads.py` bu eşiği izin verilen en büyük istek boyutunun üstüne çeker ve 5 MB + 64 KB'tan büyük istekleri gövde okunmadan reddeder (`Content-Length` zorunlu). `tests/test_analyses_upload.py::test_upload_is_never_written_to_disk` bunu doğrular. Production'da Caddy'de de istek gövdesi sınırı (`request_body max_size 6MB`) olmalı (T-075, Ataberk).
+Starlette, 1 MB'ı aşan yüklemeleri varsayılan olarak geçici disk dosyasına yazar. `app/core/uploads.py` bu eşiği izin verilen en büyük istek boyutunun üstüne çeker ve 5 MB + 64 KB'tan büyük istekleri gövde okunmadan reddeder (`Content-Length` zorunlu). `tests/test_analyses_upload.py::test_upload_is_never_written_to_disk` bunu doğrular. Production'da önde Caddy yok (karar #30): istek Cloudflare'den (ücretsiz planda 100 MB sınırı) cloudflared üzerinden gelir, bu yüzden 5 MB sınırını sadece bu ara katman uygular.
 
 ## Kimlik doğrulama (T-037)
 
@@ -119,9 +130,9 @@ Kullanıcı doğrulanmış ve KVKK onayları verilmiş olarak oluşturulur; tekr
 
 - Aşılınca `429` + `Retry-After` (saniye), gövde RFC 7807. Sayaçlar Redis'te (`REDIS_URL`); IP açık yazılmaz, tuzlu özeti anahtar olur.
 - Redis'e ulaşılamazsa sınır uygulanmaz, `rate_limit_store_unavailable` uyarısı loglanır ve 10 sn Redis denenmez. Tamamen kapatmak için `RATE_LIMIT_ENABLED=false`.
-- **Production (T-075):** Caddy arkasında uvicorn'a `FORWARDED_ALLOW_IPS=<Caddy'nin IP'si veya alt ağı>` verilmeli; verilmezse bütün kullanıcılar Caddy'nin IP'siyle tek sayacı paylaşır. Redis ≥ 7 gerekli.
-- Analiz sınırı (`AnalysesRateLimit`, `app/api/rate_limits.py`) analiz oluşturma ucu kimlik doğrulamaya bağlanınca o uca eklenir.
+- **Production (T-075, karar #30):** API cloudflared arkasında. uvicorn'a `FORWARDED_ALLOW_IPS=<compose ağının alt ağı>` verilir (`infra/pc/compose.yml`, `COMPOSE_SUBNET`). Verilmezse bütün kullanıcılar cloudflared'in IP'siyle tek sayacı paylaşır. `*` verilirse istemcinin uydurduğu `X-Forwarded-For` kullanılır ve sınırlar aşılabilir: Cloudflare gelen başlığı silmez, gerçek IP'yi sona ekler, uvicorn da `*` iken ilk adresi alır. Redis ≥ 7 gerekli.
+- Analiz sınırı başarısız yüklemeleri de sayar; sadece kuyruğa alınanların sayılması T-048'de değerlendirilecek.
 
 ## Sıradaki işler
 
-T-039 analiz kuyruğu · T-048 sonuç ve katalog endpoint'leri (analiz uçlarına kimlik doğrulama ve analiz sınırı bununla gelir).
+T-048 sonuç ve katalog endpoint'leri · T-057 gerçek analiz akışı (Burak).
