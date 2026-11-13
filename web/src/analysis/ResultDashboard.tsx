@@ -47,6 +47,7 @@ export function ResultDashboard({ data }: { data: Analysis }) {
   const present = data.present_skills ?? [];
   const missing = [...(data.missing_skills ?? [])].sort((a, b) => a.priority - b.priority);
   const postings = data.postings_analyzed;
+  const hasYoutube = missing.some((m) => m.resources.some((r) => r.provider === "youtube"));
   const date = data.completed_at ?? data.created_at;
 
   return (
@@ -137,7 +138,7 @@ export function ResultDashboard({ data }: { data: Analysis }) {
       <p>
         <Link to="/yukle">Yeni analiz başlat</Link> · <Link to="/gecmis">Geçmiş analizler</Link>
       </p>
-      <SourceAttribution />
+      <SourceAttribution youtube={hasYoutube} />
 
       <Dialog open={Boolean(open)} title={open?.resource.title} onClose={() => setOpen(undefined)}>
         {open && <ResourceDetail resource={open.resource} skill={open.skill} postings={postings} />}
