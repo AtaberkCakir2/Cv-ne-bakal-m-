@@ -15,6 +15,8 @@ from celery import Celery
 from celery.schedules import crontab
 from redis import Redis
 
+from collector import resources, taxonomy, youtube
+from collector.http import PoliteClient
 from collector.nightly import run_nightly
 
 log = logging.getLogger(__name__)
@@ -23,6 +25,8 @@ logging.getLogger("httpx").setLevel(logging.WARNING)
 
 QUEUE = "data"
 NIGHTLY_TASK = "collector.nightly"
+RESOURCES_SEARCH_TASK = "collector.resources_search"
+RESOURCES_CHECK_TASK = "collector.resources_check"
 # HN 2 aylık başlıkta yeni yorumlar + 20 Himalayas isteği, 3-5 sn arayla: olağan gece < 1 saat.
 SOFT_LIMIT_S = 3 * 3600
 LOCK_KEY = "careerai:lock:nightly"
@@ -42,7 +46,18 @@ app.conf.update(
             "schedule": crontab(hour=3, minute=0),
             # İşçi kapalıyken kaçan gece ertesi akşama sarkmasın: 6 saat içinde alınmazsa düşer.
             "options": {"expires": 6 * 3600},
-        }
+        },
+        # Gece toplamasından sonra. Günlük kota 100 arama; hepsi bitince iş boş döner.
+        "kaynak-arama": {
+            "task": RESOURCES_SEARCH_TASK,
+            "schedule": crontab(hour=6, minute=0),
+            "options": {"expires": 6 * 3600},
+        },
+        "kaynak-kontrol": {
+            "task": RESOURCES_CHECK_TASK,
+            "schedule": crontab(hour=7, minute=0, day_of_week="sunday"),
+            "options": {"expires": 12 * 3600},
+        },
     },
 )
 
@@ -63,3 +78,31 @@ def nightly() -> dict[str, Any]:
         # İzleme (T-066) Celery'nin hata kaydından uyarı üretecek; kaynak düşmesi sessiz kalmasın.
         log.error("Gece toplamasında başarısız kaynak var")
     return {"inserted": report.inserted, "stats_rows": report.stats_rows, "ok": report.ok}
+
+
+@app.task(name=RESOURCES_SEARCH_TASK, soft_time_limit=1800, time_limit=2100)
+def resources_search() -> dict[str, Any]:
+    key = youtube.YoutubeSettings().youtube_api_key
+    if not key:
+        log.warning("YOUTUBE_API_KEY boş, kaynak araması atlandı")
+        return {"skipped": True}
+    with get_sessionmaker()() as session:
+        r = resources.search_youtube(
+            session, PoliteClient(delay_s=resources.YOUTUBE_DELAY_S, max_retries=0), key, taxonomy.load_skills()
+        )
+    log.info("Kaynak araması: %d arama, %d video, kalan %d", r.searches, r.added, r.remaining)
+    return {"searches": r.searches, "added": r.added, "remaining": r.remaining, "quota_hit": r.quota_hit}
+
+
+@app.task(name=RESOURCES_CHECK_TASK, soft_time_limit=SOFT_LIMIT_S, time_limit=SOFT_LIMIT_S + 600)
+def resources_check() -> dict[str, Any]:
+    key = youtube.YoutubeSettings().youtube_api_key
+    with get_sessionmaker()() as session:
+        r = resources.check_links(
+            session,
+            PoliteClient(delay_s=resources.CHECK_DELAY_S),
+            PoliteClient(delay_s=resources.YOUTUBE_DELAY_S, max_retries=0),
+            key,
+        )
+    log.info("Link kontrolü: %d link, %d ölü, %d geri geldi", r.checked, r.dead, r.revived)
+    return {"checked": r.checked, "dead": r.dead, "revived": r.revived}

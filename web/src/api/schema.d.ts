@@ -222,6 +222,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/users/me/consents/{consent_type}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Açık rızayı geri al
+         * @description KVKK md. 11. Onay kaydı silinmez, `withdrawn_at` dolar. Tekrar çağrılırsa bir şey değişmez.
+         */
+        delete: operations["withdraw_consent_api_v1_users_me_consents__consent_type__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/users/me/export": {
         parameters: {
             query?: never;
@@ -242,15 +262,271 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/analyses": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Geçmiş analizlerim
+         * @description Yeniden eskiye. Sadece kullanıcının kendi, silinmemiş analizleri.
+         */
+        get: operations["list_analyses_api_v1_analyses_get"];
+        put?: never;
+        /**
+         * CV yükle ve analiz başlat
+         * @description CV dosyası diske yazılmaz ve saklanmaz; sadece SHA-256 özeti ve sayfa sayısı kaydedilir.
+         *     Sonuç için `GET /analyses/{id}` yoklanır.
+         */
+        post: operations["create_analysis_api_v1_analyses_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/analyses/{analysis_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Analiz durumu ve sonucu
+         * @description Durum: queued, processing, done, failed. Başkasının veya silinmiş analiz 404 döner.
+         */
+        get: operations["get_analysis_api_v1_analyses__analysis_id__get"];
+        put?: never;
+        post?: never;
+        /**
+         * Analizi sil
+         * @description Analiz hemen listeden ve sonuçtan kalkar, 30 gün içinde kalıcı silinir. Başkasının analizi de 404 döner.
+         */
+        delete: operations["delete_analysis_api_v1_analyses__analysis_id__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/analyses/{analysis_id}/feedback": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Analize geri bildirim (1-5 yıldız + yorum)
+         * @description Analiz başına tek geri bildirim; tekrar gönderilirse öncekinin yerine geçer.
+         */
+        post: operations["give_feedback_api_v1_analyses__analysis_id__feedback_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/roles": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Hedef pozisyonlar
+         * @description Aktif pozisyonlar, ada göre. `id`, `POST /analyses` ve `PATCH /users/me` için `target_role_id`'dir.
+         */
+        get: operations["list_roles_api_v1_roles_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/roles/{slug}/skills": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Pozisyonun en çok istenen yetkinlikleri
+         * @description Son 6 ayın aktif ilanlarından, talep oranına göre. İlan yoksa liste boş, `total_postings` 0.
+         */
+        get: operations["role_skills_api_v1_roles__slug__skills_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/skills/{slug}/resources": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Yetkinlik için eğitim kaynakları
+         * @description Sadece erişilebilir (haftalık link kontrolünden geçen) kaynaklar; önce ücretsizler.
+         */
+        get: operations["skill_resources_api_v1_skills__slug__resources_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** AnalysisCreated */
+        AnalysisCreated: {
+            /**
+             * Analysis Id
+             * Format: uuid
+             */
+            analysis_id: string;
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "queued" | "processing" | "done" | "failed";
+        };
+        /**
+         * AnalysisErrorCode
+         * @enum {string}
+         */
+        AnalysisErrorCode: "PDF_UNREADABLE" | "PDF_TOO_LARGE" | "NO_TEXT_FOUND" | "LLM_TIMEOUT" | "INTERNAL";
+        /** AnalysisErrorOut */
+        AnalysisErrorOut: {
+            code: components["schemas"]["AnalysisErrorCode"];
+            /** Message */
+            message: string;
+        };
+        /** AnalysisListOut */
+        AnalysisListOut: {
+            /** Items */
+            items: components["schemas"]["AnalysisSummaryOut"][];
+            /** Total */
+            total: number;
+        };
+        /** AnalysisModelOut */
+        AnalysisModelOut: {
+            /** Name */
+            name: string;
+            /** Prompt Version */
+            prompt_version: string;
+        };
+        /**
+         * AnalysisOut
+         * @description contracts/analysis_result.schema.json. `feedback` API'nin eki (sözleşmede yok): verildiyse yanıtta yer alır.
+         */
+        AnalysisOut: {
+            /**
+             * Analysis Id
+             * Format: uuid
+             */
+            analysis_id: string;
+            status: components["schemas"]["AnalysisStatus"];
+            target_role: components["schemas"]["TargetRoleOut"];
+            /** Postings Analyzed */
+            postings_analyzed?: number | null;
+            /** Match Score */
+            match_score?: number | null;
+            /**
+             * Present Skills
+             * @default []
+             */
+            present_skills: components["schemas"]["PresentSkillOut"][];
+            /**
+             * Missing Skills
+             * @default []
+             */
+            missing_skills: components["schemas"]["MissingSkillOut"][];
+            model?: components["schemas"]["AnalysisModelOut"] | null;
+            error?: components["schemas"]["AnalysisErrorOut"] | null;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Completed At */
+            completed_at?: string | null;
+            feedback?: components["schemas"]["FeedbackOut"] | null;
+        };
         /**
          * AnalysisStatus
          * @enum {string}
          */
         AnalysisStatus: "queued" | "processing" | "done" | "failed";
+        /**
+         * AnalysisSummaryOut
+         * @description Geçmiş listesindeki satır: yetkinlik listeleri yok, ayrıntı için GET /analyses/{id}.
+         */
+        AnalysisSummaryOut: {
+            /**
+             * Analysis Id
+             * Format: uuid
+             */
+            analysis_id: string;
+            status: components["schemas"]["AnalysisStatus"];
+            target_role: components["schemas"]["TargetRoleOut"];
+            /** Match Score */
+            match_score?: number | null;
+            error?: components["schemas"]["AnalysisErrorOut"] | null;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Completed At */
+            completed_at?: string | null;
+        };
+        /** Body_create_analysis_api_v1_analyses_post */
+        Body_create_analysis_api_v1_analyses_post: {
+            /**
+             * File
+             * @description CV (PDF, en fazla 5 MB ve 5 sayfa)
+             */
+            file: string;
+            /**
+             * Target Role Id
+             * @description Hedef pozisyon kimliği
+             */
+            target_role_id: number;
+        };
+        /** CatalogResourceOut */
+        CatalogResourceOut: {
+            /** Resource Id */
+            resource_id: number;
+            /** Title */
+            title: string;
+            /** Url */
+            url: string;
+            provider: components["schemas"]["ResourceProvider"];
+            language: components["schemas"]["LangCode"];
+            level: components["schemas"]["ResourceLevel"];
+            /** Duration Min */
+            duration_min?: number | null;
+            /** Is Free */
+            is_free: boolean;
+        };
         /** ConsentIn */
         ConsentIn: {
             consent_type: components["schemas"]["ConsentType"];
@@ -270,6 +546,8 @@ export interface components {
              * Format: date-time
              */
             accepted_at: string;
+            /** Withdrawn At */
+            withdrawn_at: string | null;
         };
         /**
          * ConsentType
@@ -445,6 +723,26 @@ export interface components {
             /** Priority */
             priority: number | null;
         };
+        /** FeedbackIn */
+        FeedbackIn: {
+            /**
+             * Rating
+             * @description 1-5 yıldız
+             */
+            rating: number;
+            /**
+             * Comment
+             * @description İsteğe bağlı yorum
+             */
+            comment?: string | null;
+        };
+        /** FeedbackOut */
+        FeedbackOut: {
+            /** Rating */
+            rating: number;
+            /** Comment */
+            comment: string | null;
+        };
         /** HTTPValidationError */
         HTTPValidationError: {
             /** Detail */
@@ -459,6 +757,11 @@ export interface components {
              */
             status: "ok";
         };
+        /**
+         * LangCode
+         * @enum {string}
+         */
+        LangCode: "tr" | "en";
         /** LoginIn */
         LoginIn: {
             /**
@@ -468,6 +771,27 @@ export interface components {
             email: string;
             /** Password */
             password: string;
+        };
+        /** MissingSkillOut */
+        MissingSkillOut: {
+            /** Skill */
+            skill: string;
+            /** Demand Ratio */
+            demand_ratio: number;
+            /** Priority */
+            priority: number;
+            /** Resources */
+            resources: components["schemas"]["ResourceOut"][];
+        };
+        /** PresentSkillOut */
+        PresentSkillOut: {
+            /** Skill */
+            skill: string;
+            level: components["schemas"]["SkillLevel"];
+            /** Confidence */
+            confidence: number;
+            /** Verified */
+            verified: boolean;
         };
         /** ProfileOut */
         ProfileOut: {
@@ -550,10 +874,114 @@ export interface components {
             /** New Password */
             new_password: string;
         };
+        /**
+         * ResourceLevel
+         * @enum {string}
+         */
+        ResourceLevel: "beginner" | "intermediate" | "advanced";
+        /**
+         * ResourceOut
+         * @description Sadece veri tabanındaki kaynaklar (karar #10). Değeri olmayan isteğe bağlı alanlar yanıtta yer almaz.
+         */
+        ResourceOut: {
+            /** Resource Id */
+            resource_id: number;
+            /** Title */
+            title: string;
+            /** Url */
+            url: string;
+            provider: components["schemas"]["ResourceProvider"];
+            language?: components["schemas"]["LangCode"] | null;
+            level: components["schemas"]["ResourceLevel"];
+            /** Duration Min */
+            duration_min?: number | null;
+            /** Is Free */
+            is_free: boolean;
+            /** Reason */
+            reason?: string | null;
+        };
+        /**
+         * ResourceProvider
+         * @enum {string}
+         */
+        ResourceProvider: "youtube" | "udemy" | "coursera" | "btk_akademi" | "docs" | "blog" | "other";
+        /** RoleOut */
+        RoleOut: {
+            /** Id */
+            id: number;
+            /** Slug */
+            slug: string;
+            /** Name */
+            name: string;
+            /** Description */
+            description?: string | null;
+        };
         /** RoleRef */
         RoleRef: {
             /** Id */
             id: number;
+            /** Slug */
+            slug: string;
+            /** Name */
+            name: string;
+        };
+        /** RoleRefOut */
+        RoleRefOut: {
+            /** Slug */
+            slug: string;
+            /** Name */
+            name: string;
+        };
+        /** RoleSkillOut */
+        RoleSkillOut: {
+            /** Skill */
+            skill: string;
+            /** Slug */
+            slug: string;
+            category: components["schemas"]["SkillCategory"];
+            /** Demand Ratio */
+            demand_ratio: number;
+            /** Posting Count */
+            posting_count: number;
+        };
+        /**
+         * RoleSkillsOut
+         * @description Pozisyonun en çok istenen yetkinlikleri (role_skill_stats, son 6 ayın aktif ilanları, gece yenilenir).
+         */
+        RoleSkillsOut: {
+            role: components["schemas"]["RoleRefOut"];
+            /** Total Postings */
+            total_postings: number;
+            /** Computed At */
+            computed_at: string | null;
+            /** Skills */
+            skills: components["schemas"]["RoleSkillOut"][];
+        };
+        /**
+         * SkillCategory
+         * @enum {string}
+         */
+        SkillCategory: "dil" | "framework" | "veritabani" | "bulut" | "devops" | "arac" | "metodoloji" | "soft";
+        /**
+         * SkillLevel
+         * @enum {string}
+         */
+        SkillLevel: "beginner" | "intermediate" | "advanced" | "unknown";
+        /** SkillRefOut */
+        SkillRefOut: {
+            /** Slug */
+            slug: string;
+            /** Name */
+            name: string;
+        };
+        /** SkillResourcesOut */
+        SkillResourcesOut: {
+            skill: components["schemas"]["SkillRefOut"];
+            /** Resources */
+            resources: components["schemas"]["CatalogResourceOut"][];
+        };
+        /** TargetRoleOut */
+        TargetRoleOut: {
             /** Slug */
             slug: string;
             /** Name */
@@ -740,6 +1168,15 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Çok fazla deneme */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": unknown;
                 };
             };
         };
@@ -990,6 +1427,15 @@ export interface operations {
                     "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
+            /** @description Çok fazla deneme */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": unknown;
+                };
+            };
         };
     };
     update_me_api_v1_users_me_patch: {
@@ -1078,6 +1524,37 @@ export interface operations {
             };
         };
     };
+    withdraw_consent_api_v1_users_me_consents__consent_type__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                consent_type: components["schemas"]["ConsentType"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ConsentOut"][];
+                };
+            };
+            /** @description Bu onay türü geri alınamaz */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": unknown;
+                };
+            };
+        };
+    };
     export_me_api_v1_users_me_export_get: {
         parameters: {
             query?: never;
@@ -1094,6 +1571,405 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ExportOut"];
+                };
+            };
+        };
+    };
+    list_analyses_api_v1_analyses_get: {
+        parameters: {
+            query?: {
+                limit?: number;
+                offset?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AnalysisListOut"];
+                };
+            };
+            /** @description Giriş gerekli */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_analysis_api_v1_analyses_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": components["schemas"]["Body_create_analysis_api_v1_analyses_post"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AnalysisCreated"];
+                };
+            };
+            /** @description Giriş gerekli */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": unknown;
+                };
+            };
+            /** @description Açık rıza geri alınmış */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": unknown;
+                };
+            };
+            /** @description Content-Length yok */
+            411: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": unknown;
+                };
+            };
+            /** @description Dosya 5 MB'tan büyük (PDF_TOO_LARGE) */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": unknown;
+                };
+            };
+            /** @description PDF değil (PDF_UNREADABLE) */
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": unknown;
+                };
+            };
+            /** @description Bozuk/şifreli PDF (PDF_UNREADABLE), 5 sayfadan uzun (PDF_TOO_LARGE) veya eksik alan */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": unknown;
+                };
+            };
+            /** @description Saatlik analiz sınırı */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": unknown;
+                };
+            };
+            /** @description Kuyruk dolu veya kullanılamıyor */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": unknown;
+                };
+            };
+        };
+    };
+    get_analysis_api_v1_analyses__analysis_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                analysis_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AnalysisOut"];
+                };
+            };
+            /** @description Giriş gerekli */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": unknown;
+                };
+            };
+            /** @description Analiz bulunamadı */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_analysis_api_v1_analyses__analysis_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                analysis_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Giriş gerekli */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": unknown;
+                };
+            };
+            /** @description Analiz bulunamadı */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    give_feedback_api_v1_analyses__analysis_id__feedback_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                analysis_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["FeedbackIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FeedbackOut"];
+                };
+            };
+            /** @description Giriş gerekli */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": unknown;
+                };
+            };
+            /** @description Analiz bulunamadı */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": unknown;
+                };
+            };
+            /** @description Analiz henüz tamamlanmadı */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": unknown;
+                };
+            };
+            /** @description Puan 1-5 dışında veya yorum 1000 karakterden uzun */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": unknown;
+                };
+            };
+        };
+    };
+    list_roles_api_v1_roles_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RoleOut"][];
+                };
+            };
+        };
+    };
+    role_skills_api_v1_roles__slug__skills_get: {
+        parameters: {
+            query?: {
+                limit?: number;
+            };
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RoleSkillsOut"];
+                };
+            };
+            /** @description Pozisyon bulunamadı */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    skill_resources_api_v1_skills__slug__resources_get: {
+        parameters: {
+            query?: {
+                language?: components["schemas"]["LangCode"] | null;
+            };
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SkillResourcesOut"];
+                };
+            };
+            /** @description Yetkinlik bulunamadı */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };

@@ -5,7 +5,9 @@ Hesap silme iki aşamalıdır (docs/veritabani.md, "Soft delete"):
    bağlantılar geçersiz olur, analizler gizlenir. E-posta serbest kalır; aynı adresle yeniden kayıt olunabilir.
 2. 30 gün sonra: `purge_deleted_users` kullanıcıyı kalıcı siler; bağlı kayıtlar CASCADE ile gider.
 
-Açık rızanın geri alınması henüz yok: consents tablosunda geri alma alanı yok (model Ataberk'te; öneri PR'da).
+Rıza geri alma: sadece açık rıza geri alınır; aydınlatma bir bildirim, kullanım koşulları sözleşmedir (çıkış: hesap
+silme). Geri alınan satır silinmez (ispat için). Yeni analizi engelleme, analiz ucu kimlik doğrulamaya bağlanınca
+eklenir (T-048).
 """
 
 import uuid
@@ -18,7 +20,7 @@ from sqlalchemy.orm import Session
 
 from app.core import security
 from app.core.config import Settings
-from app.db.enums import TokenPurpose
+from app.db.enums import ConsentType, TokenPurpose
 from app.db.models import Analysis, AuditLog, Consent, RefreshToken, Resource, User
 from app.repositories.users import UserRepository
 from app.schemas.users import (
@@ -95,14 +97,17 @@ class UserService:
     # --- rıza
     def consents(self, user: User) -> list[ConsentOut]:
         return [
-            ConsentOut(consent_type=c.consent_type, version=c.version, accepted_at=c.accepted_at)
+            ConsentOut(
+                consent_type=c.consent_type, version=c.version, accepted_at=c.accepted_at, withdrawn_at=c.withdrawn_at
+            )
             for c in self.repo.list_consents(user.id)
         ]
 
     def accept_consents(self, user: User, consents: list[ConsentInput], ip: str | None) -> list[ConsentOut]:
-        """Yeni metin sürümlerini kaydeder. Onaylanmış (tür, sürüm) tekrar eklenmez; eski sürümler silinmez."""
+        """Yeni metin sürümlerini kaydeder. Yürürlükteki (tür, sürüm) tekrar eklenmez; eski sürümler silinmez.
+        Geri alınmış sürüm yeniden onaylanırsa yeni satır eklenir."""
         self._lock_active(user)
-        existing = {(c.consent_type, c.version) for c in self.repo.list_consents(user.id)}
+        existing = {(c.consent_type, c.version) for c in self.repo.list_consents(user.id) if c.withdrawn_at is None}
         now = datetime.now(UTC)
         ip_hash = security.hash_ip(ip, self.settings)
         self.repo.add_consents(
@@ -118,6 +123,29 @@ class UserService:
             self.session.commit()
         except IntegrityError:  # aynı sürüm eşzamanlı iki istekle geldi; istek tekrarlanabilir, sonuç aynı
             self.session.rollback()
+        return self.consents(user)
+
+    def withdraw_consent(self, user: User, consent_type: ConsentType, ip: str | None) -> list[ConsentOut]:
+        """Yürürlükteki açık rızayı geri alır. Geri alınacak onay yoksa bir şey değişmez; istek tekrarlanabilir."""
+        if consent_type is not ConsentType.ACIK_RIZA:
+            raise UserError(422, "Sadece açık rıza geri alınabilir. Bu metinden çıkmak için hesabınızı silebilirsiniz.")
+        self._lock_active(user)
+        active = [
+            c for c in self.repo.list_consents(user.id) if c.consent_type == consent_type and c.withdrawn_at is None
+        ]
+        if active:
+            now = datetime.now(UTC)
+            for consent in active:
+                consent.withdrawn_at = now
+            self.repo.add_audit(
+                AuditLog(
+                    user_id=user.id,
+                    action="consent.withdraw",
+                    entity="consents",
+                    ip_hash=security.hash_ip(ip, self.settings),
+                )
+            )
+        self.session.commit()  # değişiklik olmasa da satır kilidi bırakılır
         return self.consents(user)
 
     # --- verilerimi indir

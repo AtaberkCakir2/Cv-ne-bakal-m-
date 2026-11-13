@@ -1,6 +1,6 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { useState, type FormEvent } from "react";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom";
 
 import { api, problemMessage } from "../../api/client";
 import { safeNext } from "../../auth/next";
@@ -12,6 +12,8 @@ export function LoginPage() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [params] = useSearchParams();
+  // Başka bir sayfadan bilgi mesajıyla gelinmiş olabilir (ör. hesap silindikten sonra).
+  const notice = (useLocation().state as { notice?: string } | null)?.notice;
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState<Errors<"email" | "password">>({});
@@ -46,7 +48,8 @@ export function LoginPage() {
   }
 
   return (
-    <Card title="Giriş yap" className="auth-card" headingLevel={1}>
+    <Card title="Giriş yap" className="auth-card" headingLevel={1} focusTitle={Boolean(notice)}>
+      {notice && !formError && <Alert tone="success">{notice}</Alert>}
       {params.get("sonra") && !formError && <Alert tone="info">Devam etmek için giriş yap.</Alert>}
       {formError && <Alert tone="error">{formError}</Alert>}
       <form onSubmit={submit} noValidate>

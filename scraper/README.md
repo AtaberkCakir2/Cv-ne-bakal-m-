@@ -25,6 +25,9 @@ python -m collector import hn --months 6        # Hacker News "Who is hiring?", 
 python -m collector import himalayas --pages 5  # 10 yazılım araması × 5 sayfa, ~2 dk
 python -m collector import remoteok
 python -m collector import remotive             # günde en fazla birkaç kez
+python -m collector import jobicy
+python -m collector import arbeitnow
+python -m collector import pythonorg             # Playwright; pip install -e ".[browser]" && playwright install chromium --only-shell
 python -m collector import emscad --csv data/fake_job_postings.csv   # yedek veri seti, pasif yüklenir
 python -m collector stats                       # kaynak başına ilan sayısı
 ```
@@ -35,6 +38,9 @@ python -m collector stats                       # kaynak başına ilan sayısı
 | Himalayas | `himalayas` | Yazılım aramaları (Developer, Data Science) | Anahtarsız: istekler arası 2 sn |
 | Remote OK | `remote-ok` | Güncel uzaktan ilanlar | Follow link + kaynak adı zorunlu |
 | Remotive | `remotive` | Yazılım kategorisi | Ücretsiz API az ilan veriyor (~10) |
+| Jobicy | `jobicy` | Yazılım, veri, DevOps, güvenlik, test | Sadece son 7 gün; kaynak adı zorunlu |
+| Arbeitnow | `arbeitnow` | Avrupa ilanları (yazılım başlıkları) | Almanca ilanlar elenir; Arbeitnow.com'a link zorunlu |
+| Python.org | `pythonorg` | Python iş ilanları (HTML) | Playwright PoC'si; ~20 ilan; gece akışında yok |
 | EMSCAD | `kaggle-emscad` | 2012–2014 Workable ilanları, CC0 | Tarih yok ve eski: `is_active=false` (son 6 ay istatistiğine girmez); `--active` sadece API'ler çalışmazsa |
 
 EMSCAD dosyası repoya girmez (`data/` git dışı). [Kaggle sayfasından](https://www.kaggle.com/datasets/shivamb/real-or-fake-fake-jobposting-prediction) indirip `fake_job_postings.csv`'yi `scraper/data/` altına koyun.
@@ -140,3 +146,22 @@ mypy .
 ```
 
 Testler ağa çıkmaz; kaynaklar uydurma JSON ile denenir.
+
+## Eğitim kaynağı havuzu (T-046)
+
+Öneri linkleri sadece `resources` tablosundan gelir (karar #10). İki kaynak: elle derlenen `taxonomy/resources.csv` ve YouTube Data API.
+
+```bash
+python -m collector resources-seed            # CSV → resources (aynı URL tekrar eklenmez)
+python -m collector resources-youtube --limit 10  # YouTube araması; --limit olmadan kota dolana kadar
+python -m collector resources-export          # bulunan videolar → taxonomy/resources_youtube.csv
+python -m collector resources-import          # o dosyayı yeni ortama yükle (arama kotası harcamaz)
+python -m collector resources-check           # ölü linkler + YouTube bilgilerini yenileme
+python -m collector resources-report          # toplam ve 3'ten az kaynağı olan yetkinlikler
+```
+
+- `.env`'de `YOUTUBE_API_KEY` gerekir; boşsa arama atlanır.
+- Günde en fazla 100 arama (Türkçe ve İngilizce ayrı arama). Kota Pasifik saatiyle gece yarısı (TR ~10:00) yenilenir. Aramalar talebi yüksek yetkinlikten başlar, durum `data/youtube_searched.json`'da.
+- `resources_youtube.csv` sadece video kimliği, yetkinlik, dil ve seviye tutar. Başlık ve süre repoya yazılmaz (30 gün kuralı), yüklerken API'den alınır; silinen video atlanır.
+- `worker-data` her gün 06:00'da aramaya devam eder, pazar 07:00'de linkleri kontrol eder.
+- Filtre: 10 dk–12 sa, TR ≥ 1.000 / EN ≥ 10.000 izlenme, başlıkta yetkinlik adı ve öğretim ipucu var, tanıtım kelimesi yok. Seviye başlıktan okunur, ipucu yoksa `beginner`.

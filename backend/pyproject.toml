@@ -9,7 +9,11 @@ dependencies = [
     "pydantic-settings>=2.6",
     "httpx>=0.27",
     "redis>=5.2",
+    "celery[redis]>=5.4,<6",
     "psycopg[binary]>=3.2",
+    # CV yükleme (T-038)
+    "python-multipart>=0.0.18",
+    "pypdf[crypto]>=5.1",
     # Veritabanı (app/db, T-012 — Ataberk)
     "sqlalchemy>=2.0.36,<2.1",
     "alembic>=1.14",
@@ -27,6 +31,9 @@ dev = [
     # Güncellerken: sürümü burada artır, `ruff format .` + `mypy app tests` çalıştır, aynı PR'da gönder.
     "ruff==0.17.2",
     "mypy==2.4.0",
+    # T-069: kapsam ölçümü ve TEST_DATABASE_URL / TEST_REDIS_URL verilmediğinde geçici PostgreSQL ve Redis (Docker).
+    "pytest-cov==6.0.0",
+    "testcontainers[postgres,redis]==4.9.0",
 ]
 
 [build-system]
@@ -38,6 +45,14 @@ include = ["app*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+# T-069 kabul kriteri: kapsam en az %70. Veritabanı testleri atlansa da (Docker yok) eşiğin üstünde kalır.
+addopts = "--cov=app --cov-report=term-missing:skip-covered"
+
+[tool.coverage.run]
+omit = ["app/db/migrations/*"]
+
+[tool.coverage.report]
+fail_under = 70
 
 [tool.ruff]
 line-length = 120
@@ -55,3 +70,7 @@ ignore = ["S101"]
 python_version = "3.12"
 strict = true
 plugins = ["pydantic.mypy"]
+
+[[tool.mypy.overrides]]
+module = ["celery", "celery.*", "kombu.*", "testcontainers.*"]
+ignore_missing_imports = true
