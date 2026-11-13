@@ -85,11 +85,12 @@ Production PC'sinde (i7-9750H, CPU) bir analiz yaklaşık 1–2 dakika sürer; b
 | ollama | ollama/ollama | 11434 | HAYIR (kesinlikle) | 8 GB | 1 | /api/tags | Burak |
 | postgres | pgvector/pgvector:pg16 | 5432 | HAYIR | 2 GB | 1 | pg_isready | Ataberk |
 | redis | redis:7 (AOF açık, şifreli) | 6379 | HAYIR | 256 MB | 1 | redis-cli ping | Ataberk |
+| cv-redis | redis:7 (kalıcılık kapalı, tmpfs; kuyruktaki CV baytları, karar #9) | 6379 | HAYIR | 256 MB | 1 | redis-cli ping | Ataberk |
 | grafana (+ prometheus) | grafana, prometheus | 3000 | Hayır (sadece 127.0.0.1) | 512 MB | 1 | — | Ataberk |
 
 **Bellek bütçesi:** production konteynerleri toplam ~15,5 GB. PC'de 32 GB RAM var ama Windows ve geliştirme ortamı da aynı makinede: Docker Desktop'a (WSL2, `.wslconfig`) en fazla 20 GB verilir, production açıkken geliştirme ortamının Ollama'sı kapatılır. AI worker eşzamanlılığı 1; RAM %85'i aşınca uyarı. Kullanıcı sayısı artarsa ilk adım Ollama'yı GPU'ya (GTX 1650 kısmi veya ayrı makine) almaktır.
 
-**PC'nin sunucu gibi çalışması için:** uyku ve hazırda bekletme kapalı, kapak kapanınca "hiçbir şey yapma", Windows Update etkin saatleri ayarlı ve sunum öncesi hafta güncellemeler ertelenir, Docker Desktop oturum açılınca başlar, konteynerler `restart: unless-stopped`. Kontrol listesi: `infra/pc/README.md` (T-009).
+**PC'nin sunucu gibi çalışması için:** uyku ve hazırda bekletme kapalı, kapak kapanınca "hiçbir şey yapma", sunum öncesi hafta Windows güncellemeleri ertelenir, Docker Desktop elle açılır (karar #31), konteynerler `restart: unless-stopped`; disk şifrelemesi (BitLocker) canlıya çıkıştan önce açılır. Kontrol listesi: `infra/pc/README.md` (T-009).
 
 ## API
 

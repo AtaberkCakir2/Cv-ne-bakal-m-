@@ -34,12 +34,14 @@ PHONE = re.compile(
 )
 _PHONE_MIN_DIGITS = 9
 
-# Hash veya kod içindeki 11 hane TCKN değildir ("a3f91234567890b2c", "id_12345678901"): sadece küçük harf hex
-# ve alt çizgiye bitişikse atlanır. Diğer harflere bitişik olan maskelenir ("TC12345678901", "no12345678901").
-# Önündeki nokta/virgül sadece rakamdan sonra geliyorsa ondalıktır ("3.12345678901"); "T.C.12345678901" maskelenir.
-TCKN = re.compile(r"(?<![0-9a-f_])(?<!\d[.,])[1-9]\d{10}(?![.,]\d|[0-9a-f_])")
-# "tc"/"tckn" önekiyle bitişik yazılan ("tc12345678901"): "c" hex olduğu için yukarıdaki kural atlar.
-TCKN_PREFIXED = re.compile(r"(?<![a-z])tc(?:kn)?[:\s]*([1-9]\d{10})(?![.,]\d|[0-9a-f_])", re.IGNORECASE)
+# Hash veya kod içindeki 11 hane TCKN değildir: alt çizgiye bitişikse ("id_12345678901") veya bütün kelime küçük harf
+# hex ve en az 14 karakterse, en az 3'ü rakam dışıysa ("a3f91234567890b2c", `_is_hash`) atlanır. Diğer harflere bitişik
+# olan maskelenir ("TC12345678901", "kimlikde12345678901", "de12345678901"). Önündeki nokta/virgül sadece rakamdan sonra
+# geliyorsa ondalıktır ("3.12345678901").
+TCKN = re.compile(r"(?<![\d_])(?<!\d[.,])[1-9]\d{10}(?![.,]\d|[\d_])")
+_HEX_WORD = re.compile(r"[0-9a-f]+")
+_HASH_MIN_LEN = 14
+_HASH_MIN_NON_DIGITS = 3
 
 IBAN = re.compile(r"\bTR\s?\d{2}(?:\s?\d{4}){5}\s?\d{2}\b", re.IGNORECASE)
 
@@ -50,10 +52,16 @@ URL = re.compile(
 )
 
 _WHATSAPP = re.compile(r"(?:wa\.me|whatsapp\.com)/(?:send\?phone=)?\+?(\d{9,15})", re.IGNORECASE)
-# Bağlantı içinde de telefon sayılan sayılar: Türkiye ön ekiyle yazılmış (05…, +90…, 0090…) veya telefon
-# parametresinin değeri ("?phone=…", "&tel=…"). Ön eksiz sayılar (ilan no) bağlantının parçası olarak kalır.
+# Bağlantı içinde de kişisel veri sayılan sayılar: Türkiye ön ekiyle yazılmış telefon (05…, +90…, 0090…) ve adı telefon
+# veya kimlik olan parametrelerin değeri ("?phone=…", "&tckn=…"). Diğer sayılar (ilan no) bağlantının parçası kalır.
 _URL_PHONE_PREFIX = re.compile(r"^(?:\+90|0090|0)")
-_URL_PHONE_PARAM = re.compile(r"(?:phone|tel|mobile|gsm|telefon|cep)=$", re.IGNORECASE)
+_URL_PHONE_PARAM = re.compile(
+    r"[?&](?:phone|tel|mobile|gsm|telefon|cep|contact|whatsapp|number|numara)=((?:%2B|\+)?\d{9,15})(?!\d)",
+    re.IGNORECASE,
+)
+_URL_TCKN_PARAM = re.compile(
+    r"[?&](?:tc|tckn|tc_?no|kimlik|kimlik_?no|national_?id)=([1-9]\d{10})(?!\d)", re.IGNORECASE
+)
 
 # Alan adı gibi görünen teknoloji adları (küçük harfle yazılınca da bağlantı sayılmasın).
 TECH_NAMES = {"socket.io", "asp.net", "ado.net", "vb.net"}
@@ -105,26 +113,23 @@ def find_structured(text: str) -> list[Span]:
     urls = [m for m in URL.finditer(text) if m.group().lower() not in TECH_NAMES]
     spans += [Span(m.start(), m.end(), Kind.URL) for m in urls]
     # Bağlantı içindeki sayı (ilan no: linkedin.com/jobs/view/4438695357) telefon/TCKN değildir; ilan maskelemesi
-    # bağlantıyı bıraktığı için bu sayı ayrıca maskelenmesin. Telefon biçimli olanlar (WhatsApp, 05…, ?phone=…)
-    # ise telefondur.
+    # bağlantıyı bıraktığı için bu sayı ayrıca maskelenmesin. WhatsApp, 05… ve telefon/kimlik parametreleri kişiseldir.
     in_url = [(m.start(), m.end()) for m in urls if not _WHATSAPP.search(m.group())]
     for m in urls:
-        if w := _WHATSAPP.search(m.group()):
-            spans.append(Span(m.start() + w.start(1), m.start() + w.end(1), Kind.PHONE))
+        for pattern, kind in ((_WHATSAPP, Kind.PHONE), (_URL_PHONE_PARAM, Kind.PHONE), (_URL_TCKN_PARAM, Kind.TCKN)):
+            spans += [Span(m.start() + v.start(1), m.start() + v.end(1), kind) for v in pattern.finditer(m.group())]
 
     def outside_url(m: re.Match[str]) -> bool:
         return not any(s <= m.start() and m.end() <= e for s, e in in_url)
 
-    def phone_in_url(m: re.Match[str]) -> bool:
-        return bool(
-            _URL_PHONE_PREFIX.match(m.group()) or _URL_PHONE_PARAM.search(text, max(0, m.start() - 10), m.start())
-        )
-
     for m in PHONE.finditer(text):
-        if sum(c.isdigit() for c in m.group()) >= _PHONE_MIN_DIGITS and (outside_url(m) or phone_in_url(m)):
+        if sum(c.isdigit() for c in m.group()) >= _PHONE_MIN_DIGITS and (
+            outside_url(m) or _URL_PHONE_PREFIX.match(m.group())
+        ):
             spans.append(Span(m.start(), m.end(), Kind.PHONE))
-    spans += [Span(m.start(), m.end(), Kind.TCKN) for m in TCKN.finditer(text) if outside_url(m)]
-    spans += [Span(m.start(1), m.end(1), Kind.TCKN) for m in TCKN_PREFIXED.finditer(text) if outside_url(m)]
+    spans += [
+        Span(m.start(), m.end(), Kind.TCKN) for m in TCKN.finditer(text) if outside_url(m) and not _is_hash(text, m)
+    ]
     spans += [
         Span(m.start(), m.start() + len(m.group().rstrip()), Kind.BIRTH_DATE) for m in BIRTH_LABELED.finditer(text)
     ]
@@ -132,6 +137,20 @@ def find_structured(text: str) -> list[Span]:
     spans += [Span(m.start(), m.end(), Kind.ADDRESS) for m in ADDRESS_LABELED.finditer(text)]
     spans += _address_fields(text)
     return spans
+
+
+def _is_hash(text: str, m: re.Match[str]) -> bool:
+    start, end = m.start(), m.end()
+    while start > 0 and text[start - 1].isalnum():
+        start -= 1
+    while end < len(text) and text[end].isalnum():
+        end += 1
+    word = text[start:end]
+    return (
+        len(word) >= _HASH_MIN_LEN
+        and sum(not c.isdigit() for c in word) >= _HASH_MIN_NON_DIGITS
+        and _HEX_WORD.fullmatch(word) is not None
+    )
 
 
 def _address_fields(text: str) -> list[Span]:

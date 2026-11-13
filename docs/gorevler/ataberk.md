@@ -16,13 +16,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-006 · Monorepo ve Git akışı
 
-- **Durum:** Devam Ediyor
+- **Durum:** Tamamlandı
 - **Tarih:** 19.10.2026 – 25.10.2026 · **Öncelik:** P0 · **Efor:** 4 saat · **Alan:** DevOps / Altyapı
 - **Bağımlılık:** T-001 (Anıl)
 - **Destek:** —
 - **Çıktı:** GitHub repo
 - **Kabul kriteri:** Klasörler: /backend /ai /scraper /web /mobile /infra /docs (Electron `web/`'i kullanır). Tek ana dal `main` (karar #27); branch protection (1 onay + yeşil CI zorunlu), PR şablonu, conventional commits, CODEOWNERS.
-- **Not:** Repo, klasör yapısı ve PR şablonu hazır. Kalan: ana dal koruması ve CODEOWNERS; özel repoda GitHub Pro gerektiriyor (Student Pack başvurusu 30.10'da yapıldı, onay bekleniyor).
+- **Not:** 13.11.2026 kontrolü: klasör yapısı, PR şablonu ve `.github/CODEOWNERS` (CLAUDE.md'deki klasör sahipliğiyle aynı) repoda. `main` koruması açık: 1 onay zorunlu, yeni push'ta eski onay düşer, CI zorunlu (Backend, Scraper, Web, Docker) ve dal güncel olmalı, kurallar adminler için de geçerli.
 
 ### T-007 · Lokal geliştirme ortamı (docker-compose)
 
@@ -36,25 +36,25 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-009 · Production PC'si hazırlığı ve sertleştirme
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 19.10.2026 – 25.10.2026 · **Öncelik:** P0 · **Efor:** 6 saat · **Alan:** DevOps / Altyapı
 - **Bağımlılık:** —
 - **Destek:** —
 - **Çıktı:** `infra/pc/README.md` (PC kurulum ve kontrol listesi, sırlar hariç)
-- **Kabul kriteri:** Karar #30: VPS yok, production Ataberk'in PC'sinde (i7-9750H, 32 GB RAM, GTX 1650, Windows 10 Pro). Docker Desktop (WSL2) oturumla başlar, `.wslconfig` ile en fazla 20 GB RAM; uyku/hazırda bekletme kapalı, kapak kapanınca "hiçbir şey yapma"; Windows Update etkin saatleri ayarlı; BitLocker açık; Windows Güvenlik Duvarı açık, gelen port yok (modemde yönlendirme yok); saat dilimi Europe/Istanbul; C: diskinde en az 40 GB boş.
-- **Not:** 06.11.2026: karar #30 ile VPS tedariki kaldırıldı, görev PC hazırlığına dönüştü.
+- **Kabul kriteri:** Karar #30: VPS yok, production Ataberk'in PC'sinde (i7-9750H, 32 GB RAM, GTX 1650, Windows 10 Pro). Docker Desktop (WSL2) elle açılır, `.wslconfig` ile en fazla 20 GB RAM; uyku/hazırda bekletme kapalı, kapak kapanınca "hiçbir şey yapma"; BitLocker canlıya çıkıştan önce açılır (go-live #1); etkin saatler ayarlanmaz (karar #31); Windows Güvenlik Duvarı açık, gelen port yok (modemde yönlendirme yok); saat dilimi Europe/Istanbul; C: diskinde en az 40 GB boş.
+- **Not:** 06.11.2026: karar #30 ile VPS tedariki kaldırıldı, görev PC hazırlığına dönüştü. 10.11.2026: PC kontrol edildi (salt okunur): prizde uyku/hazırda bekletme hiçbir zaman, kapak kapanınca "hiçbir şey yapma" (Ataberk teyit etti), saat dilimi Türkiye, C: 53 GB boş, güvenlik duvarı üç profilde açık (ağ "Ortak"), otomatik oturum açma kapalı, `.wslconfig` `memory=20GB` yazıldı. Docker'ın oturumla başlaması, etkin saatler ve BitLocker karar #31 ile değişti; BitLocker go-live #1'de açılacak.
 
 ### T-010 · Alan adı, Cloudflare DNS ve Tunnel
 
-- **Durum:** Devam Ediyor
+- **Durum:** Tamamlandı
 - **Tarih:** 19.10.2026 – 25.10.2026 · **Öncelik:** P1 · **Efor:** 2 saat · **Alan:** DevOps / Altyapı
 - **Bağımlılık:** T-009
 - **Destek:** —
 - **Çıktı:** DNS kayıtları + `cloudflared` servisi (compose)
 - **Kabul kriteri:** Alan adı alındı, ad sunucuları Cloudflare'de (ücretsiz plan). Cloudflare Tunnel kuruldu; `cloudflared` production compose'da konteyner, tünel token'ı sadece PC'deki `.env`'de. app. ve api. tünele bağlı; tanıtım/yasal sayfalar için alan adının kökü Cloudflare Pages'e. Always Use HTTPS + HSTS + en düşük TLS 1.2 açık; SSL ücretsiz (Cloudflare).
 - **Not:** 06.11.2026: karar #30 ile Caddy/Let's Encrypt yerine Cloudflare Tunnel; staging-api. ve status. alt alan adları kaldırıldı.
-- **Devam notu (06.11.2026):** Yapılan: `cvnebakalim.com` Cloudflare Registrar'dan 560 TL'ye alındı (ad sunucuları Cloudflare'de); dokümanlardaki yer tutucular gerçek adla değiştirildi. Cloudflare'e GitHub ile giriliyor (GitHub'da authenticator 2FA açık; Cloudflare'in kendi 2FA'sı şifre doğrulama sorunu yüzünden sonraya kaldı). Zero Trust'ta `careerai-pc` tüneli oluşturuldu, token parola yöneticisinde (repoda yok); tünel bir kez bağlanıp kapatıldı; `api.cvnebakalim.com` → `http://api:8000` public hostname'i eklendi; SSL/TLS Full, Always Use HTTPS, en düşük TLS 1.2 (HSTS sistem çalışınca açılacak). Sıradaki adım: production (T-075) açılınca token'ı `infra/pc/.env.prod`'a yaz, `https://api.cvnebakalim.com/api/v1/health` ile uçtan uca dene, sonra HSTS; Cloudflare 2FA'yı yeniden dene. Açık sorular / engeller: web arayüzü (`app.`) Pages'te mi tünelde mi (Anıl); kök alan adı Cloudflare Pages'e (tanıtım/yasal sayfalar, T-070). Branch: ataberk/karar-sunucusuz
 
+- **Not (13.11.2026):** Alan adı `cvnebakalim.com` Cloudflare'de (Registrar, 560 TL); `careerai-pc` tüneli production compose'da `cloudflared` konteyneri, token sadece PC'deki `infra/pc/.env.prod`'da. Uçtan uca denendi: `https://api.cvnebakalim.com/api/v1/health` ve `/health/ready` dışarıdan 200 (Cloudflare → tünel → `http://api:8000`; paneldeki servis türü HTTPS'ten HTTP'ye düzeltildi). `http://` → 301 `https://`, en düşük TLS 1.2 (TLS 1.1 reddediliyor), HSTS 6 ay + includeSubDomains (preload yok), `X-Content-Type-Options: nosniff` Cloudflare'den. Tanımsız alt alan adları açılmıyor. Kök alan adı → Cloudflare Pages T-070'e (tanıtım sayfası) devredildi; `app.` Pages'te mi tünelde mi Anıl'la karar verilecek. Cloudflare hesabında 2FA henüz yok (GitHub girişi 2FA'lı).
 ### T-011 · Veri tabanı şeması v1 (ERD)
 
 - **Durum:** Tamamlandı
@@ -160,14 +160,14 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-036 · CD: imaj üretimi ve PC'ye deploy betiği
 
-- **Durum:** Devam Ediyor
+- **Durum:** Tamamlandı
 - **Tarih:** 09.11.2026 – 15.11.2026 · **Öncelik:** P0 · **Efor:** 10 saat · **Alan:** DevOps / Altyapı
 - **Bağımlılık:** T-008, T-035
 - **Destek:** —
 - **Çıktı:** `.github/workflows/deploy.yml` + `infra/pc/deploy.sh` + `infra/pc/deploy.md`
 - **Kabul kriteri:** `main` birleştirmesi image'ları commit adıyla GHCR'a push eder; `vX.Y.Z` etiketi o commit'i gösterir. PC'de tek komutla (Git Bash: `bash infra/pc/deploy.sh vX.Y.Z`): image çek, önce yedek, alembic upgrade, `docker compose -p careerai-prod up -d`, smoke test; başarısızsa önceki image etiketine dönüş. PC'ye dışarıdan SSH/deploy erişimi açılmaz.
 - **Not:** 06.11.2026: karar #30 ile SSH'li otomatik staging deploy'u kaldırıldı.
-- **Devam notu (06.11.2026):** Yapılan: workflow'dan SSH/deploy işi çıkarıldı, sadece imaj üretimi kaldı (actionlint temiz). `infra/pc/deploy.sh` yerelde derlenen imajlarla prova ortamında denendi: deploy tamam, bozuk api imajında önceki imaja döndü; pg_dump yönlendirmesi denendi (shellcheck temiz). Sıradaki adım: PR #50 main'e girince Actions'ta imaj gönderimini gör, `docker login ghcr.io` ile PC'de GHCR'dan çekerek prova deploy'u (`infra/pc/deploy.md` 1. ve 5. adım). Açık sorular / engeller: production dökümü gerçek `careerai-prod`'da denenmedi (T-075). Branch: ataberk/sunucu-hazirlik
+- **Not:** 10.11.2026: main birleştirmesi imajları GHCR'a gönderiyor (b6703cc, api + worker-data); PC'de GHCR'dan çekilip `bash infra/pc/deploy.sh <ref> staging` ile prova ortamına alındı (5 servis healthy, `/health/ready` hazır). GHCR paketlerine repo Admin rolüyle bağlandı (Manage Actions access); bağlı olmayan pakete GITHUB_TOKEN yazamıyordu. Production dökümü gerçek `careerai-prod`'da T-075'te denenecek.
 
 ### T-028 · TÜBİTAK 2209-A başvuru dosyası
 
@@ -206,12 +206,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-046 · Eğitim kaynağı havuzu
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 16.11.2026 – 29.11.2026 · **Öncelik:** P0 · **Efor:** 16 saat · **Alan:** Veri Toplama
 - **Bağımlılık:** T-017
 - **Destek:** Burak
 - **Çıktı:** resources tablosu (≥ 900 kayıt)
 - **Kabul kriteri:** YouTube Data API v3 + elle küratörlük. Her yetkinlik için en az 3 kaynak (Türkçe öncelikli; seviye, süre, ücretsiz/ücretli). Haftalık link sağlık kontrolü (ölü link → pasif).
+- **Not:** 12.11.2026 itibarıyla 1570 canlı kaynak (tr 470, en 1100; 1040 YouTube videosu + `resources.csv`'de elle derlenmiş linkler). 374/374 yetkinlikte ≥ 3 kaynak, 230 yetkinlikte en az 1 Türkçe kaynak. Seviye/süre/ücretsiz alanları dolu. Haftalık `collector.resources_check` ölü linkleri pasife alıyor.
 
 ### T-047 · 2. ve 3. veri kaynağı entegrasyonu
 
@@ -265,12 +266,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-068 · Yedekleme
 
-- **Durum:** Yapılacak
+- **Durum:** Devam Ediyor
 - **Tarih:** 07.12.2026 – 13.12.2026 · **Öncelik:** P0 · **Efor:** 8 saat · **Alan:** Operasyon / İzleme
 - **Bağımlılık:** T-035
 - **Destek:** —
 - **Çıktı:** Yedekleme scriptleri + zamanlayıcı
 - **Kabul kriteri:** pg_dump her gün 02:00 (PC o saatte kapalıysa açılışta); 7 günlük + 4 haftalık saklama; restic ile şifreli olarak PC dışına (Backblaze B2 ücretsiz katman vb.). Zamanlayıcı Windows'ta çalışır (compose içinde yedek konteyneri veya Görev Zamanlayıcı; PR #57'deki systemd birimleri PC'de kullanılmaz). Geri yükleme testi yapıldı.
+- **Devam notu (06.11.2026):** Yapılan: karar #30 ile PC'ye uyarlandı. systemd birimleri kaldırıldı; yedek `infra/pc/compose.yml`'de `backup` konteyneri (restic 0.18 + pg16 istemcisi, `infra/backup/Dockerfile`), zamanlayıcı içinde (`scheduler.sh`: 02:00, PC kapalıysa açılışta, başarısızsa 30 dk sonra tekrar). Prova ortamında dev verisiyle denendi: 6,5 MB yedek ~3 sn, kaçan yedek yeniden başlatınca alındı, güncel yedek varken tekrar alınmadı, yanlış parolada hata verdi; `restore-test.sh staging` 11 sn, 11 tablo eşleşti; shellcheck temiz. Backblaze B2 hesabı açıldı (EU Central, sınırlar $0, bucket `cvnebakalim-yedek`, anahtar `careerai-pc`; anahtarlar parola yöneticisinde). Sıradaki adım: production açılınca (T-075) anahtarları ve RESTIC_PASSWORD'ü `.env.prod`'a yaz, `make backup-init`, ilk gerçek yedek ve `restore-test.sh production`. Açık sorular / engeller: gerçek B2 deposu henüz denenmedi (sadece yerel restic deposu). PR #57, #50'nin üstüne kurulu (`infra/pc`). Branch: ataberk/t068-yedekleme
 
 ### T-070 · Tanıtım (landing) sayfası
 
@@ -280,6 +282,7 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 - **Destek:** Anıl
 - **Çıktı:** Landing sayfası
 - **Kabul kriteri:** Ürün tanıtımı, ekran görüntüleri, indirme linkleri (Windows/macOS/Android), gizlilik politikası ve KVKK linkleri, iletişim.
+- **Not:** 13.11.2026: T-010'dan devralındı: sayfa Cloudflare Pages'te yayınlanır ve kök alan adı `cvnebakalim.com` Pages projesine bağlanır (Anıl'ın yasal sayfaları #71 ile aynı Pages projesi olabilir).
 
 ---
 

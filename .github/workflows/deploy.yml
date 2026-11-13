@@ -57,6 +57,9 @@ jobs:
           file: ${{ matrix.file }}
           push: true
           tags: ${{ env.IMAGE_PREFIX }}-${{ matrix.name }}:${{ env.SHA }}
+          # Paketi repoya bağlar: bağlı olmayan pakete sadece sahibi yazabilir, başkasının birleştirmesinde push
+          # `permission_denied: write_package` ile düşer. Bağlı pakette repoya yazma izni olan herkesin işi geçer.
+          labels: org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
           # İmza kaydı (attestation) GHCR'da ayrı sürüm sayılır; sürüm silme adımı imajları yarım bırakmasın.
           provenance: false
           cache-from: type=gha,scope=${{ matrix.name }}
