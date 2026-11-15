@@ -50,7 +50,7 @@ def _api(info: SourceInfo, fetch: Callable[[PoliteClient], Iterable[Posting]]) -
 
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(prog="collector", description="CareerAI ilan toplayıcı")
+    parser = argparse.ArgumentParser(prog="collector", description="Cv'ne Bakalım! ilan toplayıcı")
     sub = parser.add_subparsers(dest="command", required=True)
 
     imp = sub.add_parser("import", help="Bir kaynaktan ilanları içe aktar")
