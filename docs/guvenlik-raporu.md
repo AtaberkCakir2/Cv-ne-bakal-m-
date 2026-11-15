@@ -2,7 +2,7 @@
 
 **Tarih:** 15.11.2026 · **Yapan:** Ataberk · **Kapsam:** `main` (ca22474) + açık PR'lar #86–#89, production imajları (`careerai/api:production`, `careerai/worker-data:production`, `careerai/backup`)
 
-Taramalar artık her PR'da, `main`'e her push'ta ve her pazartesi otomatik çalışıyor (`.github/workflows/security.yml`); Dependabot her hafta güncelleme PR'ı açıyor (`.github/dependabot.yml`). Yerelde aynı komutlar: [`infra/guvenlik.md`](../infra/guvenlik.md).
+Taramalar artık her PR'da, `main`'e her push'ta ve her pazartesi otomatik çalışıyor (`.github/workflows/security.yml`); Dependabot her hafta güncelleme PR'ı açıyor (`.github/dependabot.yml`); Dependabot uyarıları ve güvenlik güncellemeleri repoda açık. Yerelde aynı komutlar: [`infra/guvenlik.md`](../infra/guvenlik.md).
 
 ## Özet
 
@@ -12,12 +12,12 @@ Taramalar artık her PR'da, `main`'e her push'ta ve her pazartesi otomatik çal�
 | G-2 | Yedek imajında restic ikilisinin Go kütüphanelerinde 23 yüksek açık kaldı | Yüksek | **Kabul edildi, 15.01.2027'ye kadar** (`infra/backup/.trivyignore`, gerekçe dosyada) | Ataberk |
 | G-3 | Web: `react-router-dom` (→ `@remix-run/router`) 3 yüksek açık: açık yönlendirme / XSS | Yüksek | Açık: `npm audit fix` ile yamalı sürüm var | Anıl |
 | G-4 | API ve veri işçisi imajında `zlib1g` 2 yüksek açık (Debian taban imajı) | Yüksek | Açık: imajlar yeniden derlenince kapanır (`--pull`); sonraki deploy | Ataberk |
-| G-5 | API güvenlik başlıkları göndermiyor (HSTS, CSP, X-Content-Type-Options, X-Frame-Options) | Orta | Açık: Cloudflare kuralı adımları hazır (`infra/guvenlik.md` §3) | Ataberk |
+| G-5 | API güvenlik başlıkları göndermiyor (HSTS, CSP, X-Content-Type-Options, X-Frame-Options) | Orta | **Düzeltildi** (Cloudflare kuralları; securityheaders.com **A+**) | Ataberk |
 | G-6 | Swagger arayüzü (`/docs`) ve `openapi.json` production'da herkese açık | Düşük | Açık: production'da kapatılması önerildi | Anıl |
 | G-7 | Web dev bağımlılıkları: `typescript-eslint` / `minimatch` 7 orta açık | Düşük | Açık: sadece geliştirme aracı, imaja girmiyor; Dependabot yükseltir | Anıl |
 | G-8 | `mobile/package-lock.json` yok: bağımlılıklar denetlenemiyor, kurulum tekrarlanabilir değil | Düşük | Açık | Burak |
 
-Temiz çıkanlar: **gitleaks** (213 commit, tüm dallar): gerçek sır yok; 18 eşleşmenin hepsi OpenAPI örneği veya test parolası, değerleriyle istisna yazıldı (`.github/gitleaks.toml`). **pip-audit** (backend, scraper, ai `pyproject.toml`): bilinen açık yok. Production API imajındaki Python paketleri de güncel (pypdf 7.0.0, dnspython 2.9.2).
+Temiz çıkanlar: **gitleaks** (213 commit, tüm yerel dallar): gerçek sır yok; 18 eşleşmenin hepsi OpenAPI örneği veya test parolası, değerleriyle istisna yazıldı (`.github/gitleaks.toml`). **pip-audit** (backend, scraper, ai `pyproject.toml`): bilinen açık yok. Production API imajındaki Python paketleri de güncel (pypdf 7.0.0, dnspython 2.9.2).
 
 ## Bulgular
 
@@ -37,7 +37,7 @@ Kalan 23 açık restic'in kendi derlenmiş ikilisinde (Go stdlib, `x/net`, `x/cr
 
 ### G-5 · Güvenlik başlıkları
 
-`api.cvnebakalim.com` yanıtlarında HSTS, CSP, `X-Content-Type-Options` yok (uygulama göndermiyor; eskiden Caddy veriyordu, karar #30 ile Caddy kalktı). HSTS Cloudflare'in **Edge Certificates** ayarıyla (deploy.md §3), diğerleri bir **Response Header Transform Rule** ile eklenir: kod değişikliği gerekmez, admin paneli ve ileride web için de geçerli olur. Adımlar ve doğrulama: [`infra/guvenlik.md`](../infra/guvenlik.md) §3. Alternatif olarak Anıl bunu API'de bir middleware ile de verebilir; ikisi birden gerekmez.
+`api.cvnebakalim.com` yanıtlarında HSTS, CSP, `X-Content-Type-Options` yok (uygulama göndermiyor; eskiden Caddy veriyordu, karar #30 ile Caddy kalktı). HSTS Cloudflare'in **Edge Certificates** ayarıyla (deploy.md §3), diğerleri bir **Response Header Transform Rule** ile eklenir: kod değişikliği gerekmez, admin paneli ve ileride web için de geçerli olur. Adımlar ve doğrulama: [`infra/guvenlik.md`](../infra/guvenlik.md) §3. **15.11.2026'da kuruldu:** `api.cvnebakalim.com` yanıtlarında HSTS, `X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy`, `Permissions-Policy` ve (`/admin`, `/docs` hariç) CSP geliyor; securityheaders.com notu **A+**. Canlıda yabancı kaynaktan CORS ön isteği `400`, izin başlığı yok. API'de ayrıca middleware gerekmez.
 
 ### G-6 · `/docs` production'da açık
 
@@ -68,4 +68,4 @@ Kodun okunarak ve yukarıdaki taramalarla yapılan kısa kontrol; sızma testi d
 
 - **#7** (repoda sır yok): gitleaks temiz. "Production sırları güçlü ve yeni üretilmiş" kısmı T-075'te kontrol edilir.
 - **#8** (kritik/yüksek açık yok): G-3 ve G-4 kapanınca sağlanır; G-2 gerekçeli istisna.
-- **#12** (CORS + başlıklar): CORS uygun; G-5 yapılınca securityheaders.com ile doğrulanır.
+- **#12** (CORS + başlıklar): sağlandı (securityheaders.com A+, 15.11.2026); web arayüzü yayına girince onun adresi için de tekrar bakılır.

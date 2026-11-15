@@ -80,6 +80,6 @@ Repo → **Settings** → sol menü **Security** altında **Advanced Security** 
 
 1. **Dependabot alerts** → **Enable**.
 2. **Dependabot security updates** → **Enable** (açık yayımlanınca haftayı beklemeden PR açar).
-3. **Secret Protection** / **Secret scanning** → **Enable**, altındaki **Push protection** → **Enable** (sır içeren push'u daha GitHub'da durdurur).
+GitHub'ın kendi sır taraması (Secret Protection, push protection) private repolarda ücretli; repo private olduğu için açılmadı. Onun yerine gitleaks her PR'da tüm geçmişi tarıyor (§1). Repo public yapılırsa bu iki ayar ücretsiz olur, açılmalı.
 
-Kontrol: repo → **Security** sekmesi → **Dependabot** ve **Secret scanning** sayfaları açılıyor olmalı.
+Kontrol: repo → **Security** sekmesi → **Dependabot** sayfası açılıyor olmalı.

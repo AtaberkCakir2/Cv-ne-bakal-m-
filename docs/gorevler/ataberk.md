@@ -248,13 +248,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-064 · Güvenlik incelemesi (OWASP Top 10)
 
-- **Durum:** Devam Ediyor
+- **Durum:** Tamamlandı
 - **Tarih:** 07.12.2026 – 13.12.2026 · **Öncelik:** P0 · **Efor:** 10 saat · **Alan:** Güvenlik & KVKK
 - **Bağımlılık:** T-036
 - **Destek:** Anıl
 - **Çıktı:** Güvenlik bulguları raporu
 - **Kabul kriteri:** pip-audit, npm audit, Dependabot; Trivy ile image taraması; gitleaks ile sır taraması; CORS sadece kendi alan adları; güvenlik başlıkları (HSTS, CSP, X-Content-Type-Options).
-- **Devam notu (15.11.2026):** Yapılan: taramalar yerelde çalıştırıldı, rapor `docs/guvenlik-raporu.md` (G-1…G-8); CI `.github/workflows/security.yml` (gitleaks, pip-audit, npm audit, Trivy; haftalık) ve `.github/dependabot.yml`; gitleaks istisnaları `.github/gitleaks.toml`; yedek imajı restic 0.19.1 + `apk upgrade` (kritik açıklar kapandı, production'da çalışıyor), kalan restic açıkları `infra/backup/.trivyignore` (süre 15.01.2027); elle yapılacaklar `infra/guvenlik.md`. Sıradaki adım: `infra/guvenlik.md` §3 Cloudflare başlık kuralları ve §4 GitHub ayarları (Dependabot, secret scanning), api açıkken curl + securityheaders.com ile doğrula; sonra Tamamlandı. Açık sorular / engeller: G-3 react-router ve G-6 `/docs` Anıl'da, G-8 mobil lock dosyası Burak'ta. Branch: ataberk/t064-guvenlik
+- **Not:** 15.11.2026. Rapor `docs/guvenlik-raporu.md` (G-1…G-8). CI `.github/workflows/security.yml` (gitleaks, pip-audit, npm audit, Trivy; PR, main ve haftalık) + `.github/dependabot.yml`; GitHub'da Dependabot uyarıları ve güvenlik güncellemeleri açık (secret scanning private repoda ücretli, gitleaks yeterli). Yedek imajı restic 0.19.1 (kritik açıklar kapandı); kalan restic açıkları `infra/backup/.trivyignore`, süre 15.01.2027'de doluyor, go-live öncesi tekrar bakılacak. Cloudflare başlık kuralları kuruldu, securityheaders.com A+. CORS canlıda doğrulandı. Açık kalan bulgular sahiplerinde: G-3 react-router ve G-6 `/docs` Anıl, G-8 mobil lock dosyası Burak; G-4 zlib sonraki deploy'da kapanır.
 
 ### T-067 · Merkezi log ve log maskeleme
 
