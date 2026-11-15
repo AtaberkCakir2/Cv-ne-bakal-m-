@@ -30,7 +30,7 @@ scrape_configs:
       - targets: ["postgres-exporter:9187"]
 
   # api hazır mı: içeriden (konteyner ağı) ve dışarıdan (Cloudflare Tunnel üzerinden).
-  # PC kapanınca bunlar da durur; PC dışı izleme UptimeRobot'ta (README 3. adım).
+  # PC kapanınca bunlar da durur; PC dışı izleyici yok (karar #32).
   - job_name: health
     metrics_path: /probe
     params:

@@ -238,14 +238,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-066 · İzleme ve uyarı sistemi
 
-- **Durum:** Devam Ediyor
+- **Durum:** Tamamlandı
 - **Tarih:** 30.11.2026 – 06.12.2026 · **Öncelik:** P0 · **Efor:** 10 saat · **Alan:** Operasyon / İzleme
 - **Bağımlılık:** T-035
 - **Destek:** —
-- **Çıktı:** İzleme paneli + status sayfası
+- **Çıktı:** İzleme paneli (Grafana, PC'de)
 - **Kabul kriteri:** PC dışından uptime izleme (UptimeRobot / Better Stack ücretsiz; api.cvnebakalim.com/health/ready her 1-5 dk), Sentry (backend + web + mobil, ücretsiz katman), Prometheus + Grafana PC'de (CPU/RAM/disk/kuyruk; sadece 127.0.0.1). Uyarılar Telegram/e-posta ile ekibe.
-- **Not:** 06.11.2026: karar #30 ile Uptime Kuma yerine dış izleyici (PC kapanınca içindeki izleyici de kapanır). 12.11.2026: PC tarafı hazır (`infra/monitoring/`, `monitoring` profili): Prometheus + Grafana (127.0.0.1:3000), 12 uyarı kuralı (bildirim yok, panoda görünür; karar #32); geçici bir compose projesinde denendi (tüm hedefler up, 16 pano sorgusu çalışıyor, salt okunur `careerai_monitor` rolü kullanıcı tablosunu okuyamıyor). Kalan: UptimeRobot hesabı + status sayfası, Sentry hesabı (adımlar `infra/monitoring/README.md` 2-3); production `.env.prod`'a şifreler. Sentry entegrasyon kodu Anıl (backend, web) ve Burak (mobil).
-- **Devam notu (12.11.2026):** Yapılan: `infra/monitoring/` (Prometheus, Grafana panosu `grafana/dashboards/careerai.json` — üretici betik repoda yok, JSON elle düzenlenebilir —, 12 kural `prometheus/alerts.yml`, exporter'lar) + `infra/pc/compose.yml` `monitoring` profili + `deploy.sh` `setup_monitor_role`; geçici `careerai-izlemetest` projesinde denendi, pano tarayıcıda kontrol edildi. Karar #32 (bildirim yok) yazıldı. · Sıradaki adım: Ataberk UptimeRobot hesabı + `CareerAI API` monitörü + status sayfası (`infra/monitoring/README.md` 2. adım), Sentry hesabı + 3 proje (3. adım); status sayfası linki `docs/go-live.md` iletişim planına; sonra T-066 Tamamlandı ve PR (inceleyici Anıl, Burak). · Açık sorular / engeller: Karar #32 için Burak ve Anıl onayı; Sentry entegrasyon kodu Anıl/Burak'ta. · Branch: ataberk/izleme
+- **Not:** Kapsam karar #32 ile daraltıldı (15.11.2026): PC dışı uptime izleyici, status sayfası, Sentry ve bildirimler yapılmadı; ekip ihtiyaç duymuyor. Yapılan: `infra/monitoring/` (`monitoring` profili): Prometheus + Grafana (sadece 127.0.0.1:3000), node/redis/postgres/blackbox exporter'ları, 12 uyarı kuralı panonun en üstünde; alan adından erişim tünel üzerinden dış probla ölçülüyor (`DisErisimYok`). Salt okunur `careerai_monitor` rolünü `deploy.sh` oluşturur. 12.11.2026'da geçici bir compose projesinde denendi (tüm hedefler up, pano sorguları çalışıyor, rol kullanıcı tablosunu okuyamıyor). Production'da açmak: `.env.prod`'a `GRAFANA_ADMIN_PASSWORD`, `MONITOR_DB_PASSWORD` ve `COMPOSE_PROFILES`'a `monitoring`, sonra deploy (`infra/monitoring/README.md`).
 
 ### T-064 · Güvenlik incelemesi (OWASP Top 10)
 

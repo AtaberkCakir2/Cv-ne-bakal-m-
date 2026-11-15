@@ -1,14 +1,8 @@
 # İzleme (T-066)
 
-Üç katman var. Her biri farklı bir soruyu cevaplar:
+Production PC'sinde Prometheus + Grafana: CPU, RAM, disk, kuyruklar, analiz süresi ve hataları, gece toplaması ve sitenin alan adından (tünel) erişilebilirliği tek panoda. Eşik aşılınca uyarı panonun en üstünde görünür, kimseye gönderilmez.
 
-| Katman | Nerede | Ne söyler | Kim kurar |
-|---|---|---|---|
-| Dış uptime izleyici (UptimeRobot) | PC dışı (bulut) | Site dışarıdan açılıyor mu? PC kapansa da çalışır, status sayfası buradan | Ataberk (hesap) |
-| Prometheus + Grafana | Production PC'si, `careerai-prod` projesi | CPU, RAM, disk, kuyruk, analiz süresi, toplama; eşik aşılınca panonun en üstünde uyarı | Bu klasör |
-| Sentry | Bulut (ücretsiz katman) | Uygulama hataları (backend, web, mobil) | Hesap: Ataberk · kod: Anıl (backend, web), Burak (mobil) |
-
-PC içindeki izleme, PC kapanınca kendisi de kapanır; "site çöktü" bildirimini bu yüzden dış izleyici verir (karar #30). PC'deki uyarılar kimseye gönderilmez, sadece Grafana'da görünür (karar #32).
+PC dışı uptime izleyici, status sayfası ve Sentry **kullanılmaz** (karar #32). Bedeli: PC tamamen kapanırsa (elektrik, internet, güncelleme) pano da kapanır ve otomatik uyarı gelmez; kesinti siteye girmeye çalışan biri fark edince anlaşılır. Sunum ve hypercare döneminde nöbetçi günde bir kez panoya ve siteye bakar.
 
 ## PC'deki servisler
 
@@ -62,25 +56,6 @@ COMPOSE_PROFILES=tunnel,backup,monitoring
 
 Sonra normal deploy: `bash infra/pc/deploy.sh <sürüm> production`. Deploy rolü oluşturur ve izleme servislerini açar.
 
-### 2. Dış uptime izleyici ve status sayfası (UptimeRobot, ücretsiz)
-
-1. https://uptimerobot.com → **Register for FREE** ile hesap açın (ekibin ortak e-postası varsa onunla).
-2. **+ New monitor** → Monitor type: **HTTP(s)**.
-   - Friendly name: `Cv'ne Bakalım! API`
-   - URL: `https://api.cvnebakalim.com/api/v1/health/ready`
-   - Monitoring interval: **5 minutes** (ücretsiz katmandaki en kısa süre)
-3. Bildirim olarak hesabın e-postası varsayılan gelir; istenirse **Integrations & Team** altından ekip e-postaları eklenir → **Create monitor**.
-4. Web arayüzü yayına çıkınca aynı şekilde `https://app.cvnebakalim.com` için ikinci monitör.
-5. **Status pages** → **+ New status page** → ad: `Cv'ne Bakalım! Durum`, monitörleri seçin → oluşturun. Linki `docs/go-live.md` iletişim planına ekleyin.
-6. Bildirimi deneme: go-live provasında (T-091) tüneli 6 dakika durdurun (`docker compose -p careerai-prod stop cloudflared`). E-posta geldikten sonra `docker compose -p careerai-prod start cloudflared`. Aynı sırada Grafana'da `DisErisimYok` uyarısı görünmeli.
-
-### 3. Sentry
-
-1. https://sentry.io → ücretsiz hesap → organizasyon `cvnebakalim`.
-2. Üç proje açın: `api` (Python / FastAPI), `web` (React), `mobile` (React Native).
-3. DSN'leri ekibe parola yöneticisinden iletin. Entegrasyon kodu modül sahiplerinde: backend ve web Anıl, mobil Burak (go-live #22). DSN repoya yazılmaz; production'da `.env.prod` üzerinden verilir.
-4. Gönderilen olaylarda kişisel veri olmamalı (`send_default_pii=False`, CV metni ve dosya adı loglanmaz; T-067).
-
 ## Günlük kullanım
 
 | Ne | Nasıl |
@@ -94,5 +69,5 @@ Sonra normal deploy: `bash infra/pc/deploy.sh <sürüm> production`. Deploy rol�
 
 - CPU ve RAM, Windows'un tamamını değil Docker Desktop'ın WSL2 makinesini gösterir (`.wslconfig` ile 20 GB). Bellek bütçesi de bu sınıra göre (docs/mimari.md).
 - C: diski Docker Desktop'ın `/run/desktop/mnt/host/c` bağlama noktasından okunur; Docker Desktop dışında (ör. Linux sunucuya taşınırsa) bu satır kaldırılır, kök dosya sistemi kullanılır.
-- Analiz süresi `analyses.duration_ms` sütunundan okunur; worker'a ayrıca metrik eklenmedi. API istek süresi (SLO p95 < 300 ms) Sentry Performance'tan izlenir; `/health/ready` süresi sadece kaba bir göstergedir.
+- Analiz süresi `analyses.duration_ms` sütunundan okunur; worker'a ayrıca metrik eklenmedi. API istek süresi (SLO p95 < 300 ms) API'nin istek loglarındaki `duration_ms`'ten okunur (T-067); `/health/ready` süresi sadece kaba bir göstergedir.
 - Yedeğin başarılı olup olmadığı henüz burada izlenmiyor; T-068 tamamlanınca eklenecek.
