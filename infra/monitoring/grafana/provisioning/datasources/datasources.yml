@@ -9,7 +9,7 @@ datasources:
     editable: false
   # Analiz süresi ve toplama geçmişi için. careerai_monitor rolü salt okunur ve sadece izin verilen
   # sütunları görür (infra/pc/deploy.sh, setup_monitor_role).
-  - name: CareerAI DB
+  - name: Uygulama veritabanı
     uid: careerai-db
     type: grafana-postgresql-datasource
     url: postgres:5432

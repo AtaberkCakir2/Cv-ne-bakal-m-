@@ -66,12 +66,12 @@ Sonra normal deploy: `bash infra/pc/deploy.sh <sürüm> production`. Deploy rol�
 
 1. https://uptimerobot.com → **Register for FREE** ile hesap açın (ekibin ortak e-postası varsa onunla).
 2. **+ New monitor** → Monitor type: **HTTP(s)**.
-   - Friendly name: `CareerAI API`
+   - Friendly name: `Cv'ne Bakalım! API`
    - URL: `https://api.cvnebakalim.com/api/v1/health/ready`
    - Monitoring interval: **5 minutes** (ücretsiz katmandaki en kısa süre)
 3. Bildirim olarak hesabın e-postası varsayılan gelir; istenirse **Integrations & Team** altından ekip e-postaları eklenir → **Create monitor**.
 4. Web arayüzü yayına çıkınca aynı şekilde `https://app.cvnebakalim.com` için ikinci monitör.
-5. **Status pages** → **+ New status page** → ad: `CareerAI Durum`, monitörleri seçin → oluşturun. Linki `docs/go-live.md` iletişim planına ekleyin.
+5. **Status pages** → **+ New status page** → ad: `Cv'ne Bakalım! Durum`, monitörleri seçin → oluşturun. Linki `docs/go-live.md` iletişim planına ekleyin.
 6. Bildirimi deneme: go-live provasında (T-091) tüneli 6 dakika durdurun (`docker compose -p careerai-prod stop cloudflared`). E-posta geldikten sonra `docker compose -p careerai-prod start cloudflared`. Aynı sırada Grafana'da `DisErisimYok` uyarısı görünmeli.
 
 ### 3. Sentry
@@ -85,7 +85,7 @@ Sonra normal deploy: `bash infra/pc/deploy.sh <sürüm> production`. Deploy rol�
 
 | Ne | Nasıl |
 |---|---|
-| Panoyu aç | http://127.0.0.1:3000 → CareerAI panosu (giriş sayfası) |
+| Panoyu aç | http://127.0.0.1:3000 → Cv'ne Bakalım! panosu (giriş sayfası) |
 | Aktif uyarılar | Panonun en üstündeki tablo |
 | Kural/ayar değişikliğini uygula | `make prod-monitoring-reload` |
 | Kuralları kontrol et | `make monitoring-check` (promtool; CI'a gerek yok) |
