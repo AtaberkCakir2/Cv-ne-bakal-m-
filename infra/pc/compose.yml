@@ -131,8 +131,11 @@ services:
       PGDATABASE: ${POSTGRES_DB}
       RESTIC_REPOSITORY: ${RESTIC_REPOSITORY:-}
       RESTIC_PASSWORD: ${RESTIC_PASSWORD:-}
-      B2_ACCOUNT_ID: ${B2_ACCOUNT_ID:-}
-      B2_ACCOUNT_KEY: ${B2_ACCOUNT_KEY:-}
+      # B2'ye S3 uyumlu adresinden bağlanılır: B2'nin kendi indirme sunucusu (f003.backblazeb2.com) Türkiye'deki
+      # ağlarda TLS'te kesiliyor, restic sessizce tekrar deniyordu (15.11.2026). Anahtarlar aynı B2 uygulama anahtarı.
+      AWS_ACCESS_KEY_ID: ${B2_ACCOUNT_ID:-}
+      AWS_SECRET_ACCESS_KEY: ${B2_ACCOUNT_KEY:-}
+      AWS_DEFAULT_REGION: eu-central-003
       TZ: Europe/Istanbul
     volumes:
       - backup-state:/state
