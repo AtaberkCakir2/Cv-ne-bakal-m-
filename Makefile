@@ -10,7 +10,7 @@ PROFILES := $(if $(wildcard backend/Dockerfile),--profile api) $(if $(wildcard a
 COMPOSE  := docker compose $(PROFILES)
 MODEL    ?= $(or $(OLLAMA_MODEL),llama3.1:8b)
 
-.PHONY: help up down restart ps logs model psql redis-cli reset check-env prod-ps prod-logs prod-local prod-model staging-ps staging-down backup-init backup-now backup-list
+.PHONY: help up down restart ps logs model psql redis-cli reset check-env prod-ps prod-logs prod-local prod-model prod-admin staging-ps staging-down backup-init backup-now backup-list
 
 # $(info) kabuk kullanmaz; Windows (cmd) ve macOS/Linux'ta aynı çıktıyı verir.
 help:
@@ -24,6 +24,7 @@ help:
 	$(info make reset     Servisleri durdurur ve TUM lokal veriyi siler)
 	$(info Production / prova (karar #30, infra/pc/deploy.md). Deploy Git Bash'te: bash infra/pc/deploy.sh v1.0.0)
 	$(info make prod-ps   make prod-logs   make prod-model   make prod-local (sunum B plani))
+	$(info make prod-admin EMAIL=ad@ornek.com   (yonetim paneline admin ver))
 	$(info make staging-ps   make staging-down)
 	$(info make backup-init (bir kez)   make backup-now   make backup-list   Geri yukleme testi: bash infra/backup/restore-test.sh)
 	@cd .
@@ -82,6 +83,12 @@ prod-model:
 # Sunum B planı: api'yi sadece bu PC'ye açar (127.0.0.1:8100).
 prod-local:
 	$(PC_PROD) -f infra/pc/compose.local.yml up -d --no-build --wait api
+
+# Uygulamada kayıtlı bir kullanıcıyı yönetim paneline admin yapar (T-063, backend/app/admin/README.md).
+#   make prod-admin EMAIL=ad@ornek.com      geri almak: make prod-admin EMAIL=ad@ornek.com REVOKE=--revoke
+prod-admin:
+	@test -n "$(EMAIL)" || { echo "Kullanım: make prod-admin EMAIL=ad@ornek.com"; exit 2; }
+	$(PC_PROD) exec api python -m app.admin.promote "$(EMAIL)" $(REVOKE)
 
 staging-ps:
 	$(PC_STAGING) ps

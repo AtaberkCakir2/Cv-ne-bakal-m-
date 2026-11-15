@@ -229,12 +229,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-063 · Yönetim paneli (admin)
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 30.11.2026 – 06.12.2026 · **Öncelik:** P1 · **Efor:** 6 saat · **Alan:** Backend API
 - **Bağımlılık:** T-037 (Anıl), T-046
 - **Destek:** Anıl
 - **Çıktı:** /admin paneli
 - **Kabul kriteri:** SQLAdmin ile: kaynak ekle/düzenle, ilan kaynakları aç/kapa, scrape çalışmalarını izle, istatistikler. Sadece admin rolü.
+- **Not:** `backend/app/admin/` (karar #33, kullanım `backend/app/admin/README.md`). Kaynak ekle/düzenle (sadece https, silme yok), ilan kaynağı aç/kapa ve istek aralığı (şartları incelenmemiş kaynak açılamaz), toplama çalışmaları (salt okunur), istatistikler; arayüz Türkçe. Sadece admin rolü, rol her istekte DB'den okunur; giriş denemesi sınırlı; girişler ve değişiklikler `audit_logs`'ta. Admin verme: `make prod-admin EMAIL=…`. 13 test (`backend/tests/auth/test_admin_panel.py`); geliştirme veritabanındaki gerçek veriyle (7.207 ilan, 1.571 kaynak) tarayıcıda denendi. Production'da yapılacak elle adım: Cloudflare Access uygulaması (README'deki adımlar), sonra gizli pencereden kontrol.
 
 ### T-066 · İzleme ve uyarı sistemi
 

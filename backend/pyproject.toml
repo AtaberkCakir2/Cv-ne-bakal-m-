@@ -22,6 +22,10 @@ dependencies = [
     "argon2-cffi>=23.1",
     "pyjwt>=2.9",
     "email-validator>=2.2",
+    # Yönetim paneli (T-063 — Ataberk, app/admin/). itsdangerous: panel oturum çerezi (Starlette SessionMiddleware).
+    "sqladmin==0.32.0",
+    "itsdangerous>=2.2",
+    "babel>=2.16",  # panelin Türkçe arayüzü (SQLAdmin çevirileri)
 ]
 
 [project.optional-dependencies]
