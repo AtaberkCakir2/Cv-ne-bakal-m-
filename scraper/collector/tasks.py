@@ -10,9 +10,11 @@ import logging
 from typing import Any
 
 from app.core.config import get_settings
+from app.core.logging import configure_logging
 from app.db.session import get_sessionmaker
 from celery import Celery
 from celery.schedules import crontab
+from celery.signals import setup_logging
 from redis import Redis
 
 from collector import resources, taxonomy, youtube
@@ -60,6 +62,17 @@ app.conf.update(
         },
     },
 )
+
+
+@setup_logging.connect
+def _json_logging(**_: Any) -> None:
+    """Celery kendi düz metin logunu kurmasın: API ile aynı JSON + kişisel veri maskeleme (T-067).
+
+    Bu sinyale bağlı bir fonksiyon varsa Celery log ayarına dokunmaz; worker ve beat logları kök logger'dan
+    JsonFormatter ile stdout'a çıkar, Alloy oradan Loki'ye taşır.
+    """
+    configure_logging(get_settings().log_level)
+    # configure_logging httpx'i zaten WARNING'e çeker; Celery'nin görev başına iki INFO satırı kalabilir.
 
 
 @app.task(name=NIGHTLY_TASK, soft_time_limit=SOFT_LIMIT_S, time_limit=SOFT_LIMIT_S + 600)
