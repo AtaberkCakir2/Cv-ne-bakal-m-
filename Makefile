@@ -87,7 +87,7 @@ prod-local:
 # Uygulamada kayıtlı bir kullanıcıyı yönetim paneline admin yapar (T-063, backend/app/admin/README.md).
 #   make prod-admin EMAIL=ad@ornek.com      geri almak: make prod-admin EMAIL=ad@ornek.com REVOKE=--revoke
 prod-admin:
-	@test -n "$(EMAIL)" || { echo "Kullanım: make prod-admin EMAIL=ad@ornek.com"; exit 2; }
+	$(if $(EMAIL),,$(error Kullanim: make prod-admin EMAIL=ad@ornek.com))
 	$(PC_PROD) exec api python -m app.admin.promote "$(EMAIL)" $(REVOKE)
 
 staging-ps:
