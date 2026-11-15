@@ -33,7 +33,7 @@ def mount_admin(app: FastAPI, settings: Settings, maker: sessionmaker[Session]) 
         app,
         session_maker=maker,
         base_url=BASE_URL,
-        title="CareerAI Yönetim",
+        title="Cv'ne Bakalım! Yönetim",
         templates_dir=str(TEMPLATES),
         authentication_backend=AdminAuth(settings, maker, limiter),
         audit_backend=AdminAuditBackend(maker),

@@ -36,7 +36,7 @@ make prod-admin EMAIL=ad@ornek.com
 ## Cloudflare Access (production, bir kez)
 
 1. Cloudflare paneli → **Zero Trust** → **Access** → **Applications** → **Add an application** → **Self-hosted**.
-2. **Application name:** `CareerAI admin`. **Session duration:** 8 hours.
+2. **Application name:** `Cv'ne Bakalım! admin`. **Session duration:** 8 hours.
 3. **Add public hostname:** Subdomain `api`, Domain `cvnebakalim.com`, Path `admin`.
 4. **Policy:** ad `ekip`, Action **Allow**, Include → **Emails**: ekip üyelerinin e-postaları.
 5. **Login methods:** **One-time PIN** (e-postaya kod gelir; ayrıca hesap gerekmez).
