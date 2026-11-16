@@ -24,5 +24,8 @@ EXPOSE 8000
 HEALTHCHECK --interval=10s --timeout=3s --start-period=10s --retries=5 \
     CMD python -c "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/v1/health', timeout=2)"
 
-# --proxy-headers: production'da Caddy arkasında gerçek istemci IP'si için (rate limit, T-050)
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--proxy-headers"]
+# --proxy-headers: gerçek istemci IP'si X-Forwarded-For'dan okunur (IP başına istek sınırları, T-050).
+# --forwarded-allow-ips "*": uvicorn varsayılanda sadece 127.0.0.1'den gelen başlığa güvenir; production'da istek
+# cloudflared konteynerinden (compose ağı) gelir ve bu olmadan herkes aynı IP sayılırdı. api host'a port açmaz,
+# tek giriş tünel olduğu için başlığı sahteleyebilecek başka istemci yoktur (infra/pc/compose.yml).
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--proxy-headers", "--forwarded-allow-ips", "*"]
