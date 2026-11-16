@@ -30,12 +30,14 @@ Değiştirmek için `web/.env.local` dosyası oluşturun (commit'lenmez), ör. `
 
 ## API tiplerini güncelleme
 
-Backend'de endpoint eklendiğinde veya değiştiğinde (backend çalışırken):
+Backend'de endpoint eklendiğinde veya değiştiğinde (backend'in çalışması gerekmez):
 
 ```bash
-curl http://127.0.0.1:8000/openapi.json -o src/api/openapi.json
-npm run gen:api    # src/api/schema.d.ts yeniden üretilir; ikisini de commit'leyin
+cd ../backend && python scripts/export_openapi.py && cd ../web   # src/api/openapi.json + docs/api/openapi.json
+npm run gen:api    # src/api/schema.d.ts yeniden üretilir; hepsini birlikte commit'leyin
 ```
+
+Hata yanıtlarının tipi OpenAPI'de `Problem` şemasıdır (`src/api/client.ts` → `Problem` ile aynı). API rehberi: [`docs/api/README.md`](../docs/api/README.md).
 
 Sonra `npm run build`: tiplerle uyuşmayan kod burada derlenmez.
 

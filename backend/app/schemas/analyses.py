@@ -1,8 +1,8 @@
 import uuid
 from datetime import datetime
-from typing import Literal
+from typing import Any, Literal
 
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 from app.db.enums import AnalysisErrorCode, AnalysisStatus, LangCode, ResourceLevel, ResourceProvider, SkillLevel
 
@@ -15,7 +15,70 @@ ERROR_MESSAGES = {
 }
 
 
+# contracts/examples/analysis_result.example.json (OpenAPI örneği; sözleşme dosyası Docker imajında yok).
+ANALYSIS_EXAMPLE: dict[str, Any] = {
+    "analysis_id": "3f6c2a9e-8d1b-4c7a-9e2f-1a2b3c4d5e6f",
+    "status": "done",
+    "target_role": {"slug": "backend-developer", "name": "Backend Developer"},
+    "postings_analyzed": 150,
+    "match_score": 62.5,
+    "present_skills": [
+        {"skill": "Python", "level": "advanced", "confidence": 0.94, "verified": True},
+        {"skill": "SQL", "level": "beginner", "confidence": 0.81, "verified": True},
+        {"skill": "Git", "level": "intermediate", "confidence": 0.88, "verified": True},
+    ],
+    "missing_skills": [
+        {
+            "skill": "Docker",
+            "demand_ratio": 0.75,
+            "priority": 1,
+            "resources": [
+                {
+                    "resource_id": 101,
+                    "title": "Örnek: Docker'a Giriş (Türkçe)",
+                    "url": "https://example.com/docker-giris",
+                    "provider": "youtube",
+                    "language": "tr",
+                    "level": "beginner",
+                    "duration_min": 90,
+                    "is_free": True,
+                    "reason": (
+                        "İncelenen 150 Backend Developer ilanının %75'i Docker istiyor; CV'nde Docker bulunamadı."
+                    ),
+                }
+            ],
+        },
+        {
+            "skill": "PostgreSQL",
+            "demand_ratio": 0.62,
+            "priority": 2,
+            "resources": [
+                {
+                    "resource_id": 205,
+                    "title": "Örnek: PostgreSQL Temelleri",
+                    "url": "https://example.com/postgresql-temelleri",
+                    "provider": "docs",
+                    "language": "en",
+                    "level": "beginner",
+                    "duration_min": 120,
+                    "is_free": True,
+                    "reason": "İlanların %62'si PostgreSQL istiyor; temel SQL bilgin bu konuya hızlı geçmeni sağlar.",
+                }
+            ],
+        },
+    ],
+    "model": {"name": "llama3.1:8b", "prompt_version": "v1"},
+    "error": None,
+    "created_at": "2026-11-20T10:00:00Z",
+    "completed_at": "2026-11-20T10:01:12Z",
+}
+
+
 class AnalysisCreated(BaseModel):
+    model_config = ConfigDict(
+        json_schema_extra={"examples": [{"analysis_id": "3f6c2a9e-8d1b-4c7a-9e2f-1a2b3c4d5e6f", "status": "queued"}]}
+    )
+
     analysis_id: uuid.UUID
     status: Literal["queued", "processing", "done", "failed"]
 
@@ -64,6 +127,10 @@ class MissingSkillOut(BaseModel):
 
 
 class FeedbackIn(BaseModel):
+    model_config = ConfigDict(
+        json_schema_extra={"examples": [{"rating": 4, "comment": "Önerilen kaynaklar işime yaradı."}]}
+    )
+
     rating: int = Field(ge=1, le=5, description="1-5 yıldız")
     comment: str | None = Field(default=None, max_length=1000, description="İsteğe bağlı yorum")
 
@@ -80,6 +147,9 @@ class FeedbackOut(BaseModel):
 
 class AnalysisOut(BaseModel):
     """contracts/analysis_result.schema.json. `feedback` API'nin eki (sözleşmede yok): verildiyse yanıtta yer alır."""
+
+    # Örnek, contracts/examples/analysis_result.example.json ile aynıdır (tests/test_openapi.py denetler).
+    model_config = ConfigDict(json_schema_extra={"examples": [ANALYSIS_EXAMPLE]})
 
     analysis_id: uuid.UUID
     status: AnalysisStatus
