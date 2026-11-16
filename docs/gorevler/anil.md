@@ -243,7 +243,7 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 - **Destek:** —
 - **Çıktı:** Kurulum dosyaları
 - **Kabul kriteri:** Web arayüzünü sarmalar; contextIsolation açık, nodeIntegration kapalı; electron-builder ile Windows (NSIS) ve macOS (dmg); electron-updater + GitHub Releases ile otomatik güncelleme.
-- **Devam notu (07.11.2026):** Yapılan: `web/desktop/` (Electron 44, app://careerai protokolü, güvenli webPreferences, CSP, dış bağlantılar sistem tarayıcısında, izinler kapalı, electron-updater); Windows NSIS kurulum dosyası üretildi ve paketli uygulama `--smoke` ile denendi. · Sıradaki adım: simge; macOS dmg'yi bir Mac'te üretmek; backend `CORS_ORIGINS`'e `app://careerai`; güncellemenin çalışması için repo/yayın yeri kararı (özel repo token'sız indirilemez). · Açık sorular / engeller: Mac erişimi; kod imzalama yok (uyarılar README'de). · Branch: anil/electron
+- **Devam notu (13.11.2026):** Yapılan: `web/desktop/` (Electron 44, app://careerai protokolü, güvenli webPreferences, CSP, dış bağlantılar sistem tarayıcısında, izinler kapalı, electron-updater); Windows NSIS kurulum dosyası üretildi ve paketli uygulama `--smoke` ile denendi. Simge (`web/desktop/resources/icon.png`) ve backend varsayılan `CORS_ORIGINS`'e `app://careerai` eklendi (testli). · Sıradaki adım: macOS dmg'yi bir Mac'te üretmek; güncellemenin çalışması için repo/yayın yeri kararı (özel repo token'sız indirilemez); production `.env.prod`'da `CORS_ORIGINS`'e `app://careerai` (Ataberk). · Açık sorular / engeller: Mac erişimi; kod imzalama yok (uyarılar README'de). · Branch: anil/electron-cors-simge
 
 ### T-065 · KVKK aydınlatma metni, açık rıza, gizlilik politikası, kullanım koşulları
 
