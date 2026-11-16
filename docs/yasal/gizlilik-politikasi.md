@@ -1,4 +1,4 @@
-# CareerAI Gizlilik Politikası
+# Cv'ne Bakalım! Gizlilik Politikası
 
 **Sürüm:** 2026-12-taslak · **Son güncelleme:** [yayın tarihi]
 
@@ -24,6 +24,10 @@ Ayrıntılar, amaçlar ve hukuki sebepler: [Aydınlatma Metni](aydinlatma-metni.
 ## Kimlerle paylaşıyoruz?
 
 Uygulama, proje ekibinden bir üyeye ait, Türkiye'de bulunan bir bilgisayarda çalışır; ayrı bir barındırma şirketi yoktur. Sadece hizmeti çalıştıran tedarikçilerle, gereken ölçüde paylaşıyoruz: alan adı, HTTPS ve erişim tüneli için Cloudflare (ABD; trafiğin tamamı, CV dosyası dahil, Cloudflare üzerinden geçer: HTTPS bağlantısı Cloudflare'de açılıp tünelle yeniden şifrelenir), şifreli yedek depolama [ad, ülke], e-posta gönderim servisi [ad, ülke] ve hata izleme servisi [ad, ülke]. Ayrıntı: [Aydınlatma Metni, bölüm 4](aydinlatma-metni.md#4-kimlere-aktarılıyor).
+
+## YouTube API Hizmetleri
+
+Eksik yetkinlikleriniz için önerilen eğitim videolarının bir kısmı YouTube API Hizmetleri kullanılarak bulunur. Bu arama sunucumuzda, sizden bağımsız olarak yapılır: YouTube'a veya Google'a sizin hesabınız, CV'niz ya da kişisel verileriniz gönderilmez ve YouTube hesabınıza erişmeyiz. Önerilen bir videoyu açtığınızda YouTube'a geçersiniz; orada YouTube'un kendi koşulları geçerlidir. YouTube içeriği kullanıldığı için YouTube Hizmet Şartları (https://www.youtube.com/t/terms) ve Google Gizlilik Politikası (https://policies.google.com/privacy) da uygulanır.
 
 ## Çerezler ve cihazda saklanan bilgiler
 

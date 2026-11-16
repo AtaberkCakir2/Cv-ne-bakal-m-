@@ -1,14 +1,14 @@
-# CareerAI Kullanım Koşulları
+# Cv'ne Bakalım! Kullanım Koşulları
 
 **Sürüm:** 2026-12-taslak · **Yürürlük:** [yayın tarihi]
 
 > TASLAK — hukuki inceleme bekliyor. Açık noktalar: [README](README.md).
 
-Bu koşullar, CareerAI uygulamasını (web, masaüstü ve Android; birlikte "Hizmet") kullanmanızı düzenler. Hesap oluştururken bu koşulları kabul etmiş olursunuz.
+Bu koşullar, Cv'ne Bakalım! uygulamasını (web, masaüstü ve Android; birlikte "Hizmet") kullanmanızı düzenler. Hesap oluştururken bu koşulları kabul etmiş olursunuz.
 
 ## 1. Hizmet nedir?
 
-CareerAI, yüklediğiniz CV'deki yetkinlikleri seçtiğiniz hedef pozisyon için toplanan güncel iş ilanlarıyla karşılaştırır, eksik yetkinlikleri talep sırasına göre gösterir ve bu eksikleri kapatmak için eğitim kaynakları önerir. Hizmet, [üniversite adı] bitirme projesi olarak [veri sorumlusu] tarafından sunulur ve ücretsizdir.
+Cv'ne Bakalım!, yüklediğiniz CV'deki yetkinlikleri seçtiğiniz hedef pozisyon için toplanan güncel iş ilanlarıyla karşılaştırır, eksik yetkinlikleri talep sırasına göre gösterir ve bu eksikleri kapatmak için eğitim kaynakları önerir. Hizmet, [üniversite adı] bitirme projesi olarak [veri sorumlusu] tarafından sunulur ve ücretsizdir.
 
 ## 2. Kimler kullanabilir?
 

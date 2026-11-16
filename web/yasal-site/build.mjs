@@ -112,7 +112,7 @@ function page({ title, bodyHtml, draft, depth }) {
 <body>
   <a class="skip" href="#icerik">İçeriğe geç</a>
   <header class="top">
-    <a class="brand" href="${up || "./"}">CareerAI</a>
+    <a class="brand" href="${up || "./"}">Cv'ne Bakalım!</a>
     <a href="${escapeHtml(APP_URL)}">Uygulamaya git</a>
   </header>
   <main id="icerik">
@@ -128,9 +128,9 @@ function page({ title, bodyHtml, draft, depth }) {
 `;
 }
 
-const HOME = `# CareerAI
+const HOME = `# Cv'ne Bakalım!
 
-CareerAI, öğrencinin CV'sini seçtiği hedef pozisyon için toplanan güncel iş ilanlarıyla karşılaştırır, eksik yetkinlikleri ilanlardaki talep oranıyla birlikte gösterir ve bu eksikleri kapatmak için doğrulanmış eğitim kaynakları önerir. Bitirme projesi olarak geliştirilen ücretsiz bir hizmettir.
+Cv'ne Bakalım!, öğrencinin CV'sini seçtiği hedef pozisyon için toplanan güncel iş ilanlarıyla karşılaştırır, eksik yetkinlikleri ilanlardaki talep oranıyla birlikte gösterir ve bu eksikleri kapatmak için doğrulanmış eğitim kaynakları önerir. Bitirme projesi olarak geliştirilen ücretsiz bir hizmettir.
 
 - **CV'niz saklanmaz.** Dosya sadece analiz sırasında işlenir; kalıcı olarak sadece çıkarılan yetkinlikler, dosyanın parmak izi ve sayfa sayısı tutulur.
 - **CV'niz yapay zeka şirketlerine gitmez.** Analiz, yerel bir dil modeliyle yapılır; kişisel bilgiler modele verilmeden önce maskelenir.
@@ -152,11 +152,11 @@ for (const p of PAGES) {
   anyDraft ||= draft;
   const html = render(body.replace(/\[([^\][\n`]+)\](?![(:[])/g, '<mark class="todo">[$1]</mark>'), p.file);
   mkdirSync(join(OUT, p.slug), { recursive: true });
-  writeFileSync(join(OUT, p.slug, "index.html"), page({ title: `${title} · CareerAI`, bodyHtml: html, draft, depth: 1 }));
+  writeFileSync(join(OUT, p.slug, "index.html"), page({ title: `${title} · Cv'ne Bakalım!`, bodyHtml: html, draft, depth: 1 }));
 }
 // Ana sayfadaki bağlantılar alt klasörden değil kökten: "../x/" yerine "x/".
 const homeHtml = render(HOME, "ana sayfa").replaceAll('href="../', 'href="');
-writeFileSync(join(OUT, "index.html"), page({ title: "CareerAI", bodyHtml: homeHtml, draft: anyDraft, depth: 0 }));
+writeFileSync(join(OUT, "index.html"), page({ title: "Cv'ne Bakalım!", bodyHtml: homeHtml, draft: anyDraft, depth: 0 }));
 
 // Cloudflare Pages başlıkları: taslakken arama motorlarına kapalı; sayfa başka sitede çerçeve içine alınamaz.
 writeFileSync(

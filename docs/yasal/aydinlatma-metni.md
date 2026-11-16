@@ -1,10 +1,10 @@
-# CareerAI Kişisel Verilerin İşlenmesine İlişkin Aydınlatma Metni
+# Cv'ne Bakalım! Kişisel Verilerin İşlenmesine İlişkin Aydınlatma Metni
 
 **Sürüm:** 2026-12-taslak · **Yürürlük:** [yayın tarihi]
 
 > TASLAK — hukuki inceleme bekliyor. Açık noktalar: [README](README.md).
 
-Bu metin, 6698 sayılı Kişisel Verilerin Korunması Kanunu'nun ("KVKK") 10. maddesi uyarınca, CareerAI uygulamasını (web, masaüstü ve Android) kullanırken kişisel verilerinizin nasıl işlendiğini açıklar.
+Bu metin, 6698 sayılı Kişisel Verilerin Korunması Kanunu'nun ("KVKK") 10. maddesi uyarınca, Cv'ne Bakalım! uygulamasını (web, masaüstü ve Android) kullanırken kişisel verilerinizin nasıl işlendiğini açıklar.
 
 ## 1. Veri sorumlusu
 
@@ -12,7 +12,7 @@ Bu metin, 6698 sayılı Kişisel Verilerin Korunması Kanunu'nun ("KVKK") 10. ma
 Adres: [adres]
 E-posta: [kvkk@alanadi]
 
-CareerAI, [üniversite adı] [bölüm adı] bitirme projesi olarak geliştirilen ücretsiz bir hizmettir.
+Cv'ne Bakalım!, [üniversite adı] [bölüm adı] bitirme projesi olarak geliştirilen ücretsiz bir hizmettir.
 
 ## 2. Hangi verileri işliyoruz?
 

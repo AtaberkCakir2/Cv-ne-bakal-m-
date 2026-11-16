@@ -1,4 +1,4 @@
-# CareerAI Hesabını ve Verilerini Silme
+# Cv'ne Bakalım! Hesabını ve Verilerini Silme
 
 **Sürüm:** 2026-12-taslak · **Son güncelleme:** [yayın tarihi]
 
