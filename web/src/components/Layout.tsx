@@ -36,7 +36,7 @@ export function Layout() {
     <>
       <header className="topbar">
         <NavLink to="/" className="brand">
-          CareerAI
+          Cv'ne Bakalım!
         </NavLink>
         <nav>
           {LINKS.map((l) => (
