@@ -21,7 +21,7 @@ from app.services.analysis_queue import QueueUnavailable
 from app.services.analysis_runner import AnalysisRunner, RetryLater
 from app.services.analyzer import AnalysisFailed, AnalysisOutput
 from app.worker import tasks
-from tests.auth.test_auth_flow import API, bearer, login, register
+from tests.auth.test_auth_flow import API, PASSWORD, bearer, login, register
 from tests.test_analyses_upload import make_pdf
 from tests.test_analysis_worker import Store
 
@@ -373,3 +373,46 @@ def test_celery_task_retries_once_then_records_failure(
     assert analyzer.calls == 2
     assert row(db_sessionmaker, analysis_id).error_code is AnalysisErrorCode.LLM_TIMEOUT
     assert store.items == {}
+
+
+def test_end_to_end_register_upload_analyze_result_feedback_delete(
+    client: TestClient, queue: Queue, role: int, db_sessionmaker: sessionmaker[Session]
+) -> None:
+    """T-069: bir kullanıcının bütün yolculuğu, gerçek veri tabanıyla ve tek senaryoda.
+
+    Kuyruk, CV deposu ve analiz motoru test çiftleridir; işçi doğrudan çağrılır (Redis tarafı test_redis_integration).
+    """
+    email = "yolculuk@example.com"
+    headers = signed_in(client, email)
+    assert client.patch(f"{API}/users/me", headers=headers, json={"target_role_id": role}).status_code == 200
+
+    # Yükleme: CV kuyruğa gider, veri tabanına sadece özet ve sayfa sayısı yazılır.
+    pdf = make_pdf(2)
+    created = upload(client, headers, role, pdf)
+    assert created.status_code == 202, created.text
+    analysis_id = uuid.UUID(created.json()["analysis_id"])
+    assert queue.calls == [(analysis_id, pdf)]
+    assert client.get(f"{URL}/{analysis_id}", headers=headers).json()["status"] == "queued"
+
+    # İşçi analizi çalıştırır; CV geçici depodan silinir.
+    work, store = runner(db_sessionmaker, Analyzer())
+    store.put(analysis_id, pdf)
+    work.run(analysis_id, last_attempt=False)
+    assert store.items == {}
+
+    result = client.get(f"{URL}/{analysis_id}", headers=headers).json()
+    assert result["status"] == "done" and result["match_score"] == 62.5 and result["postings_analyzed"] == 150
+    assert client.get(URL, headers=headers).json()["total"] == 1
+
+    # Geri bildirim, sonra analizi silme.
+    feedback = client.post(f"{URL}/{analysis_id}/feedback", headers=headers, json={"rating": 4, "comment": "faydalı"})
+    assert feedback.status_code == 200
+    assert client.get(f"{URL}/{analysis_id}", headers=headers).json()["feedback"]["rating"] == 4
+    assert client.delete(f"{URL}/{analysis_id}", headers=headers).status_code == 204
+    assert client.get(f"{URL}/{analysis_id}", headers=headers).status_code == 404
+    assert client.get(URL, headers=headers).json()["total"] == 0
+
+    # Hesap silme: oturum kapanır, aynı bilgilerle giriş yapılamaz.
+    assert client.request("DELETE", f"{API}/users/me", headers=headers, json={"password": PASSWORD}).status_code == 204
+    assert client.get(f"{API}/users/me", headers=headers).status_code == 401
+    assert client.post(f"{API}/auth/login", json={"email": email, "password": PASSWORD}).status_code == 401
