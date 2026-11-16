@@ -35,8 +35,9 @@ class Settings(BaseSettings):
 
     # /health/ready içindeki her bağımlılık kontrolü için zaman aşımı (saniye)
     readiness_timeout_s: float = 2.0
-    # Sadece kendi alan adlarımıza izin verilir (karar: güvenlik incelemesi, T-064)
-    cors_origins: list[str] = ["http://localhost:5173", "http://127.0.0.1:5173"]
+    # Sadece kendi alan adlarımıza izin verilir (karar: güvenlik incelemesi, T-064).
+    # app://careerai: masaüstü uygulamasının (Electron, web/desktop/main.cjs) kökeni.
+    cors_origins: list[str] = ["http://localhost:5173", "http://127.0.0.1:5173", "app://careerai"]
 
     # Kimlik doğrulama (T-037). JWT_SECRET production'da mutlaka .env'den gelir (uzun, rastgele).
     jwt_secret: str = Field(default=DEV_JWT_SECRET, min_length=32)
