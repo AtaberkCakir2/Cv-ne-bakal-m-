@@ -173,7 +173,7 @@ function MyDataCard() {
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `careerai-verilerim-${new Date().toISOString().slice(0, 10)}.json`;
+      a.download = `cvnebakalim-verilerim-${new Date().toISOString().slice(0, 10)}.json`;
       a.click();
       setTimeout(() => URL.revokeObjectURL(url), 0); // indirme başlamadan adres iptal olmasın
     } catch (e) {

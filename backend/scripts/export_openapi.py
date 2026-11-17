@@ -26,7 +26,7 @@ def build_schema() -> dict[str, Any]:
     from app.main import create_app
 
     # .env okunmaz: çıktı kimin bilgisayarında üretilirse üretilsin aynı olmalı.
-    settings = Settings(_env_file=None, environment="test", app_name="CareerAI API", api_prefix="/api/v1")
+    settings = Settings(_env_file=None, environment="test", app_name="Cv'ne Bakalım! API", api_prefix="/api/v1")
     return create_app(settings).openapi()
 
 
