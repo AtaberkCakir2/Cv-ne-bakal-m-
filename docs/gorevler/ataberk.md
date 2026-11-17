@@ -302,12 +302,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-072 · Yük testi (k6 / Locust)
 
-- **Durum:** Yapılacak
+- **Durum:** Devam Ediyor
 - **Tarih:** 14.12.2026 – 20.12.2026 · **Öncelik:** P0 · **Efor:** 8 saat · **Alan:** Test & QA
 - **Bağımlılık:** T-057 (Burak), T-035
 - **Destek:** Burak
 - **Çıktı:** Yük testi raporu
 - **Kabul kriteri:** 20 eşzamanlı kullanıcı, 30 dk. Hedef: API p95 < 300 ms (analiz hariç), hata oranı < %1, RAM < %85. Kuyruk birikme süresi ölçüldü; worker sayısı buna göre ayarlandı.
+- **Not:** 18.11.2026: k6 betiği ve çalıştırıcı hazır (`tests/yuk/`). API kısmı ölçüldü (E2E ortamı, örnek analiz): 20 kullanıcı 30 dk, p95 49,5 ms, hata %0, RAM en yüksek %14,7 (`tests/yuk/README.md`). Kalan: T-057 (Burak) gelince gerçek analizle kuyruk bekleme süresini ölçüp worker/kuyruk sınırlarını ayarlamak.
 
 ### T-075 · Production ortamı kurulumu
 
