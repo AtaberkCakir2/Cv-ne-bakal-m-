@@ -1,0 +1,79 @@
+{% extends "sqladmin/layout.html" %}
+{% block content %}
+<div class="row row-cards">
+  <div class="col-12"><h2>İstatistikler</h2></div>
+
+  <div class="col-sm-6 col-lg-3"><div class="card"><div class="card-body">
+    <div class="subheader">Aktif ilan</div>
+    <div class="h1 mb-0">{{ s.postings_active }}</div>
+    <div class="text-secondary">son 7 günde eklenen: {{ s.postings_last_7d }}</div>
+  </div></div></div>
+
+  <div class="col-sm-6 col-lg-3"><div class="card"><div class="card-body">
+    <div class="subheader">Yayındaki kaynak</div>
+    <div class="h1 mb-0">{{ s.resources_alive }}</div>
+    <div class="text-secondary">kırık link: {{ s.resources_dead }}</div>
+  </div></div></div>
+
+  <div class="col-sm-6 col-lg-3"><div class="card"><div class="card-body">
+    <div class="subheader">{{ min_resources }}'ten az kaynaklı yetkinlik</div>
+    <div class="h1 mb-0 {% if s.skills_under_min %}text-danger{% endif %}">{{ s.skills_under_min }}</div>
+    <div class="text-secondary">aktif yetkinlik: {{ s.skills_active }}</div>
+  </div></div></div>
+
+  <div class="col-sm-6 col-lg-3"><div class="card"><div class="card-body">
+    <div class="subheader">Kayıtlı kullanıcı</div>
+    <div class="h1 mb-0">{{ s.users_active }}</div>
+    <div class="text-secondary">pozisyon istatistiği:
+      {% if s.stats_computed_at %}{{ fmt_dt(s.stats_computed_at) }}{% else %}hiç yenilenmedi{% endif %}
+    </div>
+  </div></div></div>
+
+  <div class="col-lg-7"><div class="card">
+    <div class="card-header"><h3 class="card-title">İlan kaynakları</h3></div>
+    <div class="table-responsive"><table class="table card-table table-vcenter">
+      <thead><tr><th>Kaynak</th><th>Açık</th><th>Aktif ilan</th><th>Son 7 gün</th><th>Son toplama</th></tr></thead>
+      <tbody>
+      {% for name, active, postings, new, status, started in s.sources %}
+        <tr>
+          <td>{{ name }}</td>
+          <td>{% if active %}<span class="badge bg-green-lt">açık</span>{% else %}<span class="badge bg-secondary-lt">kapalı</span>{% endif %}</td>
+          <td>{{ postings }}</td>
+          <td>{{ new }}</td>
+          <td>{% if started %}{{ fmt_dt(started) }} · {{ status }}{% else %}—{% endif %}</td>
+        </tr>
+      {% else %}
+        <tr><td colspan="5" class="text-secondary">Kaynak yok</td></tr>
+      {% endfor %}
+      </tbody>
+    </table></div>
+  </div></div>
+
+  <div class="col-lg-5"><div class="card">
+    <div class="card-header"><h3 class="card-title">Analizler</h3></div>
+    <div class="table-responsive"><table class="table card-table table-vcenter">
+      <thead><tr><th></th>{% for status in s.analyses['24 saat'] %}<th>{{ status_tr.get(status, status) }}</th>{% endfor %}</tr></thead>
+      <tbody>
+      {% for label, counts in s.analyses.items() %}
+        <tr><td>{{ label }}</td>{% for n in counts.values() %}<td>{{ n }}</td>{% endfor %}</tr>
+      {% endfor %}
+      </tbody>
+    </table></div>
+    <div class="card-body text-secondary">
+      Son 7 gün ortalama süre:
+      {% if s.analysis_avg_s_7d is not none %}{{ '%.1f' % s.analysis_avg_s_7d }} sn{% else %}—{% endif %}
+    </div>
+  </div>
+
+  <div class="card mt-3">
+    <div class="card-header"><h3 class="card-title">Sağlayıcıya göre kaynak</h3></div>
+    <div class="table-responsive"><table class="table card-table table-vcenter">
+      <tbody>
+      {% for provider, n in s.resources_by_provider %}
+        <tr><td>{{ provider }}</td><td>{{ n }}</td></tr>
+      {% endfor %}
+      </tbody>
+    </table></div>
+  </div></div>
+</div>
+{% endblock %}

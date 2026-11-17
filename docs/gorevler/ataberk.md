@@ -229,12 +229,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-063 · Yönetim paneli (admin)
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 30.11.2026 – 06.12.2026 · **Öncelik:** P1 · **Efor:** 6 saat · **Alan:** Backend API
 - **Bağımlılık:** T-037 (Anıl), T-046
 - **Destek:** Anıl
 - **Çıktı:** /admin paneli
 - **Kabul kriteri:** SQLAdmin ile: kaynak ekle/düzenle, ilan kaynakları aç/kapa, scrape çalışmalarını izle, istatistikler. Sadece admin rolü.
+- **Not:** `backend/app/admin/` (karar #33, kullanım `backend/app/admin/README.md`). Kaynak ekle/düzenle (sadece https, silme yok), ilan kaynağı aç/kapa ve istek aralığı (şartları incelenmemiş kaynak açılamaz), toplama çalışmaları (salt okunur), istatistikler; arayüz Türkçe. Sadece admin rolü, rol her istekte DB'den okunur; giriş denemesi sınırlı; girişler ve değişiklikler `audit_logs`'ta. Admin verme: `make prod-admin EMAIL=…`. 13 test (`backend/tests/auth/test_admin_panel.py`); geliştirme veritabanındaki gerçek veriyle (7.207 ilan, 1.571 kaynak) tarayıcıda denendi. Production'da yapılacak elle adım: Cloudflare Access uygulaması (README'deki adımlar), sonra gizli pencereden kontrol.
 
 ### T-066 · İzleme ve uyarı sistemi
 
@@ -302,12 +303,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-072 · Yük testi (k6 / Locust)
 
-- **Durum:** Yapılacak
+- **Durum:** Devam Ediyor
 - **Tarih:** 14.12.2026 – 20.12.2026 · **Öncelik:** P0 · **Efor:** 8 saat · **Alan:** Test & QA
 - **Bağımlılık:** T-057 (Burak), T-035
 - **Destek:** Burak
 - **Çıktı:** Yük testi raporu
 - **Kabul kriteri:** 20 eşzamanlı kullanıcı, 30 dk. Hedef: API p95 < 300 ms (analiz hariç), hata oranı < %1, RAM < %85. Kuyruk birikme süresi ölçüldü; worker sayısı buna göre ayarlandı.
+- **Not:** 18.11.2026: k6 betiği ve çalıştırıcı hazır (`tests/yuk/`). API kısmı ölçüldü (E2E ortamı, örnek analiz): 20 kullanıcı 30 dk, p95 49,5 ms, hata %0, RAM en yüksek %14,7 (`tests/yuk/README.md`). Kalan: T-057 (Burak) gelince gerçek analizle kuyruk bekleme süresini ölçüp worker/kuyruk sınırlarını ayarlamak.
 
 ### T-075 · Production ortamı kurulumu
 
@@ -344,12 +346,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-087 · Felaket kurtarma tatbikatı
 
-- **Durum:** Yapılacak
+- **Durum:** Devam Ediyor
 - **Tarih:** 28.12.2026 – 03.01.2027 · **Öncelik:** P0 · **Efor:** 6 saat · **Alan:** Operasyon / İzleme
 - **Bağımlılık:** T-068, T-075
 - **Destek:** —
 - **Çıktı:** DR tatbikat raporu
 - **Kabul kriteri:** Başka bir bilgisayara (ör. Burak'ın veya Anıl'ın) yedekten sıfırdan kurulum ve tünelin oraya taşınması. Hedef: RTO < 4 saat, RPO < 24 saat. Süre ölçülüp runbook'a yazıldı.
+- **Not:** 18.11.2026: Prosedür ve tatbikat kaydı hazır (`docs/runbook/felaket-kurtarma.md`); production PC'sinde gerçek veriyle geri yükleme testi geçti (1,97 MB, 12 sn, 11 tablo eşleşti). Kalan: Burak'ın veya Anıl'ın bilgisayarında tatbikat (geçici `dr-test` tüneliyle), süreleri tabloya yazmak; önce parola yöneticisindeki `.env.prod` kaydının eksiksiz olduğu kontrol edilmeli (prosedür 0. adım).
 
 ### T-088 · Operasyon runbook'u
 
