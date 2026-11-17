@@ -239,41 +239,43 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-066 · İzleme ve uyarı sistemi
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 30.11.2026 – 06.12.2026 · **Öncelik:** P0 · **Efor:** 10 saat · **Alan:** Operasyon / İzleme
 - **Bağımlılık:** T-035
 - **Destek:** —
-- **Çıktı:** İzleme paneli + status sayfası
+- **Çıktı:** İzleme paneli (Grafana, PC'de)
 - **Kabul kriteri:** PC dışından uptime izleme (UptimeRobot / Better Stack ücretsiz; api.cvnebakalim.com/health/ready her 1-5 dk), Sentry (backend + web + mobil, ücretsiz katman), Prometheus + Grafana PC'de (CPU/RAM/disk/kuyruk; sadece 127.0.0.1). Uyarılar Telegram/e-posta ile ekibe.
-- **Not:** 06.11.2026: karar #30 ile Uptime Kuma yerine dış izleyici (PC kapanınca içindeki izleyici de kapanır).
+- **Not:** Kapsam karar #32 ile daraltıldı (15.11.2026): PC dışı uptime izleyici, status sayfası, Sentry ve bildirimler yapılmadı; ekip ihtiyaç duymuyor. Yapılan: `infra/monitoring/` (`monitoring` profili): Prometheus + Grafana (sadece 127.0.0.1:3000), node/redis/postgres/blackbox exporter'ları, 12 uyarı kuralı panonun en üstünde; alan adından erişim tünel üzerinden dış probla ölçülüyor (`DisErisimYok`). Salt okunur `careerai_monitor` rolünü `deploy.sh` oluşturur. 12.11.2026'da geçici bir compose projesinde denendi (tüm hedefler up, pano sorguları çalışıyor, rol kullanıcı tablosunu okuyamıyor). Production'da açmak: `.env.prod`'a `GRAFANA_ADMIN_PASSWORD`, `MONITOR_DB_PASSWORD` ve `COMPOSE_PROFILES`'a `monitoring`, sonra deploy (`infra/monitoring/README.md`).
 
 ### T-064 · Güvenlik incelemesi (OWASP Top 10)
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 07.12.2026 – 13.12.2026 · **Öncelik:** P0 · **Efor:** 10 saat · **Alan:** Güvenlik & KVKK
 - **Bağımlılık:** T-036
 - **Destek:** Anıl
 - **Çıktı:** Güvenlik bulguları raporu
 - **Kabul kriteri:** pip-audit, npm audit, Dependabot; Trivy ile image taraması; gitleaks ile sır taraması; CORS sadece kendi alan adları; güvenlik başlıkları (HSTS, CSP, X-Content-Type-Options).
+- **Not:** 15.11.2026. Rapor `docs/guvenlik-raporu.md` (G-1…G-8). CI `.github/workflows/security.yml` (gitleaks, pip-audit, npm audit, Trivy; PR, main ve haftalık) + `.github/dependabot.yml`; GitHub'da Dependabot uyarıları ve güvenlik güncellemeleri açık (secret scanning private repoda ücretli, gitleaks yeterli). Yedek imajı restic 0.19.1 (kritik açıklar kapandı); kalan restic açıkları `infra/backup/.trivyignore`, süre 15.01.2027'de doluyor, go-live öncesi tekrar bakılacak. Cloudflare başlık kuralları kuruldu, securityheaders.com A+. CORS canlıda doğrulandı. Açık kalan bulgular sahiplerinde: G-3 react-router ve G-6 `/docs` Anıl, G-8 mobil lock dosyası Burak; G-4 zlib sonraki deploy'da kapanır.
 
 ### T-067 · Merkezi log ve log maskeleme
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 07.12.2026 – 13.12.2026 · **Öncelik:** P1 · **Efor:** 6 saat · **Alan:** Operasyon / İzleme
 - **Bağımlılık:** T-066
 - **Destek:** —
 - **Çıktı:** Log yapılandırması
 - **Kabul kriteri:** JSON log + request_id; PII maskeleme filtresi (e-posta, telefon); 14 gün saklama; logrotate.
+- **Not:** 15.11.2026. JSON log + `request_id` ve `mask_pii` API'de ve analiz işçisinde zaten vardı; veri işçisi de Celery'nin düz metin logu yerine aynı JSON biçimlendiriciye geçti (`scraper/collector/tasks.py`, test `scraper/tests/test_logging.py`). Merkezi log: izleme profiline Loki (14 gün saklama, compactor) + Alloy (Docker loglarını okur, e-posta/telefon/TCKN'yi ikinci kez maskeler); Grafana'da **Loglar** veri kaynağı, SLO sorguları `infra/monitoring/README.md` "Loglar". Postgres hata satırına değer yazmıyor (`log_error_verbosity=terse`, `log_min_error_statement=panic`). Rotasyon: Docker json-file 3 × 10 MB. Production'da sahte veriyle denendi. Production'da sürekli açık olması izleme profilinin açılmasına bağlı (`.env.prod` → `COMPOSE_PROFILES=…,monitoring`, Grafana şifreleri). #88'in (T-066) üstüne kurulu.
 
 ### T-068 · Yedekleme
 
-- **Durum:** Devam Ediyor
+- **Durum:** Tamamlandı
 - **Tarih:** 07.12.2026 – 13.12.2026 · **Öncelik:** P0 · **Efor:** 8 saat · **Alan:** Operasyon / İzleme
 - **Bağımlılık:** T-035
 - **Destek:** —
 - **Çıktı:** Yedekleme scriptleri + zamanlayıcı
 - **Kabul kriteri:** pg_dump her gün 02:00 (PC o saatte kapalıysa açılışta); 7 günlük + 4 haftalık saklama; restic ile şifreli olarak PC dışına (Backblaze B2 ücretsiz katman vb.). Zamanlayıcı Windows'ta çalışır (compose içinde yedek konteyneri veya Görev Zamanlayıcı; PR #57'deki systemd birimleri PC'de kullanılmaz). Geri yükleme testi yapıldı.
-- **Devam notu (06.11.2026):** Yapılan: karar #30 ile PC'ye uyarlandı. systemd birimleri kaldırıldı; yedek `infra/pc/compose.yml`'de `backup` konteyneri (restic 0.18 + pg16 istemcisi, `infra/backup/Dockerfile`), zamanlayıcı içinde (`scheduler.sh`: 02:00, PC kapalıysa açılışta, başarısızsa 30 dk sonra tekrar). Prova ortamında dev verisiyle denendi: 6,5 MB yedek ~3 sn, kaçan yedek yeniden başlatınca alındı, güncel yedek varken tekrar alınmadı, yanlış parolada hata verdi; `restore-test.sh staging` 11 sn, 11 tablo eşleşti; shellcheck temiz. Backblaze B2 hesabı açıldı (EU Central, sınırlar $0, bucket `cvnebakalim-yedek`, anahtar `careerai-pc`; anahtarlar parola yöneticisinde). Sıradaki adım: production açılınca (T-075) anahtarları ve RESTIC_PASSWORD'ü `.env.prod`'a yaz, `make backup-init`, ilk gerçek yedek ve `restore-test.sh production`. Açık sorular / engeller: gerçek B2 deposu henüz denenmedi (sadece yerel restic deposu). PR #57, #50'nin üstüne kurulu (`infra/pc`). Branch: ataberk/t068-yedekleme
+- **Not:** 15.11.2026'da gerçek B2 ile denendi. B2'nin kendi indirme sunucusu (`f003.backblazeb2.com`) bu ağda TLS'te kesildiği için restic B2'nin S3 uyumlu adresine bağlanıyor (`s3:https://s3.eu-central-003.backblazeb2.com/cvnebakalim-yedek/careerai`, aynı uygulama anahtarı; `infra/pc/compose.yml`, `.env.example`, `infra/backup/README.md`). Depo oluşturuldu, ilk production yedeği alındı (zamanlayıcı "Yedek tamam: production", `restic check` hatasız). Dev verisiyle B2 üzerinden gidiş-dönüş: 6,57 MiB yedek 17 sn, geri yükleme 7 sn, tablo sayıları birebir (job_postings 7207, resources 1571, skills 374, roles 12, job_sources 8, scrape_runs 13); test snapshot'ı sonra silindi. `restore-test.sh production` yedeği 10 sn'de yükledi ama production veritabanı henüz boş olduğu için tablo kontrolünde başarısız sayıldı; production'a veri gelince (T-075) bir kez daha çalıştırılmalı. RESTIC_PASSWORD ve B2 anahtarı parola yöneticisinde.
 
 ### T-070 · Tanıtım (landing) sayfası
 
@@ -291,12 +293,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-071 · E2E testleri (Playwright)
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 14.12.2026 – 20.12.2026 · **Öncelik:** P0 · **Efor:** 10 saat · **Alan:** Test & QA
 - **Bağımlılık:** T-053 (Anıl)
 - **Destek:** Anıl
 - **Çıktı:** tests/e2e
 - **Kabul kriteri:** Kritik akışlar: kayıt → CV yükle → sonuç → kaynak aç → hesap sil. CI'da docker compose ile ayağa kaldırılan geçici ortama karşı gece çalışır (karar #30: ayrı staging sunucusu yok).
+- **Not:** 15.11.2026. `tests/e2e/` (Playwright 1.64.1): `kritik-akis.spec.ts` kayıt → giriş → CV yükle (çalışma anında üretilen sahte PDF) → sonuç → kaynak aç (yeni sekme, dış istek yok) → hesap sil → silinen hesapla giriş reddi. Ortam `tests/e2e/ortam.sh` (docker compose, `careerai-e2e`, boş kurulup silinir; migration + seed-taxonomy + resources-seed); CI `.github/workflows/e2e.yml` her gece 03:30, PR'da sadece E2E dosyaları değişince. Yerelde 3 kez üst üste geçti (~12 sn). **Geçici:** `ExampleAnalyzer` eksik yetkinlik/kaynak yazmadığı için test o adımda sözleşme örneği biçiminde bir öneri ekler; T-057 veya ExampleAnalyzer'ın `missing_skills` yazması (Anıl) gelince kaldırılacak.
 
 ### T-072 · Yük testi (k6 / Locust)
 
@@ -309,21 +312,23 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-075 · Production ortamı kurulumu
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 14.12.2026 – 20.12.2026 · **Öncelik:** P0 · **Efor:** 10 saat · **Alan:** DevOps / Altyapı
 - **Bağımlılık:** T-036, T-064
 - **Destek:** —
 - **Çıktı:** Production ortamı
 - **Kabul kriteri:** PC'de ayrı compose projesi (`careerai-prod`, kendi volume'ları); en az yetkili DB kullanıcıları; sırlar `.env` (sadece bu PC'de, Windows kullanıcı izinleriyle korunur, repoda yok); hiçbir servis host'a port açmaz, dış erişim sadece `cloudflared`; kaynak limitleri (mem_limit), `restart: unless-stopped`. PC kapalıyken kaçan gece toplaması açılışta telafi edilir (R-18).
+- **Not:** 15.11.2026. Ayrı `careerai-prod` projesi, kendi volume'ları, `mem_limit` + `restart: unless-stopped` (15 servisin hepsi), host'a port yok (tek istisna Grafana 127.0.0.1) zaten vardı; denetlendi. Yeni: en az yetkili `careerai_app` rolü (`infra/pc/app-role.sql`, deploy.sh `setup_app_role`; migration sahip rolle `migrate`), view yenileme migration 0004 `refresh_role_skill_stats()` (SECURITY DEFINER), `audit_logs` sadece ekleme; test `backend/tests/db/test_app_role.py`. Kaçan gece toplaması açılışta telafi (`scraper/collector/tasks.py` `missed_nightly`, test `test_catch_up.py`). `.env.prod` izinleri sadece Ataberk/SYSTEM/Administrators (icacls, `infra/pc/deploy.md` §2). Production'da denendi: api ve worker-data `careerai_app` ile bağlı, DDL ve doğrudan REFRESH reddediliyor, kaçan toplama açılışta başladı. #89 ve #94'ün (o da #88'in) üstüne kurulu.
 
 ### T-079 · Mimari doküman ve ADR'ler
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 21.12.2026 – 27.12.2026 · **Öncelik:** P1 · **Efor:** 6 saat · **Alan:** Dokümantasyon
 - **Bağımlılık:** T-075
 - **Destek:** Burak
 - **Çıktı:** docs/architecture
 - **Kabul kriteri:** Mimari kararlar (neden Ollama, neden pgvector, neden Celery) ADR olarak; deployment diyagramı.
+- **Not:** 18.11.2026: `docs/architecture/`: dört ADR (Ollama, pgvector, Celery + Redis, PC + Cloudflare Tunnel) ve production deployment diyagramı (`deployment.md`: servisler, ağ sınırları, deploy ve yedek akışı, bellek bütçesi). `docs/diagrams/component-deployment.md`'deki eski VPS diyagramı oraya yönlendirildi.
 
 ---
 

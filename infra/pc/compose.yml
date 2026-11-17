@@ -3,13 +3,15 @@
 #   prova:      docker compose -p careerai-staging --env-file infra/pc/.env.staging -f infra/pc/compose.yml ...
 # Elle yazmak yerine `bash infra/pc/deploy.sh` veya make hedefleri kullanılır (infra/pc/deploy.md).
 #
-# Hiçbir servis host'a port açmaz. Dışarıdan tek giriş cloudflared'dir (Cloudflare Tunnel, sadece dışarıya bağlantı
+# Host'a sadece Grafana açılır, o da 127.0.0.1'e (izleme profili). Dışarıdan tek giriş cloudflared'dir (Cloudflare Tunnel, sadece dışarıya bağlantı
 # kurar). Sunum B planı için api'yi sadece bu PC'ye açan ek dosya: compose.local.yml.
 # worker-ai / worker-analysis ve cv-redis, ai/Dockerfile (Burak) ve #58/#60 main'e girince buraya gelecek.
 
 x-app-env: &app-env
   ENVIRONMENT: ${APP_ENVIRONMENT:?env dosyasında APP_ENVIRONMENT yok (production veya staging)}
-  DATABASE_URL: postgresql+psycopg://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+  # En az yetkili rol (T-075, infra/pc/app-role.sql): veri okur/yazar, şema değiştiremez. Migration sahip rolle
+  # çalışır (deploy.sh DATABASE_URL'i o adımda ezer). Rolü deploy.sh oluşturur.
+  DATABASE_URL: postgresql+psycopg://careerai_app:${APP_DB_PASSWORD:?env dosyasında APP_DB_PASSWORD yok}@postgres:5432/${POSTGRES_DB}
   REDIS_URL: redis://:${REDIS_PASSWORD}@redis:6379/0
   OLLAMA_URL: http://ollama:11434
   # Ayarlar ortak olduğu için worker-data da bunu ister: geliştirme anahtarıyla açılmaz.
@@ -82,6 +84,9 @@ services:
 
   postgres:
     image: pgvector/pgvector:pg16
+    # Hata loglarına değer yazılmasın (T-067): terse → "Key (email)=(…)" gibi DETAIL satırları yok;
+    # log_min_error_statement=panic → hatalı sorgunun metni loglanmaz.
+    command: ["postgres", "-c", "log_error_verbosity=terse", "-c", "log_min_error_statement=panic"]
     environment:
       POSTGRES_USER: ${POSTGRES_USER:?env dosyasında POSTGRES_USER yok}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?env dosyasında POSTGRES_PASSWORD yok}
@@ -128,8 +133,11 @@ services:
       PGDATABASE: ${POSTGRES_DB}
       RESTIC_REPOSITORY: ${RESTIC_REPOSITORY:-}
       RESTIC_PASSWORD: ${RESTIC_PASSWORD:-}
-      B2_ACCOUNT_ID: ${B2_ACCOUNT_ID:-}
-      B2_ACCOUNT_KEY: ${B2_ACCOUNT_KEY:-}
+      # B2'ye S3 uyumlu adresinden bağlanılır: B2'nin kendi indirme sunucusu (f003.backblazeb2.com) Türkiye'deki
+      # ağlarda TLS'te kesiliyor, restic sessizce tekrar deniyordu (15.11.2026). Anahtarlar aynı B2 uygulama anahtarı.
+      AWS_ACCESS_KEY_ID: ${B2_ACCOUNT_ID:-}
+      AWS_SECRET_ACCESS_KEY: ${B2_ACCOUNT_KEY:-}
+      AWS_DEFAULT_REGION: eu-central-003
       TZ: Europe/Istanbul
     volumes:
       - backup-state:/state
@@ -157,6 +165,135 @@ services:
     logging: *logging
     restart: unless-stopped
 
+  # --- İzleme (T-066, infra/monitoring/README.md). Sadece production'da: COMPOSE_PROFILES=...,monitoring ---
+  # Grafana tek arayüzdür ve sadece bu PC'ye açılır (127.0.0.1). Diğerleri iç ağda kalır.
+  prometheus:
+    profiles: ["monitoring"]
+    image: prom/prometheus:v3.5.0
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus
+      - --storage.tsdb.retention.time=30d
+      - --storage.tsdb.retention.size=2GB
+    volumes:
+      - ../monitoring/prometheus:/etc/prometheus:ro
+      - prometheus-data:/prometheus
+    mem_limit: 512m
+    logging: *logging
+    restart: unless-stopped
+
+
+  grafana:
+    profiles: ["monitoring"]
+    image: grafana/grafana:12.1.0
+    # Şifre boşsa Grafana admin/admin ile açılırdı: açılmasın.
+    entrypoint: ["/bin/sh", "-c", "[ -n \"$$GF_SECURITY_ADMIN_PASSWORD\" ] || { echo 'GRAFANA_ADMIN_PASSWORD boş' >&2; exit 1; }; exec /run.sh"]
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:-}
+      GF_USERS_ALLOW_SIGN_UP: "false"
+      GF_AUTH_ANONYMOUS_ENABLED: "false"
+      GF_ANALYTICS_REPORTING_ENABLED: "false"
+      GF_ANALYTICS_CHECK_FOR_UPDATES: "false"
+      GF_ANALYTICS_CHECK_FOR_PLUGIN_UPDATES: "false"
+      GF_NEWS_NEWS_FEED_ENABLED: "false"
+      GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH: /var/lib/grafana/dashboards/careerai.json
+      POSTGRES_DB: ${POSTGRES_DB}
+      MONITOR_DB_PASSWORD: ${MONITOR_DB_PASSWORD:-}
+      TZ: Europe/Istanbul
+    ports:
+      - "127.0.0.1:${GRAFANA_PORT:-3000}:3000"
+    volumes:
+      - ../monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ../monitoring/grafana/dashboards:/var/lib/grafana/dashboards:ro
+      - grafana-data:/var/lib/grafana
+    mem_limit: 256m
+    logging: *logging
+    restart: unless-stopped
+
+  # --- Merkezi log (T-067): Alloy konteyner loglarını okur, maskeler → Loki 14 gün saklar → Grafana'da okunur ---
+  loki:
+    profiles: ["monitoring"]
+    image: grafana/loki:3.5.3
+    command: ["-config.file=/etc/loki/loki.yml"]
+    volumes:
+      - ../monitoring/loki:/etc/loki:ro
+      - loki-data:/loki
+    mem_limit: 512m
+    logging: *logging
+    restart: unless-stopped
+
+  # Docker soketine salt okunur erişir (konteyner listesi ve logları). Portu yok, sadece Loki'ye yazar.
+  alloy:
+    profiles: ["monitoring"]
+    image: grafana/alloy:v1.10.2
+    command: ["run", "--storage.path=/var/lib/alloy/data", "--disable-reporting", "/etc/alloy/config.alloy"]
+    volumes:
+      - ../monitoring/alloy:/etc/alloy:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - alloy-data:/var/lib/alloy/data
+    mem_limit: 256m
+    logging: *logging
+    restart: unless-stopped
+    depends_on:
+      - loki
+
+  # Docker Desktop'ın WSL2 sanal makinesini görür (CPU, RAM = .wslconfig sınırı). Windows C: diski
+  # Docker Desktop'ın kendi bağlama noktasından salt okunur eklenir (/host/c), sadece boş alanı okunur.
+  node-exporter:
+    profiles: ["monitoring"]
+    image: prom/node-exporter:v1.9.1
+    command:
+      - --collector.filesystem.mount-points-exclude=^/(dev|proc|sys|etc)($$|/)
+      - --collector.filesystem.fs-types-exclude=^(autofs|binfmt_misc|cgroup2?|configfs|debugfs|devpts|devtmpfs|fusectl|hugetlbfs|mqueue|nsfs|overlay|proc|procfs|pstore|securityfs|sysfs|tmpfs|tracefs)$$
+    volumes:
+      - /run/desktop/mnt/host/c:/host/c:ro
+    mem_limit: 64m
+    logging: *logging
+    restart: unless-stopped
+
+  redis-exporter:
+    profiles: ["monitoring"]
+    image: oliver006/redis_exporter:v1.67.0
+    environment:
+      REDIS_ADDR: redis://redis:6379
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      # Celery kuyrukları Redis'te liste: analysis (backend/app/worker), data (scraper/collector/tasks.py).
+      REDIS_EXPORTER_CHECK_SINGLE_KEYS: db0=analysis,db0=data
+    mem_limit: 64m
+    logging: *logging
+    restart: unless-stopped
+    depends_on:
+      redis:
+        condition: service_healthy
+
+  # Salt okunur careerai_monitor rolüyle bağlanır; rolü deploy.sh oluşturur (setup_monitor_role).
+  postgres-exporter:
+    profiles: ["monitoring"]
+    image: prometheuscommunity/postgres-exporter:v0.17.1
+    command: ["--extend.query-path=/etc/postgres-exporter/queries.yaml"]
+    environment:
+      DATA_SOURCE_URI: postgres:5432/${POSTGRES_DB}?sslmode=disable
+      DATA_SOURCE_USER: careerai_monitor
+      DATA_SOURCE_PASS: ${MONITOR_DB_PASSWORD:-}
+    volumes:
+      - ../monitoring/postgres-exporter:/etc/postgres-exporter:ro
+    mem_limit: 64m
+    logging: *logging
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  blackbox-exporter:
+    profiles: ["monitoring"]
+    image: prom/blackbox-exporter:v0.27.0
+    command: ["--config.file=/etc/blackbox/blackbox.yml"]
+    volumes:
+      - ../monitoring/blackbox:/etc/blackbox:ro
+    mem_limit: 64m
+    logging: *logging
+    restart: unless-stopped
+
 networks:
   default:
     ipam:
@@ -170,6 +307,10 @@ volumes:
   scraper-data:
   backup-state:
   restic-cache:
+  prometheus-data:
+  grafana-data:
+  loki-data:
+  alloy-data:
   # Model dosyaları (~5 GB) iki ortamda ortak: disk sınırlı (C: ~71 GB boş), model iki kez indirilmesin.
   # Dış volume: `down -v` ile prova kapatılırken production'ın modeli silinmesin. deploy.sh oluşturur.
   ollama:
