@@ -96,7 +96,7 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 - **Destek:** —
 - **Çıktı:** Prompt kütüphanesi
 - **Kabul kriteri:** Prompt'lar /ai/prompts altında versiyonlu; her analizde model_name ve prompt_version kaydedilir (tekrarlanabilirlik).
-- **Devam notu (07.11.2026):** Yapılan: `ai/prompts/` (`get_prompt`, `model_info`, `skill_extraction/v1.txt`); v1, T-018 benchmark prompt'unun birebir aynısı ve `benchmark_llm.py` onu kütüphaneden okuyor. · Sıradaki adım: analiz akışı henüz yok; T-032'de LLM çağrısı `get_prompt("skill_extraction")` kullanacak, T-057'de işçi `model_info` değerlerini sonuca ve `analyses` tablosuna yazacak. Kriterin "her analizde kaydedilir" kısmı bu yüzden açık. · Açık sorular / engeller: T-043 ikinci prompt'u getirince sözleşmedeki tek `prompt_version` alanının nasıl kullanılacağı karar ister. · Branch: burak/prompt-versiyonlama
+- **Devam notu (10.11.2026):** Yapılan: `ai/prompts/` (`get_prompt`, `model_info`, `skill_extraction/v1.txt`, #68); T-032 (#78) LLM çağrısında `get_prompt("skill_extraction")` kullanıyor ve `ExtractionResult.model` alanında `{"name", "prompt_version"}` döndürüyor. · Sıradaki adım: T-057'de işçi `result.model` değerini analiz sonucuna ve `analyses` tablosuna yazınca kriterin "her analizde kaydedilir" kısmı kapanır, görev o zaman Tamamlandı yapılır. · Açık sorular / engeller: T-043 ikinci prompt'u getirince sözleşmedeki tek `prompt_version` alanının nasıl kullanılacağı karar ister. · Branch: yok (kod main'de; kalan iş T-057'nin dalında)
 
 ---
 
@@ -114,12 +114,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-041 · Embedding servisi
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 16.11.2026 – 22.11.2026 · **Öncelik:** P0 · **Efor:** 10 saat · **Alan:** AI / NLP
 - **Bağımlılık:** T-013 (Ataberk), T-033 (Ataberk)
 - **Destek:** Ataberk
 - **Çıktı:** ai/embedding modülü
 - **Kabul kriteri:** Çok dilli model (paraphrase-multilingual-MiniLM-L12-v2 veya multilingual-e5-small, 384 boyut). Yetkinlik ve ilan vektörleri toplu üretilip pgvector'e yazılır.
+- **Not:** Model MiniLM yerine multilingual-e5-small (leave-one-out doğruluk %53 → %65; ölçüm `ai/README.md`), `docs/kararlar.md`'ye ekip kararı olarak yazılmalı. T-042 eşiği bu modelde ~0,90 (0,80 her şeyi eşler). Ataberk için: gece toplamasına `python -m embedding` adımı, işçi imajına modelin önceden indirilmesi, `catalog.py`'deki model yorumu ve T-013 ölçümünün gerçek vektörlerle tekrarı.
 
 ### T-042 · Eşleştirme algoritması
 

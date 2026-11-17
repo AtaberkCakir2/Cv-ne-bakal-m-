@@ -248,12 +248,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-064 · Güvenlik incelemesi (OWASP Top 10)
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 07.12.2026 – 13.12.2026 · **Öncelik:** P0 · **Efor:** 10 saat · **Alan:** Güvenlik & KVKK
 - **Bağımlılık:** T-036
 - **Destek:** Anıl
 - **Çıktı:** Güvenlik bulguları raporu
 - **Kabul kriteri:** pip-audit, npm audit, Dependabot; Trivy ile image taraması; gitleaks ile sır taraması; CORS sadece kendi alan adları; güvenlik başlıkları (HSTS, CSP, X-Content-Type-Options).
+- **Not:** 15.11.2026. Rapor `docs/guvenlik-raporu.md` (G-1…G-8). CI `.github/workflows/security.yml` (gitleaks, pip-audit, npm audit, Trivy; PR, main ve haftalık) + `.github/dependabot.yml`; GitHub'da Dependabot uyarıları ve güvenlik güncellemeleri açık (secret scanning private repoda ücretli, gitleaks yeterli). Yedek imajı restic 0.19.1 (kritik açıklar kapandı); kalan restic açıkları `infra/backup/.trivyignore`, süre 15.01.2027'de doluyor, go-live öncesi tekrar bakılacak. Cloudflare başlık kuralları kuruldu, securityheaders.com A+. CORS canlıda doğrulandı. Açık kalan bulgular sahiplerinde: G-3 react-router ve G-6 `/docs` Anıl, G-8 mobil lock dosyası Burak; G-4 zlib sonraki deploy'da kapanır.
 
 ### T-067 · Merkezi log ve log maskeleme
 
@@ -291,12 +292,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-071 · E2E testleri (Playwright)
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 14.12.2026 – 20.12.2026 · **Öncelik:** P0 · **Efor:** 10 saat · **Alan:** Test & QA
 - **Bağımlılık:** T-053 (Anıl)
 - **Destek:** Anıl
 - **Çıktı:** tests/e2e
 - **Kabul kriteri:** Kritik akışlar: kayıt → CV yükle → sonuç → kaynak aç → hesap sil. CI'da docker compose ile ayağa kaldırılan geçici ortama karşı gece çalışır (karar #30: ayrı staging sunucusu yok).
+- **Not:** 15.11.2026. `tests/e2e/` (Playwright 1.64.1): `kritik-akis.spec.ts` kayıt → giriş → CV yükle (çalışma anında üretilen sahte PDF) → sonuç → kaynak aç (yeni sekme, dış istek yok) → hesap sil → silinen hesapla giriş reddi. Ortam `tests/e2e/ortam.sh` (docker compose, `careerai-e2e`, boş kurulup silinir; migration + seed-taxonomy + resources-seed); CI `.github/workflows/e2e.yml` her gece 03:30, PR'da sadece E2E dosyaları değişince. Yerelde 3 kez üst üste geçti (~12 sn). **Geçici:** `ExampleAnalyzer` eksik yetkinlik/kaynak yazmadığı için test o adımda sözleşme örneği biçiminde bir öneri ekler; T-057 veya ExampleAnalyzer'ın `missing_skills` yazması (Anıl) gelince kaldırılacak.
 
 ### T-072 · Yük testi (k6 / Locust)
 
