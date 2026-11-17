@@ -139,6 +139,25 @@ m = match(cv, role.demands, corpus_postings=role.corpus_postings, embed=default_
 - **Eksik yetkinlikler** talep oranına göre (eşitse pozisyona özgü olan önce); `resources` boş liste, T-043 doldurur. **`low_data`**: pozisyonda 50'den az ilan (karar #23, `scraper/etl/stats.py` ile aynı değer, test denetliyor); sözleşmede alanı yok, API/arayüz uyarısı için.
 - **Deneme (17.11.2026):** 10 TR sentetik CV (v1 çıkarım) × 12 pozisyonun gerçek istatistiği (`scraper/exports/template_input.json`, pozisyon başına ilk 30 yetkinlik). Hedef pozisyon 9 CV'de 1., birinde 2. sırada; hedef skoru diğer pozisyonların ortalamasından medyan 39 puan yüksek. Skorlar 31–65. Not: en çok istenenler arasında kişisel beceriler (İletişim, Takım Çalışması) var ve CV'de açıkça yazılmadıkça eksik çıkıyor; T-043'te öneri listesinde nasıl sunulacağı düşünülmeli.
 
+### `recommendation` — eğitim kaynağı önerisi (T-043, RAG)
+
+```python
+from recommendation import load_candidates, recommend
+
+candidates = load_candidates(conn, [x.skill for x in m.missing])  # resources (sadece canlı link) + skills
+rec = recommend(
+    m.missing, candidates, role_name=role.name, postings_analyzed=m.postings_analyzed, present=[s.skill for s in cv]
+)
+rec.missing_skills()  # contracts: missing_skills, resources dolu
+rec.model  # {"name": ..., "prompt_version": ...} (prompts/recommendation)
+```
+
+- **Aday:** eksik yetkinliğin `resources` kayıtları (`is_alive`). Kurallı sıra: Türkçe, başlangıç, ücretsiz, kısa süre önce; LLM'e yetkinlik başına en çok 8 aday gösterilir.
+- **LLM sadece numara seçer** (Ollama, JSON şeması): seçilen `resource_id` o yetkinliğe gösterilen adaylardan değilse atılır. Başlık, link, sağlayıcı, seviye her zaman veritabanındaki kayıttan gelir; LLM'in yazdığı hiçbir şey link olamaz (karar #10). LLM'e link gösterilmez, CV metni gitmez (sadece pozisyon adı, eksik ve mevcut yetkinlik adları, kaynak bilgisi).
+- **Gerekçe** = koddan üretilen ilan istatistiği ("İncelenen 150 Backend Developer ilanının %62'si PostgreSQL istiyor.", ek ses uyumuna göre) + LLM'in tek cümlesi. LLM gerekçesi boşsa, link/adres veya yüzde içeriyorsa ya da 240 karakteri aşıyorsa kurallı gerekçe yazılır.
+- **LLM çalışmazsa** veya az seçerse boşluklar kurallı sırayla dolar (`llm_error` hata kodunu taşır); öneri her durumda çıkar. Yetkinlik başına 3 kaynak (`PER_SKILL`); LLM sadece ilk 5 eksik yetkinliğin gerekçesini yazar (`LLM_SKILLS`, CPU süresi için), kalanlar kurallı.
+- **Deneme (17.11.2026):** `scraper/taxonomy/resources.csv` adayları, 5 eksik yetkinlik (Docker, PostgreSQL, Kubernetes, Redis, Linux), Llama 3.1 8B (bu bilgisayar, CPU): 9/9 seçim geçerli, 9 gerekçenin 9'u LLM'den, uydurma/atılan seçim 0. Süre 7,8 sn (model bellekteyken; ilk çağrıda modelin yüklenmesiyle 85 sn).
+
 ### `embedding` — yetkinlik ve ilan vektörleri (T-041)
 
 ```bash
