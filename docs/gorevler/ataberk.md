@@ -291,12 +291,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-071 · E2E testleri (Playwright)
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 14.12.2026 – 20.12.2026 · **Öncelik:** P0 · **Efor:** 10 saat · **Alan:** Test & QA
 - **Bağımlılık:** T-053 (Anıl)
 - **Destek:** Anıl
 - **Çıktı:** tests/e2e
 - **Kabul kriteri:** Kritik akışlar: kayıt → CV yükle → sonuç → kaynak aç → hesap sil. CI'da docker compose ile ayağa kaldırılan geçici ortama karşı gece çalışır (karar #30: ayrı staging sunucusu yok).
+- **Not:** 15.11.2026. `tests/e2e/` (Playwright 1.64.1): `kritik-akis.spec.ts` kayıt → giriş → CV yükle (çalışma anında üretilen sahte PDF) → sonuç → kaynak aç (yeni sekme, dış istek yok) → hesap sil → silinen hesapla giriş reddi. Ortam `tests/e2e/ortam.sh` (docker compose, `careerai-e2e`, boş kurulup silinir; migration + seed-taxonomy + resources-seed); CI `.github/workflows/e2e.yml` her gece 03:30, PR'da sadece E2E dosyaları değişince. Yerelde 3 kez üst üste geçti (~12 sn). **Geçici:** `ExampleAnalyzer` eksik yetkinlik/kaynak yazmadığı için test o adımda sözleşme örneği biçiminde bir öneri ekler; T-057 veya ExampleAnalyzer'ın `missing_skills` yazması (Anıl) gelince kaldırılacak.
 
 ### T-072 · Yük testi (k6 / Locust)
 
