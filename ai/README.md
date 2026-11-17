@@ -121,10 +121,15 @@ model = model_info("llama3.1:8b", prompt)  # {"name": "llama3.1:8b", "prompt_ver
 from matching import CvSkill, load_role_demand, match
 from embedding import default_encoder
 
-role = load_role_demand(conn, "backend-developer")       # role_skill_stats + skills.embedding (psycopg)
-cv = [CvSkill(s["skill"], s.get("verified", True)) for s in result.present_skills()]   # extraction v2
+role = load_role_demand(conn, "backend-developer")  # role_skill_stats + skills.embedding (psycopg)
+cv = [CvSkill(s["skill"], s.get("verified", True)) for s in result.present_skills()]  # extraction v2
 m = match(cv, role.demands, corpus_postings=role.corpus_postings, embed=default_encoder())
-m.match_score, m.postings_analyzed, m.low_data, m.missing_skills()   # contracts: match_score, postings_analyzed, missing_skills
+(
+    m.match_score,
+    m.postings_analyzed,
+    m.low_data,
+    m.missing_skills(),
+)  # contracts: match_score, postings_analyzed, missing_skills
 ```
 
 - **Talep ağırlığı** = pozisyondaki talep oranı × IDF; IDF = ln((1+N)/(1+df)) + 1, N tüm pozisyonların ilanı, df yetkinliği isteyen ilan (`role_skill_stats`'tan). Her yerde istenen yetkinlik (Git, İngilizce) skoru az etkiler. Talep oranı %5'in altındaki uzun kuyruk hesaba katılmaz (`MIN_DEMAND_RATIO`).
