@@ -82,6 +82,9 @@ services:
 
   postgres:
     image: pgvector/pgvector:pg16
+    # Hata loglarına değer yazılmasın (T-067): terse → "Key (email)=(…)" gibi DETAIL satırları yok;
+    # log_min_error_statement=panic → hatalı sorgunun metni loglanmaz.
+    command: ["postgres", "-c", "log_error_verbosity=terse", "-c", "log_min_error_statement=panic"]
     environment:
       POSTGRES_USER: ${POSTGRES_USER:?env dosyasında POSTGRES_USER yok}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?env dosyasında POSTGRES_PASSWORD yok}
@@ -205,6 +208,33 @@ services:
     logging: *logging
     restart: unless-stopped
 
+  # --- Merkezi log (T-067): Alloy konteyner loglarını okur, maskeler → Loki 14 gün saklar → Grafana'da okunur ---
+  loki:
+    profiles: ["monitoring"]
+    image: grafana/loki:3.5.3
+    command: ["-config.file=/etc/loki/loki.yml"]
+    volumes:
+      - ../monitoring/loki:/etc/loki:ro
+      - loki-data:/loki
+    mem_limit: 512m
+    logging: *logging
+    restart: unless-stopped
+
+  # Docker soketine salt okunur erişir (konteyner listesi ve logları). Portu yok, sadece Loki'ye yazar.
+  alloy:
+    profiles: ["monitoring"]
+    image: grafana/alloy:v1.10.2
+    command: ["run", "--storage.path=/var/lib/alloy/data", "--disable-reporting", "/etc/alloy/config.alloy"]
+    volumes:
+      - ../monitoring/alloy:/etc/alloy:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - alloy-data:/var/lib/alloy/data
+    mem_limit: 256m
+    logging: *logging
+    restart: unless-stopped
+    depends_on:
+      - loki
+
   # Docker Desktop'ın WSL2 sanal makinesini görür (CPU, RAM = .wslconfig sınırı). Windows C: diski
   # Docker Desktop'ın kendi bağlama noktasından salt okunur eklenir (/host/c), sadece boş alanı okunur.
   node-exporter:
@@ -277,6 +307,8 @@ volumes:
   restic-cache:
   prometheus-data:
   grafana-data:
+  loki-data:
+  alloy-data:
   # Model dosyaları (~5 GB) iki ortamda ortak: disk sınırlı (C: ~71 GB boş), model iki kez indirilmesin.
   # Dış volume: `down -v` ile prova kapatılırken production'ın modeli silinmesin. deploy.sh oluşturur.
   ollama:

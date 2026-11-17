@@ -21,3 +21,12 @@ datasources:
     secureJsonData:
       password: $MONITOR_DB_PASSWORD
     editable: false
+  # Merkezi loglar (T-067): Explore → Loglar. Satırlar Alloy'da maskelenmiş olarak gelir, 14 gün saklanır.
+  - name: Loglar
+    uid: loki
+    type: loki
+    access: proxy
+    url: http://loki:3100
+    jsonData:
+      maxLines: 1000
+    editable: false
