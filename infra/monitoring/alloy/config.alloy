@@ -1,0 +1,61 @@
+// Alloy (T-067): production konteynerlerinin loglarını Docker'dan okur, kişisel veriyi maskeler, Loki'ye yazar.
+// Uygulamalar zaten maskeliyor (backend/app/core/logging.py); bu ikinci katman Postgres, Redis, cloudflared
+// gibi bizim yazmadığımız servisler ve gözden kaçan satırlar için. Desenler mask_pii ile aynı; Go regex'inde
+// lookbehind olmadığı için sınır karakteri grubun dışında eşlenir, sadece grup değiştirilir.
+
+discovery.docker "containers" {
+  host = "unix:///var/run/docker.sock"
+}
+
+discovery.relabel "containers" {
+  targets = discovery.docker.containers.targets
+
+  // Sadece production projesi (prova ortamında izleme yok).
+  rule {
+    source_labels = ["__meta_docker_container_label_com_docker_compose_project"]
+    regex         = "careerai-prod"
+    action        = "keep"
+  }
+  rule {
+    source_labels = ["__meta_docker_container_label_com_docker_compose_service"]
+    target_label  = "service"
+  }
+}
+
+loki.source.docker "containers" {
+  host          = "unix:///var/run/docker.sock"
+  targets       = discovery.relabel.containers.output
+  relabel_rules = discovery.relabel.containers.rules
+  forward_to    = [loki.process.mask.receiver]
+}
+
+loki.process "mask" {
+  stage.replace {
+    expression = "([\\w.+-]+@[\\w-]+\\.[\\w.-]+)"
+    replace    = "[E-POSTA]"
+  }
+  stage.replace {
+    expression = "(?:^|[^\\d])((?:\\+?90[\\s-]?)?0?5\\d{2}[\\s-]?\\d{3}[\\s-]?\\d{2}[\\s-]?\\d{2})(?:[^\\d]|$)"
+    replace    = "[TELEFON]"
+  }
+  stage.replace {
+    expression = "(?:^|[^\\d])([1-9]\\d{10})(?:[^\\d]|$)"
+    replace    = "[TCKN]"
+  }
+
+  // JSON satırlardan seviye etiketi: Grafana'da hata loglarını süzmek için ({level="ERROR"}).
+  stage.json {
+    expressions = { level = "level" }
+  }
+  stage.labels {
+    values = { level = "" }
+  }
+
+  forward_to = [loki.write.default.receiver]
+}
+
+loki.write "default" {
+  endpoint {
+    url = "http://loki:3100/loki/api/v1/push"
+  }
+}
