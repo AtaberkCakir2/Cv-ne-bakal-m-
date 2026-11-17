@@ -1,6 +1,6 @@
 # CareerAI API (FastAPI). docker-compose'daki `api` servisi bu dosyayla derlenir (T-007).
 # Lokal: `make up` (backend/Dockerfile varsa api profili otomatik eklenir) → http://localhost:8000/docs
-FROM python:3.12-slim
+FROM python:3.15-slim
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
