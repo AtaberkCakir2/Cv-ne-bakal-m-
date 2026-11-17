@@ -58,7 +58,7 @@ Production PC'sinde (i7-9750H, CPU) bir analiz yaklaşık 1–2 dakika sürer; b
 | AI | OCR | Tesseract 5 (tur + eng) + pdf2image | Taranmış CV'ler için yedek; açık kaynak, yerel. | EasyOCR | Burak |
 | AI | LLM sunucusu | Ollama | Yerel çalışma → CV'ler dışarı gitmez (KVKK); API maliyeti 0. | llama.cpp server, vLLM (GPU) | Burak |
 | AI | LLM modeli | Llama 3.x 8B Instruct (q4_K_M) — benchmark ile kesinleşecek | 8B quantize model ~5-6 GB RAM; Türkçe yeterli; JSON çıktı desteği. | Gemma 9B, Qwen 7B | Burak |
-| AI | Embedding | sentence-transformers: paraphrase-multilingual-MiniLM-L12-v2 (384 boyut) | Türkçe destekli, CPU'da hızlı, küçük. | multilingual-e5-small | Burak |
+| AI | Embedding | sentence-transformers: intfloat/multilingual-e5-small (384 boyut; karar #35) | Türkçe destekli, CPU'da hızlı, küçük; taksonomi dışı adları doğru yetkinliğe bağlamada MiniLM'den iyi (T-041 ölçümü). | paraphrase-multilingual-MiniLM-L12-v2 | Burak |
 | AI | Ön filtre | TF-IDF (scikit-learn) + kosinüs benzerliği | Raporda belirtilen ön filtre; LLM'e giden veriyi küçültür. | — | Burak |
 | Altyapı | Container | Docker Desktop (WSL2) + Docker Compose | Tek makine için yeterli; lokal ve production aynı compose dosyası, ayrı proje adı ve volume'lar. | Kubernetes (gereksiz karmaşık) | Ataberk |
 | Altyapı | CI/CD | GitHub Actions + GHCR | Ücretsiz (öğrenci), repo ile entegre. CI imajı üretir; PC'deki production etiketle elle güncellenir (PC'ye dışarıdan deploy erişimi açılmaz). | GitLab CI | Ataberk |
