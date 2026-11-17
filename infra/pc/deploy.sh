@@ -73,6 +73,26 @@ backup_db() {
 
 env_value() { sed -n "s/^$1=//p" "$ENV_FILE" | tail -n 1 | tr -d '\r'; }
 
+# En az yetkili uygulama rolü (T-075): API ve veri işçisi bununla bağlanır. Migration'dan sonra her deploy'da
+# çalışır, yeni tablolar da yetki alır. Şifre psql değişkeniyle girişten verilir (süreç listesinde görünmez).
+setup_app_role() {
+  local pw
+  pw="$(env_value APP_DB_PASSWORD)"
+  [[ "$pw" =~ ^[A-Za-z0-9]{24,}$ ]] \
+    || { echo "APP_DB_PASSWORD boş/kısa (sadece harf/rakam, openssl rand -hex 32): infra/pc/$ENV_FILE" >&2; return 1; }
+  # shellcheck disable=SC2016  # değişkenler konteynerin içinde açılmalı
+  { printf '\\set app_pw %s\n' "$pw"; cat app-role.sql; } \
+    | compose exec -T postgres sh -c 'psql -q -v ON_ERROR_STOP=1 -U "$POSTGRES_USER" -d "$POSTGRES_DB"'
+}
+
+# Migration sahip rolle (POSTGRES_USER) çalışır; compose'daki DATABASE_URL uygulama rolüdür. Adres ortam
+# değişkeniyle verilir (`-e DATABASE_URL`: değer komut satırında görünmez).
+migrate() {
+  local url
+  url="postgresql+psycopg://$(env_value POSTGRES_USER):$(env_value POSTGRES_PASSWORD)@postgres:5432/$(env_value POSTGRES_DB)"
+  DATABASE_URL="$url" compose run --rm --no-deps -e DATABASE_URL api alembic -c app/db/alembic.ini upgrade head
+}
+
 # İzleme açıksa (T-066) Grafana ve postgres-exporter'ın kullandığı salt okunur rolü oluşturur veya şifresini
 # günceller. Rol sadece izleme sütunlarını görür: kullanıcı, CV hash'i, yetkinlik verisi okunmaz (karar #5).
 # Şifre komut satırına değil psql'in girişine yazılır (süreç listesinde görünmesin). Migration'dan sonra çalışır.
@@ -102,7 +122,8 @@ SQL
 roll_out() {
   compose up -d --no-build --wait postgres redis ollama \
     && backup_db \
-    && compose run --rm --no-deps api alembic -c app/db/alembic.ini upgrade head \
+    && migrate \
+    && setup_app_role \
     && setup_monitor_role \
     && compose up -d --no-build --wait --remove-orphans \
     && compose exec -T api python -c \

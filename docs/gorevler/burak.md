@@ -124,12 +124,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-042 · Eşleştirme algoritması
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 16.11.2026 – 29.11.2026 · **Öncelik:** P0 · **Efor:** 16 saat · **Alan:** AI / NLP
 - **Bağımlılık:** T-041, T-032, T-045 (Ataberk)
 - **Destek:** —
 - **Çıktı:** ai/matching modülü
 - **Kabul kriteri:** Pozisyon için talep ağırlığı = ilan frekansı × TF-IDF; kosinüs benzerliği ile anlamsal eşleşme (eşik 0,80, ayarlanabilir); 0-100 uyum skoru; eksik yetkinlikler talep oranına göre sıralanır.
+- **Not:** `ai/matching` (`match`, `load_role_demand`). Anlamsal eşik varsayılanı 0,90: kriterdeki 0,80 MiniLM içindi, T-041'de seçilen e5-small'da her şeyi eşliyor; eşik parametre olarak ayarlanabilir. Anlamsal eşleşme sadece taksonomide olmayan adlara uygulanır (farklı taksonomi yetkinlikleri vektörle eşlenmez). Sözleşmede `low_data` alanı yok; karar #23'teki uyarı için API'ye ayrı alan gerekirse sözleşme önerisi yapılmalı (Anıl). 10 sentetik CV'de hedef pozisyon 9'unda 1. sırada (README). #79 (T-041) birleşince PR açılır.
 
 ### T-043 · Kaynak öneri üretimi (RAG)
 
