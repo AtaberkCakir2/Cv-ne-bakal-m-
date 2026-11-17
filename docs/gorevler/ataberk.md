@@ -258,12 +258,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-067 · Merkezi log ve log maskeleme
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 07.12.2026 – 13.12.2026 · **Öncelik:** P1 · **Efor:** 6 saat · **Alan:** Operasyon / İzleme
 - **Bağımlılık:** T-066
 - **Destek:** —
 - **Çıktı:** Log yapılandırması
 - **Kabul kriteri:** JSON log + request_id; PII maskeleme filtresi (e-posta, telefon); 14 gün saklama; logrotate.
+- **Not:** 15.11.2026. JSON log + `request_id` ve `mask_pii` API'de ve analiz işçisinde zaten vardı; veri işçisi de Celery'nin düz metin logu yerine aynı JSON biçimlendiriciye geçti (`scraper/collector/tasks.py`, test `scraper/tests/test_logging.py`). Merkezi log: izleme profiline Loki (14 gün saklama, compactor) + Alloy (Docker loglarını okur, e-posta/telefon/TCKN'yi ikinci kez maskeler); Grafana'da **Loglar** veri kaynağı, SLO sorguları `infra/monitoring/README.md` "Loglar". Postgres hata satırına değer yazmıyor (`log_error_verbosity=terse`, `log_min_error_statement=panic`). Rotasyon: Docker json-file 3 × 10 MB. Production'da sahte veriyle denendi. Production'da sürekli açık olması izleme profilinin açılmasına bağlı (`.env.prod` → `COMPOSE_PROFILES=…,monitoring`, Grafana şifreleri). #88'in (T-066) üstüne kurulu.
 
 ### T-068 · Yedekleme
 
