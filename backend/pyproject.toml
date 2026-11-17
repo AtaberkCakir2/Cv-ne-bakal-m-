@@ -29,11 +29,11 @@ dev = [
     "pytest>=8.3",
     # Sabit sürüm: CI ve herkesin bilgisayarı aynı kuralları uygulasın (infra/ci.md, "yerelde geçiyor CI'da düşüyor").
     # Güncellerken: sürümü burada artır, `ruff format .` + `mypy app tests` çalıştır, aynı PR'da gönder.
-    "ruff==0.17.2",
-    "mypy==2.4.0",
+    "ruff==0.17.5",
+    "mypy==2.4.1",
     # T-069: kapsam ölçümü ve TEST_DATABASE_URL / TEST_REDIS_URL verilmediğinde geçici PostgreSQL ve Redis (Docker).
     "pytest-cov==7.1.0",
-    "testcontainers[postgres,redis]==4.9.0",
+    "testcontainers[postgres,redis]==4.15.0",
 ]
 
 [build-system]
