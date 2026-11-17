@@ -67,12 +67,17 @@ Kurallar:
 
 ## Endpoint'ler
 
-| Metot | Yol | Durum |
-|---|---|---|
-| GET | `/api/v1/health` | ✅ |
-| GET | `/api/v1/health/ready` | ✅ |
-| POST | `/api/v1/analyses` | ✅ Giriş ve saatlik sınır gerekir. CV doğrulama (≤ 5 MB, ≤ 5 sayfa, PDF imzası, şifreli/bozuk PDF), SHA-256, kuyruğa alma |
-| GET | `/api/v1/analyses/{id}` | ✅ Durum yoklama (sadece sahibi); yetkinlik listeleri, geçmiş, silme, geri bildirim T-048 |
+Kullanım rehberi (kimlik doğrulama, örnek akış, hata biçimi, sınırlar): [`docs/api/README.md`](../docs/api/README.md). Tam tanım: [`docs/api/openapi.json`](../docs/api/openapi.json) veya çalışan sunucuda `/docs`.
+
+| Grup | Uçlar |
+|---|---|
+| Sistem | `GET /health`, `GET /health/ready` |
+| Kimlik doğrulama | `POST /auth/register`, `/login`, `/refresh`, `/logout`, `/verify-email`, `/forgot-password`, `/reset-password` |
+| Kullanıcı | `GET` · `PATCH` · `DELETE /users/me`, `GET` · `POST /users/me/consents`, `DELETE /users/me/consents/acik_riza`, `GET /users/me/export` |
+| Analiz | `POST` · `GET /analyses`, `GET` · `DELETE /analyses/{id}`, `POST /analyses/{id}/feedback` |
+| Katalog (giriş gerekmez) | `GET /roles`, `GET /roles/{slug}/skills`, `GET /skills/{slug}/resources` |
+
+Endpoint eklenince veya değişince `python scripts/export_openapi.py` çalıştırın, sonra `web/` içinde `npm run gen:api`. Dosyalar eskiyse `tests/test_openapi.py` kırılır. Yeni uçta `summary`, açıklama (docstring) ve JSON gövdesi için örnek (`model_config = ConfigDict(json_schema_extra={"examples": [...]})`) olmalı; test bunları da denetler. Hata yanıtları `responses={...: {"description": ..., **_PROBLEM}}` ile yazılır, şemaları `app/core/openapi.py` `Problem`'e bağlar.
 
 ### Analiz kuyruğu (T-039)
 
@@ -135,4 +140,4 @@ Kullanıcı doğrulanmış ve KVKK onayları verilmiş olarak oluşturulur; tekr
 
 ## Sıradaki işler
 
-T-048 sonuç ve katalog endpoint'leri · T-057 gerçek analiz akışı (Burak).
+T-057 gerçek analiz akışı (Burak): işçi `analysis_skills` / `analysis_recommendations` tablolarını doldurana kadar sonuçlarda yetkinlik listeleri boştur.

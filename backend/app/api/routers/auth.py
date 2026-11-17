@@ -75,6 +75,10 @@ def register(body: RegisterIn, request: Request, auth: Auth) -> RegisterOut:
     responses={401: {"description": "Hatalı bilgi", **_PROBLEM}, 429: {"description": "Çok fazla deneme", **_PROBLEM}},
 )
 def login(body: LoginIn, auth: Auth, user_agent: UserAgent = None) -> TokenOut:
+    """Access token 15 dk, refresh token 7 gün geçerlidir. E-posta doğrulanmamış olsa da giriş yapılabilir.
+
+    E-posta kayıtlı değilse de şifre yanlışsa da aynı 401 döner (hesap var mı yok mu belli edilmez).
+    """
     try:
         return _tokens(auth.login(email=str(body.email), password=body.password, user_agent=user_agent))
     except AuthError as exc:
@@ -97,6 +101,10 @@ def refresh(body: RefreshIn, auth: Auth, user_agent: UserAgent = None) -> TokenO
 
 @router.post("/logout", status_code=204, summary="Çıkış (refresh token iptali)")
 def logout(body: RefreshIn, auth: Auth) -> Response:
+    """Verilen refresh token iptal edilir. Token bilinmiyor veya zaten iptal edilmişse de 204 döner.
+
+    Access token süresi dolana kadar (en fazla 15 dk) geçerli kalır; istemci onu kendisi siler.
+    """
     auth.logout(body.refresh_token)
     return Response(status_code=204)
 
@@ -109,6 +117,7 @@ def logout(body: RefreshIn, auth: Auth) -> Response:
     responses={400: {"description": "Bağlantı geçersiz", **_PROBLEM}},
 )
 def verify_email(body: TokenIn, auth: Auth) -> Response:
+    """Kayıt e-postasındaki bağlantının token'ı gönderilir. Bağlantı 24 saat geçerli ve tek kullanımlıktır."""
     try:
         auth.verify_email(body.token)
     except AuthError as exc:

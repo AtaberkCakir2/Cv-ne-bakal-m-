@@ -17,6 +17,8 @@ Windows'ta systemd/cron olmadığı için yedek, production compose'unda (`infra
 
 Depo PC'den ayrı bir yerde olmalı. Veritabanı küçük (Kasım 2026: ~6,5 MB döküm), ücretsiz 10 GB yeter.
 
+restic B2'ye **S3 uyumlu adresinden** bağlanır (`s3:https://s3.eu-central-003.backblazeb2.com/…`), B2'nin kendi arayüzüyle (`b2:`) değil: B2'nin dosya indirme sunucusu (`f003.backblazeb2.com`) Türkiye'deki ağlarda TLS el sıkışmasında kesiliyor ve restic hata vermeden takılı kalıyor (15.11.2026). Anahtar aynı B2 uygulama anahtarıdır; compose bunu `AWS_ACCESS_KEY_ID` / `AWS_SECRET_ACCESS_KEY` olarak verir.
+
 **Kuruldu (06.11.2026, Ataberk):** hesap EU Central bölgesinde, bucket `cvnebakalim-yedek`, uygulama anahtarı `careerai-pc`; anahtarlar ve hesap bilgileri parola yöneticisinde. Yeniden kurmak gerekirse:
 
 1. backblaze.com → **Sign Up** (B2 Cloud Storage), bölge **EU Central**. Hesapta iki adımlı doğrulama açılır.
@@ -26,7 +28,7 @@ Depo PC'den ayrı bir yerde olmalı. Veritabanı küçük (Kasım 2026: ~6,5 MB 
 5. `infra/pc/.env.prod`:
 
    ```
-   RESTIC_REPOSITORY=b2:cvnebakalim-yedek:/careerai
+   RESTIC_REPOSITORY=s3:https://s3.eu-central-003.backblazeb2.com/cvnebakalim-yedek/careerai
    RESTIC_PASSWORD=<openssl rand -base64 32 çıktısı>
    B2_ACCOUNT_ID=<keyID>
    B2_ACCOUNT_KEY=<applicationKey>
