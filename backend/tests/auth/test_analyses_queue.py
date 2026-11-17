@@ -10,7 +10,7 @@ from decimal import Decimal
 import pytest
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.exc import OperationalError
 from sqlalchemy.orm import Session, sessionmaker
 
@@ -21,7 +21,7 @@ from app.services.analysis_queue import QueueUnavailable
 from app.services.analysis_runner import AnalysisRunner, RetryLater
 from app.services.analyzer import AnalysisFailed, AnalysisOutput
 from app.worker import tasks
-from tests.auth.test_auth_flow import API, bearer, login, register
+from tests.auth.test_auth_flow import API, PASSWORD, bearer, login, register
 from tests.test_analyses_upload import make_pdf
 from tests.test_analysis_worker import Store
 
@@ -118,6 +118,29 @@ def test_upload_saves_only_hash_and_pages_then_queues(
     assert saved.cv_pages == 3
 
 
+def test_withdrawn_explicit_consent_blocks_new_analysis_until_given_again(
+    client: TestClient, queue: Queue, role: int, db_sessionmaker: sessionmaker[Session]
+) -> None:
+    headers = signed_in(client)
+    consents = "/api/v1/users/me/consents"
+    assert client.delete(f"{consents}/acik_riza", headers=headers).status_code == 200
+
+    def analyses() -> int | None:
+        with db_sessionmaker() as session:
+            return session.scalar(select(func.count()).select_from(Analysis))
+
+    before = analyses()
+    response = upload(client, headers, role)
+    assert response.status_code == 403
+    assert response.json()["code"] == "CONSENT_WITHDRAWN"
+    assert queue.calls == []
+    assert analyses() == before  # CV okunmadı, kayıt açılmadı
+
+    body = {"consents": [{"consent_type": "acik_riza", "version": "2026-12-taslak"}]}
+    assert client.post(consents, headers=headers, json=body).status_code == 200
+    assert upload(client, headers, role).status_code == 202
+
+
 def test_unknown_role_is_rejected(client: TestClient, queue: Queue) -> None:
     assert upload(client, signed_in(client), 999_999).status_code == 422
     assert queue.calls == []
@@ -157,6 +180,22 @@ def test_status_is_visible_only_to_the_owner(client: TestClient, queue: Queue, r
 def runner(sessions: sessionmaker[Session], analyzer: Analyzer) -> tuple[AnalysisRunner, Store]:
     store = Store()
     return AnalysisRunner(sessions, store, analyzer), store
+
+
+def test_queued_cv_is_not_analyzed_after_consent_is_withdrawn(
+    client: TestClient, queue: Queue, role: int, db_sessionmaker: sessionmaker[Session]
+) -> None:
+    analysis_id = queued(client, queue, role)
+    owner = bearer(login(client, "kuyruk@example.com")["access_token"])
+    assert client.delete("/api/v1/users/me/consents/acik_riza", headers=owner).status_code == 200
+    analyzer = Analyzer()
+    work, store = runner(db_sessionmaker, analyzer)
+    store.put(analysis_id, b"%PDF")
+    work.run(analysis_id, last_attempt=False)
+    saved = row(db_sessionmaker, analysis_id)
+    assert saved.status is AnalysisStatus.FAILED
+    assert analyzer.calls == 0
+    assert store.items == {}
 
 
 def test_success_writes_result_and_deletes_the_cv(
@@ -334,3 +373,46 @@ def test_celery_task_retries_once_then_records_failure(
     assert analyzer.calls == 2
     assert row(db_sessionmaker, analysis_id).error_code is AnalysisErrorCode.LLM_TIMEOUT
     assert store.items == {}
+
+
+def test_end_to_end_register_upload_analyze_result_feedback_delete(
+    client: TestClient, queue: Queue, role: int, db_sessionmaker: sessionmaker[Session]
+) -> None:
+    """T-069: bir kullanıcının bütün yolculuğu, gerçek veri tabanıyla ve tek senaryoda.
+
+    Kuyruk, CV deposu ve analiz motoru test çiftleridir; işçi doğrudan çağrılır (Redis tarafı test_redis_integration).
+    """
+    email = "yolculuk@example.com"
+    headers = signed_in(client, email)
+    assert client.patch(f"{API}/users/me", headers=headers, json={"target_role_id": role}).status_code == 200
+
+    # Yükleme: CV kuyruğa gider, veri tabanına sadece özet ve sayfa sayısı yazılır.
+    pdf = make_pdf(2)
+    created = upload(client, headers, role, pdf)
+    assert created.status_code == 202, created.text
+    analysis_id = uuid.UUID(created.json()["analysis_id"])
+    assert queue.calls == [(analysis_id, pdf)]
+    assert client.get(f"{URL}/{analysis_id}", headers=headers).json()["status"] == "queued"
+
+    # İşçi analizi çalıştırır; CV geçici depodan silinir.
+    work, store = runner(db_sessionmaker, Analyzer())
+    store.put(analysis_id, pdf)
+    work.run(analysis_id, last_attempt=False)
+    assert store.items == {}
+
+    result = client.get(f"{URL}/{analysis_id}", headers=headers).json()
+    assert result["status"] == "done" and result["match_score"] == 62.5 and result["postings_analyzed"] == 150
+    assert client.get(URL, headers=headers).json()["total"] == 1
+
+    # Geri bildirim, sonra analizi silme.
+    feedback = client.post(f"{URL}/{analysis_id}/feedback", headers=headers, json={"rating": 4, "comment": "faydalı"})
+    assert feedback.status_code == 200
+    assert client.get(f"{URL}/{analysis_id}", headers=headers).json()["feedback"]["rating"] == 4
+    assert client.delete(f"{URL}/{analysis_id}", headers=headers).status_code == 204
+    assert client.get(f"{URL}/{analysis_id}", headers=headers).status_code == 404
+    assert client.get(URL, headers=headers).json()["total"] == 0
+
+    # Hesap silme: oturum kapanır, aynı bilgilerle giriş yapılamaz.
+    assert client.request("DELETE", f"{API}/users/me", headers=headers, json={"password": PASSWORD}).status_code == 204
+    assert client.get(f"{API}/users/me", headers=headers).status_code == 401
+    assert client.post(f"{API}/auth/login", json={"email": email, "password": PASSWORD}).status_code == 401

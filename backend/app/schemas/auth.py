@@ -1,7 +1,7 @@
 import uuid
 from typing import Literal
 
-from pydantic import BaseModel, EmailStr, Field, field_validator
+from pydantic import BaseModel, ConfigDict, EmailStr, Field, field_validator
 
 from app.db.enums import ConsentType, UserRole
 
@@ -19,6 +19,23 @@ class ConsentIn(BaseModel):
 
 
 class RegisterIn(BaseModel):
+    model_config = ConfigDict(
+        json_schema_extra={
+            "examples": [
+                {
+                    "email": "ogrenci@example.com",
+                    "password": "ornek-sifre-123",
+                    "full_name": "Örnek Öğrenci",
+                    "consents": [
+                        {"consent_type": "kvkk_aydinlatma", "version": "2026-12"},
+                        {"consent_type": "acik_riza", "version": "2026-12"},
+                        {"consent_type": "kullanim_kosullari", "version": "2026-12"},
+                    ],
+                }
+            ]
+        }
+    )
+
     email: EmailStr
     password: str = Password
     full_name: str | None = Field(default=None, max_length=120)
@@ -41,6 +58,10 @@ class RegisterOut(BaseModel):
 
 
 class LoginIn(BaseModel):
+    model_config = ConfigDict(
+        json_schema_extra={"examples": [{"email": "ogrenci@example.com", "password": "ornek-sifre-123"}]}
+    )
+
     email: EmailStr
     password: str = Field(min_length=1, max_length=128)
 
@@ -48,6 +69,19 @@ class LoginIn(BaseModel):
 
 
 class TokenOut(BaseModel):
+    model_config = ConfigDict(
+        json_schema_extra={
+            "examples": [
+                {
+                    "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+                    "refresh_token": "kX3v9...",
+                    "token_type": "bearer",
+                    "expires_in": 900,
+                }
+            ]
+        }
+    )
+
     access_token: str
     refresh_token: str
     token_type: Literal["bearer"] = "bearer"  # noqa: S105 — OAuth2 tür adı, şifre değil
@@ -55,20 +89,32 @@ class TokenOut(BaseModel):
 
 
 class RefreshIn(BaseModel):
+    model_config = ConfigDict(json_schema_extra={"examples": [{"refresh_token": "kX3v9..."}]})
+
     refresh_token: str = Field(min_length=1, max_length=200)
 
 
 class EmailIn(BaseModel):
+    model_config = ConfigDict(json_schema_extra={"examples": [{"email": "ogrenci@example.com"}]})
+
     email: EmailStr
 
     _email = field_validator("email")(_normalize_email)
 
 
 class TokenIn(BaseModel):
+    model_config = ConfigDict(json_schema_extra={"examples": [{"token": "e-postadaki-bağlantıdaki-token"}]})
+
     token: str = Field(min_length=1, max_length=200)
 
 
 class ResetPasswordIn(BaseModel):
+    model_config = ConfigDict(
+        json_schema_extra={
+            "examples": [{"token": "e-postadaki-bağlantıdaki-token", "new_password": "yeni-ornek-sifre-456"}]
+        }
+    )
+
     token: str = Field(min_length=1, max_length=200)
     new_password: str = Password
 
