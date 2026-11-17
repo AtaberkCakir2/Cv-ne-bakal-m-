@@ -1,0 +1,92 @@
+# Güvenlik taramaları (T-064, sahibi: Ataberk). Ayrıntı ve yerelde aynı komutlar: infra/guvenlik.md.
+# Branch protection'da zorunlu değil: yeni çıkan bir açık başkasının ilgisiz PR'ını kilitlemesin. Kırmızıysa
+# ilgili modülün sahibi düzeltir (go-live #7, #8: kritik/yüksek açık = 0). Haftalık çalışma, kod değişmese de
+# yeni yayımlanan açıkları yakalar; başarısız olursa GitHub e-postayla haber verir.
+name: Güvenlik
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  schedule:
+    - cron: "0 5 * * 1"  # pazartesi 08:00 (TSİ)
+  workflow_dispatch:
+
+concurrency:
+  group: security-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  GITLEAKS_IMAGE: zricethezav/gitleaks:v8.24.3
+  TRIVY_IMAGE: aquasec/trivy:0.67.2
+
+jobs:
+  secrets:
+    name: Sır taraması (gitleaks, tüm geçmiş)
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - run: |
+          docker run --rm -v "$PWD:/repo" "$GITLEAKS_IMAGE" git /repo \
+            --config /repo/.github/gitleaks.toml --redact --no-banner -v
+
+  python:
+    name: Python bağımlılıkları (pip-audit, ${{ matrix.module }})
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        module: [backend, scraper, ai]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install pip-audit==2.10.1
+      # pyproject'teki bağımlılıkları ayrı bir ortamda çözer; imaja girecek sürümler denetlenir.
+      - run: pip-audit --progress-spinner off "${{ matrix.module }}"
+
+  node:
+    name: npm bağımlılıkları (${{ matrix.module }})
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        module: [web, mobile]
+    steps:
+      - uses: actions/checkout@v4
+      - name: npm audit (sadece üretim bağımlılıkları, yüksek ve üstü)
+        working-directory: ${{ matrix.module }}
+        run: |
+          if [ ! -f package-lock.json ]; then
+            echo "::notice::${{ matrix.module }}/package-lock.json yok, atlandı"
+            exit 0
+          fi
+          npm audit --omit=dev --audit-level=high
+
+  images:
+    name: İmaj taraması (Trivy, ${{ matrix.name }})
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { name: api, context: backend, file: backend/Dockerfile, ignore: "" }
+          - { name: worker-data, context: ., file: scraper/Dockerfile, ignore: "" }
+          - { name: backup, context: infra/backup, file: infra/backup/Dockerfile, ignore: infra/backup/.trivyignore }
+    steps:
+      - uses: actions/checkout@v4
+      # --pull: taban imajın son yamalı hâli; production imajı da deploy'da sıfırdan derlenir.
+      - run: docker build --pull -q -t "scan/${{ matrix.name }}" -f "${{ matrix.file }}" "${{ matrix.context }}"
+      - name: Trivy (yamalı sürümü olan kritik/yüksek açık = hata)
+        run: |
+          ignore=()
+          if [ -n "${{ matrix.ignore }}" ]; then ignore=(--ignorefile "/repo/${{ matrix.ignore }}"); fi
+          docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v "$PWD:/repo:ro" "$TRIVY_IMAGE" \
+            image --scanners vuln --severity HIGH,CRITICAL --ignore-unfixed --exit-code 1 "${ignore[@]}" \
+            "scan/${{ matrix.name }}"
