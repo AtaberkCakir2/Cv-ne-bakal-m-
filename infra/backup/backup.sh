@@ -3,7 +3,7 @@
 # `backup` konteynerinin içinde çalışır; normalde scheduler.sh çağırır. Elle: make backup-now (infra/backup/README.md).
 #
 # Ayarlar konteyner ortamından gelir (infra/pc/.env.prod):
-#   RESTIC_REPOSITORY, RESTIC_PASSWORD (+ deponun kendi değişkenleri, ör. B2_ACCOUNT_ID / B2_ACCOUNT_KEY)
+#   RESTIC_REPOSITORY, RESTIC_PASSWORD (+ deponun kendi değişkenleri; B2 için AWS_ACCESS_KEY_ID / AWS_SECRET_ACCESS_KEY, compose.yml)
 #   PGHOST, PGUSER, PGPASSWORD, PGDATABASE (compose doldurur), BACKUP_TAG (ortam adı)
 #
 # Döküm diske yazılmaz, doğrudan restic'e akar. pg_dump yarıda kalırsa restic snapshot oluşturmaz
