@@ -1,0 +1,30 @@
+# Uygulamaya özel metrikler. careerai_monitor rolü sadece bu sütunları okuyabilir (deploy.sh, setup_monitor_role):
+# kullanıcı, CV hash'i veya yetkinlik verisi okunmaz (karar #5).
+careerai_analyses:
+  query: |
+    SELECT
+      count(*) FILTER (WHERE status IN ('done', 'failed')) AS last_hour_finished,
+      count(*) FILTER (WHERE status = 'failed') AS last_hour_failed,
+      coalesce(avg(duration_ms) FILTER (WHERE status = 'done'), 0) / 1000.0 AS last_hour_avg_duration_seconds
+    FROM analyses
+    WHERE completed_at > now() - interval '1 hour'
+  metrics:
+    - last_hour_finished:
+        usage: GAUGE
+        description: "Son 1 saatte biten analiz sayısı"
+    - last_hour_failed:
+        usage: GAUGE
+        description: "Son 1 saatte hatalı biten analiz sayısı"
+    - last_hour_avg_duration_seconds:
+        usage: GAUGE
+        description: "Son 1 saatte başarılı analizlerin ortalama süresi (sn)"
+
+careerai_scrape:
+  query: |
+    SELECT coalesce(extract(epoch FROM now() - max(finished_at)), 1e9) AS last_success_age_seconds
+    FROM scrape_runs
+    WHERE status IN ('success', 'partial')
+  metrics:
+    - last_success_age_seconds:
+        usage: GAUGE
+        description: "Son başarılı ilan toplamasından bu yana geçen süre (sn)"

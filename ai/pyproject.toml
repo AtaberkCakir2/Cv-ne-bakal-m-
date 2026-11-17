@@ -18,6 +18,14 @@ ner = [
     "torch==2.15.0",
     "transformers==5.22.0",
 ]
+# Embedding servisi (T-041, embedding/). Model: intfloat/multilingual-e5-small (~470 MB), ilk çalışmada indirilir.
+# Sunucuda torch'un CPU sürümü: --index-url https://download.pytorch.org/whl/cpu. torch/transformers ner ile aynı sabit.
+embedding = [
+    "torch==2.15.0",
+    "transformers==5.22.0",
+    "sentence-transformers==6.2.0",
+    "psycopg[binary]>=3.2",
+]
 dev = [
     "pytest>=8.3",
     # Sürümler backend ve scraper ile aynı sabit (infra/ci.md).
@@ -30,7 +38,7 @@ requires = ["setuptools>=75"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]
-include = ["parsing*", "pii*", "extraction*", "prompts*"]
+include = ["parsing*", "pii*", "extraction*", "prompts*", "embedding*"]
 
 [tool.setuptools.package-data]
 prompts = ["*/*.txt"]
@@ -55,7 +63,10 @@ python_version = "3.12"
 strict = true
 
 [[tool.mypy.overrides]]
-module = ["pdfplumber", "pdfplumber.*", "pdfminer.*", "torch", "torch.*", "transformers", "transformers.*"]
+module = [
+    "pdfplumber", "pdfplumber.*", "pdfminer.*", "torch", "torch.*", "transformers", "transformers.*",
+    "sentence_transformers", "sentence_transformers.*", "psycopg", "psycopg.*",
+]
 ignore_missing_imports = true
 
 # PyMuPDF'in tip bilgisi eksik; onu çağıran modüllerde "tipsiz çağrı" uyarısı kapalı.
