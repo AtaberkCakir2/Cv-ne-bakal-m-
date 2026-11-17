@@ -1,0 +1,2 @@
+# Betik Git Bash ve CI (Linux) ile çalışır: Windows checkout'unda da satır sonu LF kalsın (infra/.gitattributes gibi).
+*.sh text eol=lf
