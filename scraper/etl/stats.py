@@ -35,10 +35,12 @@ def refresh(session: Session) -> int:
 
     CONCURRENTLY: yenileme sürerken API eski veriyi okumaya devam eder (kilitlenmez). Hiç doldurulmamış view'da
     CONCURRENTLY çalışmaz; o durumda bir kereye mahsus normal yenileme yapılır.
+
+    Yenileme migration 0004'teki fonksiyonla yapılır: production'da işçi view'ın sahibi olmayan `careerai_app`
+    rolüyle bağlanır (T-075), REFRESH ise sadece sahibe izinli.
     """
     populated = session.scalar(text("SELECT ispopulated FROM pg_matviews WHERE matviewname = 'role_skill_stats'"))
-    concurrently = " CONCURRENTLY" if populated else ""
-    session.execute(text(f"REFRESH MATERIALIZED VIEW{concurrently} role_skill_stats"))  # noqa: S608 — sabit metin
+    session.execute(text("SELECT refresh_role_skill_stats(:c)"), {"c": bool(populated)})
     session.commit()
     return session.scalar(select(func.count()).select_from(role_skill_stats)) or 0
 

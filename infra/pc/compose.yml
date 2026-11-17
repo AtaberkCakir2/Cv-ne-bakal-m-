@@ -9,7 +9,9 @@
 
 x-app-env: &app-env
   ENVIRONMENT: ${APP_ENVIRONMENT:?env dosyasında APP_ENVIRONMENT yok (production veya staging)}
-  DATABASE_URL: postgresql+psycopg://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+  # En az yetkili rol (T-075, infra/pc/app-role.sql): veri okur/yazar, şema değiştiremez. Migration sahip rolle
+  # çalışır (deploy.sh DATABASE_URL'i o adımda ezer). Rolü deploy.sh oluşturur.
+  DATABASE_URL: postgresql+psycopg://careerai_app:${APP_DB_PASSWORD:?env dosyasında APP_DB_PASSWORD yok}@postgres:5432/${POSTGRES_DB}
   REDIS_URL: redis://:${REDIS_PASSWORD}@redis:6379/0
   OLLAMA_URL: http://ollama:11434
   # Ayarlar ortak olduğu için worker-data da bunu ister: geliştirme anahtarıyla açılmaz.

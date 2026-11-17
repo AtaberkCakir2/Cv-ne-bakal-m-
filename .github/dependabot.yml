@@ -15,7 +15,7 @@ updates:
         update-types: [minor, patch]
 
   - package-ecosystem: npm
-    directories: [/web, /mobile]
+    directories: [/web, /mobile, /tests/e2e]
     schedule: { interval: weekly, day: monday, time: "08:00", timezone: Europe/Istanbul }
     open-pull-requests-limit: 5
     commit-message: { prefix: "chore" }
