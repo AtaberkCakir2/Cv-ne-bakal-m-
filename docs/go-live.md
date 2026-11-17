@@ -47,8 +47,8 @@
 
 ### İzleme
 
-- [ ] **21.** ★ PC dışından uptime izleme ve uyarılar ekip kanalına düşüyor — _Doğrulama:_ Test uyarısı gönderildi — _Sorumlu:_ Ataberk
-- [ ] **22.** Sentry backend, web ve mobilde aktif; kaynak haritaları yüklü — _Doğrulama:_ Test hatası görüldü — _Sorumlu:_ Anıl
+- [ ] **21.** ★ Production PC'sinde Grafana panosu açık, 12 uyarı kuralı yüklü; dış prob (`api.cvnebakalim.com`) çalışıyor. PC dışı izleyici ve bildirim yok (karar #32) — _Doğrulama:_ Tünel durdurulunca 5 dk içinde panoda `DisErisimYok` görüldü — _Sorumlu:_ Ataberk
+- ~~**22.** Sentry backend, web ve mobilde aktif~~ — Karar #32 ile kaldırıldı; hatalar API logları (T-067) ve Grafana'daki analiz hata oranıyla izlenir.
 - [ ] **23.** Grafana panosu: CPU, RAM, disk, kuyruk derinliği, analiz süresi — _Doğrulama:_ Pano linki — _Sorumlu:_ Ataberk
 - [ ] **24.** Loglarda kişisel veri (e-posta, telefon, CV metni) yok — _Doğrulama:_ Log örneklemesi — _Sorumlu:_ Ataberk
 
@@ -106,11 +106,11 @@
 
 | Metrik | Hedef | Ölçüm | Hedef tutmazsa | Sorumlu |
 |---|---|---|---|---|
-| Erişilebilirlik | Duyurulan açık saatlerde (sunum/demo günleri ve hypercare boyunca 09:00–23:00) ≥ %95; PC'de barındırıldığı için 7/24 hedefi yok (karar #30) | Dış uptime izleyici | Kök neden analizi + runbook güncellemesi | Ataberk |
-| API yanıt süresi (analiz hariç) | p95 < 300 ms | Grafana / Sentry Performance | Yavaş sorgu analizi, indeks | Anıl |
+| Erişilebilirlik | Duyurulan açık saatlerde (sunum/demo günleri ve hypercare boyunca 09:00–23:00) ≥ %95; PC'de barındırıldığı için 7/24 hedefi yok (karar #30) | Grafana, dış prob (`probe="dis"`, PC açıkken) | Kök neden analizi + runbook güncellemesi | Ataberk |
+| API yanıt süresi (analiz hariç) | p95 < 300 ms | API logları (`duration_ms`, T-067) | Yavaş sorgu analizi, indeks | Anıl |
 | Analiz tamamlanma süresi | p95 < 120 sn (PC, CPU; GTX 1650 kısmi GPU ölçülecek) | analyses.duration_ms | Model/prompt optimizasyonu, GPU değerlendirmesi | Burak |
 | Analiz başarı oranı | ≥ %95 | analyses.status | Hata kodlarına göre düzeltme | Burak |
-| Hata oranı (5xx) | < %1 | Sentry | Hotfix | Anıl |
+| Hata oranı (5xx) | < %1 | API logları (T-067) | Hotfix | Anıl |
 | Veri tazeliği | İlanlar ≤ 7 gün eski | scrape_runs | Kaynak adaptörünü onar / yedek veri | Ataberk |
 | RPO (kabul edilebilir veri kaybı) | ≤ 24 saat | Yedek zamanlaması | Yedek sıklığını artır | Ataberk |
 | RTO (sistemi geri getirme süresi) | ≤ 4 saat (gerekirse başka bir ekip bilgisayarında) | DR tatbikatı | Otomasyonu artır | Ataberk |

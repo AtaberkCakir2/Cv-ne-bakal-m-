@@ -1,0 +1,23 @@
+apiVersion: 1
+datasources:
+  - name: Prometheus
+    uid: prometheus
+    type: prometheus
+    access: proxy
+    url: http://prometheus:9090
+    isDefault: true
+    editable: false
+  # Analiz süresi ve toplama geçmişi için. careerai_monitor rolü salt okunur ve sadece izin verilen
+  # sütunları görür (infra/pc/deploy.sh, setup_monitor_role).
+  - name: Uygulama veritabanı
+    uid: careerai-db
+    type: grafana-postgresql-datasource
+    url: postgres:5432
+    user: careerai_monitor
+    jsonData:
+      database: $POSTGRES_DB
+      sslmode: disable
+      postgresVersion: 1600
+    secureJsonData:
+      password: $MONITOR_DB_PASSWORD
+    editable: false

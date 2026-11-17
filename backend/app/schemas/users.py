@@ -29,7 +29,10 @@ class ProfileOut(BaseModel):
 class ProfileUpdateIn(BaseModel):
     """Sadece gönderilen alanlar değişir; `null` göndermek alanı temizler. Bilinmeyen alan 422 verir."""
 
-    model_config = ConfigDict(extra="forbid")
+    model_config = ConfigDict(
+        extra="forbid",
+        json_schema_extra={"examples": [{"full_name": "Örnek Öğrenci", "target_role_id": 1}, {"target_role_id": None}]},
+    )
 
     full_name: str | None = Field(default=None, max_length=120)
     target_role_id: int | None = Field(default=None, description="GET /roles listesindeki pozisyonun id'si")
@@ -50,6 +53,10 @@ class ConsentOut(BaseModel):
 class ConsentsIn(BaseModel):
     """Metnin yeni sürümü onaylanınca gönderilir. Aynı sürüm daha önce onaylandıysa tekrar kaydedilmez."""
 
+    model_config = ConfigDict(
+        json_schema_extra={"examples": [{"consents": [{"consent_type": "acik_riza", "version": "2027-01"}]}]}
+    )
+
     consents: list[ConsentIn] = Field(min_length=1)
 
     @field_validator("consents")
@@ -63,6 +70,8 @@ class ConsentsIn(BaseModel):
 
 class DeleteAccountIn(BaseModel):
     """Çalınmış bir oturumla hesap silinemesin diye şifre tekrar istenir."""
+
+    model_config = ConfigDict(json_schema_extra={"examples": [{"password": "ornek-sifre-123"}]})
 
     # Uzunluk kuralı yok: kural sonradan değişirse eski şifreli kullanıcı yine hesabını silebilsin.
     password: str = Field(min_length=1, max_length=128)
