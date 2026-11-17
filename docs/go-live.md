@@ -122,6 +122,21 @@ Canlıya çıkıştan iki ay önce, sorumlusu Ataberk olan ve production'da bug�
 | 34 Gece toplaması 7 gün hatasız | **Değil** | 12 çalışmanın 12'si başarılı, ama sadece 15.11 ve 18.11 günleri: PC kapalı kaldığı için 7 günlük kesintisiz seri yok |
 | 35 Ölü link < %2 | Ölçülmedi | Production'da link kontrolü hiç çalışmadı (530 kaynağın hepsinde `last_checked_at` boş) |
 
+### Ön kontrol (18.11.2026, Anıl)
+
+Sorumlusu Anıl olan maddeler, Ataberk'in tablosuyla aynı amaçla. Kutular işaretlenmedi.
+
+| Madde | Bugünkü durum | Kanıt / eksik |
+|---|---|---|
+| 9 ★ IDOR | Uygun (otomatik test) | `test_result_of_another_user_is_404`: başkasının analizine GET ve DELETE 404, listede görünmüyor, kayıt silinmiyor. `test_status_is_visible_only_to_the_owner`: durum yoklaması sadece sahibine açık. Production'da iki hesapla elle deneme yapılmadı |
+| 10 ★ Dosya yükleme sınırları | Uygun (otomatik test) | `backend/app/core/uploads.py`: 5 MB, 5 sayfa. Testlerde: 5 MB'tan büyük dosya ve sınırı aşan istek gövdesi okunmadan reddediliyor; 6 sayfa reddediliyor; PDF diye gönderilen PNG/ZIP (magic byte) ve şifreli PDF 415 alıyor (`backend/tests/test_analyses_upload.py`). Kötü dosya setiyle production'da deneme yapılmadı |
+| 26 ★ Doğrulama ve sıfırlama e-postaları | Ölçülmedi | Production'dan Gmail ve Outlook'a deneme gönderimi yapılmadı |
+| 27 Hata ekranları | Kısmen | Yükleme ekranında zaman aşımı, bozuk/şifreli PDF, büyük dosya, saatlik sınır (429) ve kuyruk dolu (503) için Türkçe metin var (`web/src/pages/UploadPage.tsx`); analiz başarısız olunca ayrı ekran var. Elle test yapılmadı |
+| 28 Electron kurulumu | Kısmen | Windows kurulum dosyası (0.1.0) üretildi, paketli uygulama geliştirme bilgisayarında `--smoke` ile denendi. Kurulum sihirbazı, temiz Windows 10/11 makinesi ve macOS denemesi yok (Mac erişimi yok, T-059) |
+| 29 Otomatik güncelleme | **Engelli** | Repo özel olduğu için Releases dosyaları token'sız indirilemiyor; yayın yeri önerisi karar #36. Karar çıkmadan v1.0.0 → v1.0.1 testi yapılamaz |
+| 41 ★ Play kapalı testi | Başlamadı | 21.12.2026'da en az 12 testçiyle başlamalı (T-076); testçiler beta listesinden (`docs/uat/beta-uat-plani.md`) |
+| 47 Destek e-postası, hata bildirme | Kısmen | Web ve masaüstünde "Hata bildir" bağlantısı `iletisim@cvnebakalim.com` adresine e-posta açıyor (#124). Adresin posta alıp almadığı ve gelen kutusunu kimin okuyacağı belirlenmedi |
+
 ## Hizmet seviyesi hedefleri (SLO)
 
 | Metrik | Hedef | Ölçüm | Hedef tutmazsa | Sorumlu |
