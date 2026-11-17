@@ -102,6 +102,26 @@
 - [ ] **49.** ★ Rollback planı test edildi: önceki imaj etiketi + DB yedeği ile 15 dk içinde dönüş — _Doğrulama:_ PC'de prova projesiyle (`careerai-staging`) — _Sorumlu:_ Ataberk
 - [ ] **50.** Go/No-Go toplantısı yapıldı, karar ve katılımcılar kayıtlı — _Doğrulama:_ Toplantı notu — _Sorumlu:_ Anıl
 
+### Ön kontrol (18.11.2026, Ataberk)
+
+Canlıya çıkıştan iki ay önce, sorumlusu Ataberk olan ve production'da bugün ölçülebilen maddeler. Kutular **işaretlenmedi**: işaretleme Go/No-Go öncesi son kontrolde yapılır. Amaç eksikleri erken görmek.
+
+| Madde | Bugünkü durum | Kanıt / eksik |
+|---|---|---|
+| 2 ★ Port açık değil | Uygun | `docker compose config`: hiçbir serviste `ports:` yok; tek istisna Grafana `127.0.0.1:3000`. Ağdan nmap henüz yapılmadı |
+| 5 Bellek limiti, restart | Uygun | 15 servisin hepsinde `mem_limit` ve `restart: unless-stopped` |
+| 6 Disk ≥ 40 GB boş | **Sınırda** | C: 49 GB boş (%90 dolu; 06.11'de 71 GB). Docker: 4,7 GB kullanılmayan build cache, 3,6 GB kullanılmayan imaj temizlenebilir |
+| 15 ★ Migration'lar | Kısmen | `alembic_version` = 0004 (head). Downgrade testi yapılmadı. Not: uygulama rolü `alembic_version`'ı okuyamaz (en az yetki), kontrol sahip rolle yapılır |
+| 16 ★ Seed verisi | **Eksik** | Yetkinlik 374 (≥ 300 ✓), pozisyon 12 (≥ 10 ✓), kaynak **530** (≥ 900 ✗), aktif ilan **1.682** (≥ 2.000 ✗, gece toplamasıyla artıyor) |
+| 17 En az yetkili DB kullanıcısı | Uygun | `careerai_app`: süper kullanıcı değil, hiçbir tablonun sahibi değil, `TRUNCATE` yok; `careerai_monitor` salt okunur (T-075) |
+| 18 Yavaş sorgu yok | Ölçülemiyor | HNSW indeksleri var; `pg_stat_statements` eklentisi kurulu değil, p95 bu yolla ölçülemez. Ya eklenti açılmalı ya madde Loki'deki istek süresiyle doğrulanmalı |
+| 19 ★ Günlük yedek, PC dışında şifreli | Uygun | restic → B2, son yedek 18.11.2026 00:33; haftalık depo kontrolü 15.11.2026 |
+| 20 ★ Başka bilgisayara geri yükleme | Hazırlık | Prosedür: `docs/runbook/felaket-kurtarma.md`. Production PC'sinde geri yükleme testi geçti (12 sn, 11 tablo eşleşti); başka bilgisayarda tatbikat yapılmadı (T-087) |
+| 21 ★ Grafana, 12 kural, dış prob | Uygun | 12 uyarı kuralı yüklü, dış prob `api.cvnebakalim.com` `up`. Tünel durdurma testi yapılmadı |
+| 24 Loglarda kişisel veri yok | Uygun (örneklem) | Son 1 saatin api ve worker-data loglarında e-posta adresi biçiminde metin yok |
+| 34 Gece toplaması 7 gün hatasız | **Değil** | 12 çalışmanın 12'si başarılı, ama sadece 15.11 ve 18.11 günleri: PC kapalı kaldığı için 7 günlük kesintisiz seri yok |
+| 35 Ölü link < %2 | Ölçülmedi | Production'da link kontrolü hiç çalışmadı (530 kaynağın hepsinde `last_checked_at` boş) |
+
 ## Hizmet seviyesi hedefleri (SLO)
 
 | Metrik | Hedef | Ölçüm | Hedef tutmazsa | Sorumlu |
