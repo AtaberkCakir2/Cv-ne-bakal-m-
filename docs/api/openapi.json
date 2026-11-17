@@ -1,8 +1,8 @@
 {
   "openapi": "3.1.0",
   "info": {
-    "title": "CareerAI API",
-    "description": "CareerAI REST API. Sözleşme: `contracts/api.md` · Rehber ve örnek akış: `docs/api/README.md`.\n\n- **Kimlik doğrulama:** `POST /auth/login` ile alınan access token `Authorization: Bearer <token>` başlığında gider.\n  Süresi dolunca `POST /auth/refresh` ile yenilenir (refresh token her kullanımda değişir).\n- **Hatalar:** Tüm 4xx/5xx yanıtları RFC 7807 biçimindedir (`application/problem+json`, şema: `Problem`).\n- **İstek sınırları:** Genel 100/dk/IP; giriş, kayıt, e-posta doğrulama ve şifre sıfırlama 10/dk/IP;\n  analiz 5/saat/kullanıcı. Sınır aşılınca 429 ve `Retry-After` başlığı döner.\n- **Gizlilik:** CV dosyası saklanmaz; sadece SHA-256 özeti ve çıkarılan yetkinlikler tutulur.\n",
+    "title": "Cv'ne Bakalım! API",
+    "description": "Cv'ne Bakalım! REST API. Sözleşme: `contracts/api.md` · Rehber ve örnek akış: `docs/api/README.md`.\n\n- **Kimlik doğrulama:** `POST /auth/login` ile alınan access token `Authorization: Bearer <token>` başlığında gider.\n  Süresi dolunca `POST /auth/refresh` ile yenilenir (refresh token her kullanımda değişir).\n- **Hatalar:** Tüm 4xx/5xx yanıtları RFC 7807 biçimindedir (`application/problem+json`, şema: `Problem`).\n- **İstek sınırları:** Genel 100/dk/IP; giriş, kayıt, e-posta doğrulama ve şifre sıfırlama 10/dk/IP;\n  analiz 5/saat/kullanıcı. Sınır aşılınca 429 ve `Retry-After` başlığı döner.\n- **Gizlilik:** CV dosyası saklanmaz; sadece SHA-256 özeti ve çıkarılan yetkinlikler tutulur.\n",
     "version": "0.1.0"
   },
   "paths": {

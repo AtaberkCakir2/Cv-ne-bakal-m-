@@ -2,6 +2,8 @@
 
 > Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (24.10.2026). Bu dosya ile Excel çelişirse bu dosya geçerlidir; değişiklikler PR ile buraya işlenir.
 
+> Kararların gerekçeleri (ADR) ve production deployment diyagramı: [`docs/architecture/`](architecture/README.md).
+
 ## Akış
 
 ```

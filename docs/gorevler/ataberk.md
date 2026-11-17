@@ -302,30 +302,33 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-072 · Yük testi (k6 / Locust)
 
-- **Durum:** Yapılacak
+- **Durum:** Devam Ediyor
 - **Tarih:** 14.12.2026 – 20.12.2026 · **Öncelik:** P0 · **Efor:** 8 saat · **Alan:** Test & QA
 - **Bağımlılık:** T-057 (Burak), T-035
 - **Destek:** Burak
 - **Çıktı:** Yük testi raporu
 - **Kabul kriteri:** 20 eşzamanlı kullanıcı, 30 dk. Hedef: API p95 < 300 ms (analiz hariç), hata oranı < %1, RAM < %85. Kuyruk birikme süresi ölçüldü; worker sayısı buna göre ayarlandı.
+- **Not:** 18.11.2026: k6 betiği ve çalıştırıcı hazır (`tests/yuk/`). API kısmı ölçüldü (E2E ortamı, örnek analiz): 20 kullanıcı 30 dk, p95 49,5 ms, hata %0, RAM en yüksek %14,7 (`tests/yuk/README.md`). Kalan: T-057 (Burak) gelince gerçek analizle kuyruk bekleme süresini ölçüp worker/kuyruk sınırlarını ayarlamak.
 
 ### T-075 · Production ortamı kurulumu
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 14.12.2026 – 20.12.2026 · **Öncelik:** P0 · **Efor:** 10 saat · **Alan:** DevOps / Altyapı
 - **Bağımlılık:** T-036, T-064
 - **Destek:** —
 - **Çıktı:** Production ortamı
 - **Kabul kriteri:** PC'de ayrı compose projesi (`careerai-prod`, kendi volume'ları); en az yetkili DB kullanıcıları; sırlar `.env` (sadece bu PC'de, Windows kullanıcı izinleriyle korunur, repoda yok); hiçbir servis host'a port açmaz, dış erişim sadece `cloudflared`; kaynak limitleri (mem_limit), `restart: unless-stopped`. PC kapalıyken kaçan gece toplaması açılışta telafi edilir (R-18).
+- **Not:** 15.11.2026. Ayrı `careerai-prod` projesi, kendi volume'ları, `mem_limit` + `restart: unless-stopped` (15 servisin hepsi), host'a port yok (tek istisna Grafana 127.0.0.1) zaten vardı; denetlendi. Yeni: en az yetkili `careerai_app` rolü (`infra/pc/app-role.sql`, deploy.sh `setup_app_role`; migration sahip rolle `migrate`), view yenileme migration 0004 `refresh_role_skill_stats()` (SECURITY DEFINER), `audit_logs` sadece ekleme; test `backend/tests/db/test_app_role.py`. Kaçan gece toplaması açılışta telafi (`scraper/collector/tasks.py` `missed_nightly`, test `test_catch_up.py`). `.env.prod` izinleri sadece Ataberk/SYSTEM/Administrators (icacls, `infra/pc/deploy.md` §2). Production'da denendi: api ve worker-data `careerai_app` ile bağlı, DDL ve doğrudan REFRESH reddediliyor, kaçan toplama açılışta başladı. #89 ve #94'ün (o da #88'in) üstüne kurulu.
 
 ### T-079 · Mimari doküman ve ADR'ler
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 21.12.2026 – 27.12.2026 · **Öncelik:** P1 · **Efor:** 6 saat · **Alan:** Dokümantasyon
 - **Bağımlılık:** T-075
 - **Destek:** Burak
 - **Çıktı:** docs/architecture
 - **Kabul kriteri:** Mimari kararlar (neden Ollama, neden pgvector, neden Celery) ADR olarak; deployment diyagramı.
+- **Not:** 18.11.2026: `docs/architecture/`: dört ADR (Ollama, pgvector, Celery + Redis, PC + Cloudflare Tunnel) ve production deployment diyagramı (`deployment.md`: servisler, ağ sınırları, deploy ve yedek akışı, bellek bütçesi). `docs/diagrams/component-deployment.md`'deki eski VPS diyagramı oraya yönlendirildi.
 
 ---
 
@@ -342,12 +345,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-087 · Felaket kurtarma tatbikatı
 
-- **Durum:** Yapılacak
+- **Durum:** Devam Ediyor
 - **Tarih:** 28.12.2026 – 03.01.2027 · **Öncelik:** P0 · **Efor:** 6 saat · **Alan:** Operasyon / İzleme
 - **Bağımlılık:** T-068, T-075
 - **Destek:** —
 - **Çıktı:** DR tatbikat raporu
 - **Kabul kriteri:** Başka bir bilgisayara (ör. Burak'ın veya Anıl'ın) yedekten sıfırdan kurulum ve tünelin oraya taşınması. Hedef: RTO < 4 saat, RPO < 24 saat. Süre ölçülüp runbook'a yazıldı.
+- **Not:** 18.11.2026: Prosedür ve tatbikat kaydı hazır (`docs/runbook/felaket-kurtarma.md`); production PC'sinde gerçek veriyle geri yükleme testi geçti (1,97 MB, 12 sn, 11 tablo eşleşti). Kalan: Burak'ın veya Anıl'ın bilgisayarında tatbikat (geçici `dr-test` tüneliyle), süreleri tabloya yazmak; önce parola yöneticisindeki `.env.prod` kaydının eksiksiz olduğu kontrol edilmeli (prosedür 0. adım).
 
 ### T-088 · Operasyon runbook'u
 
