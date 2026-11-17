@@ -15,7 +15,7 @@ dependencies = [
     "python-multipart>=0.0.18",
     "pypdf[crypto]>=5.1",
     # Veritabanı (app/db, T-012 — Ataberk)
-    "sqlalchemy>=2.0.36,<2.1",
+    "sqlalchemy>=2.0.36,<2.2",
     "alembic>=1.14",
     "pgvector>=0.3.6",
     # Kimlik doğrulama (T-037)
