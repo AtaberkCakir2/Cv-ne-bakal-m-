@@ -14,12 +14,12 @@ from sqlalchemy import func, select
 from sqlalchemy.exc import OperationalError
 from sqlalchemy.orm import Session, sessionmaker
 
-from app.db.enums import AnalysisErrorCode, AnalysisStatus
-from app.db.models import Analysis, Role
+from app.db.enums import AnalysisErrorCode, AnalysisStatus, LangCode, ResourceLevel, ResourceProvider, SkillCategory
+from app.db.models import Analysis, Resource, Role, Skill
 from app.services import analysis_runner
 from app.services.analysis_queue import QueueUnavailable
 from app.services.analysis_runner import AnalysisRunner, RetryLater
-from app.services.analyzer import AnalysisFailed, AnalysisOutput
+from app.services.analyzer import AnalysisFailed, AnalysisOutput, MissingSkill, PresentSkill, SuggestedResource
 from app.worker import tasks
 from tests.auth.test_auth_flow import API, PASSWORD, bearer, login, register
 from tests.test_analyses_upload import make_pdf
@@ -216,6 +216,84 @@ def test_success_writes_result_and_deletes_the_cv(
     assert body["match_score"] == 62.5
     assert body["model"] == {"name": "llama3.1:8b", "prompt_version": "v1"}
     assert body["error"] is None
+
+
+def test_success_writes_skills_and_only_resources_of_that_skill(
+    client: TestClient, queue: Queue, role: int, db_sessionmaker: sessionmaker[Session]
+) -> None:
+    tag = uuid.uuid4().hex[:6]
+    with db_sessionmaker() as session:
+        python, docker, k8s = (
+            Skill(canonical_name=f"{n} {tag}", slug=f"{n.lower()}-{tag}", category=SkillCategory.DIL, synonyms=[])
+            for n in ("Python", "Docker", "Kubernetes")
+        )
+        session.add_all([python, docker, k8s])
+        session.flush()
+
+        def resource(skill_id: int, name: str) -> Resource:
+            return Resource(
+                skill_id=skill_id,
+                title=name,
+                url=f"https://example.com/{name}-{tag}",
+                provider=ResourceProvider.YOUTUBE,
+                language=LangCode.TR,
+                level=ResourceLevel.BEGINNER,
+                is_free=True,
+            )
+
+        own, other = resource(docker.id, "docker"), resource(k8s.id, "k8s")
+        session.add_all([own, other])
+        session.commit()
+        own_id, other_id = own.id, other.id
+
+    output = AnalysisOutput(
+        Decimal("40.00"),
+        80,
+        "llama3.1:8b",
+        "skill_extraction:v1,recommendation:v1",
+        present_skills=(
+            PresentSkill(f"python {tag}", "advanced", 0.94),  # büyük/küçük harf farkı
+            PresentSkill(f"Python {tag}", "beginner", 0.5),  # tekrar: ilki kalır
+            PresentSkill("Express", "bilinmeyen-seviye", 1.7, verified=False),
+            PresentSkill(f"Taksonomide yok {tag}", "intermediate", 0.6),  # doğrulanmamış olarak saklanır
+        ),
+        missing_skills=(
+            MissingSkill(
+                f"Docker {tag}",
+                0.75,
+                1,
+                (
+                    SuggestedResource(other_id, "başka yetkinliğin kaynağı"),  # atılır
+                    SuggestedResource(own_id, "  Türkçe   ve kısa. "),
+                    SuggestedResource(own_id, "tekrar"),  # atılır
+                    SuggestedResource(10**9, "yok"),  # atılır
+                ),
+            ),
+            MissingSkill(f"Python {tag}", 0.9, 2),  # mevcutta var: eksik sayılmaz
+            MissingSkill(f"Kubernetes {tag}", 1.4, 0),  # oran 1'e, geçersiz öncelik boşa çekilir
+            MissingSkill("Taksonomide olmayan eksik", 0.5, 3),  # atılır
+        ),
+    )
+    analysis_id = queued(client, queue, role)
+    work, store = runner(db_sessionmaker, Analyzer(output))
+    store.put(analysis_id, b"%PDF")
+    work.run(analysis_id, last_attempt=False)
+
+    owner = bearer(login(client, "kuyruk@example.com")["access_token"])
+    body = client.get(f"{URL}/{analysis_id}", headers=owner).json()
+    assert body["status"] == "done"
+    assert body["model"]["prompt_version"] == "skill_extraction:v1,recommendation:v1"
+    present = {(p["skill"], p["level"], p["confidence"], p["verified"]) for p in body["present_skills"]}
+    assert present == {
+        (f"Python {tag}", "advanced", 0.94, True),
+        ("Express", "unknown", 1.0, False),
+        (f"Taksonomide yok {tag}", "intermediate", 0.6, False),
+    }
+    missing = [(m["skill"], m["demand_ratio"], m["priority"]) for m in body["missing_skills"]]
+    assert missing == [(f"Docker {tag}", 0.75, 1), (f"Kubernetes {tag}", 1.0, 2)]
+    docker_resources = body["missing_skills"][0]["resources"]
+    assert [(r["resource_id"], r["reason"]) for r in docker_resources] == [(own_id, "Türkçe ve kısa.")]
+    assert body["missing_skills"][1]["resources"] == []
 
 
 def test_timeout_retries_then_fails_with_llm_timeout(
