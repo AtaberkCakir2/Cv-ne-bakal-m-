@@ -1,5 +1,5 @@
 /**
- * CareerAI masaüstü uygulaması (T-059): web arayüzünün derlenmiş hâlini (web/dist) bir pencerede açar.
+ * Cv'ne Bakalım! masaüstü uygulaması (T-059): web arayüzünün derlenmiş hâlini (web/dist) bir pencerede açar.
  *
  * Sayfalar file:// yerine özel bir adresten (app://careerai) sunulur. Böylece React Router'ın tarayıcı geçmişi
  * çalışır, localStorage kalıcı bir kökene bağlı kalır ve CSP gibi başlıklar eklenebilir.
@@ -24,6 +24,10 @@ const APP_ORIGIN = `${SCHEME}://${HOST}`;
 const DEV_URL = app.isPackaged ? undefined : process.env.CAREERAI_DEV_URL;
 const SMOKE = process.argv.includes("--smoke");
 // Paketlenmiş uygulamada web/dist, kaynak klasörüne "web" adıyla kopyalanır (package.json → build.extraResources).
+// Kullanıcı verisi klasörü (oturum, localStorage, tek pencere kilidi) eski adla sabit: Electron bunu productName'den
+// türetir ve ad "Cv'ne Bakalım!" olunca (karar #34) kurulu uygulamalar oturumunu kaybederdi. Teknik ad değişmez.
+app.setPath("userData", path.join(app.getPath("appData"), "CareerAI"));
+
 const DIST = app.isPackaged ? path.join(process.resourcesPath, "web") : path.join(__dirname, "..", "dist");
 const INDEX = path.join(DIST, "index.html");
 
@@ -107,7 +111,7 @@ function createWindow() {
     minWidth: 360,
     minHeight: 480,
     show: false,
-    title: "CareerAI",
+    title: "Cv'ne Bakalım!",
     webPreferences: {
       contextIsolation: true,
       nodeIntegration: false,
@@ -181,7 +185,7 @@ function startUpdater() {
 
 if (!app.requestSingleInstanceLock()) {
   // Başka bir pencere zaten açık; duman testi bunu "geçti" saymasın.
-  if (SMOKE) console.log("SMOKE FAIL baska bir CareerAI acik");
+  if (SMOKE) console.log("SMOKE FAIL baska bir pencere acik");
   app.exit(SMOKE ? 1 : 0);
 } else {
   app.on("second-instance", () => {

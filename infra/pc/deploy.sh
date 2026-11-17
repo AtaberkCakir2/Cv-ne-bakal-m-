@@ -71,11 +71,60 @@ backup_db() {
   find "$dir" -maxdepth 1 -name 'deploy-*.dump' | sort -r | tail -n +6 | xargs -r rm -f
 }
 
+env_value() { sed -n "s/^$1=//p" "$ENV_FILE" | tail -n 1 | tr -d '\r'; }
+
+# En az yetkili uygulama rolü (T-075): API ve veri işçisi bununla bağlanır. Migration'dan sonra her deploy'da
+# çalışır, yeni tablolar da yetki alır. Şifre psql değişkeniyle girişten verilir (süreç listesinde görünmez).
+setup_app_role() {
+  local pw
+  pw="$(env_value APP_DB_PASSWORD)"
+  [[ "$pw" =~ ^[A-Za-z0-9]{24,}$ ]] \
+    || { echo "APP_DB_PASSWORD boş/kısa (sadece harf/rakam, openssl rand -hex 32): infra/pc/$ENV_FILE" >&2; return 1; }
+  # shellcheck disable=SC2016  # değişkenler konteynerin içinde açılmalı
+  { printf '\\set app_pw %s\n' "$pw"; cat app-role.sql; } \
+    | compose exec -T postgres sh -c 'psql -q -v ON_ERROR_STOP=1 -U "$POSTGRES_USER" -d "$POSTGRES_DB"'
+}
+
+# Migration sahip rolle (POSTGRES_USER) çalışır; compose'daki DATABASE_URL uygulama rolüdür. Adres ortam
+# değişkeniyle verilir (`-e DATABASE_URL`: değer komut satırında görünmez).
+migrate() {
+  local url
+  url="postgresql+psycopg://$(env_value POSTGRES_USER):$(env_value POSTGRES_PASSWORD)@postgres:5432/$(env_value POSTGRES_DB)"
+  DATABASE_URL="$url" compose run --rm --no-deps -e DATABASE_URL api alembic -c app/db/alembic.ini upgrade head
+}
+
+# İzleme açıksa (T-066) Grafana ve postgres-exporter'ın kullandığı salt okunur rolü oluşturur veya şifresini
+# günceller. Rol sadece izleme sütunlarını görür: kullanıcı, CV hash'i, yetkinlik verisi okunmaz (karar #5).
+# Şifre komut satırına değil psql'in girişine yazılır (süreç listesinde görünmesin). Migration'dan sonra çalışır.
+setup_monitor_role() {
+  [[ ",$(env_value COMPOSE_PROFILES)," == *,monitoring,* ]] || return 0
+  local pw
+  pw="$(env_value MONITOR_DB_PASSWORD)"
+  [[ -n "$pw" ]] || { echo "izleme açık ama MONITOR_DB_PASSWORD boş: infra/pc/$ENV_FILE" >&2; return 1; }
+  [[ "$pw" =~ ^[A-Za-z0-9]+$ ]] || { echo "MONITOR_DB_PASSWORD sadece harf/rakam olmalı (openssl rand -hex 32)" >&2; return 1; }
+  # shellcheck disable=SC2016  # değişkenler konteynerin içinde açılmalı
+  compose exec -T postgres sh -c 'psql -q -v ON_ERROR_STOP=1 -U "$POSTGRES_USER" -d "$POSTGRES_DB"' <<SQL
+SET client_min_messages = warning;
+DO \$\$ BEGIN
+  IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'careerai_monitor') THEN CREATE ROLE careerai_monitor LOGIN; END IF;
+END \$\$;
+ALTER ROLE careerai_monitor WITH LOGIN PASSWORD '$pw';
+ALTER ROLE careerai_monitor SET default_transaction_read_only = on;
+GRANT pg_monitor TO careerai_monitor;
+GRANT USAGE ON SCHEMA public TO careerai_monitor;
+GRANT SELECT (status, duration_ms, created_at, completed_at) ON analyses TO careerai_monitor;
+GRANT SELECT (source_id, started_at, finished_at, status, fetched, inserted, duplicates, errors) ON scrape_runs TO careerai_monitor;
+GRANT SELECT (id, name) ON job_sources TO careerai_monitor;
+SQL
+}
+
 # `if roll_out` içinde `set -e` çalışmaz: her adım && ile bağlı, yoksa hatalı migration başarı sayılır.
 roll_out() {
   compose up -d --no-build --wait postgres redis ollama \
     && backup_db \
-    && compose run --rm --no-deps api alembic -c app/db/alembic.ini upgrade head \
+    && migrate \
+    && setup_app_role \
+    && setup_monitor_role \
     && compose up -d --no-build --wait --remove-orphans \
     && compose exec -T api python -c \
       "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/v1/health/ready', timeout=5)"

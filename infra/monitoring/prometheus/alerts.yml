@@ -1,0 +1,105 @@
+# Uyarı kuralları (T-066). Bildirim gönderilmez (karar #32); tetiklenenler Grafana panosunun en üstünde görünür.
+# Eşikler: docs/mimari.md bellek bütçesi (RAM %85), docs/go-live.md SLO'ları, karar #30 (gece toplaması).
+groups:
+  - name: erisim
+    rules:
+      - alert: ApiHazirDegil
+        expr: probe_success{probe="ic"} == 0
+        for: 2m
+        labels:
+          severity: kritik
+        annotations:
+          summary: "api /health/ready yanıt vermiyor (konteyner ağından)"
+          description: "Veri tabanı, Redis veya api çökmüş olabilir. make prod-ps ve make prod-logs ile bakın."
+      - alert: DisErisimYok
+        expr: probe_success{probe="dis"} == 0 and on() probe_success{probe="ic"} == 1
+        for: 5m
+        labels:
+          severity: kritik
+        annotations:
+          summary: "api.cvnebakalim.com dışarıdan erişilemiyor, api içeride ayakta"
+          description: "Cloudflare Tunnel (cloudflared) veya internet bağlantısı sorunlu. make prod-logs ile cloudflared loguna bakın."
+      - alert: ApiYavas
+        # Sadece başarılı yoklamalar: hata zaman aşımları ApiHazirDegil'e düşer, yavaşlık sayılmaz.
+        expr: avg_over_time((probe_duration_seconds{probe="ic"} and on(instance) probe_success{probe="ic"} == 1)[10m:30s]) > 1
+        for: 10m
+        labels:
+          severity: uyari
+        annotations:
+          summary: "/health/ready ortalaması 10 dakikadır 1 sn'nin üstünde ({{ $value | humanizeDuration }})"
+      - alert: IzlemeHedefiKapali
+        expr: up == 0
+        for: 5m
+        labels:
+          severity: uyari
+        annotations:
+          summary: "{{ $labels.job }} metrikleri okunamıyor"
+
+  - name: kaynaklar
+    rules:
+      - alert: CpuYuksek
+        expr: 100 * (1 - avg(rate(node_cpu_seconds_total{mode="idle"}[5m]))) > 90
+        for: 15m
+        labels:
+          severity: uyari
+        annotations:
+          summary: "Docker CPU kullanımı 15 dakikadır %90'ın üstünde ({{ $value | printf \"%.0f\" }}%)"
+      - alert: RamYuksek
+        expr: 100 * (1 - node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes) > 85
+        for: 10m
+        labels:
+          severity: uyari
+        annotations:
+          summary: "Docker'a ayrılan RAM'in %85'inden fazlası kullanımda ({{ $value | printf \"%.0f\" }}%)"
+          description: "Bellek bütçesi docs/mimari.md. Geliştirme ortamının Ollama'sı açık kalmış olabilir."
+      - alert: DiskAz
+        expr: 100 * node_filesystem_avail_bytes{mountpoint="/host/c"} / node_filesystem_size_bytes{mountpoint="/host/c"} < 10
+        for: 10m
+        labels:
+          severity: kritik
+        annotations:
+          summary: "C: diskinde %10'dan az boş yer kaldı ({{ $value | printf \"%.0f\" }}%)"
+          description: "docker image prune ve eski deploy dökümleri (~/careerai-yedek) temizlenebilir."
+
+  - name: kuyruk
+    rules:
+      - alert: AnalizKuyruguBirikti
+        expr: redis_key_size{key="analysis"} >= 6
+        for: 10m
+        labels:
+          severity: uyari
+        annotations:
+          summary: "Analiz kuyruğunda 10 dakikadır {{ $value }} iş bekliyor (sınır 8)"
+          description: "worker-analysis çalışıyor mu, Ollama yanıt veriyor mu bakın."
+      - alert: VeriKuyruguBirikti
+        expr: redis_key_size{key="data"} > 50
+        for: 30m
+        labels:
+          severity: uyari
+        annotations:
+          summary: "Toplama kuyruğunda 30 dakikadır {{ $value }} iş bekliyor"
+
+  - name: uygulama
+    rules:
+      - alert: PostgresKapali
+        expr: pg_up == 0
+        for: 2m
+        labels:
+          severity: kritik
+        annotations:
+          summary: "PostgreSQL'e bağlanılamıyor"
+      - alert: AnalizHatalari
+        expr: careerai_analyses_last_hour_failed >= 3 and careerai_analyses_last_hour_failed / clamp_min(careerai_analyses_last_hour_finished, 1) > 0.2
+        for: 5m
+        labels:
+          severity: uyari
+        annotations:
+          summary: "Son 1 saatte biten analizlerin %20'den fazlası hatalı ({{ $value }} hata)"
+      - alert: ToplamaGecikti
+        expr: careerai_scrape_last_success_age_seconds > 30 * 3600
+        for: 30m
+        labels:
+          severity: uyari
+        annotations:
+          summary: "30 saattir başarılı ilan toplaması yok"
+          description: "Gece toplaması (03:00) çalışmamış veya hata vermiş. scrape_runs.error_log'a bakın."

@@ -39,7 +39,7 @@ Skor = Olasılık × Etki (1–5). Seviye: ≥ 15 Yüksek, 8–14 Orta, < 8 Dü�
 - **Olasılık / Etki / Skor:** 2 / 5 / **10 (Orta)** · **Sorumlu:** Burak
 - **Önlem:** CV saklanmaz; LLM öncesi PII maskeleme; log maskeleme; şifreli yedek; en az yetki; güvenlik testleri.
 - **Gerçekleşirse (B planı):** Runbook'taki ihlal prosedürü: izole et, etkiyi belirle, 72 saat içinde KVK Kurulu'na bildir, kullanıcıları bilgilendir.
-- **Erken uyarı:** Sentry/loglarda PII görülmesi
+- **Erken uyarı:** Loglarda PII görülmesi
 
 ### R-06 · Kapsam kayması (her şeyi yapmaya çalışmak)
 
@@ -72,9 +72,9 @@ Skor = Olasılık × Etki (1–5). Seviye: ≥ 15 Yüksek, 8–14 Orta, < 8 Dü�
 ### R-10 · PC = tek hata noktası (elektrik, internet, donanım, Windows güncellemesi, uyku)
 
 - **Olasılık / Etki / Skor:** 4 / 3 / **12 (Orta)** · **Sorumlu:** Ataberk
-- **Önlem:** Karar #30: uyku ve hazırda bekletme kapalı, Docker Desktop otomatik başlar, konteynerler `unless-stopped`; güncellemeler etkin saatler dışında, sunum haftası ertelenir; PC dışından uptime izleme; günlük şifreli PC dışı yedek; DR tatbikatı; sunum için B planı (aynı sürüm 127.0.0.1'de yerel demo, telefondan internet paylaşımı). PC'de pil algılanmıyor: elektrik kesilince kapanır.
+- **Önlem:** Karar #30: uyku ve hazırda bekletme kapalı, Docker Desktop otomatik başlar, konteynerler `unless-stopped`; güncellemeler etkin saatler dışında, sunum haftası ertelenir; Grafana'da dış erişim probu (PC açıkken; PC dışı izleyici yok, karar #32); günlük şifreli PC dışı yedek; DR tatbikatı; sunum için B planı (aynı sürüm 127.0.0.1'de yerel demo, telefondan internet paylaşımı). PC'de pil algılanmıyor: elektrik kesilince kapanır.
 - **Gerçekleşirse (B planı):** Yedekten başka bir ekip bilgisayarına kurulum ve tünel bağlantısını oraya taşıma (RTO < 4 saat).
-- **Erken uyarı:** Dış izleyicinin kesinti uyarısı; Cloudflare 1033/530 hata sayfası
+- **Erken uyarı:** Grafana'da `DisErisimYok`; Cloudflare 1033/530 hata sayfası (PC tamamen kapanırsa otomatik uyarı yok, nöbetçi günlük kontrolde fark eder)
 
 ### R-11 · Türkçe ilan verisinin yetersiz kalması
 
@@ -144,7 +144,7 @@ Skor = Olasılık × Etki (1–5). Seviye: ≥ 15 Yüksek, 8–14 Orta, < 8 Dü�
 | PC dışı yedek depolama | Şifreli yedekler için nesne depolama (ör. Backblaze B2 ücretsiz 10 GB) | 6 | - | 0 TL | Önerilen | Yedekler ücretsiz katmana sığar varsayımı; aşılırsa ayda ~100 TL (6 ay 600 TL) |
 | PC elektriği ve internet | Production PC'sinin sürekli açık kalması | — | - | - | — | Ekip karşılar; bütçeye yazılmadı |
 | GPU sunucu (demo günleri) | Kongre/final demosunda saatlik GPU kiralama | 0 | - | - | Opsiyonel | Varsayım — gerekirse fiyat teklifi alınıp adet/fiyat girilmeli |
-| İzleme, CI/CD, e-posta | Uptime Kuma, Sentry, GitHub Actions, e-posta servisi (ücretsiz katmanlar) | 1 | - | - | Zorunlu | Ücretsiz/öğrenci katmanları |
+| İzleme, CI/CD, e-posta | Prometheus + Grafana (PC'de), GitHub Actions, e-posta servisi (ücretsiz) | 1 | - | - | Zorunlu | Ücretsiz/öğrenci katmanları |
 | Poster baskısı | Kongre posteri | 1 | - | - | Zorunlu | Üniversite aracılığıyla basılıyor (rapora göre) |
 
 **Zorunlu:** 5.060 TL · **Önerilen:** 0 TL (yedek ücretsiz katmanı aşarsa 600 TL) · **Genel toplam:** 5.060 TL. Fizibilite raporundaki prototip maliyeti 9.500 TL'dir; VPS kiralanmadığı için (karar #30) 4.200 TL, alan adı beklenenden ucuza alındığı için 240 TL düşer. Harcanan: alan adı 560 TL (06.11.2026). TÜBİTAK başvuru taslağındaki bütçe bu tablodan ayrıdır ve bu kararla değiştirilmedi (T-028 askıda). Döviz bazlı kalemler (mağaza ücretleri) kura göre güncellenmelidir.
