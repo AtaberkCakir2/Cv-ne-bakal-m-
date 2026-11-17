@@ -73,7 +73,12 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Giriş */
+        /**
+         * Giriş
+         * @description Access token 15 dk, refresh token 7 gün geçerlidir. E-posta doğrulanmamış olsa da giriş yapılabilir.
+         *
+         *     E-posta kayıtlı değilse de şifre yanlışsa da aynı 401 döner (hesap var mı yok mu belli edilmez).
+         */
         post: operations["login_api_v1_auth_login_post"];
         delete?: never;
         options?: never;
@@ -110,7 +115,12 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Çıkış (refresh token iptali) */
+        /**
+         * Çıkış (refresh token iptali)
+         * @description Verilen refresh token iptal edilir. Token bilinmiyor veya zaten iptal edilmişse de 204 döner.
+         *
+         *     Access token süresi dolana kadar (en fazla 15 dk) geçerli kalır; istemci onu kendisi siler.
+         */
         post: operations["logout_api_v1_auth_logout_post"];
         delete?: never;
         options?: never;
@@ -127,7 +137,10 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** E-posta doğrulama */
+        /**
+         * E-posta doğrulama
+         * @description Kayıt e-postasındaki bağlantının token'ı gönderilir. Bağlantı 24 saat geçerli ve tek kullanımlıktır.
+         */
         post: operations["verify_email_api_v1_auth_verify_email_post"];
         delete?: never;
         options?: never;
@@ -182,7 +195,10 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Profil */
+        /**
+         * Profil
+         * @description Oturum açmış kullanıcının profili ve seçtiği hedef pozisyon (seçilmediyse `null`).
+         */
         get: operations["me_api_v1_users_me_get"];
         put?: never;
         post?: never;
@@ -208,7 +224,10 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Onay kayıtlarım (sürümlü) */
+        /**
+         * Onay kayıtlarım (sürümlü)
+         * @description Kabul edilen bütün metin sürümleri, eskiler dahil. Geri alınan açık rızada `withdrawn_at` doludur.
+         */
         get: operations["my_consents_api_v1_users_me_consents_get"];
         put?: never;
         /**
@@ -743,11 +762,6 @@ export interface components {
             /** Comment */
             comment: string | null;
         };
-        /** HTTPValidationError */
-        HTTPValidationError: {
-            /** Detail */
-            detail?: components["schemas"]["ValidationError"][];
-        };
         /** HealthResponse */
         HealthResponse: {
             /**
@@ -1015,18 +1029,43 @@ export interface components {
          * @enum {string}
          */
         UserRole: "user" | "admin";
-        /** ValidationError */
-        ValidationError: {
-            /** Location */
-            loc: (string | number)[];
-            /** Message */
-            msg: string;
-            /** Error Type */
+        /**
+         * Problem
+         * @description RFC 7807 hata biçimi. Tüm 4xx/5xx yanıtları bu şemadadır.
+         * @example {
+         *       "type": "about:blank",
+         *       "title": "Doğrulama hatası",
+         *       "status": 422,
+         *       "detail": "İstekteki bazı alanlar geçersiz.",
+         *       "instance": "/api/v1/auth/register",
+         *       "request_id": "7f9c2b1e4a5d4c3b8e6f0a1b2c3d4e5f",
+         *       "errors": [
+         *         {
+         *           "field": "email",
+         *           "message": "value is not a valid email address"
+         *         }
+         *       ]
+         *     }
+         */
+        Problem: {
+            /** @example about:blank */
             type: string;
-            /** Input */
-            input?: unknown;
-            /** Context */
-            ctx?: Record<string, never>;
+            /** @description Durum koduna göre Türkçe başlık */
+            title: string;
+            status: number;
+            /** @description Kullanıcıya gösterilebilecek Türkçe açıklama */
+            detail?: string;
+            /** @description İsteğin yolu */
+            instance?: string;
+            /** @description Destek için; X-Request-ID başlığıyla aynı */
+            request_id?: string;
+            /** @description Bazı hatalarda makine okunur kod, ör. PDF_TOO_LARGE */
+            code?: string;
+            /** @description Sadece 422: geçersiz alanlar */
+            errors?: {
+                field: string;
+                message: string;
+            }[];
         };
     };
     responses: never;
@@ -1075,6 +1114,15 @@ export interface operations {
                     "application/json": components["schemas"]["ReadinessResponse"];
                 };
             };
+            /** @description İstek sınırı aşıldı; `Retry-After` kaç saniye sonra denenebileceğini söyler */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
             /** @description En az bir bağımlılık erişilemez */
             503: {
                 headers: {
@@ -1114,7 +1162,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/problem+json": unknown;
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
             /** @description Eksik onay */
@@ -1123,7 +1171,16 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/problem+json": unknown;
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description İstek sınırı aşıldı; `Retry-After` kaç saniye sonra denenebileceğini söyler */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };
@@ -1158,16 +1215,16 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/problem+json": unknown;
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
-            /** @description Validation Error */
+            /** @description Geçersiz alanlar (`errors` listesinde) */
             422: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
             /** @description Çok fazla deneme */
@@ -1176,7 +1233,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/problem+json": unknown;
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };
@@ -1211,16 +1268,25 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/problem+json": unknown;
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
-            /** @description Validation Error */
+            /** @description Geçersiz alanlar (`errors` listesinde) */
             422: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description İstek sınırı aşıldı; `Retry-After` kaç saniye sonra denenebileceğini söyler */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };
@@ -1245,13 +1311,22 @@ export interface operations {
                 };
                 content?: never;
             };
-            /** @description Validation Error */
+            /** @description Geçersiz alanlar (`errors` listesinde) */
             422: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description İstek sınırı aşıldı; `Retry-After` kaç saniye sonra denenebileceğini söyler */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };
@@ -1282,16 +1357,25 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/problem+json": unknown;
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
-            /** @description Validation Error */
+            /** @description Geçersiz alanlar (`errors` listesinde) */
             422: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description İstek sınırı aşıldı; `Retry-After` kaç saniye sonra denenebileceğini söyler */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };
@@ -1318,13 +1402,22 @@ export interface operations {
                     "application/json": unknown;
                 };
             };
-            /** @description Validation Error */
+            /** @description Geçersiz alanlar (`errors` listesinde) */
             422: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description İstek sınırı aşıldı; `Retry-After` kaç saniye sonra denenebileceğini söyler */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };
@@ -1355,16 +1448,25 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/problem+json": unknown;
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
-            /** @description Validation Error */
+            /** @description Geçersiz alanlar (`errors` listesinde) */
             422: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description İstek sınırı aşıldı; `Retry-After` kaç saniye sonra denenebileceğini söyler */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };
@@ -1385,6 +1487,24 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ProfileOut"];
+                };
+            };
+            /** @description Giriş gerekli */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description İstek sınırı aşıldı; `Retry-After` kaç saniye sonra denenebileceğini söyler */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };
@@ -1409,22 +1529,31 @@ export interface operations {
                 };
                 content?: never;
             };
+            /** @description Giriş gerekli */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
             /** @description Şifre hatalı */
             403: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/problem+json": unknown;
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
-            /** @description Validation Error */
+            /** @description Geçersiz alanlar (`errors` listesinde) */
             422: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
             /** @description Çok fazla deneme */
@@ -1433,7 +1562,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/problem+json": unknown;
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };
@@ -1460,13 +1589,31 @@ export interface operations {
                     "application/json": components["schemas"]["ProfileOut"];
                 };
             };
+            /** @description Giriş gerekli */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
             /** @description Pozisyon bulunamadı */
             422: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/problem+json": unknown;
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description İstek sınırı aşıldı; `Retry-After` kaç saniye sonra denenebileceğini söyler */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };
@@ -1487,6 +1634,24 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ConsentOut"][];
+                };
+            };
+            /** @description Giriş gerekli */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description İstek sınırı aşıldı; `Retry-After` kaç saniye sonra denenebileceğini söyler */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };
@@ -1513,13 +1678,31 @@ export interface operations {
                     "application/json": components["schemas"]["ConsentOut"][];
                 };
             };
-            /** @description Validation Error */
+            /** @description Giriş gerekli */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description Geçersiz alanlar (`errors` listesinde) */
             422: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description İstek sınırı aşıldı; `Retry-After` kaç saniye sonra denenebileceğini söyler */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };
@@ -1544,13 +1727,31 @@ export interface operations {
                     "application/json": components["schemas"]["ConsentOut"][];
                 };
             };
+            /** @description Giriş gerekli */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
             /** @description Bu onay türü geri alınamaz */
             422: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/problem+json": unknown;
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description İstek sınırı aşıldı; `Retry-After` kaç saniye sonra denenebileceğini söyler */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };
@@ -1571,6 +1772,24 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ExportOut"];
+                };
+            };
+            /** @description Giriş gerekli */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description İstek sınırı aşıldı; `Retry-After` kaç saniye sonra denenebileceğini söyler */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };
@@ -1602,16 +1821,25 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/problem+json": unknown;
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
-            /** @description Validation Error */
+            /** @description Geçersiz alanlar (`errors` listesinde) */
             422: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description İstek sınırı aşıldı; `Retry-After` kaç saniye sonra denenebileceğini söyler */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };
@@ -1644,7 +1872,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/problem+json": unknown;
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
             /** @description Açık rıza geri alınmış */
@@ -1653,7 +1881,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/problem+json": unknown;
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
             /** @description Content-Length yok */
@@ -1662,7 +1890,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/problem+json": unknown;
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
             /** @description Dosya 5 MB'tan büyük (PDF_TOO_LARGE) */
@@ -1671,7 +1899,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/problem+json": unknown;
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
             /** @description PDF değil (PDF_UNREADABLE) */
@@ -1680,7 +1908,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/problem+json": unknown;
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
             /** @description Bozuk/şifreli PDF (PDF_UNREADABLE), 5 sayfadan uzun (PDF_TOO_LARGE) veya eksik alan */
@@ -1689,7 +1917,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/problem+json": unknown;
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
             /** @description Saatlik analiz sınırı */
@@ -1698,7 +1926,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/problem+json": unknown;
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
             /** @description Kuyruk dolu veya kullanılamıyor */
@@ -1707,7 +1935,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/problem+json": unknown;
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };
@@ -1738,7 +1966,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/problem+json": unknown;
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
             /** @description Analiz bulunamadı */
@@ -1747,16 +1975,25 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/problem+json": unknown;
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
-            /** @description Validation Error */
+            /** @description Geçersiz alanlar (`errors` listesinde) */
             422: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description İstek sınırı aşıldı; `Retry-After` kaç saniye sonra denenebileceğini söyler */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };
@@ -1785,7 +2022,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/problem+json": unknown;
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
             /** @description Analiz bulunamadı */
@@ -1794,16 +2031,25 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/problem+json": unknown;
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
-            /** @description Validation Error */
+            /** @description Geçersiz alanlar (`errors` listesinde) */
             422: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description İstek sınırı aşıldı; `Retry-After` kaç saniye sonra denenebileceğini söyler */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };
@@ -1838,7 +2084,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/problem+json": unknown;
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
             /** @description Analiz bulunamadı */
@@ -1847,7 +2093,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/problem+json": unknown;
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
             /** @description Analiz henüz tamamlanmadı */
@@ -1856,7 +2102,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/problem+json": unknown;
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
             /** @description Puan 1-5 dışında veya yorum 1000 karakterden uzun */
@@ -1865,7 +2111,16 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/problem+json": unknown;
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description İstek sınırı aşıldı; `Retry-After` kaç saniye sonra denenebileceğini söyler */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };
@@ -1886,6 +2141,15 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["RoleOut"][];
+                };
+            };
+            /** @description İstek sınırı aşıldı; `Retry-After` kaç saniye sonra denenebileceğini söyler */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };
@@ -1918,16 +2182,25 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/problem+json": unknown;
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
-            /** @description Validation Error */
+            /** @description Geçersiz alanlar (`errors` listesinde) */
             422: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description İstek sınırı aşıldı; `Retry-After` kaç saniye sonra denenebileceğini söyler */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };
@@ -1960,16 +2233,25 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/problem+json": unknown;
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
-            /** @description Validation Error */
+            /** @description Geçersiz alanlar (`errors` listesinde) */
             422: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description İstek sınırı aşıldı; `Retry-After` kaç saniye sonra denenebileceğini söyler */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };
