@@ -311,12 +311,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-075 · Production ortamı kurulumu
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 14.12.2026 – 20.12.2026 · **Öncelik:** P0 · **Efor:** 10 saat · **Alan:** DevOps / Altyapı
 - **Bağımlılık:** T-036, T-064
 - **Destek:** —
 - **Çıktı:** Production ortamı
 - **Kabul kriteri:** PC'de ayrı compose projesi (`careerai-prod`, kendi volume'ları); en az yetkili DB kullanıcıları; sırlar `.env` (sadece bu PC'de, Windows kullanıcı izinleriyle korunur, repoda yok); hiçbir servis host'a port açmaz, dış erişim sadece `cloudflared`; kaynak limitleri (mem_limit), `restart: unless-stopped`. PC kapalıyken kaçan gece toplaması açılışta telafi edilir (R-18).
+- **Not:** 15.11.2026. Ayrı `careerai-prod` projesi, kendi volume'ları, `mem_limit` + `restart: unless-stopped` (15 servisin hepsi), host'a port yok (tek istisna Grafana 127.0.0.1) zaten vardı; denetlendi. Yeni: en az yetkili `careerai_app` rolü (`infra/pc/app-role.sql`, deploy.sh `setup_app_role`; migration sahip rolle `migrate`), view yenileme migration 0004 `refresh_role_skill_stats()` (SECURITY DEFINER), `audit_logs` sadece ekleme; test `backend/tests/db/test_app_role.py`. Kaçan gece toplaması açılışta telafi (`scraper/collector/tasks.py` `missed_nightly`, test `test_catch_up.py`). `.env.prod` izinleri sadece Ataberk/SYSTEM/Administrators (icacls, `infra/pc/deploy.md` §2). Production'da denendi: api ve worker-data `careerai_app` ile bağlı, DDL ve doğrudan REFRESH reddediliyor, kaçan toplama açılışta başladı. #89 ve #94'ün (o da #88'in) üstüne kurulu.
 
 ### T-079 · Mimari doküman ve ADR'ler
 
