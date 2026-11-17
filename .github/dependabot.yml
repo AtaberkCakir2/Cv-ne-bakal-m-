@@ -1,0 +1,37 @@
+# Dependabot (T-064, sahibi: Ataberk). Her hafta güncelleme PR'ı açar; CODEOWNERS ilgili klasörün sahibini
+# inceleyici yapar. Küçük sürümler tek PR'da toplanır (gürültü az olsun); büyük sürümler ayrı PR olur.
+# Güvenlik güncellemeleri ayrıca, açık yayımlanınca hemen gelir (Ayarlar → Code security → Dependabot security
+# updates açık olmalı, infra/guvenlik.md).
+version: 2
+
+updates:
+  - package-ecosystem: pip
+    directories: [/backend, /scraper, /ai]
+    schedule: { interval: weekly, day: monday, time: "08:00", timezone: Europe/Istanbul }
+    open-pull-requests-limit: 5
+    commit-message: { prefix: "chore" }
+    groups:
+      python-kucuk:
+        update-types: [minor, patch]
+
+  - package-ecosystem: npm
+    directories: [/web, /mobile]
+    schedule: { interval: weekly, day: monday, time: "08:00", timezone: Europe/Istanbul }
+    open-pull-requests-limit: 5
+    commit-message: { prefix: "chore" }
+    groups:
+      npm-kucuk:
+        update-types: [minor, patch]
+
+  - package-ecosystem: docker
+    directories: [/backend, /scraper, /infra/backup]
+    schedule: { interval: weekly, day: monday, time: "08:00", timezone: Europe/Istanbul }
+    commit-message: { prefix: "chore" }
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule: { interval: weekly, day: monday, time: "08:00", timezone: Europe/Istanbul }
+    commit-message: { prefix: "chore" }
+    groups:
+      actions:
+        patterns: ["*"]

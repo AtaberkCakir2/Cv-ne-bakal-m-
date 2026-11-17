@@ -248,12 +248,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-064 · Güvenlik incelemesi (OWASP Top 10)
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 07.12.2026 – 13.12.2026 · **Öncelik:** P0 · **Efor:** 10 saat · **Alan:** Güvenlik & KVKK
 - **Bağımlılık:** T-036
 - **Destek:** Anıl
 - **Çıktı:** Güvenlik bulguları raporu
 - **Kabul kriteri:** pip-audit, npm audit, Dependabot; Trivy ile image taraması; gitleaks ile sır taraması; CORS sadece kendi alan adları; güvenlik başlıkları (HSTS, CSP, X-Content-Type-Options).
+- **Not:** 15.11.2026. Rapor `docs/guvenlik-raporu.md` (G-1…G-8). CI `.github/workflows/security.yml` (gitleaks, pip-audit, npm audit, Trivy; PR, main ve haftalık) + `.github/dependabot.yml`; GitHub'da Dependabot uyarıları ve güvenlik güncellemeleri açık (secret scanning private repoda ücretli, gitleaks yeterli). Yedek imajı restic 0.19.1 (kritik açıklar kapandı); kalan restic açıkları `infra/backup/.trivyignore`, süre 15.01.2027'de doluyor, go-live öncesi tekrar bakılacak. Cloudflare başlık kuralları kuruldu, securityheaders.com A+. CORS canlıda doğrulandı. Açık kalan bulgular sahiplerinde: G-3 react-router ve G-6 `/docs` Anıl, G-8 mobil lock dosyası Burak; G-4 zlib sonraki deploy'da kapanır.
 
 ### T-067 · Merkezi log ve log maskeleme
 
