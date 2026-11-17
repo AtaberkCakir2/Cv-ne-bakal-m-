@@ -320,12 +320,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-079 · Mimari doküman ve ADR'ler
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 21.12.2026 – 27.12.2026 · **Öncelik:** P1 · **Efor:** 6 saat · **Alan:** Dokümantasyon
 - **Bağımlılık:** T-075
 - **Destek:** Burak
 - **Çıktı:** docs/architecture
 - **Kabul kriteri:** Mimari kararlar (neden Ollama, neden pgvector, neden Celery) ADR olarak; deployment diyagramı.
+- **Not:** 18.11.2026: `docs/architecture/`: dört ADR (Ollama, pgvector, Celery + Redis, PC + Cloudflare Tunnel) ve production deployment diyagramı (`deployment.md`: servisler, ağ sınırları, deploy ve yedek akışı, bellek bütçesi). `docs/diagrams/component-deployment.md`'deki eski VPS diyagramı oraya yönlendirildi.
 
 ---
 
