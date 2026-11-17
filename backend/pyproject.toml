@@ -15,7 +15,7 @@ dependencies = [
     "python-multipart>=0.0.18",
     "pypdf[crypto]>=5.1",
     # Veritabanı (app/db, T-012 — Ataberk)
-    "sqlalchemy>=2.0.36,<2.1",
+    "sqlalchemy>=2.0.36,<2.2",
     "alembic>=1.14",
     "pgvector>=0.3.6",
     # Kimlik doğrulama (T-037)
@@ -36,7 +36,7 @@ dev = [
     "ruff==0.17.2",
     "mypy==2.4.0",
     # T-069: kapsam ölçümü ve TEST_DATABASE_URL / TEST_REDIS_URL verilmediğinde geçici PostgreSQL ve Redis (Docker).
-    "pytest-cov==6.0.0",
+    "pytest-cov==7.1.0",
     "testcontainers[postgres,redis]==4.9.0",
 ]
 
