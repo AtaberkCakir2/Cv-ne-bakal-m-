@@ -61,7 +61,7 @@ Production PC'sinde (i7-9750H, CPU) bir analiz yaklaşık 1–2 dakika sürer; b
 | Altyapı | Container | Docker Desktop (WSL2) + Docker Compose | Tek makine için yeterli; lokal ve production aynı compose dosyası, ayrı proje adı ve volume'lar. | Kubernetes (gereksiz karmaşık) | Ataberk |
 | Altyapı | CI/CD | GitHub Actions + GHCR | Ücretsiz (öğrenci), repo ile entegre. CI imajı üretir; PC'deki production etiketle elle güncellenir (PC'ye dışarıdan deploy erişimi açılmaz). | GitLab CI | Ataberk |
 | Altyapı | Sunucu | Ataberk'in PC'si: Casper Excalibur G770, i7-9750H (6C/12T), 32 GB RAM, GTX 1650 4 GB, 476 GB SSD (~71 GB boş, 06.11.2026), Windows 10 Pro | Kira 0 TL (karar #30). CPU'da analiz ~60-120 sn sürer → kuyruk + ilerleme ekranı; GTX 1650 ile Ollama'da kısmi GPU hızlandırması ölçülecek. | VPS (fizibilite planı), GPU sunucu (saatlik kiralama) | Ataberk |
-| Operasyon | İzleme | Dış uptime izleyici (UptimeRobot / Better Stack ücretsiz), Sentry, Prometheus + Grafana | PC kapanınca içindeki izleyici de kapanacağı için erişilebilirlik dışarıdan izlenir; hata ve kaynak izleme PC'de. | Uptime Kuma (PC içinde) | Ataberk |
+| Operasyon | İzleme | Prometheus + Grafana (PC'de, sadece 127.0.0.1) | Kaynak, kuyruk, analiz ve toplama durumu ile tünelden dış erişim tek panoda; uyarılar panoda görünür, gönderilmez. Dış izleyici ve Sentry yok (karar #32). | UptimeRobot, Sentry, Uptime Kuma | Ataberk |
 | Operasyon | Yedekleme | pg_dump + restic → PC dışı depolama (Backblaze B2 ücretsiz katman vb.) | Şifreli, artımlı, sürümlü yedek; PC bozulursa başka bir ekip bilgisayarına geri yüklenir. | Harici disk (ek olarak) | Ataberk |
 | Kalite | Test | pytest, httpx, testcontainers, Playwright, k6 | Birim → entegrasyon → E2E → yük test piramidi. | Locust | Ataberk |
 | Kalite | Kod kalitesi | ruff, mypy, eslint, prettier, pre-commit | CI'da zorunlu; tutarlı kod stili. | — | Ataberk |
@@ -86,7 +86,7 @@ Production PC'sinde (i7-9750H, CPU) bir analiz yaklaşık 1–2 dakika sürer; b
 | postgres | pgvector/pgvector:pg16 | 5432 | HAYIR | 2 GB | 1 | pg_isready | Ataberk |
 | redis | redis:7 (AOF açık, şifreli) | 6379 | HAYIR | 256 MB | 1 | redis-cli ping | Ataberk |
 | cv-redis | redis:7 (kalıcılık kapalı, tmpfs; kuyruktaki CV baytları, karar #9) | 6379 | HAYIR | 256 MB | 1 | redis-cli ping | Ataberk |
-| grafana (+ prometheus) | grafana, prometheus | 3000 | Hayır (sadece 127.0.0.1) | 512 MB | 1 | — | Ataberk |
+| grafana, prometheus + exporter'lar (node, redis, postgres, blackbox) | `monitoring` profili, `infra/monitoring/` | 3000 (sadece Grafana) | Hayır (Grafana sadece 127.0.0.1) | toplam ~1 GB sınır (ölçülen ~170 MB) | 1 | — | Ataberk |
 
 **Bellek bütçesi:** production konteynerleri toplam ~15,5 GB. PC'de 32 GB RAM var ama Windows ve geliştirme ortamı da aynı makinede: Docker Desktop'a (WSL2, `.wslconfig`) en fazla 20 GB verilir, production açıkken geliştirme ortamının Ollama'sı kapatılır. AI worker eşzamanlılığı 1; RAM %85'i aşınca uyarı. Kullanıcı sayısı artarsa ilk adım Ollama'yı GPU'ya (GTX 1650 kısmi veya ayrı makine) almaktır.
 
