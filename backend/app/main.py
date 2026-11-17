@@ -1,4 +1,4 @@
-"""CareerAI API giriş noktası.
+"""Cv'ne Bakalım! API giriş noktası.
 
 Çalıştırma (backend/ klasöründe): uvicorn app.main:app --reload
 OpenAPI dokümanı: http://127.0.0.1:8000/docs · Ayrıntılı rehber: docs/api/README.md
@@ -18,7 +18,7 @@ from app.core.uploads import UploadSizeLimitMiddleware, keep_uploads_in_memory
 from app.services.analysis_queue import build_analysis_queue
 from app.services.email import OutboxEmailSender
 
-API_DESCRIPTION = """CareerAI REST API. Sözleşme: `contracts/api.md` · Rehber ve örnek akış: `docs/api/README.md`.
+API_DESCRIPTION = """Cv'ne Bakalım! REST API. Sözleşme: `contracts/api.md` · Rehber ve örnek akış: `docs/api/README.md`.
 
 - **Kimlik doğrulama:** `POST /auth/login` ile alınan access token `Authorization: Bearer <token>` başlığında gider.
   Süresi dolunca `POST /auth/refresh` ile yenilenir (refresh token her kullanımda değişir).

@@ -7,15 +7,19 @@ Analiz işçisinden (Burak, ai/) ayrı bir uygulama ve `data` kuyruğu: uzun top
 """
 
 import logging
+from datetime import UTC, datetime, timedelta
 from typing import Any
+from zoneinfo import ZoneInfo
 
 from app.core.config import get_settings
 from app.core.logging import configure_logging
+from app.db.models import ScrapeRun
 from app.db.session import get_sessionmaker
 from celery import Celery
 from celery.schedules import crontab
-from celery.signals import setup_logging
+from celery.signals import setup_logging, worker_ready
 from redis import Redis
+from sqlalchemy import func, select
 
 from collector import resources, taxonomy, youtube
 from collector.http import PoliteClient
@@ -32,6 +36,10 @@ RESOURCES_CHECK_TASK = "collector.resources_check"
 # HN 2 aylık başlıkta yeni yorumlar + 20 Himalayas isteği, 3-5 sn arayla: olağan gece < 1 saat.
 SOFT_LIMIT_S = 3 * 3600
 LOCK_KEY = "careerai:lock:nightly"
+TZ = ZoneInfo("Europe/Istanbul")
+NIGHTLY_HOUR = 3
+# Saatin hemen ardından açılan işçide beat zaten tetikler; telafi ikinci kez kuyruğa koymasın.
+CATCH_UP_GRACE = timedelta(minutes=10)
 
 app = Celery("careerai-data", broker=get_settings().redis_url)
 app.conf.update(
@@ -45,7 +53,7 @@ app.conf.update(
     beat_schedule={
         "gece-toplama": {
             "task": NIGHTLY_TASK,
-            "schedule": crontab(hour=3, minute=0),
+            "schedule": crontab(hour=NIGHTLY_HOUR, minute=0),
             # İşçi kapalıyken kaçan gece ertesi akşama sarkmasın: 6 saat içinde alınmazsa düşer.
             "options": {"expires": 6 * 3600},
         },
@@ -73,6 +81,42 @@ def _json_logging(**_: Any) -> None:
     """
     configure_logging(get_settings().log_level)
     # configure_logging httpx'i zaten WARNING'e çeker; Celery'nin görev başına iki INFO satırı kalabilir.
+
+
+def missed_nightly(last_started: datetime | None, now: datetime) -> bool:
+    """Son planlı gece toplaması (03:00, İstanbul) kaçtı mı (R-18: PC o saatte kapalıydı).
+
+    Son 03:00'ten sonra hiç toplama başlamadıysa kaçmıştır. Hiç toplama yoksa da (yeni kurulum) kaçmış sayılır.
+    """
+    local = now.astimezone(TZ)
+    slot = local.replace(hour=NIGHTLY_HOUR, minute=0, second=0, microsecond=0)
+    if local < slot:
+        slot -= timedelta(days=1)
+    if local - slot < CATCH_UP_GRACE:
+        return False
+    if last_started is None:
+        return True
+    if last_started.tzinfo is None:
+        last_started = last_started.replace(tzinfo=UTC)
+    return last_started < slot
+
+
+@worker_ready.connect
+def _catch_up_missed_nightly(**_: Any) -> None:
+    """İşçi açılınca kaçan gece toplamasını hemen kuyruğa koyar (T-075, R-18).
+
+    Celery beat kaçan zamanı telafi etmez: PC 03:00'te kapalıysa o gece toplama hiç olmazdı. Kilit (LOCK_KEY)
+    sayesinde beat ile üst üste binmez. Veritabanına ulaşılamazsa işçi yine açılır, sadece uyarı yazılır.
+    """
+    try:
+        with get_sessionmaker()() as session:
+            last = session.scalar(select(func.max(ScrapeRun.started_at)))
+    except Exception:
+        log.exception("Kaçan gece toplaması kontrol edilemedi")
+        return
+    if missed_nightly(last, datetime.now(UTC)):
+        log.warning("Gece toplaması kaçmış (son başlangıç: %s), şimdi başlatılıyor", last)
+        nightly.apply_async(expires=6 * 3600)
 
 
 @app.task(name=NIGHTLY_TASK, soft_time_limit=SOFT_LIMIT_S, time_limit=SOFT_LIMIT_S + 600)
