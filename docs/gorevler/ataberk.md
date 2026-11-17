@@ -238,13 +238,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-066 · İzleme ve uyarı sistemi
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 30.11.2026 – 06.12.2026 · **Öncelik:** P0 · **Efor:** 10 saat · **Alan:** Operasyon / İzleme
 - **Bağımlılık:** T-035
 - **Destek:** —
-- **Çıktı:** İzleme paneli + status sayfası
+- **Çıktı:** İzleme paneli (Grafana, PC'de)
 - **Kabul kriteri:** PC dışından uptime izleme (UptimeRobot / Better Stack ücretsiz; api.cvnebakalim.com/health/ready her 1-5 dk), Sentry (backend + web + mobil, ücretsiz katman), Prometheus + Grafana PC'de (CPU/RAM/disk/kuyruk; sadece 127.0.0.1). Uyarılar Telegram/e-posta ile ekibe.
-- **Not:** 06.11.2026: karar #30 ile Uptime Kuma yerine dış izleyici (PC kapanınca içindeki izleyici de kapanır).
+- **Not:** Kapsam karar #32 ile daraltıldı (15.11.2026): PC dışı uptime izleyici, status sayfası, Sentry ve bildirimler yapılmadı; ekip ihtiyaç duymuyor. Yapılan: `infra/monitoring/` (`monitoring` profili): Prometheus + Grafana (sadece 127.0.0.1:3000), node/redis/postgres/blackbox exporter'ları, 12 uyarı kuralı panonun en üstünde; alan adından erişim tünel üzerinden dış probla ölçülüyor (`DisErisimYok`). Salt okunur `careerai_monitor` rolünü `deploy.sh` oluşturur. 12.11.2026'da geçici bir compose projesinde denendi (tüm hedefler up, pano sorguları çalışıyor, rol kullanıcı tablosunu okuyamıyor). Production'da açmak: `.env.prod`'a `GRAFANA_ADMIN_PASSWORD`, `MONITOR_DB_PASSWORD` ve `COMPOSE_PROFILES`'a `monitoring`, sonra deploy (`infra/monitoring/README.md`).
 
 ### T-064 · Güvenlik incelemesi (OWASP Top 10)
 
