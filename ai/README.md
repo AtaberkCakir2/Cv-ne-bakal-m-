@@ -14,7 +14,7 @@ python -m venv .venv
 pip install -e ".[dev]"
 pytest
 ruff check . && ruff format --check .
-mypy parsing pii extraction tests eval/scripts
+mypy parsing pii extraction prompts embedding matching tests eval/scripts
 ```
 
 Testler gerçek CV kullanmaz; PDF'ler test sırasında bellekte üretilir.
@@ -28,6 +28,8 @@ Testler gerçek CV kullanmaz; PDF'ler test sırasında bellekte üretilir.
 | `pii/` | Kişisel veri maskeleme (T-030) | ✅ |
 | `extraction/` | Yetkinlik çıkarımı (T-031 v1 sözlük + kural; T-032 LLM) | v1 ✅, v2 devam ediyor |
 | `prompts/` | Versiyonlu LLM prompt'ları (T-044) | Devam ediyor |
+| `embedding/` | Yetkinlik ve ilan vektörleri, pgvector (T-041) | ✅ |
+| `matching/` | Uyum skoru ve eksik yetkinlikler (T-042) | ✅ |
 | `eval/` | Etiketli değerlendirme seti ve araçları (T-019) | Devam ediyor |
 | `eval/benchmark/` | Yerel LLM benchmark'ı (T-018): Llama 3.1 8B seçildi, karar #26 | ✅ |
 
@@ -112,6 +114,51 @@ model = model_info("llama3.1:8b", prompt)  # {"name": "llama3.1:8b", "prompt_ver
 - Her prompt `prompts/<ad>/<sürüm>.txt` dosyasıdır. Yayımlanmış dosya değiştirilmez: yeni sürüm aç, `CURRENT`'ı güncelle, özetini `tests/prompts/test_library.py` içine ekle.
 - `model_info` çıktısı `contracts/analysis_result.schema.json` içindeki `model` nesnesi ve `analyses.model_name` / `analyses.prompt_version` değerleridir.
 - Örneklerde gerçek yetkinlik adı yazılmaz (karar #26).
+
+### `matching` — uyum skoru ve eksik yetkinlikler (T-042)
+
+```python
+from matching import CvSkill, load_role_demand, match
+from embedding import default_encoder
+
+role = load_role_demand(conn, "backend-developer")  # role_skill_stats + skills.embedding (psycopg)
+cv = [CvSkill(s["skill"], s.get("verified", True)) for s in result.present_skills()]  # extraction v2
+m = match(cv, role.demands, corpus_postings=role.corpus_postings, embed=default_encoder())
+(
+    m.match_score,
+    m.postings_analyzed,
+    m.low_data,
+    m.missing_skills(),
+)  # contracts: match_score, postings_analyzed, missing_skills
+```
+
+- **Talep ağırlığı** = pozisyondaki talep oranı × IDF; IDF = ln((1+N)/(1+df)) + 1, N tüm pozisyonların ilanı, df yetkinliği isteyen ilan (`role_skill_stats`'tan). Her yerde istenen yetkinlik (Git, İngilizce) skoru az etkiler. Talep oranı %5'in altındaki uzun kuyruk hesaba katılmaz (`MIN_DEMAND_RATIO`).
+- **Uyum skoru** (0–100) = eşleşen yetkinliklerin ağırlığı / pozisyonun toplam ağırlığı.
+- **Eşleşme:** taksonomideki yetkinlik adıyla eşleşir (büyük/küçük harf duyarsız). Taksonomide olmayan ad (`verified=False`) kosinüs benzerliğiyle pozisyondaki en yakın yetkinliğe bağlanır, katkısı ağırlık × benzerlik. İki farklı taksonomi yetkinliği vektörle eşlenmez (Redux–Redis, Vite–Vitest çok yakın çıkıyor, T-041 ölçümü).
+- **Eşik** ayarlanabilir (`threshold`); varsayılan **0,90**, çünkü e5-small'da 0,80 neredeyse her şeyi eşler (T-041 ölçümü). Kabul kriterindeki 0,80 MiniLM içindi.
+- **Eksik yetkinlikler** talep oranına göre (eşitse pozisyona özgü olan önce); `resources` boş liste, T-043 doldurur. **`low_data`**: pozisyonda 50'den az ilan (karar #23, `scraper/etl/stats.py` ile aynı değer, test denetliyor); sözleşmede alanı yok, API/arayüz uyarısı için.
+- **Deneme (17.11.2026):** 10 TR sentetik CV (v1 çıkarım) × 12 pozisyonun gerçek istatistiği (`scraper/exports/template_input.json`, pozisyon başına ilk 30 yetkinlik). Hedef pozisyon 9 CV'de 1., birinde 2. sırada; hedef skoru diğer pozisyonların ortalamasından medyan 39 puan yüksek. Skorlar 31–65. Not: en çok istenenler arasında kişisel beceriler (İletişim, Takım Çalışması) var ve CV'de açıkça yazılmadıkça eksik çıkıyor; T-043'te öneri listesinde nasıl sunulacağı düşünülmeli.
+
+### `embedding` — yetkinlik ve ilan vektörleri (T-041)
+
+```bash
+pip install -e ".[embedding]"     # torch CPU: --index-url https://download.pytorch.org/whl/cpu
+python -m embedding               # DATABASE_URL; vektörü olmayan yetkinlik ve aktif ilanlar
+python -m embedding --hepsi       # model veya metin biçimi değişince hepsi yeniden
+```
+
+```python
+from embedding import default_encoder, cosine
+
+(cv_vec,) = default_encoder()(["Express"])  # sorgu tarafı (T-042): taksonomide olmayan ad, çıplak
+```
+
+- **Model:** `intfloat/multilingual-e5-small` (384 boyut, normalize; her metne `query: ` öneki). İlk çalışmada Hugging Face'ten indirilir (~470 MB), sonra önbellekten; çağrılar tamamen yereldir. Sunucuda/işçi imajında model önceden indirilmeli.
+- **Metinler:** yetkinlik = "ad, eş anlamlılar" (`skills.csv`); ilan = başlık + maskelenmiş açıklamanın ilk 1.000 karakteri; pasif ilanlar atlanır. Yazım parti parti (256) commit'lenir; yarıda kesilen çalışma kaldığı yerden sürer. Metin loglanmaz.
+- **Neden e5-small, MiniLM değil** (10.11.2026 ölçümü, 374 yetkinlik / 414 eş anlamlı): her eş anlamlı kendi yetkinliğinin metninden çıkarılıp "taksonomide olmayan ad" gibi sorgulandı (leave-one-out). En yakın yetkinliğin doğru çıkma oranı MiniLM'de %53 (çıplak adla %44), e5-small'da %65. MiniLM çıplak adda farklı yetkinlikleri de çok yakın buluyor (Vite–Vitest 0,95, Redux–Redis 0,93; 62 farklı çift ≥ 0,80).
+- **Eşik (T-042 için):** e5 skorları dar bir aralıkta (0,85–0,95), bu yüzden kabul kriterindeki 0,80 bu modelde her şeyi eşler. Leave-one-out'ta eşik 0,90: doğru eşleşmelerin %38'i yakalanır, yanlış en yakın aday %3; 0,88: %55 / %10. Örnekler: Express → Express.js 0,92, React.js → React 0,95; Room, DNS, TryHackMe, Plastic SCM, Manuel test için en yakın aday ≤ 0,89 (eşleşmez, doğru). Kısaltmalar (k8s, py) vektörle bulunamaz; onları sözlük eşleyicisi (`extraction`) yakalıyor, vektör sadece sözlükte olmayan adlar için.
+- **Hız (CPU):** 374 yetkinlik ~1 sn; ilan 19/sn (6.600 ilanın ilk yüklemesi ~6 dk, gece artışı birkaç saniye). Model yükleme ~10 sn.
+- **Uçtan uca deneme (10.11.2026):** Postgres 16 + pgvector, `skills`/`job_postings` modeldeki sütunlar ve migration 0003'teki HNSW indeksiyle; taksonomi `skills.csv`'den, 600 sentetik ilan (60'ı pasif). `python -m embedding`: 374 yetkinlik 2,1 sn, 540 aktif ilan 4,4 sn; ikinci çalışma 0 satır (sadece eksikler); pasif ilanlar boş kaldı. İlan sorgusu `ORDER BY embedding <=> :v` HNSW indeksini kullanıyor (2,7 ms). Veritabanı testi `TEST_DATABASE_URL` ile çalışır (CI'ın AI işinde Postgres yok, orada atlanıyor).
 
 ### `extraction` — yetkinlik çıkarımı v1 (T-031)
 
