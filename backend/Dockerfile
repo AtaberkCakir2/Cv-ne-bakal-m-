@@ -2,6 +2,10 @@
 # Lokal: `make up` (backend/Dockerfile varsa api profili otomatik eklenir) → http://localhost:8000/docs
 FROM python:3.12-slim
 
+# Taban imajdaki Debian paketlerinin güvenlik yamaları: Docker Hub imajı yenilenene kadar Trivy HIGH buluyor
+# (ör. zlib CVE-2026-85091, 17.11.2026; G-4). scraper/Dockerfile ile aynı.
+RUN apt-get update && apt-get upgrade -y && rm -rf /var/lib/apt/lists/*
+
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     PIP_NO_CACHE_DIR=1 \
