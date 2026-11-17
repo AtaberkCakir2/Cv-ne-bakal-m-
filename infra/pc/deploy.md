@@ -62,7 +62,8 @@ Alan adı Cloudflare'e eklendikten (ad sunucuları Cloudflare'de) sonra:
 3. **Public Hostname** → **Add a public hostname**: Subdomain `api`, Domain `cvnebakalim.com`, Type `HTTP`, URL `api:8000`. Kaydedin.
 4. Cloudflare paneli → alan adı → **SSL/TLS** → **Edge Certificates**: **Always Use HTTPS** açık, **Minimum TLS Version** 1.2, **HSTS** açık.
 
-Admin paneli, Grafana ve veri tabanı için public hostname **eklenmez**.
+Grafana ve veri tabanı için public hostname **eklenmez**. Yönetim paneli api'nin içinde (`/admin`) olduğu için
+tünelden erişilir; o yol ayrıca Cloudflare Access ile korunur (`backend/app/admin/README.md`, "Cloudflare Access").
 
 ## 4. Deploy
 
@@ -78,6 +79,8 @@ Betik sırayla: imajları çeker → postgres/redis/ollama'yı başlatır → ve
 İlk kurulumda modeli bir kez indirin: `make prod-model` (~5 GB). Yedek deposunu bir kez oluşturun: `make backup-init` (`infra/backup/README.md`).
 
 Durum ve loglar: `make prod-ps`, `make prod-logs`.
+
+Yönetim paneline admin vermek (kişi önce uygulamadan kayıt olur): `make prod-admin EMAIL=ad@ornek.com`.
 
 **Kaçan gece toplaması (R-18):** PC 03:00'te kapalıysa veri işçisi açılışta son toplamanın zamanına bakar, kaçmışsa hemen başlatır (`scraper/collector/tasks.py`, `missed_nightly`). Logda `Gece toplaması kaçmış (…), şimdi başlatılıyor` görünür; elle bir şey yapmak gerekmez.
 
