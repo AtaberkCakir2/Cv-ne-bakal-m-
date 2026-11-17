@@ -28,7 +28,7 @@ jobs:
       web: ${{ steps.find.outputs.web }}
       mobile: ${{ steps.find.outputs.mobile }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - id: find
         run: |
           has() { if [ -e "$1" ]; then echo true; else echo false; fi; }
@@ -66,8 +66,8 @@ jobs:
       # tests/db bu adres verilince çalışır: upgrade → downgrade → upgrade ve `alembic check` (T-012).
       TEST_DATABASE_URL: postgresql+psycopg://postgres:ci@127.0.0.1:5432/careerai_test
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
           cache: pip
@@ -112,8 +112,8 @@ jobs:
       # tests/test_store.py şemayı backend'in Alembic migration'larıyla kurar.
       TEST_DATABASE_URL: postgresql+psycopg://postgres:ci@127.0.0.1:5432/careerai_test
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
           cache: pip
@@ -137,8 +137,8 @@ jobs:
       run:
         working-directory: ai
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
           cache: pip
@@ -159,8 +159,8 @@ jobs:
       run:
         working-directory: web
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: "20"
           cache: npm
@@ -179,8 +179,8 @@ jobs:
       run:
         working-directory: mobile
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: "20"
           cache: npm
@@ -194,7 +194,7 @@ jobs:
     needs: detect
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: docker-compose.yml geçerli mi
         run: cp .env.example .env && docker compose --profile api --profile worker --profile data config --quiet
       - name: API imajı
