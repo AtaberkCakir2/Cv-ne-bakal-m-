@@ -18,7 +18,7 @@ ner = [
     "torch==2.15.0",
     "transformers==5.22.0",
 ]
-# Embedding servisi (T-041, embedding/). Model: paraphrase-multilingual-MiniLM-L12-v2, ilk çalışmada indirilir.
+# Embedding servisi (T-041, embedding/). Model: intfloat/multilingual-e5-small (~470 MB), ilk çalışmada indirilir.
 # Sunucuda torch'un CPU sürümü: --index-url https://download.pytorch.org/whl/cpu. torch/transformers ner ile aynı sabit.
 embedding = [
     "torch==2.15.0",
