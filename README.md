@@ -57,7 +57,7 @@ Portlar sadece kendi bilgisayarınıza açıktır. Veriler Docker volume'larınd
 |---|---|---|
 | `contracts/` | Ortak | Modüller arası veri formatları ve API listesi |
 | `scraper/` | Ataberk | İlan toplama ve veri hazırlama |
-| `infra/` | Ataberk | Sunucu, deploy, izleme, yedekleme |
+| `infra/` | Ataberk | Production PC kurulumu, Cloudflare Tunnel, deploy, izleme, yedekleme |
 | `ai/` | Burak | CV analizi ve öneri motoru |
 | `mobile/` | Burak | Mobil uygulama |
 | `backend/` | Anıl (db modelleri: Ataberk) | FastAPI |

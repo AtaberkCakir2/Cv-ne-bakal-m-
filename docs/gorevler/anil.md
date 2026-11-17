@@ -121,12 +121,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-038 · CV yükleme endpoint'i
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 02.11.2026 – 08.11.2026 · **Öncelik:** P0 · **Efor:** 8 saat · **Alan:** Backend API
 - **Bağımlılık:** T-023
 - **Destek:** Burak
 - **Çıktı:** POST /analyses
 - **Kabul kriteri:** Multipart, en fazla 5 MB ve 5 sayfa, MIME + magic byte kontrolü (sadece PDF). Dosya diske yazılmaz; bellekten kuyruğa aktarılır; SHA-256 hash kaydedilir.
+- **Not:** 24.10.2026: doğrulamalar, SHA-256 ve diske yazmama (testle kanıtlı) tamam. Kuyruk şimdilik örnek sonuç döndüren geçici sınıf; gerçek kuyruk T-039. Kimlik doğrulama T-037.
 
 ### T-026 · Poster baskı kontrolü ve teslim alma
 
@@ -148,12 +149,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-039 · Asenkron analiz işi (Celery + Redis)
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 09.11.2026 – 15.11.2026 · **Öncelik:** P0 · **Efor:** 14 saat · **Alan:** Backend API
 - **Bağımlılık:** T-038
 - **Destek:** Burak
 - **Çıktı:** Kuyruk altyapısı
 - **Kabul kriteri:** POST /analyses → 202 + analysis_id; durum: queued/processing/done/failed; ilerleme SSE veya polling ile; görev zaman aşımı 180 sn; otomatik 1 tekrar deneme.
+- **Not:** 05.11.2026: Celery `analysis` kuyruğu (`app/worker/`), CV baytları kalıcılığı kapalı ayrı Redis'te (`CV_REDIS_URL`, 1 saat), mesajda sadece kimlik. Soft 180 sn, geçici hatada 1 tekrar. `POST /analyses` artık giriş ve saatlik sınır istiyor, kayıt PostgreSQL'de; ilerleme `GET /analyses/{id}` ile yoklama (SSE yok). Askıda kalan analiz 65 dk sonra ilk yoklamada `failed` olur. Gerçek akış T-057'de `app/services/analyzer.py`'ye bağlanır; local/test dışında o zamana kadar analiz `failed` olur. Yetkinlik listeleri T-048'de. Docker'da gerçek API, Linux işçisi, PostgreSQL ve iki Redis ile denendi. Ataberk: compose ve staging'e CV Redis'i (`--save "" --appendonly no`, `maxmemory`, `noeviction`), `.env.example`'a `CV_REDIS_URL`, analiz işçisi servisi.
 
 ### T-040 · Web arayüzü altyapısı (Electron ile ortak)
 
@@ -171,12 +173,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-048 · Analiz sonuç ve katalog endpoint'leri
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 16.11.2026 – 22.11.2026 · **Öncelik:** P0 · **Efor:** 10 saat · **Alan:** Backend API
 - **Bağımlılık:** T-039
 - **Destek:** —
 - **Çıktı:** Endpoint'ler + testler
 - **Kabul kriteri:** GET /analyses, /analyses/{id}, DELETE /analyses/{id}; GET /roles, /roles/{slug}/skills, /skills/{slug}/resources. Kullanıcı sadece kendi analizini görebilir (IDOR testi).
+- **Not:** 06.11.2026: `GET /analyses` (`limit`/`offset`, `{items, total}`, askıdakiler `failed` olur), `GET /analyses/{id}` artık yetkinlikleri ve önerilen kaynakları da döner (ölü linkler gösterilmez, `priority` sıra numarası), `DELETE /analyses/{id}` (soft delete, 30 günde kalıcı silinir). Katalog uçları giriş istemez, 5 dk önbelleklenebilir. Başkasının analizi GET/DELETE'te 404 (testli). Sözleşmedeki `/skills?q=` kabul kriterinde yok, yapılmadı. İşçi henüz `analysis_skills`/`analysis_recommendations` yazmıyor: gerçek akışta listeler T-057'ye (Burak) kadar boş.
 
 ### T-051 · Giriş, kayıt, şifre sıfırlama ve KVKK onay ekranları
 
@@ -190,12 +193,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-052 · CV yükleme ve analiz bekleme ekranı
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 16.11.2026 – 22.11.2026 · **Öncelik:** P0 · **Efor:** 8 saat · **Alan:** Web / Masaüstü
 - **Bağımlılık:** T-040, T-039
 - **Destek:** —
 - **Çıktı:** Yükleme ekranı
 - **Kabul kriteri:** Sürükle-bırak, dosya kontrolü, hedef pozisyon seçimi, ilerleme durumu (kuyrukta / analiz ediliyor), zaman aşımında anlamlı mesaj.
+- **Not:** 06.11.2026: `/yukle` (pozisyon seçimi, profildeki hedef varsayılan; az ilan uyarısı; sürükle-bırak veya dosya seç; istemcide boyut + `%PDF-` kontrolü; 413/415/422/429/503 için Türkçe mesaj, `Retry-After` ile kalan süre; 60 sn yükleme zaman aşımı) ve `/analiz/:id` (3 sn'de bir yoklama; Sırada → Analiz ediliyor → Tamamlandı; 7 dk'yı geçince "uzun sürüyor" uyarısı; hata koduna göre ipucu ve "Tekrar dene"; bitince skor özeti, sonuç panosu T-053). Gerçek API + Celery işçisi + ayrı CV Redis ile uçtan uca denendi. SSE (`/analyses/{id}/events`) yok, yoklama kullanılıyor.
 
 ### T-049 · Profil ve KVKK endpoint'leri
 
@@ -209,12 +213,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-053 · Sonuç panosu
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 23.11.2026 – 29.11.2026 · **Öncelik:** P0 · **Efor:** 16 saat · **Alan:** Web / Masaüstü
 - **Bağımlılık:** T-052, T-048
 - **Destek:** —
 - **Çıktı:** Sonuç ekranı
 - **Kabul kriteri:** Uyum skoru göstergesi; mevcut / eksik yetkinlik grafiği; "150 ilanın %75'i" ifadeleri; kaynak kartları; pop-up detay; geri bildirim (1-5 yıldız); geçmiş analizler.
+- **Not:** 06.11.2026: `/analiz/:id` bitince pano: skor halkası, mevcut yetkinlik etiketleri (taksonomide olmayanlar "tahmini"), eksiklerin talep çubukları, "150 ilanın %75'i" (Türkçe ek sayıya göre), öncelik sırasıyla kaynak kartları ve `<dialog>` detay, 1-5 yıldız + yorum (`POST /analyses/{id}/feedback`, tekrar gönderilirse güncellenir; `GET` yanıtında `feedback` API eki), ilan kaynağı + ESCO atfı (`scraper/kaynak-uygunluk.md` kural 7). `/gecmis`: 20'şer liste, aç / tekrar dene / onaylı silme. DB'den gelen kaynak linkleri sadece http(s). Gerçek akışta yetkinlik listeleri T-057'ye (Burak) kadar boş.
 
 ---
 
@@ -232,12 +237,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-059 · Electron masaüstü uygulaması
 
-- **Durum:** Yapılacak
+- **Durum:** Devam Ediyor
 - **Tarih:** 30.11.2026 – 13.12.2026 · **Öncelik:** P0 · **Efor:** 14 saat · **Alan:** Web / Masaüstü
 - **Bağımlılık:** T-053
 - **Destek:** —
 - **Çıktı:** Kurulum dosyaları
 - **Kabul kriteri:** Web arayüzünü sarmalar; contextIsolation açık, nodeIntegration kapalı; electron-builder ile Windows (NSIS) ve macOS (dmg); electron-updater + GitHub Releases ile otomatik güncelleme.
+- **Devam notu (13.11.2026):** Yapılan: `web/desktop/` (Electron 44, app://careerai protokolü, güvenli webPreferences, CSP, dış bağlantılar sistem tarayıcısında, izinler kapalı, electron-updater); Windows NSIS kurulum dosyası üretildi ve paketli uygulama `--smoke` ile denendi. Simge (`web/desktop/resources/icon.png`) ve backend varsayılan `CORS_ORIGINS`'e `app://careerai` eklendi (testli). · Sıradaki adım: macOS dmg'yi bir Mac'te üretmek; güncellemenin çalışması için repo/yayın yeri kararı (özel repo token'sız indirilemez); production `.env.prod`'da `CORS_ORIGINS`'e `app://careerai` (Ataberk). · Açık sorular / engeller: Mac erişimi; kod imzalama yok (uyarılar README'de). · Branch: anil/electron-cors-simge
 
 ### T-065 · KVKK aydınlatma metni, açık rıza, gizlilik politikası, kullanım koşulları
 
@@ -250,12 +256,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-069 · API entegrasyon testleri
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 07.12.2026 – 13.12.2026 · **Öncelik:** P0 · **Efor:** 10 saat · **Alan:** Test & QA
 - **Bağımlılık:** T-048, T-049
 - **Destek:** —
 - **Çıktı:** tests/api
 - **Kabul kriteri:** pytest + httpx + testcontainers (gerçek Postgres/Redis); auth, yükleme, analiz, silme, yetki (IDOR) akışları. Kapsama ≥ %70.
+- **Not:** 10.11.2026: testler `backend/tests/` altında (ayrı `tests/api` açılmadı). `TEST_DATABASE_URL` / `TEST_REDIS_URL` yoksa testcontainers geçici PostgreSQL ve Redis başlatır; uçtan uca senaryo ve gerçek Redis testleri eklendi; kapsam eşiği %70 `pyproject.toml`'da (ölçülen %97,5). IDOR: her analiz ucu için başkasının analizi 404.
 
 ---
 
@@ -281,12 +288,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-080 · API dokümantasyonu ve README'ler
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 21.12.2026 – 27.12.2026 · **Öncelik:** P1 · **Efor:** 4 saat · **Alan:** Dokümantasyon
 - **Bağımlılık:** T-048
 - **Destek:** —
 - **Çıktı:** docs/api + README
 - **Kabul kriteri:** OpenAPI açıklamaları ve örnekler; her modül için README (kurulum, çalıştırma, test).
+- **Not:** 11.11.2026: `docs/api/README.md` (kimlik doğrulama, örnek akış, CV kuralları, hata biçimi, sınırlar) ve `docs/api/openapi.json` (`backend/scripts/export_openapi.py` üretir, web kopyasıyla birlikte; eskiyse `tests/test_openapi.py` kırılır). Her uçta özet + açıklama, her JSON gövdesinde örnek, tüm 4xx/5xx yanıtlarında RFC 7807 `Problem` şeması, health dışı her uçta 429 belgelendi. README'ler: backend (endpoint tablosu güncellendi) ve web; `scraper/`, `ai/`, `infra/`, `mobile/` README'leri sahiplerinde.
 
 ---
 

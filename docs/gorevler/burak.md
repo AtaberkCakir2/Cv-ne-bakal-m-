@@ -67,7 +67,7 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 - **Destek:** —
 - **Çıktı:** ai/ocr modülü
 - **Kabul kriteri:** Çıkarılan metin 200 karakterden kısaysa OCR devreye girer: pdf2image 300 DPI + Tesseract (tur+eng). 5 taranmış CV'de karakter doğruluğu ≥ %95.
-- **Devam notu (10.11.2026):** Yapılan: `ai/ocr/extract.py` (`extract_with_ocr`, `ocr_pdf`, `OcrError`), `ai/tests/ocr/test_extract.py` (sahte süreçle), `ai/eval/scripts/ocr_accuracy.py`, README. `pdf2image` yerine PyMuPDF kullanıldı: `convert_from_bytes` PDF'i geçici dosyaya yazıyor, karar #9'a aykırı. · Sıradaki adım: (0) dal main'in 82 commit gerisinde: `git merge main` (README, pyproject.toml ve bu dosyada çakışma beklenir; pyproject'te `ocr*` ile main'deki `prompts*`, `embedding*` birlikte kalmalı); (1) Tesseract 5 + Türkçe paketini kur (Burak'ın bilgisayarında henüz yok); (2) `pytest tests/ocr -rs` ile `test_real_tesseract_reads_turkish_scan` testini gerçekten çalıştır; (3) `python eval/scripts/ocr_accuracy.py` ile %95'i ölç; altındaysa `generate_cvs.py` SCAN_DPI 150 ve JPEG 70 benzetimini gözden geçir; (4) Tesseract'ın stdin/stdout modunda geçici dosya açmadığını doğrula. · Açık sorular / engeller: `pdf2image` sapması için `docs/kararlar.md` ve `docs/mimari.md` güncellemesi ekip onayı bekliyor; Ataberk'ten AI worker imajına ve CI'ın AI işine `tesseract-ocr tesseract-ocr-tur`, CI mypy komutuna `ocr` eklenmesi istenecek; worker henüz yok, `extract_with_ocr` çağrısı worker yazılınca bağlanacak. · Branch: `burak/ocr-tesseract`
+- **Devam notu (17.11.2026):** Yapılan: `ai/ocr/extract.py` (`extract_with_ocr`, `ocr_pdf`, `OcrError`), `ai/tests/ocr/test_extract.py` (sahte süreçle), `ai/eval/scripts/ocr_accuracy.py`, README. `pdf2image` yerine PyMuPDF kullanıldı: `convert_from_bytes` PDF'i geçici dosyaya yazıyor, karar #9'a aykırı. · Sıradaki adım: (main ile 17.11'de birleştirildi, 338 test geçiyor) (1) Tesseract 5 + Türkçe paketini kur (Burak'ın bilgisayarında henüz yok); (2) `pytest tests/ocr -rs` ile `test_real_tesseract_reads_turkish_scan` testini gerçekten çalıştır; (3) `python eval/scripts/ocr_accuracy.py` ile %95'i ölç; altındaysa `generate_cvs.py` SCAN_DPI 150 ve JPEG 70 benzetimini gözden geçir; (4) Tesseract'ın stdin/stdout modunda geçici dosya açmadığını doğrula. · Açık sorular / engeller: `pdf2image` sapması için `docs/kararlar.md` ve `docs/mimari.md` güncellemesi ekip onayı bekliyor; Ataberk'ten AI worker imajına ve CI'ın AI işine `tesseract-ocr tesseract-ocr-tur`, CI mypy komutuna `ocr` eklenmesi istenecek; worker henüz yok, `extract_with_ocr` çağrısı worker yazılınca bağlanacak. · Branch: `burak/ocr-tesseract`
 
 ### T-030 · Kişisel veri anonimleştirme (PII maskeleme)
 
@@ -91,12 +91,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-044 · Prompt versiyonlama
 
-- **Durum:** Yapılacak
+- **Durum:** Devam Ediyor
 - **Tarih:** 09.11.2026 – 15.11.2026 · **Öncelik:** P1 · **Efor:** 4 saat · **Alan:** AI / NLP
 - **Bağımlılık:** T-031
 - **Destek:** —
 - **Çıktı:** Prompt kütüphanesi
 - **Kabul kriteri:** Prompt'lar /ai/prompts altında versiyonlu; her analizde model_name ve prompt_version kaydedilir (tekrarlanabilirlik).
+- **Devam notu (07.11.2026):** Yapılan: `ai/prompts/` (`get_prompt`, `model_info`, `skill_extraction/v1.txt`); v1, T-018 benchmark prompt'unun birebir aynısı ve `benchmark_llm.py` onu kütüphaneden okuyor. · Sıradaki adım: analiz akışı henüz yok; T-032'de LLM çağrısı `get_prompt("skill_extraction")` kullanacak, T-057'de işçi `model_info` değerlerini sonuca ve `analyses` tablosuna yazacak. Kriterin "her analizde kaydedilir" kısmı bu yüzden açık. · Açık sorular / engeller: T-043 ikinci prompt'u getirince sözleşmedeki tek `prompt_version` alanının nasıl kullanılacağı karar ister. · Branch: burak/prompt-versiyonlama
 
 ---
 
@@ -104,12 +105,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-032 · Yetkinlik çıkarımı v2 (LLM)
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 16.11.2026 – 22.11.2026 · **Öncelik:** P0 · **Efor:** 14 saat · **Alan:** AI / NLP
 - **Bağımlılık:** T-031, T-018, T-030
 - **Destek:** —
 - **Çıktı:** ai/extraction v2
 - **Kabul kriteri:** Ollama structured output (JSON şeması), temperature 0.1. v1 sonucu ile birleştirilir; taksonomide olmayan yetkinlik "doğrulanmamış" işaretlenir (halüsinasyon filtresi).
+- **Not:** v1 ile v2'nin F1 karşılaştırması ve LLM'in tamamladığı seviyelerin doğruluğu T-019 altın standardı gelince ölçülecek (doğru değilse seviye tamamlama kapatılır). Ataberk'e taksonomi önerisi: "Express" (Express.js) tek başına eşleşmiyor.
 
 ### T-041 · Embedding servisi
 

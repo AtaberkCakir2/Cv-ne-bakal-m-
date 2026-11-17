@@ -7,9 +7,10 @@ export function StatusPage() {
   const health = useQuery({
     queryKey: ["health", "ready"],
     queryFn: async () => {
-      // 503 de anlamlı bir yanıt (bağımlılık kapalı); gövdeyi her iki durumda da göster.
+      // 503 de anlamlı bir yanıt (bağımlılık kapalı), gövdesi aynı. 429'da gövde Problem'dir, kontrol listesi yoktur.
       const { data, error, response } = await api.GET("/api/v1/health/ready");
-      return { status: response.status, body: data ?? error };
+      const checks = data?.checks ?? (error && "checks" in error ? error.checks : undefined);
+      return { status: response.status, checks };
     },
     refetchInterval: 10_000,
   });
@@ -25,7 +26,7 @@ export function StatusPage() {
             API: <strong>{health.data.status === 200 ? "hazır" : "hazır değil"}</strong> (HTTP {health.data.status})
           </p>
           <ul>
-            {Object.entries(health.data.body?.checks ?? {}).map(
+            {Object.entries(health.data.checks ?? {}).map(
               ([name, check]) => (
                 <li key={name}>
                   {name}: {check.ok ? "✓" : `✗ ${check.error ?? ""}`}
