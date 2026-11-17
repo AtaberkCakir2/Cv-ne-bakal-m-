@@ -77,7 +77,7 @@ $C up -d
 
 `dropdb` geri alınamaz: önce `restore-test.sh` ile yedeğin açıldığını görün. Deploy öncesi alınan yerel dökümler de `~/careerai-yedek` altındadır (`infra/pc/deploy.sh`).
 
-**PC tamamen bozulursa (T-087):** başka bir bilgisayara repo + Docker Desktop kurulur, `.env.prod` parola yöneticisinden yeniden yazılır, `deploy.sh` ile sistem açılır ve yukarıdaki adımlarla son yedek yüklenir. Tünel token'ı aynı kaldığı için alan adı yeni bilgisayara bağlanır.
+**PC tamamen bozulursa (T-087):** adım adım prosedür, süre hedefleri ve tatbikat kaydı [`docs/runbook/felaket-kurtarma.md`](../../docs/runbook/felaket-kurtarma.md)'de. Özet: başka bir bilgisayara repo + Docker Desktop kurulur, `.env.prod` parola yöneticisinden yeniden yazılır, `deploy.sh` ile sistem açılır ve yukarıdaki adımlarla son yedek yüklenir. Eski PC'nin `cloudflared`'i kapatılmadan yenisi tünele bağlanmaz (aynı token'la iki bağlantı trafiği bölüştürür).
 
 ## Henüz yok
 
