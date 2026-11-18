@@ -94,11 +94,16 @@ function isAppUrl(raw) {
   }
 }
 
-/** Uygulama dışındaki bağlantılar (kaynak siteler, ilan kaynakları) sistem tarayıcısında açılır; sadece http(s). */
+// "Hata bildir" bağlantısı (web/src/support.ts). Sadece bu adrese giden e-posta bağlantısı e-posta uygulamasında açılır.
+const SUPPORT_MAILTO = "mailto:iletisim@cvnebakalim.com";
+
+/** Uygulama dışındaki bağlantılar (kaynak siteler, ilan kaynakları) sistem tarayıcısında açılır; sadece http(s)
+ * ve destek adresine e-posta. */
 function openOutside(raw) {
   try {
     const url = new URL(raw);
-    if (url.protocol === "https:" || url.protocol === "http:") shell.openExternal(url.toString()).catch(() => {});
+    const mail = url.protocol === "mailto:" && `${url.protocol}${url.pathname}`.toLowerCase() === SUPPORT_MAILTO;
+    if (url.protocol === "https:" || url.protocol === "http:" || mail) shell.openExternal(url.toString()).catch(() => {});
   } catch {
     // geçersiz adres yok sayılır
   }
