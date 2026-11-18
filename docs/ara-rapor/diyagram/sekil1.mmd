@@ -1,0 +1,42 @@
+flowchart TB
+    subgraph istemci["İstemciler"]
+        web["Web arayüzü<br/>React + Vite<br/>(web/ · Anıl)"]
+        desk["Masaüstü<br/>Electron<br/>(web/ · Anıl)"]
+        mob["Mobil<br/>React Native · Expo<br/>(mobile/ · Burak)"]
+    end
+
+    subgraph api["Arka uç (backend/ · Anıl)"]
+        auth["Kimlik doğrulama<br/>JWT + argon2"]
+        routes["Analiz · katalog · KVKK<br/>endpoint'leri"]
+        sse["İlerleme (SSE)"]
+    end
+
+    subgraph ai["Yapay zekâ işçisi (ai/ · Burak)"]
+        parse["PDF / OCR<br/>pdfplumber · PyMuPDF · Tesseract"]
+        pii["Kişisel veri maskeleme"]
+        extract["Yetkinlik çıkarımı<br/>sözlük + dil modeli"]
+        match["Eşleştirme<br/>TF-IDF + embedding"]
+        rec["Kaynak önerisi (RAG)"]
+    end
+
+    subgraph data["Veri toplama (scraper/ · Ataberk)"]
+        collect["İlan toplama<br/>API · açık veri · Playwright"]
+        etl["Temizleme + yetkinlik etiketleme"]
+        stats["Talep istatistikleri"]
+    end
+
+    queue[("Redis<br/>kuyruk")]
+    db[("PostgreSQL 16<br/>+ pgvector<br/>(backend/app/db · Ataberk)")]
+    llm["Ollama<br/>yerel dil modeli"]
+    emb["sentence-transformers<br/>embedding (384)"]
+
+    web & desk & mob -->|HTTPS · REST| api
+    routes -->|iş| queue
+    queue --> parse
+    parse --> pii --> extract --> match --> rec
+    extract & rec -->|maskelenmiş metin| llm
+    match --> emb
+    api <--> db
+    ai <--> db
+    collect --> etl --> stats --> db
+    etl --> emb

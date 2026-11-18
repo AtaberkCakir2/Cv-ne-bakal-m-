@@ -1,49 +1,61 @@
-"""Analiz kuyruğu arayüzü.
+"""Analiz kuyruğu (T-039). Celery mesajı sadece analiz kimliğini taşır; CV baytları geçici depoda durur (cv_store)."""
 
-Gerçek kuyruk (Celery + Redis) T-039'da gelecek. O zamana kadar `ExampleResultQueue`, işi hemen
-"tamamlanmış" sayar ve sonuç olarak contracts/examples/analysis_result.example.json verisini döner;
-böylece web ve mobil ekranlar AI modülünü beklemeden geliştirilebilir (karar #5).
+import logging
+import uuid
+from collections.abc import Callable
+from typing import Protocol
 
-T-039 notu: PDF baytları kuyruğa (Redis) yazılacaksa, Redis'in AOF/RDB kalıcılığı bu veriyi diske
-yazar. CV içeriği için ayrı, kalıcılığı kapalı bir Redis veritabanı/örneği kullanılmalı ve iş biter
-bitmez silinmeli (karar #9).
-"""
+from redis.exceptions import RedisError
 
-import json
-from datetime import UTC, datetime
-from functools import lru_cache
-from pathlib import Path
-from typing import Any, Protocol
+from app.core.config import Settings
+from app.services.cv_store import CvStore, RedisCvStore
 
-from app.repositories.analyses import AnalysisRecord
+logger = logging.getLogger(__name__)
 
-# contracts/examples/analysis_result.example.json'ın kopyası: Docker imajı sadece backend/ klasöründen
-# derlendiği için contracts/ imajda yok. İki dosyanın aynı kaldığını tests/test_dev_example.py denetler.
-EXAMPLE_RESULT = Path(__file__).resolve().parents[1] / "dev" / "example_result.json"
+
+class QueueUnavailable(Exception):
+    """Analiz kuyruğa alınamadı: Redis yok, CV deposu ayarlanmamış veya kuyruk dolu."""
 
 
 class AnalysisQueue(Protocol):
-    def enqueue(self, record: AnalysisRecord, pdf: bytes) -> None: ...
+    def enqueue(self, analysis_id: uuid.UUID, pdf: bytes) -> None: ...
 
 
-@lru_cache
-def _example() -> dict[str, Any]:
-    data: dict[str, Any] = json.loads(EXAMPLE_RESULT.read_text(encoding="utf-8"))
-    return data
+class CeleryAnalysisQueue:
+    def __init__(self, store: CvStore | None, send: Callable[[uuid.UUID], None], limit: int) -> None:
+        self._store = store
+        self._send = send
+        self._limit = limit
+
+    def enqueue(self, analysis_id: uuid.UUID, pdf: bytes) -> None:
+        store = self._store
+        if store is None:
+            # Kalıcı Redis'e düşmektense analiz başlatılmaz (karar #9).
+            logger.error("analysis_queue_cv_store_not_configured")
+            raise QueueUnavailable
+        try:
+            # Her CV en fazla 5 MB: bekleyen iş sayısı sınırlanmazsa Redis belleği tükenir.
+            if store.count() >= self._limit:
+                logger.warning("analysis_queue_full")
+                raise QueueUnavailable
+            store.put(analysis_id, pdf)
+        except (RedisError, OSError) as exc:
+            logger.warning("analysis_queue_store_failed: %s", type(exc).__name__)
+            raise QueueUnavailable from exc
+        try:
+            self._send(analysis_id)
+        except Exception as exc:  # broker hatası türü ne olursa olsun CV depoda kalmasın
+            logger.warning("analysis_queue_publish_failed: %s", type(exc).__name__)
+            try:
+                store.delete(analysis_id)
+            except (RedisError, OSError):
+                pass  # anahtar süre aşımıyla silinir
+            raise QueueUnavailable from exc
 
 
-class ExampleResultQueue:
-    """Geliştirme için sahte kuyruk: PDF'i kullanmaz, saklamaz; örnek sonucu yazar."""
+def build_analysis_queue(settings: Settings) -> AnalysisQueue:
+    from app.worker.celery_app import publish_analysis
 
-    def enqueue(self, record: AnalysisRecord, pdf: bytes) -> None:
-        del pdf  # bilinçli olarak kullanılmıyor ve tutulmuyor
-        now = datetime.now(UTC).isoformat()
-        result = dict(_example())
-        result.update(
-            analysis_id=str(record.id),
-            status="done",
-            created_at=record.created_at.isoformat(),
-            completed_at=now,
-        )
-        record.status = "done"
-        record.result = result
+    url = settings.cv_store_url
+    store = RedisCvStore(url, settings.analysis_cv_ttl_s) if url else None
+    return CeleryAnalysisQueue(store, publish_analysis, settings.analysis_queue_limit)

@@ -85,6 +85,126 @@ code { font-family: var(--font-mono); font-size: 0.9em; }
 .link-button { background: none; border: 0; padding: var(--space-1) var(--space-3); color: var(--text-muted); font: inherit; cursor: pointer; }
 .link-button:hover { color: var(--text); }
 
+/* CV yükleme ve analiz bekleme (T-052) */
+.upload-card { max-width: 36rem; margin: 0 auto; }
+.upload-card form { margin-bottom: var(--space-4); }
+.narrow-card { max-width: 32rem; margin: 0 auto; }
+.narrow-card .gauge { margin: 0 auto var(--space-4); }
+.drop {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-2);
+  padding: var(--space-6) var(--space-4);
+  margin-bottom: var(--space-4);
+  border: 2px dashed var(--border-strong);
+  border-radius: var(--radius);
+  background: var(--surface-muted);
+  text-align: center;
+}
+.drop p { margin: 0; }
+.drop--over { border-color: var(--accent); background: var(--info-surface); }
+.drop--error { border-color: var(--danger); }
+.drop__title { font-weight: 600; }
+.drop__file { overflow-wrap: anywhere; }
+/* Gizli dosya girişine klavyeyle gelinince görünür odak, etiket düğmesinde gösterilir. */
+.drop input:focus-visible + label { outline: 3px solid var(--focus); outline-offset: 2px; }
+.steps { display: grid; gap: var(--space-2); padding: 0; margin: 0 0 var(--space-4); list-style: none; counter-reset: step; }
+.steps li {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--text-muted);
+  counter-increment: step;
+}
+.steps li::before {
+  content: counter(step);
+  display: inline-grid;
+  place-items: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border: 2px solid var(--border-strong);
+  border-radius: 50%;
+  font-size: var(--text-sm);
+}
+.steps .steps__item--done::before { content: "✓"; border-color: var(--success); color: var(--success); }
+.steps .steps__item--now { color: var(--text); font-weight: 600; }
+.steps .steps__item--now::before { border-color: var(--accent); color: var(--accent); }
+
+/* Sonuç panosu ve geçmiş (T-053) */
+.result__head { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-6); }
+.result__head h1 { margin-bottom: var(--space-1); }
+.result__head p { margin: 0; }
+.result__cols { display: grid; gap: var(--space-4); grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr)); }
+.result__note { margin: var(--space-3) 0 0; font-size: var(--text-sm); }
+.gaps { display: grid; gap: var(--space-6); padding: 0; margin: 0; list-style: none; }
+.gaps__title { font-size: var(--text-md); margin-bottom: var(--space-2); }
+.gaps__title .muted { font-weight: 400; }
+.resources { display: grid; gap: var(--space-2); padding: 0; margin: 0; list-style: none; grid-template-columns: repeat(auto-fill, minmax(min(100%, 16rem), 1fr)); }
+.resource {
+  display: grid;
+  gap: var(--space-1);
+  width: 100%;
+  height: 100%;
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.resource:hover { border-color: var(--accent); }
+.resource__provider { font-size: var(--text-xs); font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: 0.04em; }
+.resource__title { font-weight: 600; overflow-wrap: anywhere; }
+.resource__meta { font-size: var(--text-sm); color: var(--text-muted); }
+.stars { border: 0; padding: 0; margin: 0 0 var(--space-4); }
+.stars__legend { font-size: var(--text-sm); font-weight: 600; margin-bottom: var(--space-2); }
+.stars__row { display: flex; gap: var(--space-1); }
+.stars__star { font-size: 1.75rem; line-height: 1; color: var(--border-strong); cursor: pointer; padding: 0 var(--space-1); border-radius: var(--radius-sm); }
+.stars__star--on { color: var(--warning); }
+.stars__star:has(input:focus-visible) { outline: 3px solid var(--focus); outline-offset: 2px; }
+.stars:disabled .stars__star { cursor: not-allowed; opacity: 0.6; }
+.attribution { font-size: var(--text-xs); color: var(--text-muted); border-top: 1px solid var(--border); padding-top: var(--space-3); }
+.attribution p { margin: 0 0 var(--space-1); }
+.dialog {
+  width: min(32rem, calc(100vw - 2 * var(--space-4)));
+  max-height: calc(100vh - 2 * var(--space-6));
+  max-height: calc(100dvh - 2 * var(--space-6)); /* mobilde adres çubuğu düğmeleri örtmesin */
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: var(--shadow);
+}
+.dialog::backdrop { background: rgb(0 0 0 / 0.5); }
+.dialog__body { padding: var(--space-6); }
+.dialog__title { font-size: var(--text-lg); margin-bottom: var(--space-4); overflow-wrap: anywhere; }
+.dialog__reason { margin: var(--space-4) 0; }
+.dialog .details { margin-bottom: var(--space-4); }
+.table-wrap { overflow-x: auto; margin-bottom: var(--space-4); }
+.history { width: 100%; border-collapse: collapse; }
+.history th, .history td { padding: var(--space-2) var(--space-3); border-bottom: 1px solid var(--border); text-align: left; vertical-align: top; }
+.history th { font-size: var(--text-sm); color: var(--text-muted); font-weight: 600; }
+.history__actions { display: flex; gap: var(--space-2); align-items: center; white-space: nowrap; }
+.history__actions .link-button { color: var(--danger); padding: 0; }
+
 .details { display: grid; grid-template-columns: max-content 1fr; gap: var(--space-2) var(--space-6); margin: 0; }
 .details dt { color: var(--text-muted); }
 .details dd { margin: 0; }
+
+/* Profil (KVKK: verilerim, onaylar, hesap silme) */
+.profile__facts { margin-bottom: var(--space-4); }
+.profile__subtitle { font-size: var(--text-md); margin: var(--space-6) 0 var(--space-2); }
+.profile__consents { padding-left: var(--space-6); margin: 0 0 var(--space-3); }
+.profile__note { font-size: var(--text-sm); margin: var(--space-3) 0 0; }
+.profile select.field__input { max-width: 24rem; }
+
+/* Dar ekranda (telefon) menü ikinci satıra iner ve yatay kayar; marka, tema ve çıkış ilk satırda kalır. */
+@media (max-width: 40rem) {
+  .topbar { gap: var(--space-2) var(--space-3); }
+  .topbar .brand { margin-right: auto; }
+  .topbar nav { order: 3; flex: 1 0 100%; flex-wrap: nowrap; overflow-x: auto; margin: 0 calc(-1 * var(--space-2)); }
+  .topbar nav a { white-space: nowrap; }
+}

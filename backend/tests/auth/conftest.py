@@ -25,18 +25,19 @@ else:
     from app.api.deps import get_db
     from app.services.email import OutboxEmailSender
 
-    TEST_DATABASE_URL = os.environ.get("TEST_DATABASE_URL")
     ALEMBIC_INI = Path(__file__).resolve().parents[2] / "app" / "db" / "alembic.ini"
 
     @pytest.fixture(scope="session")
     def db_engine() -> Iterator[Engine]:
-        if not TEST_DATABASE_URL:
+        # Fikstür çalışırken okunur: adres testcontainers ile oturum başında ayarlanabilir (tests/conftest.py).
+        url = os.environ.get("TEST_DATABASE_URL")
+        if not url:
             pytest.skip("TEST_DATABASE_URL verilmedi")
         cfg = Config(str(ALEMBIC_INI))
         # env.py adresi `-x url=...` argümanından okur (tests/db ile aynı yöntem).
-        cfg.cmd_opts = argparse.Namespace(x=[f"url={TEST_DATABASE_URL}"])
+        cfg.cmd_opts = argparse.Namespace(x=[f"url={url}"])
         command.upgrade(cfg, "head")
-        engine = create_engine(TEST_DATABASE_URL, hide_parameters=True)
+        engine = create_engine(url, hide_parameters=True)
         yield engine
         engine.dispose()
 

@@ -3,7 +3,7 @@ import json
 import pytest
 
 from app.core.config import REPO_ROOT
-from app.services.analysis_queue import EXAMPLE_RESULT
+from app.services.analyzer import EXAMPLE_RESULT
 
 CONTRACT_EXAMPLE = REPO_ROOT / "contracts" / "examples" / "analysis_result.example.json"
 
