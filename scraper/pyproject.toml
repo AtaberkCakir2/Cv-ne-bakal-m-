@@ -1,7 +1,7 @@
 [project]
 name = "careerai-scraper"
 version = "0.1.0"
-description = "CareerAI ilan toplayıcı: izinli API'ler ve açık veri setlerinden ilan havuzu"
+description = "Cv'ne Bakalım! ilan toplayıcı: izinli API'ler ve açık veri setlerinden ilan havuzu"
 requires-python = ">=3.12"
 # Veritabanı modelleri backend paketinden (app.db), ilan maskeleme ai paketinden (pii) gelir;
 # kurulum: pip install -e ../backend -e ../ai -e ".[dev]"
@@ -15,8 +15,8 @@ dependencies = [
 dev = [
     "pytest>=8.3",
     # Sürümler backend ile aynı sabit (infra/ci.md, "yerelde geçiyor CI'da düşüyor").
-    "ruff==0.17.2",
-    "mypy==2.4.0",
+    "ruff==0.17.5",
+    "mypy==2.4.1",
 ]
 browser = ["playwright>=1.64,<2"]  # HTML kaynaklar (T-016); Chromium ayrıca kurulur
 

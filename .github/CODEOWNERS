@@ -13,6 +13,9 @@
 /backend/           @akyilanil-cyber
 /web/               @akyilanil-cyber
 /backend/app/db/    @AtaberkCakir2
+/backend/app/admin/ @AtaberkCakir2
+/backend/tests/auth/test_admin_panel.py @AtaberkCakir2
+/backend/tests/auth/test_admin_access.py @AtaberkCakir2
 
 # Ortak: değişiklik 3 kişinin onayıyla (CLAUDE.md kural 2).
 /contracts/         @AtaberkCakir2 @burakdgnn @akyilanil-cyber

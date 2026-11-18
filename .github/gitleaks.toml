@@ -14,4 +14,6 @@ regexes = [
   # backend/tests
   '''Test-parola-123''',
   '''yeni-parola-(123|456)''',
+  # backend/tests/auth/test_admin_access.py: uydurma Cloudflare Access AUD değeri
+  '''aud-ornek-123''',
 ]

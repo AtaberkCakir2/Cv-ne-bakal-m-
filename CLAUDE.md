@@ -1,10 +1,10 @@
-# CareerAI — Claude için proje kuralları
+# Cv'ne Bakalım! — Claude için proje kuralları
 
 Bu dosyayı ekipteki herkesin Claude'u her oturumda okur. Kurallar değişirse bu dosyayı PR ile güncelleyin.
 
 ## Proje
 
-CareerAI, öğrencinin CV'sini (PDF) okuyup hedef pozisyon için güncel iş ilanlarıyla karşılaştıran, eksik yetkinlikleri bulan ve bu eksikleri kapatacak eğitim kaynakları öneren bir sistemdir. Bitirme projesidir (3 kişi). Hedef: 18.01.2027'de v1.0.0 ile canlıya çıkış.
+Cv'ne Bakalım! (eski çalışma adı CareerAI; teknik adlarda `careerai` kalır, karar #34), öğrencinin CV'sini (PDF) okuyup hedef pozisyon için güncel iş ilanlarıyla karşılaştıran, eksik yetkinlikleri bulan ve bu eksikleri kapatacak eğitim kaynakları öneren bir sistemdir. Bitirme projesidir (3 kişi). Hedef: 18.01.2027'de v1.0.0 ile canlıya çıkış.
 
 Akış: İstemci (web / Electron / React Native) → FastAPI → Redis kuyruğu → AI worker (PDF → kişisel veri maskeleme → yetkinlik çıkarımı → embedding → eşleştirme → kaynak önerisi, Ollama) → PostgreSQL + pgvector. Ayrı bir toplayıcı her gece ilanları toplar ve istatistikleri yeniler.
 
@@ -15,9 +15,10 @@ Akış: İstemci (web / Electron / React Native) → FastAPI → Redis kuyruğu 
 | `scraper/` | Ataberk | İlan toplama, ETL, yetkinlik taksonomisi, kaynak havuzu |
 | `infra/` | Ataberk | Sunucu, Docker, CI/CD, izleme, yedekleme |
 | `backend/app/db/` | Ataberk | SQLAlchemy modelleri, Alembic migration'ları |
+| `backend/app/admin/` | Ataberk | Yönetim paneli (SQLAdmin, T-063) ve testi `backend/tests/auth/test_admin_panel.py` |
 | `ai/` | Burak | PDF/OCR, PII maskeleme, yetkinlik çıkarımı, eşleştirme, öneri, Ollama |
 | `mobile/` | Burak | React Native (Expo) uygulaması |
-| `backend/` (db hariç) | Anıl | FastAPI, kimlik doğrulama, kuyruk, endpoint'ler |
+| `backend/` (db ve admin hariç) | Anıl | FastAPI, kimlik doğrulama, kuyruk, endpoint'ler |
 | `web/` | Anıl | React arayüzü (Electron da bunu kullanır) |
 | `contracts/` | Ortak | Modüller arası veri formatları — değişiklik 3 kişinin onayıyla |
 | `docs/` | Ortak | Kararlar, diyagramlar, raporlar |
