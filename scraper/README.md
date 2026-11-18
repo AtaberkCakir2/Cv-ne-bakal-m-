@@ -96,7 +96,7 @@ Her gece **03:00 (İstanbul)** Celery beat `collector.nightly` görevini başlat
 |---|---|
 | İstekler arası 3–5 sn rastgele bekleme | `PoliteClient(jitter=(3, 5))`; kaynağın kendi alt sınırı daha büyükse o (Remotive 30 sn) |
 | Üstel geri çekilme | 429/5xx ve ağ hatalarında 5 → 10 → 20 → 40 sn (+ %50'ye kadar rastgele), en çok 4 tekrar; `Retry-After` varsa o (en çok 10 dk) |
-| User-Agent | Kimliğini belirten **tek** UA (`CareerAI-Bot/…`). Dönüşümlü/sahte UA kullanılmaz: `kaynak-uygunluk.md` kural 3-4 |
+| User-Agent | Kimliğini belirten **tek** UA (`CvneBakalim-Bot/…`). Dönüşümlü/sahte UA kullanılmaz: `kaynak-uygunluk.md` kural 3-4 |
 | Bir kaynak düşerse | Diğerleri devam eder; her kaynak `scrape_runs`'a ayrı yazılır (`success` / `partial` / `failed`) |
 | 403 veya tekrarlara rağmen 429 | Kaynak `job_sources.is_active = false` yapılır ve sonraki geceler atlanır (kural 3). Durum incelenip elle açılır: `UPDATE job_sources SET is_active = true WHERE name = '…'` |
 | Üst üste binme | Redis kilidi: elle tetikleme ile beat çakışırsa ikincisi atlanır. Süre sınırı 3 saat |

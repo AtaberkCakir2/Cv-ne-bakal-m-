@@ -8,7 +8,7 @@ flowchart LR
     admin(["👤 Yönetici"])
     zaman(["⏰ Zamanlayıcı<br/>(her gece 03:00)"])
 
-    subgraph sistem["CareerAI"]
+    subgraph sistem["Cv'ne Bakalım!"]
         direction TB
         UC1(["Hesap aç / giriş yap"])
         UC2(["KVKK metnini onayla"])
