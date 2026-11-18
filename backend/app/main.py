@@ -7,6 +7,7 @@ OpenAPI dokümanı: http://127.0.0.1:8000/docs · Ayrıntılı rehber: docs/api/
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from app.admin import mount_admin
 from app.api.routers import analyses, auth, catalog, health, users
 from app.core.config import Settings, get_settings
 from app.core.errors import register_exception_handlers
@@ -15,6 +16,7 @@ from app.core.middleware import RequestContextMiddleware
 from app.core.openapi import install_openapi
 from app.core.rate_limit import GeneralRateLimitMiddleware, Limit, MemoryCounterStore, RateLimiter, redis_lifespan
 from app.core.uploads import UploadSizeLimitMiddleware, keep_uploads_in_memory
+from app.db.session import get_sessionmaker
 from app.services.analysis_queue import build_analysis_queue
 from app.services.email import OutboxEmailSender
 
@@ -94,6 +96,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.include_router(analyses.router, prefix=settings.api_prefix)
     app.include_router(catalog.roles_router, prefix=settings.api_prefix)
     app.include_router(catalog.skills_router, prefix=settings.api_prefix)
+    # Yönetim paneli /admin (T-063, Ataberk; app/admin/README.md).
+    mount_admin(app, settings, get_sessionmaker())
     return app
 
 
