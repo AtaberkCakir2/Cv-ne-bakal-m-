@@ -29,7 +29,7 @@ Resmi indirme adresi: _(sürüm yayın yeri kesinleşince eklenecek, karar #36)_
 
 **Güncelleme:** macOS imzasız uygulamaların kendiliğinden güncellenmesine izin vermez. Yeni sürüm çıktığında `.dmg` dosyasını indirip uygulamayı Uygulamalar klasöründekinin üzerine sürükleyin. Oturumunuz ve ayarlarınız korunur.
 
-**Kaldırma:** Uygulamayı Uygulamalar klasöründen Çöp Sepeti'ne sürükleyin. Hesabınızı silmek için yukarıdaki **Profil → Hesabını sil** notuna bakın.
+**Kaldırma:** Önce uygulamada **Çıkış** yapın, sonra uygulamayı Uygulamalar klasöründen Çöp Sepeti'ne sürükleyin. macOS'ta sürükleyerek kaldırma oturum bilgisini silmez (`~/Library/Application Support/CareerAI`); çıkış yapmak bilgisayarda geçerli bir oturum bırakmaz. Hesabınızı silmek için yukarıdaki **Profil → Hesabını sil** notuna bakın.
 
 ## 3. İndirilen dosyayı doğrulama (isteğe bağlı)
 
