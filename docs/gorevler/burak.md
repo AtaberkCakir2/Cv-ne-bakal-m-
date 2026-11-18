@@ -124,21 +124,23 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-042 · Eşleştirme algoritması
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 16.11.2026 – 29.11.2026 · **Öncelik:** P0 · **Efor:** 16 saat · **Alan:** AI / NLP
 - **Bağımlılık:** T-041, T-032, T-045 (Ataberk)
 - **Destek:** —
 - **Çıktı:** ai/matching modülü
 - **Kabul kriteri:** Pozisyon için talep ağırlığı = ilan frekansı × TF-IDF; kosinüs benzerliği ile anlamsal eşleşme (eşik 0,80, ayarlanabilir); 0-100 uyum skoru; eksik yetkinlikler talep oranına göre sıralanır.
+- **Not:** `ai/matching` (`match`, `load_role_demand`). Anlamsal eşik varsayılanı 0,90: kriterdeki 0,80 MiniLM içindi, T-041'de seçilen e5-small'da her şeyi eşliyor; eşik parametre olarak ayarlanabilir. Anlamsal eşleşme sadece taksonomide olmayan adlara uygulanır (farklı taksonomi yetkinlikleri vektörle eşlenmez). Sözleşmede `low_data` alanı yok; karar #23'teki uyarı için API'ye ayrı alan gerekirse sözleşme önerisi yapılmalı (Anıl). 10 sentetik CV'de hedef pozisyon 9'unda 1. sırada (README). #79 (T-041) birleşince PR açılır.
 
 ### T-043 · Kaynak öneri üretimi (RAG)
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 23.11.2026 – 29.11.2026 · **Öncelik:** P0 · **Efor:** 12 saat · **Alan:** AI / NLP
 - **Bağımlılık:** T-042, T-046 (Ataberk)
 - **Destek:** Ataberk
 - **Çıktı:** ai/recommendation modülü
 - **Kabul kriteri:** Eksik yetkinlik için aday kaynaklar DB'den çekilir; LLM SADECE bu listeden seçer ve Türkçe gerekçe yazar → uydurma link imkânsız. Örn: "İncelenen 150 ilanın %75'i Docker istiyor".
+- **Not:** 17.11.2026. `ai/recommendation` (`load_candidates`, `recommend`): adaylar `resources`'tan (sadece `is_alive`); LLM sadece aday numarası seçer, numara o yetkinliğin adaylarında yoksa atılır, link/başlık her zaman DB kaydından gelir. İlan istatistiği cümlesi koddan üretilir (LLM sayı yazmaz); bozuk gerekçe veya LLM hatasında kurallı seçim ve gerekçe. Prompt `prompts/recommendation/v1.txt`. Deneme: `resources.csv` adayları + Llama 3.1 8B, 9/9 geçerli seçim, 9/9 LLM gerekçesi, 7,8 sn (ilk çağrı 85 sn). SQL geçici tablolarla test edildi; gerçek `resources` tablosuyla deneme T-057'de. Açık soru: analizde artık iki prompt var (`skill_extraction` v1, `recommendation` v1), sözleşmede tek `prompt_version` alanı; T-057'de nasıl yazılacağı kararlaştırılmalı (bkz. T-044).
 
 ---
 

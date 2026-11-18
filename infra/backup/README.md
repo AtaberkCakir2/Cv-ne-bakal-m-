@@ -6,7 +6,7 @@ Windows'ta systemd/cron olmadığı için yedek, production compose'unda (`infra
 
 | Dosya | Ne yapar |
 |---|---|
-| `Dockerfile` | restic 0.18 + Postgres 16 istemcisi; `deploy.sh` yerelde derler (`careerai/backup:local`) |
+| `Dockerfile` | restic 0.19.1 + Postgres 16 istemcisi; `deploy.sh` yerelde derler (`careerai/backup:local`) |
 | `scheduler.sh` | Konteynerin ana süreci: 10 dakikada bir son başarılı yedeğe bakar, 02:00'den sonra yedek yoksa `backup.sh`'ı çalıştırır; başarısızsa 30 dk sonra yeniden dener |
 | `backup.sh` | Döküm diske yazılmadan restic'e akar; eski yedekleri siler; başarıda `/state/last-success`, haftalık kontrolde `/state/last-check` yazar |
 | `restore-test.sh [ortam] [snapshot]` | PC'de (Git Bash) yedeği geçici bir Postgres kapsayıcısına yükler, satır sayılarını canlıyla karşılaştırır. Canlı veritabanına yazmaz |
@@ -77,7 +77,7 @@ $C up -d
 
 `dropdb` geri alınamaz: önce `restore-test.sh` ile yedeğin açıldığını görün. Deploy öncesi alınan yerel dökümler de `~/careerai-yedek` altındadır (`infra/pc/deploy.sh`).
 
-**PC tamamen bozulursa (T-087):** başka bir bilgisayara repo + Docker Desktop kurulur, `.env.prod` parola yöneticisinden yeniden yazılır, `deploy.sh` ile sistem açılır ve yukarıdaki adımlarla son yedek yüklenir. Tünel token'ı aynı kaldığı için alan adı yeni bilgisayara bağlanır.
+**PC tamamen bozulursa (T-087):** adım adım prosedür, süre hedefleri ve tatbikat kaydı [`docs/runbook/felaket-kurtarma.md`](../../docs/runbook/felaket-kurtarma.md)'de. Özet: başka bir bilgisayara repo + Docker Desktop kurulur, `.env.prod` parola yöneticisinden yeniden yazılır, `deploy.sh` ile sistem açılır ve yukarıdaki adımlarla son yedek yüklenir. Eski PC'nin `cloudflared`'i kapatılmadan yenisi tünele bağlanmaz (aynı token'la iki bağlantı trafiği bölüştürür).
 
 ## Henüz yok
 

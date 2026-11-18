@@ -148,7 +148,7 @@ UNIQUE(user_id, consent_type, version) WHERE withdrawn_at IS NULL (`uq_consents_
 
 ### `role_skill_stats` *(materialized view — T-011)*
 
-Tablo olarak tutulursa `total_postings` sadece `role_id`'ye bağlı olur ve `demand_ratio` türetilmiş değer olur (3NF ihlali). Bu yüzden ham veriden hesaplanan bir **materialized view**'dur; gece toplama işinden sonra `REFRESH MATERIALIZED VIEW CONCURRENTLY role_skill_stats` ile yenilenir (T-045). Sütunlar aynı kaldığı için okuyan kod değişmez.
+Tablo olarak tutulursa `total_postings` sadece `role_id`'ye bağlı olur ve `demand_ratio` türetilmiş değer olur (3NF ihlali). Bu yüzden ham veriden hesaplanan bir **materialized view**'dur; gece toplama işinden sonra `REFRESH MATERIALIZED VIEW CONCURRENTLY role_skill_stats` ile yenilenir (T-045). Yenilemeyi uygulama `refresh_role_skill_stats(concurrent)` fonksiyonuyla yapar (migration 0004, `SECURITY DEFINER`): production'da işçi view'ın sahibi olmayan `careerai_app` rolüyle bağlanır ve `REFRESH` sadece sahibe izinlidir (T-075, `infra/pc/deploy.md` "Veri tabanı rolleri"). Sütunlar aynı kaldığı için okuyan kod değişmez.
 
 | Sütun | Tip | Açıklama |
 |---|---|---|

@@ -22,7 +22,7 @@ def _redis_server(url: str) -> tuple[str, int]:
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=REPO_ROOT / ".env", env_file_encoding="utf-8", extra="ignore")
 
-    app_name: str = "CareerAI API"
+    app_name: str = "Cv'ne Bakalım! API"
     environment: str = Field(default="local", description="local | staging | production")
     api_prefix: str = "/api/v1"
     log_level: str = "INFO"

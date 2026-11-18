@@ -34,6 +34,25 @@ cp infra/pc/.env.example infra/pc/.env.staging
 
 Postgres şifresi ilk açılışta veri tabanına yazılır; sonradan dosyada değiştirmek yetmez.
 
+**Dosya izinleri:** iki dosyayı da sadece kendi Windows kullanıcınız okusun (varsayılan izinde PC'deki her kullanıcı okuyabilir). PowerShell'de, repo kökünde:
+
+```powershell
+icacls infra\pc\.env.prod /inheritance:r /grant:r "$($env:USERNAME):F" "SYSTEM:F" "Administrators:F"
+icacls infra\pc\.env.staging /inheritance:r /grant:r "$($env:USERNAME):F" "SYSTEM:F" "Administrators:F"
+```
+
+Kontrol: `icacls infra\pc\.env.prod` çıktısında `BUILTIN\Users` satırı olmamalı.
+
+### Veri tabanı rolleri (T-075)
+
+| Rol | Kim kullanır | Yetki |
+|---|---|---|
+| `POSTGRES_USER` (`careerai`) | Migration (deploy.sh), yedek, elle bakım | Sahip (süper kullanıcı) |
+| `careerai_app` | api, worker-data (`APP_DB_PASSWORD`) | Tablolarda okuma/yazma; tablo oluşturamaz, silemez, `TRUNCATE` yok; `audit_logs`'ta sadece ekleme/okuma; istatistik yenileme sadece `refresh_role_skill_stats()` ile |
+| `careerai_monitor` | Grafana, postgres-exporter (`MONITOR_DB_PASSWORD`) | Salt okunur, sadece izleme sütunları |
+
+Rolleri deploy.sh her deploy'da migration'dan sonra kurar ve yetkileri yeniler (`infra/pc/app-role.sql`, `setup_monitor_role`); yeni tablolar da otomatik yetki alır. Şifreyi değiştirmek için dosyadaki değeri değiştirip yeniden deploy etmek yeter.
+
 ## 3. Cloudflare Tunnel (T-010, bir kez)
 
 Alan adı Cloudflare'e eklendikten (ad sunucuları Cloudflare'de) sonra:
@@ -43,7 +62,8 @@ Alan adı Cloudflare'e eklendikten (ad sunucuları Cloudflare'de) sonra:
 3. **Public Hostname** → **Add a public hostname**: Subdomain `api`, Domain `cvnebakalim.com`, Type `HTTP`, URL `api:8000`. Kaydedin.
 4. Cloudflare paneli → alan adı → **SSL/TLS** → **Edge Certificates**: **Always Use HTTPS** açık, **Minimum TLS Version** 1.2, **HSTS** açık.
 
-Admin paneli, Grafana ve veri tabanı için public hostname **eklenmez**.
+Grafana ve veri tabanı için public hostname **eklenmez**. Yönetim paneli api'nin içinde (`/admin`) olduğu için
+tünelden erişilir; o yol ayrıca Cloudflare Access ile korunur (`backend/app/admin/README.md`, "Cloudflare Access").
 
 ## 4. Deploy
 
@@ -54,11 +74,15 @@ git fetch --tags origin
 bash infra/pc/deploy.sh v1.0.0
 ```
 
-Betik sırayla: imajları çeker → postgres/redis/ollama'yı başlatır → veri tabanı dökümü alır (`~/careerai-yedek`, son 5) → `alembic upgrade head` → servisleri yeniler → `/health/ready` ile kontrol eder. Bir adım başarısız olursa önceki imajlara döner ve hata koduyla çıkar. Migration geri alınmaz; gerekirse döküm `pg_restore` ile yüklenir.
+Betik sırayla: imajları çeker → postgres/redis/ollama'yı başlatır → veri tabanı dökümü alır (`~/careerai-yedek`, son 5) → `alembic upgrade head` (sahip rolle) → uygulama ve izleme rollerini kurar → servisleri yeniler → `/health/ready` ile kontrol eder. Bir adım başarısız olursa önceki imajlara döner ve hata koduyla çıkar. Migration geri alınmaz; gerekirse döküm `pg_restore` ile yüklenir.
 
 İlk kurulumda modeli bir kez indirin: `make prod-model` (~5 GB). Yedek deposunu bir kez oluşturun: `make backup-init` (`infra/backup/README.md`).
 
 Durum ve loglar: `make prod-ps`, `make prod-logs`.
+
+Yönetim paneline admin vermek (kişi önce uygulamadan kayıt olur): `make prod-admin EMAIL=ad@ornek.com`.
+
+**Kaçan gece toplaması (R-18):** PC 03:00'te kapalıysa veri işçisi açılışta son toplamanın zamanına bakar, kaçmışsa hemen başlatır (`scraper/collector/tasks.py`, `missed_nightly`). Logda `Gece toplaması kaçmış (…), şimdi başlatılıyor` görünür; elle bir şey yapmak gerekmez.
 
 ## 5. Prova ortamı
 
@@ -78,4 +102,3 @@ Alan adı açılmazsa api'yi sadece bu PC'ye açın: `make prod-local` → `http
 
 - `worker-ai` / analiz işçisi ve CV Redis'i: `ai/Dockerfile` (Burak) ve #58/#60 main'e girince eklenecek; o zamana kadar analizler çalışmaz.
 - Web arayüzü (`app.cvnebakalim.com`): Cloudflare Pages'te mi tünelde mi yayınlanacağı Anıl'la kararlaştırılacak.
-- Güvenlik başlıkları (nosniff, X-Frame-Options): eskiden Caddy veriyordu; şimdi api'de (Anıl) veya Cloudflare **Rules → Transform Rules** ile eklenmeli (go-live #12).
