@@ -120,7 +120,7 @@ Canlıya çıkıştan iki ay önce, sorumlusu Ataberk olan ve production'da bug�
 | 21 ★ Grafana, 12 kural, dış prob | Uygun | 12 uyarı kuralı yüklü, dış prob `api.cvnebakalim.com` `up`. Tünel durdurma testi yapılmadı |
 | 24 Loglarda kişisel veri yok | Uygun (örneklem) | Son 1 saatin api ve worker-data loglarında e-posta adresi biçiminde metin yok |
 | 34 Gece toplaması 7 gün hatasız | **Değil** | 12 çalışmanın 12'si başarılı, ama sadece 15.11 ve 18.11 günleri: PC kapalı kaldığı için 7 günlük kesintisiz seri yok |
-| 35 Ölü link < %2 | Ölçülmedi | Production'da link kontrolü hiç çalışmadı (530 kaynağın hepsinde `last_checked_at` boş) |
+| 35 Ölü link < %2 | Ölçülmedi | Production'da link kontrolü hiç çalışmadı (530 kaynağın hepsinde `last_checked_at` boş): pazar 07:00'de PC kapalıydı. 18.11.2026: kaçan kontrol artık işçi açılışında telafi ediliyor; oran `python -m collector resources-report` ile (worker-data içinde) okunur. Bir sonraki deploy'dan sonra ölçülecek |
 
 ## Hizmet seviyesi hedefleri (SLO)
 
