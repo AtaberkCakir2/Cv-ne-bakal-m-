@@ -3,6 +3,7 @@
 import argparse
 import os
 from collections.abc import Iterator
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
@@ -12,7 +13,7 @@ from alembic import command
 from alembic.config import Config
 from app.db.enums import LangCode, ResourceLevel, ResourceProvider
 from app.db.models import Resource, Skill
-from sqlalchemy import Engine, create_engine, select
+from sqlalchemy import Engine, create_engine, select, update
 from sqlalchemy.orm import Session
 
 from collector import resources
@@ -145,6 +146,23 @@ def test_report_counts_only_live(session: Session) -> None:
     rep = resources.report(session)
     assert rep["total"] == 3
     assert rep["short"] == []
+    # Hiç kontrol yapılmadı: oran 0, son kontrol boş.
+    assert (rep["checked"], rep["dead"], rep["dead_ratio"], rep["last_checked"]) == (0, 0, 0.0, None)
+
+
+def test_report_dead_ratio_counts_only_checked(session: Session) -> None:
+    resources.seed(session, [row(f"https://a.dev/{i}") for i in range(5)])
+    now = datetime.now(UTC)
+    session.execute(update(Resource).where(Resource.url != "https://a.dev/4").values(last_checked_at=now))
+    session.execute(update(Resource).where(Resource.url == "https://a.dev/0").values(is_alive=False))
+    session.flush()
+
+    rep = resources.report(session)
+
+    # 4 kontrol edilmiş, 1'i ölü; kontrol edilmemiş satır paydada yok.
+    assert (rep["checked"], rep["dead"]) == (4, 1)
+    assert rep["dead_ratio"] == 0.25
+    assert rep["last_checked"] is not None
 
 
 def test_export_import_keeps_videos_and_skips_deleted(session: Session, tmp_path: Path) -> None:

@@ -194,6 +194,13 @@ def main(argv: list[str] | None = None) -> int:
             rep = resources.report(session)
         print(f"{rep['total']} canlı kaynak, dil: {rep['languages']}")
         print(f"{resources.MIN_PER_SKILL}'ten az kaynağı olan: {len(rep['short'])}/{rep['skills']} yetkinlik")
+        if rep["last_checked"] is None:
+            print("Link kontrolü hiç yapılmadı (python -m collector resources-check)")
+        else:
+            print(
+                f"Ölü link: {rep['dead']}/{rep['checked']} = %{rep['dead_ratio'] * 100:.1f} "
+                f"(hedef < %{resources.MAX_DEAD_RATIO_PCT}), son kontrol {rep['last_checked']:%d.%m.%Y %H:%M} UTC"
+            )
         return 0
 
     if args.command == "nightly":
