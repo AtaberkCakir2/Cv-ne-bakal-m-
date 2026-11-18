@@ -30,9 +30,10 @@ APP_ENVIRONMENT  COMPOSE_SUBNET  POSTGRES_USER  POSTGRES_DB  POSTGRES_PASSWORD  
 REDIS_PASSWORD  JWT_SECRET  IP_HASH_SECRET  CORS_ORIGINS  FRONTEND_URL  YOUTUBE_API_KEY  TUNNEL_TOKEN
 RESTIC_REPOSITORY  RESTIC_PASSWORD  B2_ACCOUNT_ID  B2_ACCOUNT_KEY
 GRAFANA_ADMIN_PASSWORD  GRAFANA_PORT  MONITOR_DB_PASSWORD  COMPOSE_PROFILES  LOCAL_API_PORT
+CF_ACCESS_TEAM_DOMAIN  CF_ACCESS_AUD
 ```
 
-**Neden aynı değerler:** `JWT_SECRET` değişirse bütün oturumlar düşer (kullanıcılar yeniden giriş yapar, veri kaybı yok). `IP_HASH_SECRET` değişirse eski rıza kayıtlarındaki IP özetleri yenileriyle karşılaştırılamaz. `POSTGRES_PASSWORD` ve diğer DB şifreleri yeni kurulumda yeniden yazılır, ama aynı tutmak işi basitleştirir. `TUNNEL_TOKEN` aynı kalırsa alan adı ayarına dokunmak gerekmez.
+**Neden aynı değerler:** `JWT_SECRET` değişirse bütün oturumlar düşer (kullanıcılar yeniden giriş yapar, veri kaybı yok). `IP_HASH_SECRET` değişirse eski rıza kayıtlarındaki IP özetleri yenileriyle karşılaştırılamaz. `POSTGRES_PASSWORD` ve diğer DB şifreleri yeni kurulumda yeniden yazılır, ama aynı tutmak işi basitleştirir. `TUNNEL_TOKEN` aynı kalırsa alan adı ayarına dokunmak gerekmez. `CF_ACCESS_*` yoksa yönetim paneli production'da 503 döner (API etkilenmez); değerler Cloudflare'deki Access uygulamasından da okunabilir (`backend/app/admin/README.md`).
 
 ---
 

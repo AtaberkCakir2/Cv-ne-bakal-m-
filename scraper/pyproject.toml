@@ -1,7 +1,7 @@
 [project]
 name = "careerai-scraper"
 version = "0.1.0"
-description = "CareerAI ilan toplayıcı: izinli API'ler ve açık veri setlerinden ilan havuzu"
+description = "Cv'ne Bakalım! ilan toplayıcı: izinli API'ler ve açık veri setlerinden ilan havuzu"
 requires-python = ">=3.12"
 # Veritabanı modelleri backend paketinden (app.db), ilan maskeleme ai paketinden (pii) gelir;
 # kurulum: pip install -e ../backend -e ../ai -e ".[dev]"

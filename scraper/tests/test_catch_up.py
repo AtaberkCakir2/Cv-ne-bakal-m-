@@ -1,4 +1,4 @@
-"""Kaçan gece toplamasının açılışta telafisi (T-075, R-18)."""
+"""Kaçan gece toplamasının ve haftalık link kontrolünün açılışta telafisi (T-075, R-18, go-live #35)."""
 
 from datetime import UTC, datetime
 from typing import Any
@@ -71,5 +71,58 @@ def test_worker_start_survives_db_error(monkeypatch: pytest.MonkeyPatch) -> None
     monkeypatch.setattr(tasks.nightly, "apply_async", lambda **kw: queued.append(kw))
 
     tasks._catch_up_missed_nightly()  # hata fırlatmaz
+
+    assert queued == []
+
+
+@pytest.mark.parametrize(
+    ("last", "now", "missed"),
+    [
+        # Hiç kontrol yok (production'daki durum) → başlatılır.
+        (None, ist(18, 9), True),
+        # 3 gün önce kontrol edildi → kaçmamış.
+        (ist(15, 7, 1), ist(18, 9), False),
+        # Geçen pazar 07:00 yapıldı, bu pazar 07:05'te açıldı: 7 gün + 10 dk dolmadı → beat'e bırakılır.
+        (ist(8, 7, 0), ist(15, 7, 5), False),
+        # Geçen pazar yapıldı, bu pazar PC kapalıydı, pazartesi açıldı → kaçmış.
+        (ist(8, 7, 0), ist(16, 9), True),
+        # Veritabanından saat dilimsiz gelirse UTC sayılır.
+        (datetime(2026, 11, 1, 4, 0), ist(18, 9), True),
+    ],
+)
+def test_missed_link_check(last: datetime | None, now: datetime, missed: bool) -> None:
+    assert tasks.missed_link_check(last, now) is missed
+
+
+def test_worker_start_queues_missed_link_check(monkeypatch: pytest.MonkeyPatch) -> None:
+    queued: list[dict[str, Any]] = []
+    monkeypatch.setattr(tasks, "get_sessionmaker", lambda: lambda: _FakeSession(None))
+    monkeypatch.setattr(tasks.resources_check, "apply_async", lambda **kw: queued.append(kw))
+
+    tasks._catch_up_missed_link_check()
+
+    assert queued == [{"expires": 12 * 3600}]
+
+
+def test_worker_start_skips_recent_link_check(monkeypatch: pytest.MonkeyPatch) -> None:
+    queued: list[object] = []
+    recent = datetime.now(UTC)
+    monkeypatch.setattr(tasks, "get_sessionmaker", lambda: lambda: _FakeSession(recent))
+    monkeypatch.setattr(tasks.resources_check, "apply_async", lambda **kw: queued.append(kw))
+
+    tasks._catch_up_missed_link_check()
+
+    assert queued == []
+
+
+def test_link_check_catch_up_survives_db_error(monkeypatch: pytest.MonkeyPatch) -> None:
+    def broken() -> Any:
+        raise OSError("veritabanı yok")
+
+    queued: list[object] = []
+    monkeypatch.setattr(tasks, "get_sessionmaker", broken)
+    monkeypatch.setattr(tasks.resources_check, "apply_async", lambda **kw: queued.append(kw))
+
+    tasks._catch_up_missed_link_check()  # hata fırlatmaz
 
     assert queued == []
