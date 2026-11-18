@@ -163,5 +163,5 @@ python -m collector resources-report          # toplam ve 3'ten az kaynağı ola
 - `.env`'de `YOUTUBE_API_KEY` gerekir; boşsa arama atlanır.
 - Günde en fazla 100 arama (Türkçe ve İngilizce ayrı arama). Kota Pasifik saatiyle gece yarısı (TR ~10:00) yenilenir. Aramalar talebi yüksek yetkinlikten başlar, durum `data/youtube_searched.json`'da.
 - `resources_youtube.csv` sadece video kimliği, yetkinlik, dil ve seviye tutar. Başlık ve süre repoya yazılmaz (30 gün kuralı), yüklerken API'den alınır; silinen video atlanır.
-- `worker-data` her gün 06:00'da aramaya devam eder, pazar 07:00'de linkleri kontrol eder.
+- `worker-data` her gün 06:00'da aramaya devam eder, pazar 07:00'de linkleri kontrol eder. PC o saatte kapalıysa kontrol kaçar: işçi açılırken son kontrol 7 günden eskiyse (veya hiç yoksa) kontrol hemen kuyruğa konur (gece toplamasının telafisi gibi). `resources-report` ölü link oranını da yazar (go-live #35, hedef < %2).
 - Filtre: 10 dk–12 sa, TR ≥ 1.000 / EN ≥ 10.000 izlenme, başlıkta yetkinlik adı ve öğretim ipucu var, tanıtım kelimesi yok. Seviye başlıktan okunur, ipucu yoksa `beginner`.
