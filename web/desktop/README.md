@@ -38,7 +38,7 @@ Arayüz geliştirirken Vite sunucusunu açmak için: `CAREERAI_DEV_URL=http://12
 `VITE_API_URL` zorunlu ve `https://` ile başlamalı; `check-api.cjs` bunu kontrol eder. Verilmezse uygulama sunucuya bağlanamaz.
 
 ```bash
-VITE_API_URL=https://api.cvnebakalim.com npm run dist:win   # release/CareerAI Setup <sürüm>.exe (NSIS)
+VITE_API_URL=https://api.cvnebakalim.com npm run dist:win   # release/CvneBakalim-Setup-<sürüm>.exe (NSIS)
 VITE_API_URL=https://api.cvnebakalim.com npm run dist:mac   # release/*.dmg ve *.zip (sadece macOS'ta)
 ```
 

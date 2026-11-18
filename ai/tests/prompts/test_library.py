@@ -13,6 +13,7 @@ REPO = Path(__file__).resolve().parents[3]
 # Yayımlanmış sürümler değişmez. Bu test kırılıyorsa dosyayı geri al, yeni sürüm (v2.txt) aç.
 PUBLISHED = {
     ("skill_extraction", "v1"): "7467f9223d34513bf97c3e408a23d1c57b12b2c6d28f0f693ecc99580d59d03b",
+    ("recommendation", "v1"): "1ac6d77b97c8865f6460dd5a09f5ff52303af02a90109143635ad3ac33f9e3e8",
 }
 
 
@@ -44,6 +45,13 @@ def test_json_example_uses_placeholder_not_a_real_skill() -> None:
     example = text[text.index('{"skills"') :]
     assert "<yetkinlik adı>" in example
     assert "Python" not in text and "İngilizce" not in text
+
+
+def test_recommendation_example_uses_placeholders() -> None:
+    text = get_prompt("recommendation").text
+    example = text[text.index('{"picks"') :]
+    assert "<yetkinlik adı>" in example and "<listedeki numara>" in example
+    assert "Python" not in text and "Docker" not in text
 
 
 @pytest.mark.parametrize(

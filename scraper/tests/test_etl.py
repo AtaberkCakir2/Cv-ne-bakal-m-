@@ -86,6 +86,16 @@ TURKISH_TITLES = {
         ("Senior .Net Developer - Remote (McKinney, TX, US)", "backend-developer"),
         ("TrakPro | Senior Rails Engineer | REMOTE", "backend-developer"),
         ("Angular Developer| Offshore", "frontend-developer"),
+        # 18.11.2026 production başlıklarından eklenen eş anlamlılar
+        ("Mobile Application Developer", "mobile-developer"),
+        ("Senior Security Operations Engineer", "security-engineer"),
+        ("Detection & Response Engineer", "security-engineer"),
+        ("Security Architect", "security-engineer"),
+        ("Sr. Staff Machine Learning Systems Engineer", "ml-engineer"),
+        ("ML Platform Engineer, Evaluation Systems", "ml-engineer"),
+        ("Data Platform Engineer (m/f/d)", "data-engineer"),
+        ("Senior Decision Scientist", "data-scientist"),
+        ("DevOps - Remote (Only Mexico)", "devops-engineer"),
     ],
 )
 def test_role_matching(title: str, expected: str) -> None:
@@ -94,7 +104,15 @@ def test_role_matching(title: str, expected: str) -> None:
 
 @pytest.mark.parametrize(
     "title",
-    ["Software Engineer", "Senior Software Engineer — Remote (US Only)", "Acme | Founding Engineer | NYC", "Hi!", ""],
+    [
+        "Software Engineer",
+        "Senior Software Engineer — Remote (US Only)",
+        "Acme | Founding Engineer | NYC",
+        "Hi!",
+        "",
+        "Manager, Site Reliability Engineering",  # yönetici ilanı: "site reliability" tek başına eş anlamlı değil
+        "AVP Data Engineering – Business Insurance",
+    ],
 )
 def test_generic_titles_have_no_role(title: str) -> None:
     assert MATCHER.match(title) is None
