@@ -113,7 +113,7 @@ class AuthService:
         link = f"{self.settings.frontend_url}/e-posta-dogrula?token={token}"
         return EmailMessage(
             to=user.email,
-            subject="CareerAI: e-posta adresini doğrula",
+            subject="Cv'ne Bakalım! · E-posta adresini doğrula",
             body=(
                 f"Hesabını doğrulamak için bağlantıyı aç: {link}\n"
                 f"Bağlantı {self.settings.verify_email_ttl_hours} saat geçerlidir."
@@ -201,7 +201,7 @@ class AuthService:
         link = f"{self.settings.frontend_url}/sifre-sifirla?token={token}"
         message = EmailMessage(
             to=user.email,
-            subject="CareerAI: şifre sıfırlama",
+            subject="Cv'ne Bakalım! · Şifre sıfırlama",
             body=(
                 f"Şifreni sıfırlamak için bağlantıyı aç: {link}\n"
                 f"Bağlantı {self.settings.reset_password_ttl_minutes} dakika geçerlidir. "
