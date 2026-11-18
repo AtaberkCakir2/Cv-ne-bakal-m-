@@ -115,7 +115,7 @@ Sürüm alma tek komuttur; betik imajları indirir, migration öncesi döküm al
 
 ## 5. Kuyruk birikmesi
 
-İki kuyruk var (Redis listesi): `analysis` (CV analizleri, AI işçisi tüketir) ve `data` (gece toplaması, kaynak arama, link kontrolü; `worker-data` tek eşzamanlı tüketir).
+İki kuyruk var (Redis listesi): `analysis` (CV analizleri; analiz işçisi `worker-analysis` tüketir, AI paketini o çağırır) ve `data` (gece toplaması, kaynak arama, link kontrolü; `worker-data` tek eşzamanlı tüketir).
 
 1. Derinlik ve işçiler:
    ```bash
@@ -124,14 +124,14 @@ Sürüm alma tek komuttur; betik imajları indirir, migration öncesi döküm al
    $C ps
    $C logs --tail 100 worker-data
    ```
-   Not: AI işçisi (T-057) production compose'a eklenene kadar `analysis` kuyruğunu tüketen servis yoktur; birikme beklenir.
-2. **Analiz kuyruğu** (`AnalizKuyruguBirikti`: ≥ 6 iş, 10 dk): AI işçisi ayakta mı, Ollama sağlıklı mı (3. bölüm). İşçi takıldıysa yeniden başlatın. `processing`'de takılı kalan analizler 65 dk sonra (`ANALYSIS_STALE_AFTER_S=3900`) kullanıcı sonucu açtığında otomatik `failed` olur; elle veritabanı değişikliği gerekmez. Yoğunluk sürüyorsa analiz sınırını geçici düşürmek Anıl'ın kararı (API ayarı).
+   Not: analiz işçisi (`worker-analysis`, T-057) production compose'a eklenene kadar `analysis` kuyruğunu tüketen servis yoktur; birikme beklenir.
+2. **Analiz kuyruğu** (`AnalizKuyruguBirikti`: ≥ 6 iş, 10 dk): analiz işçisi (`worker-analysis`) ayakta mı, Ollama sağlıklı mı (3. bölüm). İşçi takıldıysa yeniden başlatın. `processing`'de takılı kalan analizler 65 dk sonra (`ANALYSIS_STALE_AFTER_S=3900`) kullanıcı sonucu açtığında otomatik `failed` olur; elle veritabanı değişikliği gerekmez. Yoğunluk sürüyorsa analiz sınırını geçici düşürmek Anıl'ın kararı (API ayarı).
 3. **Veri kuyruğu** (`VeriKuyruguBirikti`: > 50 iş, 30 dk): gece toplaması kilitli (`careerai:lock:nightly`) olduğu için üst üste binmez; birikme genelde işçinin uzun süre kapalı kalmasından olur. İşçi açıkken kendiliğinden erir. Gereksiz biriken işleri boşaltmak (bekleyenler silinir, çalışan iş etkilenmez; kaçan gece toplaması ve link kontrolü işçi açılışında tekrar kuyruğa girer):
    ```bash
    $C exec worker-data celery -A collector.tasks purge -Q data -f
    $C restart worker-data
    ```
-4. Analiz kuyruğunu boşaltmak (`redis-cli del analysis`) kullanıcıların bekleyen analizlerini siler; sadece Anıl ile birlikte ve gruba yazarak yapılır.
+4. Analiz kuyruğunu boşaltmak (`redis-cli del analysis`) kullanıcıların bekleyen analizlerini siler; sadece Anıl ile birlikte ve gruba yazarak yapılır. Sonrasında elle temizlik gerekmez: silinen işlerin analizleri 65 dk sonra kendiliğinden `failed` olur, CV'ler `cv-redis`'te süre aşımıyla (`ANALYSIS_CV_TTL_S=3600`) silinir.
 
 ## 6. Kişisel veri ihlali şüphesi
 
