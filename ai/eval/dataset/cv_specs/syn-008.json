@@ -1,0 +1,19 @@
+{
+  "cv_id": "syn-008", "language": "tr", "layout": "multi_column", "scanned": false,
+  "target_role": "data-scientist", "experience": "experienced", "double": false,
+  "header": {"name": "Can Yıldırım", "title": "Veri Bilimci · 3 yıl", "contact": ["can.yildirim@example.net", "0533 000 77 88", "İstanbul"]},
+  "sidebar": [
+    {"title": "Yetkinlikler", "list": ["Python — ileri", "SQL — ileri", "R — orta", "pandas, NumPy, sklearn", "XGBoost, LightGBM", "PyTorch — orta", "Spark (PySpark) — temel", "Tableau, Power BI"]},
+    {"title": "İstatistik", "list": ["Hipotez testleri", "A/B testi", "Zaman serisi (ARIMA, Prophet)"]},
+    {"title": "Dil", "list": ["İngilizce — C1", "Türkçe — ana dil"]}
+  ],
+  "main": [
+    {"title": "Özet", "text": ["3 yıldır perakende ve fintech alanlarında makine öğrenmesi modelleri geliştirip canlıya alıyorum. Talep tahmini ve müşteri kaybı (churn) modellerinde deneyimliyim."]},
+    {"title": "Deneyim", "items": [
+      {"heading": "Veri Bilimci — Ornek Market Zinciri", "meta": "Ocak 2024 – halen", "bullets": ["Mağaza bazında haftalık talep tahmini modeli (LightGBM); MAPE %18'den %11'e indi.", "Airflow ile günlük model yeniden eğitim hattı kurdum; modeller MLflow ile sürümleniyor.", "Ürün ekibiyle kampanya etkisini ölçen A/B test çerçevesi tasarladım."]},
+      {"heading": "Junior Data Scientist — Finans Lab (örnek)", "meta": "Eylül 2023 – Aralık 2023", "bullets": ["Kredi başvurularında dolandırıcılık tespiti için XGBoost modeli; SHAP ile açıklanabilirlik raporları.", "BigQuery'de SQL ile özellik mühendisliği."]}
+    ]},
+    {"title": "Eğitim", "items": [{"heading": "İstatistik, Lisans — İstatistik Bölümü", "meta": "2019 – 2023"}, {"heading": "Veri Bilimi Yüksek Lisans (devam ediyor)", "meta": "2025 –"}]},
+    {"title": "Yayın / Sunum", "list": ["\"Perakendede talep tahmini için gradyan artırma yöntemlerinin karşılaştırılması\" — öğrenci kongresi bildirisi (2023)"]}
+  ]
+}

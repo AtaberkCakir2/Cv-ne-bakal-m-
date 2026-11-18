@@ -2,6 +2,7 @@
 
 from functools import lru_cache
 from pathlib import Path
+from urllib.parse import urlsplit
 
 from pydantic import Field, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -12,10 +13,16 @@ REPO_ROOT = Path(__file__).resolve().parents[3]
 DEV_JWT_SECRET = "careerai-local-dev-jwt-secret-do-not-use-in-prod"  # noqa: S105
 
 
+def _redis_server(url: str) -> tuple[str, int]:
+    """Redis adresinin sunucusu (host, port). Veritabanı numarası yok sayılır: /0 ve /1 aynı sunucudur."""
+    parts = urlsplit(url)
+    return (parts.hostname or "").lower(), parts.port or 6379
+
+
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=REPO_ROOT / ".env", env_file_encoding="utf-8", extra="ignore")
 
-    app_name: str = "CareerAI API"
+    app_name: str = "Cv'ne Bakalım! API"
     environment: str = Field(default="local", description="local | staging | production")
     api_prefix: str = "/api/v1"
     log_level: str = "INFO"
@@ -28,8 +35,9 @@ class Settings(BaseSettings):
 
     # /health/ready içindeki her bağımlılık kontrolü için zaman aşımı (saniye)
     readiness_timeout_s: float = 2.0
-    # Sadece kendi alan adlarımıza izin verilir (karar: güvenlik incelemesi, T-064)
-    cors_origins: list[str] = ["http://localhost:5173", "http://127.0.0.1:5173"]
+    # Sadece kendi alan adlarımıza izin verilir (karar: güvenlik incelemesi, T-064).
+    # app://careerai: masaüstü uygulamasının (Electron, web/desktop/main.cjs) kökeni.
+    cors_origins: list[str] = ["http://localhost:5173", "http://127.0.0.1:5173", "app://careerai"]
 
     # Kimlik doğrulama (T-037). JWT_SECRET production'da mutlaka .env'den gelir (uzun, rastgele).
     jwt_secret: str = Field(default=DEV_JWT_SECRET, min_length=32)
@@ -49,6 +57,22 @@ class Settings(BaseSettings):
     rate_limit_auth_per_minute: int = 10
     rate_limit_analyses_per_hour: int = 5
 
+    # Analiz kuyruğu (T-039). CV baytları kalıcılığı KAPALI ayrı bir Redis'te durur (karar #9): REDIS_URL'den farklı.
+    cv_redis_url: str | None = None
+    analysis_timeout_s: int = 180
+    analysis_cv_ttl_s: int = 3600
+    # Bu süreyi geçip bitmeyen analiz askıda sayılır (işçi öldü, sert süre sınırı). CV TTL'inden uzun olmalı.
+    analysis_stale_after_s: int = 3900
+    # Bekleyen CV sayısı; her biri en fazla 5 MB. Tek işçi ve iş başına ~6 dk (180 sn x 2) ile hepsi TTL içinde biter.
+    analysis_queue_limit: int = 8
+
+    @property
+    def cv_store_url(self) -> str | None:
+        """CV deposunun adresi. Sadece local/test'te ayrı Redis olmadan çalışılır (orada yalnızca sahte CV var)."""
+        if self.cv_redis_url:
+            return self.cv_redis_url
+        return urlsplit(self.redis_url)._replace(path="/1").geturl() if self.is_explicit_dev else None
+
     @property
     def is_production(self) -> bool:
         return self.environment == "production"
@@ -67,6 +91,14 @@ class Settings(BaseSettings):
     def _secret_must_be_set_outside_local(self) -> "Settings":
         if self.environment not in ("local", "test") and self.jwt_secret == DEV_JWT_SECRET:
             raise ValueError("JWT_SECRET ayarlanmamış: local/test dışında geliştirme anahtarı kullanılamaz.")
+        if (
+            self.environment not in ("local", "test")
+            and self.cv_redis_url
+            and _redis_server(self.cv_redis_url) == _redis_server(self.redis_url)
+        ):
+            raise ValueError(
+                "CV_REDIS_URL, REDIS_URL ile aynı olamaz: broker kalıcıdır, CV diske yazılırdı (karar #9)."
+            )
         return self
 
 

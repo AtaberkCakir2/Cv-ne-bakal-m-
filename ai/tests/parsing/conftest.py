@@ -35,7 +35,7 @@ def make_pdf(pages: Sequence[Sequence[Item]], *, encrypt: bool = False, image_on
     doc.subset_fonts()
     options: dict[str, object] = {"garbage": 3, "deflate": True}
     if encrypt:
-        options.update(encryption=pymupdf.PDF_ENCRYPT_AES_256, user_pw="gizli", owner_pw="sahip")  # type: ignore[attr-defined]
+        options.update(encryption=pymupdf.PDF_ENCRYPT_AES_256, user_pw="gizli", owner_pw="sahip")
     data = doc.tobytes(**options)
     doc.close()
     return bytes(data)

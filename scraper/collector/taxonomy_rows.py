@@ -1,7 +1,8 @@
 """Taksonomi CSV'lerinin okunması; veritabanı ve SQLAlchemy kullanmaz.
 
-Yetkinlik eşleyicisi (etl/skills.py, etl/roles.py) sadece bu modülü kullanır; böylece backend paketi kurulmadan da
-(ör. sadece ai/'den derlenen worker imajında) çalışır. Doğrulama ve veritabanına yazma `collector.taxonomy`'de.
+Eşleyiciler (etl/skills.py, etl/roles.py) taksonomiyi sadece bu modülden okur; böylece backend paketi kurulmadan da
+(ör. sadece ai/'den derlenen worker imajında) çalışır. etl/skills.py eşlemeyi ai/'deki extraction.taxonomy ile
+yapar. Doğrulama ve veritabanına yazma `collector.taxonomy`'de.
 """
 
 import csv

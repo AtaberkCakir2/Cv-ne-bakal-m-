@@ -81,8 +81,9 @@ audit_logs (denetim kaydı; user_id kullanıcı silinince NULL)
 | version | varchar(20) | NOT NULL | Metnin sürümü (ör. 2026-12) |
 | accepted_at | timestamptz | NOT NULL | Onay zamanı |
 | ip_hash | text |  | IP'nin tuzlu hash'i (ispat için, açık IP değil) |
+| withdrawn_at | timestamptz | NULL | Rıza geri alındıysa geri alma zamanı (KVKK md. 11). Satır silinmez: verilip geri alındığının ispatı |
 
-UNIQUE(user_id, consent_type, version): aynı metin sürümü iki kez onaylanmaz; metin sürümü değişince yeni satır eklenir.
+UNIQUE(user_id, consent_type, version) WHERE withdrawn_at IS NULL (`uq_consents_active_version`, migration 0002): bir metin sürümünün yürürlükte tek onayı olur; metin sürümü değişince yeni satır eklenir. Geri alınan sürüm yeniden onaylanırsa geri alınmış satır kalır ve yeni satır eklenir. **Geçerli rıza** = o türün en son sürümüne ait, `withdrawn_at IS NULL` olan satır.
 
 ### `roles`
 
@@ -147,7 +148,7 @@ UNIQUE(user_id, consent_type, version): aynı metin sürümü iki kez onaylanmaz
 
 ### `role_skill_stats` *(materialized view — T-011)*
 
-Tablo olarak tutulursa `total_postings` sadece `role_id`'ye bağlı olur ve `demand_ratio` türetilmiş değer olur (3NF ihlali). Bu yüzden ham veriden hesaplanan bir **materialized view**'dur; gece toplama işinden sonra `REFRESH MATERIALIZED VIEW CONCURRENTLY role_skill_stats` ile yenilenir (T-045). Sütunlar aynı kaldığı için okuyan kod değişmez.
+Tablo olarak tutulursa `total_postings` sadece `role_id`'ye bağlı olur ve `demand_ratio` türetilmiş değer olur (3NF ihlali). Bu yüzden ham veriden hesaplanan bir **materialized view**'dur; gece toplama işinden sonra `REFRESH MATERIALIZED VIEW CONCURRENTLY role_skill_stats` ile yenilenir (T-045). Yenilemeyi uygulama `refresh_role_skill_stats(concurrent)` fonksiyonuyla yapar (migration 0004, `SECURITY DEFINER`): production'da işçi view'ın sahibi olmayan `careerai_app` rolüyle bağlanır ve `REFRESH` sadece sahibe izinlidir (T-075, `infra/pc/deploy.md` "Veri tabanı rolleri"). Sütunlar aynı kaldığı için okuyan kod değişmez.
 
 | Sütun | Tip | Açıklama |
 |---|---|---|
@@ -279,3 +280,40 @@ Sözleşmede `present_skills[].verified = false` olan, taksonomide bulunmayan (L
 | entity / entity_id | text |  |  |
 | ip_hash | text |  |  |
 | created_at | timestamptz | INDEX | 180 gün saklanır |
+
+## Vektör indeksleri *(T-013)*
+
+`skills.embedding` ve `job_postings.embedding` için HNSW indeksi (migration `0003`, `ix_<tablo>_embedding`):
+`USING hnsw (embedding vector_cosine_ops) WITH (m = 16, ef_construction = 64)`. Parametreler pgvector varsayılanları;
+ölçüm yeterli olduğu için değiştirilmedi. Sorgu zamanı `hnsw.ef_search` = 40 (varsayılan).
+
+**Sorgu nasıl yazılmalı** (indeks sadece bu biçimde kullanılır):
+
+```sql
+SELECT id, 1 - (embedding <=> :v) AS benzerlik
+FROM job_postings
+ORDER BY embedding <=> :v      -- <=> kosinüs uzaklığı; ifadeyle (1 - ...) sıralamak indeksi devre dışı bırakır
+LIMIT 10;
+```
+
+- Vektörler normalize edilmiş olmalı (sentence-transformers `normalize_embeddings=True`); boyut 384.
+- `WHERE` ile süzme (ör. `is_active`, `role_id`) HNSW'de **önce en yakın adaylar bulunup sonra süzülür**; süzgeç
+  seçiciyse `LIMIT`'ten az satır dönebilir. Bu durumda sorgudan önce `SET LOCAL hnsw.iterative_scan = relaxed_order`
+  (pgvector ≥ 0.8; bizde 0.8.7) kullanın.
+- 374 satırlık `skills` tablosunda planlayıcı indeks yerine sıralı tarama seçer; bu küçük tabloda daha hızlıdır ve
+  doğrudur (tam sonuç).
+
+**Ölçüm (29.10.2026).** Geliştirme bilgisayarı, Docker'da `pgvector/pgvector:pg16` (12 CPU / 16 GB, ayarsız),
+uçtan uca Python (psycopg) süresi, 200 sorgu, top-10. Gerçek embedding henüz yok (Burak'ın modülü gelmedi), bu yüzden
+300 kümeye dağılmış sentetik normalize vektörler kullanıldı; recall@10 indekssiz tam aramaya göre.
+
+| İlan sayısı | Tablo | Plan | p50 | p95 | recall@10 |
+|---|---|---|---|---|---|
+| 6.422 (bugünkü havuz) | skills (374) | sıralı tarama | 2,9 ms | 4,4 ms | 1,000 |
+| 6.422 | job_postings | HNSW | 9,2 ms | 12,3 ms | 1,000 |
+| 50.000 (~8× büyüme) | job_postings | HNSW | 3,3 ms | 6,2 ms | 0,989 |
+
+Hedef (< 50 ms) iki ölçekte de sağlanıyor. İndeks boyutu 6.422 ilanda 13 MB, 50.000 ilanda 98 MB (RAM'e sığar).
+İndeksli tabloya yazma yavaştır: 50.000 vektörün yüklenmesi ~163 sn. Toplu ilk yüklemede indeksi düşürüp yükleme
+sonrası yeniden kurmak daha hızlıdır; gece toplamadaki küçük artışlarda gerek yok. Gerçek embedding'ler gelince
+(T-031/T-042) ölçüm tekrarlanmalı; recall düşerse önce `hnsw.ef_search` (ör. 100) artırılır.

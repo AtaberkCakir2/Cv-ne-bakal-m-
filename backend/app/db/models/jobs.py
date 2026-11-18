@@ -9,7 +9,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.base import Base, TimestampMixin
 from app.db.enums import LangCode, ScrapeStatus, SkillImportance, SourceType, pg_enum
-from app.db.models.catalog import EMBEDDING_DIM
+from app.db.models.catalog import EMBEDDING_DIM, hnsw_index
 
 
 class JobSource(TimestampMixin, Base):
@@ -24,10 +24,13 @@ class JobSource(TimestampMixin, Base):
     # Sadece uygunluk tablosunda ✅ olan kaynak açılır.
     is_active: Mapped[bool] = mapped_column(server_default=text("false"))
 
+    def __str__(self) -> str:  # yönetim panelinde görünen ad
+        return self.name
+
 
 class JobPosting(TimestampMixin, Base):
     __tablename__ = "job_postings"
-    __table_args__ = (UniqueConstraint("source_id", "external_id"),)
+    __table_args__ = (UniqueConstraint("source_id", "external_id"), hnsw_index())
 
     id: Mapped[int] = mapped_column(BigInteger, Identity(), primary_key=True)  # contracts: id
     # Kaynak silinirse (ör. izin bitti) ilanları da silinir.
@@ -74,3 +77,5 @@ class ScrapeRun(TimestampMixin, Base):
     duplicates: Mapped[int] = mapped_column(server_default=text("0"))
     errors: Mapped[int] = mapped_column(server_default=text("0"))
     error_log: Mapped[str | None] = mapped_column(Text)
+
+    source: Mapped[JobSource] = relationship()

@@ -4,6 +4,9 @@ python -m collector import hn --months 6
 python -m collector import himalayas --pages 5
 python -m collector import remoteok
 python -m collector import remotive
+python -m collector import jobicy
+python -m collector import arbeitnow [--pages 2]
+python -m collector import pythonorg             # Chromium gerekir (README)
 python -m collector import emscad --csv data/fake_job_postings.csv [--active]
 python -m collector stats
 python -m collector seed-taxonomy
@@ -11,24 +14,35 @@ python -m collector export-taxonomy --out taxonomy.json
 python -m collector normalize                 # sonunda role_skill_stats'ı da yeniler
 python -m collector refresh-stats
 python -m collector role-stats [--top 5]
+python -m collector nightly [--no-jitter]     # gece zinciri elle: kaynaklar → normalize → istatistik (T-034)
 python -m collector export-postings --out postings.jsonl [--limit 100]
+python -m collector export-template [--out exports/template_input.json] [--top 30]
+python -m collector resources-seed                 # taxonomy/resources.csv → resources (T-046)
+python -m collector resources-youtube [--limit 10] # kota dolana kadar YouTube araması, kaldığı yerden devam
+python -m collector resources-export               # bulunan videolar → taxonomy/resources_youtube.csv
+python -m collector resources-import               # o dosyayı yeni ortama yükle, başlık ve süre API'den
+python -m collector resources-check                # link kontrolü + YouTube bilgilerini yenileme
+python -m collector resources-report
 """
 
 import argparse
 import json
+import logging
 import sys
 from collections.abc import Callable, Iterable
 from pathlib import Path
 
 from app.db.session import get_sessionmaker
 
-from collector import esco, taxonomy
+from collector import esco, nightly, resources, taxonomy, youtube
 from collector.http import PoliteClient
 from collector.posting import Posting, SourceInfo
-from collector.sources import emscad, himalayas, hn, remoteok, remotive
+from collector.sources import arbeitnow, emscad, himalayas, hn, jobicy, pythonorg, remoteok, remotive
 from collector.store import run_import, source_counts
-from etl import stats
+from etl import stats, template_input
 from etl.pipeline import iter_contract, normalize
+
+TEMPLATE_OUT = Path(__file__).resolve().parents[1] / "exports" / "template_input.json"
 
 
 def _api(info: SourceInfo, fetch: Callable[[PoliteClient], Iterable[Posting]]) -> tuple[SourceInfo, Iterable[Posting]]:
@@ -45,6 +59,10 @@ def build_parser() -> argparse.ArgumentParser:
     src.add_parser("himalayas", help="Himalayas yazılım aramaları").add_argument("--pages", type=int, default=5)
     src.add_parser("remoteok", help="Remote OK")
     src.add_parser("remotive", help="Remotive (günde en fazla birkaç kez)")
+    src.add_parser("jobicy", help="Jobicy (son 7 gün)")
+    an = src.add_parser("arbeitnow", help="Arbeitnow (Avrupa)")
+    an.add_argument("--pages", type=int, default=arbeitnow.NIGHTLY_PAGES)
+    src.add_parser("pythonorg", help="Python.org iş ilanları (Playwright)")
     em = src.add_parser("emscad", help="EMSCAD veri seti (yerel CSV)")
     em.add_argument("--csv", type=Path, required=True)
     em.add_argument("--active", action="store_true", help="İstatistiklere dahil et (sadece yedek plan için)")
@@ -62,6 +80,18 @@ def build_parser() -> argparse.ArgumentParser:
     sub.add_parser("refresh-stats", help="role_skill_stats'ı yenile (T-045)")
     rs = sub.add_parser("role-stats", help="Pozisyon başına ilan sayısı ve en çok istenen yetkinlikler")
     rs.add_argument("--top", type=int, default=5)
+    tpl = sub.add_parser("export-template", help="Sentetik CV şablon girdisi: pozisyon × yetkinlik × talep (T-019)")
+    tpl.add_argument("--out", type=Path, default=TEMPLATE_OUT)
+    tpl.add_argument("--top", type=int, default=template_input.DEFAULT_TOP)
+    sub.add_parser("resources-seed", help="Elle derlenen kaynakları yükle (T-046)")
+    ry = sub.add_parser("resources-youtube", help="YouTube'da eğitim videosu ara (günlük kota dolana kadar)")
+    ry.add_argument("--limit", type=int, help="En fazla bu kadar arama")
+    sub.add_parser("resources-export", help="Bulunan videoları taxonomy/resources_youtube.csv'ye yaz")
+    sub.add_parser("resources-import", help="resources_youtube.csv'yi yükle, başlık ve süreyi API'den al")
+    sub.add_parser("resources-check", help="Linkleri kontrol et, YouTube bilgilerini yenile")
+    sub.add_parser("resources-report", help="Kaynak sayıları ve eksik yetkinlikler")
+    ng = sub.add_parser("nightly", help="Gece toplamasını şimdi çalıştır (normalde Celery beat 03:00)")
+    ng.add_argument("--no-jitter", action="store_true", help="3-5 sn rastgele bekleme yerine kaynağın alt sınırı")
     return parser
 
 
@@ -99,11 +129,78 @@ def main(argv: list[str] | None = None) -> int:
         print(
             f"{n.postings} ilan: pozisyonu belli {n.with_role} (%{100 * n.with_role / max(n.postings, 1):.1f}), "
             f"yetkinlikli {n.with_skills} (%{100 * n.with_skills / max(n.postings, 1):.1f}), "
-            f"{n.skill_links} yetkinlik bağı, {n.deactivated} benzer ilan pasife alındı"
+            f"{n.skill_links} yetkinlik bağı, {n.masked} ilanda kişisel veri maskelendi, "
+            f"{n.deactivated} benzer ilan pasife alındı"
         )
         with session_factory() as session:
             print(f"role_skill_stats yenilendi: {stats.refresh(session)} satır")
         return 0
+
+    if args.command == "resources-seed":
+        with session_factory() as session:
+            print(f"{resources.seed(session)} kaynak eklendi")
+        return 0
+
+    if args.command == "resources-youtube":
+        key = youtube.YoutubeSettings().youtube_api_key
+        if not key:
+            print("YOUTUBE_API_KEY boş, arama yapılmadı", file=sys.stderr)
+            return 1
+        with session_factory() as session:
+            found = resources.search_youtube(
+                session,
+                PoliteClient(delay_s=resources.YOUTUBE_DELAY_S, max_retries=0),
+                key,
+                taxonomy.load_skills(),
+                limit=args.limit,
+            )
+        print(
+            f"{found.searches} arama, {found.added} video, kalan {found.remaining}"
+            + (" (kota doldu)" * found.quota_hit)
+        )
+        return 0
+
+    if args.command == "resources-export":
+        with session_factory() as session:
+            print(f"{resources.export_youtube(session)} video yazıldı: {resources.YOUTUBE_CSV}")
+        return 0
+
+    if args.command == "resources-import":
+        key = youtube.YoutubeSettings().youtube_api_key
+        if not key:
+            print("YOUTUBE_API_KEY boş, yükleme yapılmadı", file=sys.stderr)
+            return 1
+        with session_factory() as session:
+            added = resources.import_youtube(
+                session, PoliteClient(delay_s=resources.YOUTUBE_DELAY_S, max_retries=0), key
+            )
+        print(f"{added} video eklendi")
+        return 0
+
+    if args.command == "resources-check":
+        key = youtube.YoutubeSettings().youtube_api_key
+        with session_factory() as session:
+            c = resources.check_links(
+                session,
+                PoliteClient(delay_s=resources.CHECK_DELAY_S),
+                PoliteClient(delay_s=resources.YOUTUBE_DELAY_S, max_retries=0),
+                key,
+            )
+        print(f"{c.checked} link kontrol edildi, {c.dead} ölü, {c.revived} geri geldi")
+        return 0
+
+    if args.command == "resources-report":
+        with session_factory() as session:
+            rep = resources.report(session)
+        print(f"{rep['total']} canlı kaynak, dil: {rep['languages']}")
+        print(f"{resources.MIN_PER_SKILL}'ten az kaynağı olan: {len(rep['short'])}/{rep['skills']} yetkinlik")
+        return 0
+
+    if args.command == "nightly":
+        logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
+        report = nightly.run_nightly(session_factory, jitter=None if args.no_jitter else nightly.JITTER_S)
+        print(report.summary())
+        return 0 if report.ok else 1
 
     if args.command == "refresh-stats":
         with session_factory() as session:
@@ -120,6 +217,20 @@ def main(argv: list[str] | None = None) -> int:
                 print(f"    %{100 * d.demand_ratio:5.1f}  {d.skill} ({d.posting_count})")
         if roles and roles[0].computed_at:
             print(f"hesaplanma: {roles[0].computed_at.astimezone():%d.%m.%Y %H:%M}")
+        return 0
+
+    if args.command == "export-template":
+        with session_factory() as session:
+            demand, computed_at = template_input.load_demand(session)
+        data = template_input.build(
+            demand, taxonomy.load_skills(), taxonomy.load_roles(), top=args.top, computed_at=computed_at
+        )
+        args.out.parent.mkdir(parents=True, exist_ok=True)
+        args.out.write_text(json.dumps(data, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
+        print(f"{len(data['roles'])} pozisyon yazıldı: {args.out}")
+        for role in data["roles"]:
+            warn = "  ! az veri" if role["low_data"] else ""
+            print(f"  {role['slug']:<22}{role['total_postings']:>5} ilan, {len(role['skills']):>2} yetkinlik{warn}")
         return 0
 
     if args.command == "export-postings":
@@ -149,6 +260,12 @@ def main(argv: list[str] | None = None) -> int:
         info, postings = _api(remoteok.SOURCE, remoteok.fetch)
     elif args.source == "remotive":
         info, postings = _api(remotive.SOURCE, remotive.fetch)
+    elif args.source == "jobicy":
+        info, postings = _api(jobicy.SOURCE, jobicy.fetch)
+    elif args.source == "arbeitnow":
+        info, postings = _api(arbeitnow.SOURCE, lambda c: arbeitnow.fetch(c, pages=args.pages))
+    elif args.source == "pythonorg":
+        info, postings = pythonorg.SOURCE, pythonorg.scrape()
     else:
         info, postings, active = emscad.SOURCE, emscad.fetch(args.csv), args.active
 

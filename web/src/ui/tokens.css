@@ -1,5 +1,5 @@
 /*
- * CareerAI tasarım değerleri (T-022). Bileşenler renkleri sadece bu değişkenlerden alır; yeni renk gerekirse buraya eklenir.
+ * Cv'ne Bakalım! tasarım değerleri (T-022). Bileşenler renkleri sadece bu değişkenlerden alır; yeni renk gerekirse buraya eklenir.
  * Kontrast: metin/arka plan çiftleri WCAG AA (normal metin ≥ 4.5:1, büyük metin ve kenarlık/grafik ≥ 3:1).
  * `npm run check:contrast` bu dosyadaki çiftleri her iki temada kontrol eder.
  * Tema: varsayılan sistem tercihi; <html data-theme="light|dark"> ile elle seçilir (ThemeToggle).

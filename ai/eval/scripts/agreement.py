@@ -3,9 +3,10 @@
 Kullanım:
     python ai/eval/scripts/agreement.py [--dataset DIR] [--skills FILE] [--write-gold]
 
---write-gold: gold/ dosyası olmayan ve 2 etiketi olan her CV için taslak yazar.
-Anlaşılan yetkinlikler 'skills'e, anlaşmazlıklar '_karar_bekleyen'e girer; hakem
-sadece '_karar_bekleyen'i çözer. Var olan gold dosyalarına dokunulmaz.
+--write-gold: gold/ dosyası olmayan her etiketli CV için gold yazar. 2 etiketi olan CV'de
+anlaşılan yetkinlikler 'skills'e, anlaşmazlıklar '_karar_bekleyen'e girer; hakem sadece
+'_karar_bekleyen'i çözer. Tek etiketli CV'de etiket olduğu gibi kopyalanır; ama sadece manifest'te
+double=false ise (double=true olan CV ikinci etiketi bekler). Var olan gold dosyalarına dokunulmaz.
 """
 
 from __future__ import annotations
@@ -26,6 +27,7 @@ from _common import (
     Report,
     assignment,
     load_labels,
+    load_manifest,
     load_skill_names,
     use_utf8_stdout,
 )
@@ -119,6 +121,18 @@ def gold_draft(result: PairResult, skills_a: list[dict[str, Any]], skills_b: lis
     }
 
 
+def write_single_gold(dataset: Path, cv_id: str, by_annotator: dict[str, list[dict[str, Any]]]) -> None:
+    """Tek etiketli CV: etiket gold'a olduğu gibi kopyalanır (çift etiket sadece seçilen 20 CV'de)."""
+    path = dataset / "gold" / f"{cv_id}.json"
+    if path.exists():
+        return
+    ((annotator, skills),) = by_annotator.items()
+    path.parent.mkdir(parents=True, exist_ok=True)
+    data = {"cv_id": cv_id, "adjudicator": annotator, "skills": skills, "notes": "tek etiketleyici"}
+    path.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    print(f"{cv_id}: tek etiketli, gold'a kopyalandı: {path}")
+
+
 def main(argv: list[str] | None = None) -> int:
     use_utf8_stdout()
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -129,6 +143,7 @@ def main(argv: list[str] | None = None) -> int:
 
     report = Report()
     labels = load_labels(args.dataset, load_skill_names(args.skills), report)
+    manifest = load_manifest(args.dataset, report)
     for e in report.errors:
         print(f"HATA: {e}")
     if report.errors:
@@ -139,6 +154,14 @@ def main(argv: list[str] | None = None) -> int:
     for cv_id, by_annotator in sorted(labels.items()):
         pair = pick_pair(by_annotator, cv_id)
         if pair is None:
+            if args.write_gold and len(by_annotator) == 1:
+                double = manifest.get(cv_id, {}).get("double")
+                if double == "false":
+                    write_single_gold(args.dataset, cv_id, by_annotator)
+                elif double == "true":
+                    print(f"{cv_id}: çift etiketli CV, ikinci etiket bekleniyor; gold yazılmadı")
+                else:
+                    print(f"{cv_id}: manifest'te yok; gold yazılmadı")
             continue
         a, b = pair
         result = compare(cv_id, a, by_annotator[a], b, by_annotator[b])

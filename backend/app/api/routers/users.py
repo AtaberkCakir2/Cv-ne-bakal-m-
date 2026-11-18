@@ -9,13 +9,15 @@ from fastapi import APIRouter, Depends, HTTPException, Request, Response
 
 from app.api.deps import AppSettings, CurrentUser, DbSession
 from app.api.rate_limits import AuthRateLimit
+from app.db.enums import ConsentType
 from app.schemas.users import ConsentOut, ConsentsIn, DeleteAccountIn, ExportOut, ProfileOut, ProfileUpdateIn
 from app.services.auth import ConsentInput
 from app.services.users import ProfileChanges, UserError, UserService, profile_out
 
-router = APIRouter(prefix="/users", tags=["Kullanıcı"])
-
 _PROBLEM: dict[str, Any] = {"content": {"application/problem+json": {}}}
+
+# Bu router'daki her uç giriş ister.
+router = APIRouter(prefix="/users", tags=["Kullanıcı"], responses={401: {"description": "Giriş gerekli", **_PROBLEM}})
 
 
 def get_user_service(db: DbSession, settings: AppSettings) -> UserService:
@@ -35,6 +37,7 @@ def _ip(request: Request) -> str | None:
 
 @router.get("/me", response_model=ProfileOut, summary="Profil")
 def me(user: CurrentUser) -> ProfileOut:
+    """Oturum açmış kullanıcının profili ve seçtiği hedef pozisyon (seçilmediyse `null`)."""
     return profile_out(user)
 
 
@@ -55,13 +58,33 @@ def update_me(body: ProfileUpdateIn, user: CurrentUser, users: Users) -> Profile
 
 @router.get("/me/consents", response_model=list[ConsentOut], summary="Onay kayıtlarım (sürümlü)")
 def my_consents(user: CurrentUser, users: Users) -> list[ConsentOut]:
+    """Kabul edilen bütün metin sürümleri, eskiler dahil. Geri alınan açık rızada `withdrawn_at` doludur."""
     return users.consents(user)
 
 
 @router.post("/me/consents", response_model=list[ConsentOut], summary="Metnin yeni sürümünü onayla")
 def accept_consents(body: ConsentsIn, request: Request, user: CurrentUser, users: Users) -> list[ConsentOut]:
     """Yasal metin değişince istemci yeni sürümü burada onaylatır. Eski onay kayıtları silinmez."""
-    return users.accept_consents(user, [ConsentInput(c.consent_type, c.version) for c in body.consents], _ip(request))
+    try:
+        return users.accept_consents(
+            user, [ConsentInput(c.consent_type, c.version) for c in body.consents], _ip(request)
+        )
+    except UserError as exc:
+        _raise(exc)
+
+
+@router.delete(
+    "/me/consents/{consent_type}",
+    response_model=list[ConsentOut],
+    summary="Açık rızayı geri al",
+    responses={422: {"description": "Bu onay türü geri alınamaz", **_PROBLEM}},
+)
+def withdraw_consent(consent_type: ConsentType, request: Request, user: CurrentUser, users: Users) -> list[ConsentOut]:
+    """KVKK md. 11. Onay kaydı silinmez, `withdrawn_at` dolar. Tekrar çağrılırsa bir şey değişmez."""
+    try:
+        return users.withdraw_consent(user, consent_type, _ip(request))
+    except UserError as exc:
+        _raise(exc)
 
 
 @router.get("/me/export", response_model=ExportOut, summary="Verilerimi indir (JSON)")

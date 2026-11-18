@@ -13,7 +13,7 @@ def fold(text: str, lang: Lang = "en") -> str:
 
     str.lower() "İ"yi "i̇" (i + birleşen nokta) yapar ve "İstanbul" hiçbir eş anlamlıyla eşleşmez. Türkçe metinde
     "I" de "ı" olur; İngilizce metinde "I" yine "i" kalır (aksi halde "AI" → "aı"). Türkçe metinde de teknoloji
-    adları Latin I ile yazılır ("FastAPI"), bu yüzden eşleyiciler Türkçe metni iki kuralla da dener (`fold_variants`).
+    adları Latin I ile yazılır ("FastAPI"), bu yüzden yetkinlik eşleyicisi Türkçe metni iki kuralla da dener.
     """
     text = text.replace("İ", "i")
     if lang == "tr":
@@ -24,8 +24,3 @@ def fold(text: str, lang: Lang = "en") -> str:
 def fold_phrase(text: str, lang: Lang = "en") -> str:
     """Başlık eşlemesi için: küçük harf, tire/alt çizgi/eğik çizgi boşluk olur ("Back-end" = "back end")."""
     return _SPACES.sub(" ", _SEPARATORS.sub(" ", fold(text, lang))).strip()
-
-
-def fold_variants(text: str, lang: Lang) -> list[str]:
-    """Türkçe metin için hem Türkçe ("PROGRAMCISI" → "programcısı") hem İngilizce ("FastAPI" → "fastapi") katlama."""
-    return [fold(text, "tr"), fold(text, "en")] if lang == "tr" else [fold(text, lang)]
