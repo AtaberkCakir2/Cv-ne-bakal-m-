@@ -199,3 +199,21 @@ def test_release_never_goes_below_zero_or_revives_an_expired_window(monkeypatch:
     asyncio.run(limiter.release(limit, "s"))  # biten pencereye iade yapılmaz
     assert asyncio.run(limiter.retry_after(limit, "s")) is None
     assert asyncio.run(limiter.retry_after(limit, "s")) == 60
+
+
+def test_release_is_skipped_when_the_request_was_not_counted() -> None:
+    """Redis'e ulaşılamadığı için sayılmayan istek iade almaz: sonradan gelen iade başka bir artırmayı düşmesin."""
+    undone: list[str] = []
+
+    class Flaky:
+        async def hit(self, key: str, window_s: int) -> tuple[int, int]:
+            raise OSError("redis yok")
+
+        async def undo(self, key: str) -> None:
+            undone.append(key)
+
+    limiter = RateLimiter(Flaky(), SETTINGS)
+    limit = Limit("x", 1, 60)
+    assert asyncio.run(limiter.check(limit, "s")) == (None, False)
+    asyncio.run(limiter.release(limit, "s"))  # Redis bir süre denenmiyor: iade de yapılmaz
+    assert undone == []

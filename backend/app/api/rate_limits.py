@@ -33,14 +33,17 @@ async def limit_analyses(request: Request, user: CurrentUser) -> None:
     """Kullanıcı başına saatlik analiz sınırı. Başlatılamayan analiz `release_analysis` ile geri düşülür."""
     limiter = _limiter(request)
     if limiter is not None:
-        await _enforce(limiter, _analyses_limit(limiter), str(user.id))
+        retry, counted = await limiter.check(_analyses_limit(limiter), str(user.id))
+        if retry is not None:
+            raise HTTPException(429, TOO_MANY, headers=too_many_requests_headers(retry))
+        request.state.analysis_counted = counted
 
 
 async def release_analysis(request: Request, user_id: object) -> None:
     """Reddedilen yükleme (bozuk/büyük PDF, kuyruk dolu…) saatlik hakkı harcamasın: sadece başlayan analiz sayılır.
     Reddedilen istekler yine de IP başına genel sınıra takılır."""
     limiter = _limiter(request)
-    if limiter is not None:
+    if limiter is not None and getattr(request.state, "analysis_counted", False):
         await limiter.release(_analyses_limit(limiter), str(user_id))
 
 

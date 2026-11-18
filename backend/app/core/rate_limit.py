@@ -107,22 +107,28 @@ class RateLimiter:
 
     async def retry_after(self, limit: Limit, subject: str) -> int | None:
         """Sınır aşıldıysa kaç saniye sonra tekrar denenebileceğini, aşılmadıysa None döner."""
+        return (await self.check(limit, subject))[0]
+
+    async def check(self, limit: Limit, subject: str) -> tuple[int | None, bool]:
+        """(retry_after, sayaç bu istekte gerçekten artırıldı mı). İade sadece artırılan isteğe yapılır."""
         if time.monotonic() < self._skip_until:
-            return None
+            return None, False
         try:
             count, ttl = await self.store.hit(f"rl:{limit.name}:{subject}", limit.window_s)
         except (RedisConnectionError, OSError):
             # Bağlantı yok: bir süre deneme. (Zaman aşımı da buraya düşer ama sadece bağlantı kurulamazsa.)
             self._skip_until = time.monotonic() + _RETRY_REDIS_AFTER_S
             log.warning("rate_limit_store_unavailable", exc_info=True)
-            return None
+            return None, False
         except Exception:  # noqa: BLE001 — tek seferlik hata (ör. yavaş yanıt): sadece bu istek sınırsız geçer
             log.warning("rate_limit_check_failed", exc_info=True)
-            return None
-        return ttl if count > limit.max_requests else None
+            return None, False
+        return (ttl if count > limit.max_requests else None), True
 
     async def release(self, limit: Limit, subject: str) -> None:
         """Sayılmaması gereken isteği sayaçtan düşer (ör. reddedilen CV yüklemesi). Hata olursa sessizce geçer."""
+        if time.monotonic() < self._skip_until:
+            return
         try:
             await self.store.undo(f"rl:{limit.name}:{subject}")
         except Exception:  # noqa: BLE001 — iade yapılamazsa en kötü ihtimalle bir hak eksik kalır
