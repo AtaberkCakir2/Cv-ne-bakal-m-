@@ -2,6 +2,8 @@
 # Her modülde, sahibinin README'sinde yazan komutlar birebir çalıştırılır: CI'da geçen, yerelde de geçer.
 # Henüz kurulmamış modüller (web, mobile, ai worker imajı) dosyaları eklendiği anda otomatik devreye girer.
 # "Kırmızı CI ile merge yok" kuralı GitHub'daki branch protection ile zorunlu kılınır (infra/ci.md).
+# PR'da sadece değişen modüllerin işleri çalışır (Actions dakikası, infra/ci.md "Hangi iş ne zaman"). Atlanan
+# zorunlu iş GitHub'da başarılı sayılır. main'e push'ta her şey çalışır: birleşmiş hâl her zaman tam denetlenir.
 name: CI
 
 on:
@@ -22,28 +24,50 @@ jobs:
     runs-on: ubuntu-24.04
     outputs:
       db: ${{ steps.find.outputs.db }}
+      backend: ${{ steps.find.outputs.backend }}
       scraper: ${{ steps.find.outputs.scraper }}
       ai: ${{ steps.find.outputs.ai }}
       ai_docker: ${{ steps.find.outputs.ai_docker }}
       web: ${{ steps.find.outputs.web }}
       mobile: ${{ steps.find.outputs.mobile }}
+      docker: ${{ steps.find.outputs.docker }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          # PR'da HEAD, PR'ın main ile birleşmiş hâlidir; HEAD^1 main'in ucu. Fark = PR'ın değiştirdikleri.
+          fetch-depth: 2
       - id: find
         run: |
-          has() { if [ -e "$1" ]; then echo true; else echo false; fi; }
+          var() { if [ -e "$1" ]; then echo true; else echo false; fi; }
+          if [ "$GITHUB_EVENT_NAME" = pull_request ]; then
+            git diff --name-only HEAD^1 HEAD > "$RUNNER_TEMP/degisen"
+            echo "Değişen dosyalar:"; sed 's/^/  /' "$RUNNER_TEMP/degisen"
+          else
+            : > "$RUNNER_TEMP/degisen"; HEPSI=1
+          fi
+          # Sözleşmeler veya bu dosya değişirse her şey çalışır.
+          if grep -qE '^(contracts/|\.github/workflows/ci\.yml$)' "$RUNNER_TEMP/degisen"; then HEPSI=1; fi
+          # $1: değişince işi çalıştıran yollar (regex); $2 (varsa): modülün kurulu olduğunu gösteren dosya.
+          calis() {
+            if [ -n "${2:-}" ] && [ ! -e "$2" ]; then echo false; return; fi
+            if [ -n "${HEPSI:-}" ] || grep -qE "$1" "$RUNNER_TEMP/degisen"; then echo true; else echo false; fi
+          }
           {
-            echo "db=$(has backend/app/db/alembic.ini)"
-            echo "scraper=$(has scraper/pyproject.toml)"
-            echo "ai=$(has ai/pyproject.toml)"
-            echo "ai_docker=$(has ai/Dockerfile)"
-            echo "web=$(has web/package.json)"
-            echo "mobile=$(has mobile/package.json)"
+            echo "db=$(var backend/app/db/alembic.ini)"
+            echo "backend=$(calis '^backend/')"
+            # Scraper, backend'in modellerini/migration'larını ve ai'nin pii paketini kurar.
+            echo "scraper=$(calis '^(scraper|backend|ai)/' scraper/pyproject.toml)"
+            echo "ai=$(calis '^ai/' ai/pyproject.toml)"
+            echo "ai_docker=$(var ai/Dockerfile)"
+            echo "web=$(calis '^web/' web/package.json)"
+            echo "mobile=$(calis '^mobile/' mobile/package.json)"
+            echo "docker=$(calis '^((backend|scraper|ai)/|docker-compose[^/]*\.ya?ml$|\.env\.example$)')"
           } | tee -a "$GITHUB_OUTPUT"
 
   backend:
     name: Backend (ruff, mypy, pytest + migration)
     needs: detect
+    if: needs.detect.outputs.backend == 'true'
     runs-on: ubuntu-24.04
     defaults:
       run:
@@ -192,6 +216,7 @@ jobs:
   docker:
     name: Docker (compose + imaj build)
     needs: detect
+    if: needs.detect.outputs.docker == 'true'
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
