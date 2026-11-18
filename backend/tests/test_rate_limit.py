@@ -10,12 +10,15 @@ from fastapi.testclient import TestClient
 
 from app.api.deps import get_current_user
 from app.api.rate_limits import AnalysesRateLimit
+from app.api.routers.analyses import get_analysis_service
 from app.api.routers.auth import get_auth_service
 from app.core import rate_limit
 from app.core.config import get_settings
 from app.core.rate_limit import Limit, MemoryCounterStore, RateLimiter
 from app.main import create_app
+from app.services.analysis_queue import QueueUnavailable
 from app.services.auth import AuthError
+from app.services.cv_validation import CvRejected
 from tests.conftest import TEST_SETTINGS
 
 API = "/api/v1"
@@ -151,3 +154,48 @@ def test_memory_window_resets(monkeypatch: pytest.MonkeyPatch) -> None:
 def test_ip_is_not_stored_in_clear() -> None:
     limiter = RateLimiter(MemoryCounterStore(), SETTINGS)
     assert "203.0.113.7" not in limiter.ip_subject("203.0.113.7")
+
+
+def test_rejected_uploads_do_not_use_the_hourly_analysis_limit(limited_app: FastAPI, client: TestClient) -> None:
+    """Sadece başlayan analiz sayılır: bozuk PDF veya kuyruk hatası saatlik hakkı harcamaz (sınır testte 2)."""
+    outcomes = iter(
+        [
+            CvRejected(422, "PDF_UNREADABLE", "PDF okunamadı."),
+            QueueUnavailable(),
+            CvRejected(415, "PDF_UNREADABLE", "PDF değil."),
+            None,
+            None,
+            None,
+        ]
+    )
+
+    class FakeService:
+        def create(self, *args: object) -> uuid.UUID:
+            outcome = next(outcomes)
+            if outcome is not None:
+                raise outcome
+            return uuid.uuid4()
+
+    user_id = uuid.uuid4()
+    limited_app.dependency_overrides[get_current_user] = lambda: SimpleNamespace(id=user_id)
+    limited_app.dependency_overrides[get_analysis_service] = FakeService
+
+    def upload() -> int:
+        files = {"file": ("cv.pdf", b"%PDF-1.4", "application/pdf")}
+        return client.post(f"{API}/analyses", files=files, data={"target_role_id": "1"}).status_code
+
+    assert [upload() for _ in range(6)] == [422, 503, 415, 202, 202, 429]
+
+
+def test_release_never_goes_below_zero_or_revives_an_expired_window(monkeypatch: pytest.MonkeyPatch) -> None:
+    now = [1000.0]
+    monkeypatch.setattr(rate_limit, "time", SimpleNamespace(monotonic=lambda: now[0]))
+    limiter = RateLimiter(MemoryCounterStore(), SETTINGS)
+    limit = Limit("x", 1, 60)
+    asyncio.run(limiter.release(limit, "s"))  # sayaç yokken iade hak kazandırmaz
+    assert asyncio.run(limiter.retry_after(limit, "s")) is None
+    assert asyncio.run(limiter.retry_after(limit, "s")) == 60
+    now[0] += 61
+    asyncio.run(limiter.release(limit, "s"))  # biten pencereye iade yapılmaz
+    assert asyncio.run(limiter.retry_after(limit, "s")) is None
+    assert asyncio.run(limiter.retry_after(limit, "s")) == 60

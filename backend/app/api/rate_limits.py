@@ -25,12 +25,23 @@ async def limit_auth(request: Request) -> None:
         await _enforce(limiter, limit, limiter.ip_subject(request.client.host if request.client else None))
 
 
+def _analyses_limit(limiter: RateLimiter) -> Limit:
+    return Limit("analyses", limiter.settings.rate_limit_analyses_per_hour, 3600)
+
+
 async def limit_analyses(request: Request, user: CurrentUser) -> None:
-    """Kullanıcı başına saatlik analiz sınırı; analiz oluşturma ucu kimlik doğrulamaya bağlanınca kullanılır."""
+    """Kullanıcı başına saatlik analiz sınırı. Başlatılamayan analiz `release_analysis` ile geri düşülür."""
     limiter = _limiter(request)
     if limiter is not None:
-        limit = Limit("analyses", limiter.settings.rate_limit_analyses_per_hour, 3600)
-        await _enforce(limiter, limit, str(user.id))
+        await _enforce(limiter, _analyses_limit(limiter), str(user.id))
+
+
+async def release_analysis(request: Request, user_id: object) -> None:
+    """Reddedilen yükleme (bozuk/büyük PDF, kuyruk dolu…) saatlik hakkı harcamasın: sadece başlayan analiz sayılır.
+    Reddedilen istekler yine de IP başına genel sınıra takılır."""
+    limiter = _limiter(request)
+    if limiter is not None:
+        await limiter.release(_analyses_limit(limiter), str(user_id))
 
 
 AuthRateLimit = Depends(limit_auth)
