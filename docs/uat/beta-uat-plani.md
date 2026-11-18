@@ -50,7 +50,7 @@ Yüz yüze veya ekran paylaşımlı çevrim içi oturum, yaklaşık 35 dakika. G
 
 1. Onam (3 dk)
 2. Altı görev senaryosu (§5, 20 dk). Gözlemci her görevin sonucunu ve süresini forma yazar. Analizin bekleme süresi ayrı ölçülür (sistem süresi kullanıcı süresiyle karışmasın, TÜBİTAK taslağı §2.6).
-3. SUS ve ek sorular (§8, 7 dk)
+3. Anket: SUS-TR ve Ek 2'nin diğer soruları (§8, 7 dk)
 4. Serbest yorum (5 dk)
 
 Katılımcılar web ve Windows masaüstü uygulaması arasında dağıtılır. Uygun Android cihazı olanlar ayrıca Play kapalı testine eklenir.
@@ -110,29 +110,16 @@ Gelen her bildirim GitHub'da `beta` etiketli bir issue olur. Bildirimdeki e-post
 
 Anket, kayıt formuyla bağlantısı olmayan ayrı bir çevrim içi formdur. Ayarlarında e-posta toplama ve giriş zorunluluğu kapalıdır. Hangi form aracının kullanılacağına ekip karar verir.
 
-**Sistem Kullanılabilirlik Ölçeği (SUS, Brooke 1996).** 1 = Kesinlikle katılmıyorum … 5 = Kesinlikle katılıyorum. Aşağıdaki ifadeler çalışma çevirisidir. Etik kurul başvurusundan önce Burak ile birlikte yayımlanmış bir Türkçe uyarlamayla karşılaştırılıp kesinleşir (TÜBİTAK taslağı Ek 2).
+Anketin tek kaynağı TÜBİTAK Ek 2'dir (`docs/tubitak/ek2-anket.md`, #36). Beta'da aynı form kullanılır; ayrı bir soru listesi tutulmaz.
 
-1. Bu uygulamayı sık sık kullanmak isterim.
-2. Uygulamayı gereksiz yere karmaşık buldum.
-3. Uygulamanın kullanımı kolaydı.
-4. Bu uygulamayı kullanabilmek için teknik bilgisi olan birinin yardımına ihtiyaç duyarım.
-5. Uygulamadaki işlevlerin birbiriyle iyi bütünleştiğini düşünüyorum.
-6. Uygulamada çok fazla tutarsızlık olduğunu düşünüyorum.
-7. Çoğu insanın bu uygulamayı çok çabuk öğreneceğini düşünüyorum.
-8. Uygulamayı kullanmayı çok zahmetli buldum.
-9. Uygulamayı kullanırken kendimden emin hissettim.
-10. Bu uygulamayı kullanmaya başlamadan önce birçok şey öğrenmem gerekti.
+**Sistem Kullanılabilirlik Ölçeği (SUS).** Geçerlik ve güvenirliği sınanmış Türkçe sürüm **SUS-TR** (Demirkol ve Şeneler, 2018) kullanılır. 10 madde makaledeki ifadeleriyle, aynı sırayla ve değiştirilmeden alınır. Kendi çevirimiz kullanılmaz: geçerlenmemiş bir çeviri SUS puanını tartışmalı hale getirir. Kullanım izni yazarlardan istenir (Ek 2'deki not).
 
-**Puanlama:** Tek numaralı maddelerde katkı = cevap − 1, çift numaralı maddelerde katkı = 5 − cevap. Toplam katkı × 2,5 = 0–100 arası SUS puanı. Bir maddesi boş kalan anket SUS ortalamasına katılmaz.
+**Puanlama** (Brooke, 1996): Tek numaralı maddelerde katkı = cevap − 1, çift numaralı maddelerde katkı = 5 − cevap. Toplam katkı × 2,5 = 0–100 arası SUS puanı. Bir maddesi boş kalan anket SUS ortalamasına katılmaz.
 
-**Ek sorular:**
+**Diğer sorular:** Ek 2'nin A (genel bilgiler), C (sonuçların doğruluğu), D (kişisel veriler ve güven) ve E (açık uçlu) bölümleri. Beta için Ek 2'ye eklenmesi önerilen iki soru (Burak ile birlikte karar verilir):
 
-- E1. Sonuçta gösterilen mevcut ve eksik yetkinlikler sana ne kadar doğru geldi? (1–5)
-- E2. Önerilen kaynaklar eksiklerini kapatmak için işine yarar mı? (1–5)
-- E3. Bu uygulamayı bir arkadaşına önerir misin? (Evet / Belki / Hayır)
-- E4. Hangi platformu kullandın? (Web / Windows / macOS / Android)
-- E5. En çok zorlandığın şey neydi? (serbest metin)
-- E6. Eklenmesini istediğin bir şey var mı? (serbest metin)
+- Hangi platformu kullandın? (Web / Windows / macOS / Android). Platforma özgü hataları ayırmak için.
+- Bu uygulamayı bir arkadaşına önerir misin? (Evet / Belki / Hayır)
 
 Serbest metin cevaplarında kişisel bilgi varsa rapora alınmadan silinir.
 
@@ -142,5 +129,6 @@ Serbest metin cevaplarında kişisel bilgi varsa rapora alınmadan silinir.
 |---|---|---|
 | Etik kurul onayı mı muafiyet mi | Burak (danışmanla) | 15.12 |
 | Kayıt ve anket formu aracı | Ekip | 15.12 |
+| SUS-TR maddelerinin Ek 2'ye aktarılması ve yazarlardan kullanım izni | Anıl, Burak | 15.12 |
 | Oturumların yüz yüze mi çevrim içi mi yapılacağı | Ekip | 21.12 |
 | `iletisim@cvnebakalim.com` gelen kutusunu kimin okuyacağı (beta ve hypercare) | Ekip, go-live #47 | 21.12 |
