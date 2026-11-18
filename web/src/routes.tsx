@@ -26,7 +26,7 @@ export const router = createBrowserRouter([
     path: "/",
     element: <Layout />,
     children: [
-      { index: true, element: <PlaceholderPage title="CareerAI" note="CV'ni hedef pozisyonla karşılaştır." /> },
+      { index: true, element: <PlaceholderPage title="Cv'ne Bakalım!" note="CV'ni hedef pozisyonla karşılaştır." /> },
       { path: "giris", element: <LoginPage /> },
       { path: "kayit", element: <RegisterPage /> },
       { path: "sifremi-unuttum", element: <ForgotPasswordPage /> },

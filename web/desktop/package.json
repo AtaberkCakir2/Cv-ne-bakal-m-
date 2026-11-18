@@ -1,10 +1,10 @@
 {
   "name": "careerai-desktop",
-  "productName": "CareerAI",
+  "productName": "Cv'ne Bakalım!",
   "version": "0.1.0",
   "private": true,
-  "description": "CareerAI masaüstü uygulaması (Electron, T-059)",
-  "author": "CareerAI ekibi",
+  "description": "Cv'ne Bakalım! masaüstü uygulaması (Electron, T-059)",
+  "author": "Cv'ne Bakalım! ekibi",
   "main": "main.cjs",
   "scripts": {
     "web": "npm --prefix .. run build",
@@ -20,12 +20,12 @@
     "electron-updater": "6.8.10"
   },
   "devDependencies": {
-    "electron": "44.9.0",
+    "electron": "44.9.1",
     "electron-builder": "26.17.0"
   },
   "build": {
     "appId": "com.cvnebakalim.careerai",
-    "productName": "CareerAI",
+    "productName": "Cv'ne Bakalım!",
     "directories": {
       "output": "release",
       "buildResources": "resources"
@@ -46,14 +46,16 @@
     "nsis": {
       "oneClick": false,
       "perMachine": false,
-      "allowToChangeInstallationDirectory": true
+      "allowToChangeInstallationDirectory": true,
+      "artifactName": "CvneBakalim-Setup-${version}.${ext}"
     },
     "mac": {
       "target": [
         "dmg",
         "zip"
       ],
-      "category": "public.app-category.education"
+      "category": "public.app-category.education",
+      "artifactName": "CvneBakalim-${version}-${arch}.${ext}"
     },
     "publish": {
       "provider": "github",

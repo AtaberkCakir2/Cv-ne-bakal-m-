@@ -10,7 +10,7 @@ PROFILES := $(if $(wildcard backend/Dockerfile),--profile api) $(if $(wildcard a
 COMPOSE  := docker compose $(PROFILES)
 MODEL    ?= $(or $(OLLAMA_MODEL),llama3.1:8b)
 
-.PHONY: help up down restart ps logs model psql redis-cli reset check-env prod-ps prod-logs prod-local prod-model staging-ps staging-down backup-init backup-now backup-list
+.PHONY: help up down restart ps logs model psql redis-cli reset check-env prod-ps prod-logs prod-local prod-model prod-admin staging-ps staging-down prod-monitoring-reload monitoring-check backup-init backup-now backup-list
 
 # $(info) kabuk kullanmaz; Windows (cmd) ve macOS/Linux'ta aynı çıktıyı verir.
 help:
@@ -24,7 +24,10 @@ help:
 	$(info make reset     Servisleri durdurur ve TUM lokal veriyi siler)
 	$(info Production / prova (karar #30, infra/pc/deploy.md). Deploy Git Bash'te: bash infra/pc/deploy.sh v1.0.0)
 	$(info make prod-ps   make prod-logs   make prod-model   make prod-local (sunum B plani))
+	$(info make prod-admin EMAIL=ad@ornek.com   (yonetim paneline admin ver))
 	$(info make staging-ps   make staging-down)
+	$(info Izleme (T-066, infra/monitoring/README.md): Grafana http://127.0.0.1:3000)
+	$(info make prod-monitoring-reload   make monitoring-check)
 	$(info make backup-init (bir kez)   make backup-now   make backup-list   Geri yukleme testi: bash infra/backup/restore-test.sh)
 	@cd .
 
@@ -83,12 +86,27 @@ prod-model:
 prod-local:
 	$(PC_PROD) -f infra/pc/compose.local.yml up -d --no-build --wait api
 
+# Uygulamada kayıtlı bir kullanıcıyı yönetim paneline admin yapar (T-063, backend/app/admin/README.md).
+#   make prod-admin EMAIL=ad@ornek.com      geri almak: make prod-admin EMAIL=ad@ornek.com REVOKE=--revoke
+prod-admin:
+	$(if $(EMAIL),,$(error Kullanim: make prod-admin EMAIL=ad@ornek.com))
+	$(PC_PROD) exec api python -m app.admin.promote "$(EMAIL)" $(REVOKE)
+
 staging-ps:
 	$(PC_STAGING) ps
 
 # Prova bitince kapatılır; verisi kalır. Veriyi de silmek için sonuna -v (ortak Ollama modeli silinmez).
 staging-down:
 	$(PC_STAGING) down
+
+# --- İzleme (T-066, infra/monitoring/README.md). Production'da monitoring profiliyle açılır. ---
+# alerts.yml, prometheus.yml veya pano değişince.
+prod-monitoring-reload:
+	$(PC_PROD) up -d --no-build --force-recreate prometheus grafana
+
+# Prometheus ayarını ve uyarı kurallarını promtool ile denetler (Docker gerekir).
+monitoring-check:
+	docker run --rm -v "$(CURDIR)/infra/monitoring/prometheus:/etc/prometheus:ro" --entrypoint promtool prom/prometheus:v3.5.0 check config /etc/prometheus/prometheus.yml
 
 # --- Yedek (T-068, infra/backup/README.md). backup servisi production'da açıktır. ---
 # Depoyu bir kez oluşturur (restic init).

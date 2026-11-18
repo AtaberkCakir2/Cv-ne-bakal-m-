@@ -243,7 +243,7 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 - **Destek:** —
 - **Çıktı:** Kurulum dosyaları
 - **Kabul kriteri:** Web arayüzünü sarmalar; contextIsolation açık, nodeIntegration kapalı; electron-builder ile Windows (NSIS) ve macOS (dmg); electron-updater + GitHub Releases ile otomatik güncelleme.
-- **Devam notu (07.11.2026):** Yapılan: `web/desktop/` (Electron 44, app://careerai protokolü, güvenli webPreferences, CSP, dış bağlantılar sistem tarayıcısında, izinler kapalı, electron-updater); Windows NSIS kurulum dosyası üretildi ve paketli uygulama `--smoke` ile denendi. · Sıradaki adım: simge; macOS dmg'yi bir Mac'te üretmek; backend `CORS_ORIGINS`'e `app://careerai`; güncellemenin çalışması için repo/yayın yeri kararı (özel repo token'sız indirilemez). · Açık sorular / engeller: Mac erişimi; kod imzalama yok (uyarılar README'de). · Branch: anil/electron
+- **Devam notu (17.11.2026):** Yapılan: `web/desktop/` (Electron 44, app://careerai protokolü, güvenli webPreferences, CSP, dış bağlantılar sistem tarayıcısında, izinler kapalı, electron-updater); Windows NSIS kurulum dosyası üretildi ve paketli uygulama `--smoke` ile denendi. Simge (`web/desktop/resources/icon.png`) ve backend varsayılan `CORS_ORIGINS`'e `app://careerai` eklendi (testli, #84). Görünen ad Cv'ne Bakalım! (#99): kurulum dosyası `CvneBakalim-Setup-<sürüm>.exe`, `userData` eski adla (`%APPDATA%\CareerAI`) sabit. · Sıradaki adım: macOS dmg'yi bir Mac'te üretmek; güncellemenin çalışması için repo/yayın yeri kararı (özel repo token'sız indirilemez); production `.env.prod`'da `CORS_ORIGINS`'e `app://careerai` (Ataberk). · Açık sorular / engeller: Mac erişimi; kod imzalama yok (uyarılar README'de). · Branch: (yeni iş için açılacak)
 
 ### T-065 · KVKK aydınlatma metni, açık rıza, gizlilik politikası, kullanım koşulları
 
@@ -289,12 +289,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-080 · API dokümantasyonu ve README'ler
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 21.12.2026 – 27.12.2026 · **Öncelik:** P1 · **Efor:** 4 saat · **Alan:** Dokümantasyon
 - **Bağımlılık:** T-048
 - **Destek:** —
 - **Çıktı:** docs/api + README
 - **Kabul kriteri:** OpenAPI açıklamaları ve örnekler; her modül için README (kurulum, çalıştırma, test).
+- **Not:** 11.11.2026: `docs/api/README.md` (kimlik doğrulama, örnek akış, CV kuralları, hata biçimi, sınırlar) ve `docs/api/openapi.json` (`backend/scripts/export_openapi.py` üretir, web kopyasıyla birlikte; eskiyse `tests/test_openapi.py` kırılır). Her uçta özet + açıklama, her JSON gövdesinde örnek, tüm 4xx/5xx yanıtlarında RFC 7807 `Problem` şeması, health dışı her uçta 429 belgelendi. README'ler: backend (endpoint tablosu güncellendi) ve web; `scraper/`, `ai/`, `infra/`, `mobile/` README'leri sahiplerinde.
 
 ---
 

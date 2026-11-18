@@ -1,0 +1,47 @@
+flowchart LR
+    ogrenci(["Öğrenci"])
+    admin(["Yönetici"])
+    zaman(["Zamanlayıcı<br/>(her gece 03:00)"])
+
+    subgraph sistem["CareerAI"]
+        direction TB
+        UC1(["Hesap aç / giriş yap"])
+        UC2(["KVKK metnini onayla"])
+        UC3(["Hedef pozisyon seç"])
+        UC4(["Özgeçmiş yükle ve analiz et"])
+        UC5(["Analiz sonucunu görüntüle"])
+        UC6(["Eğitim kaynaklarını incele"])
+        UC7(["Geçmiş analizleri görüntüle"])
+        UC8(["Sonucu puanla"])
+        UC9(["Verilerimi indir / hesabımı sil"])
+
+        UC10(["Metin çıkar · kişisel veriyi maskele"])
+        UC11(["Yetkinlik çıkar ve ilanlarla eşleştir"])
+        UC12(["OCR ile oku"])
+
+        UC13(["Eğitim kaynaklarını yönet"])
+        UC14(["Toplama çalışmalarını izle"])
+
+        UC15(["İlanları topla ve temizle"])
+        UC16(["Talep istatistiklerini yenile"])
+    end
+
+    ogrenci --- UC1
+    ogrenci --- UC3
+    ogrenci --- UC4
+    ogrenci --- UC5
+    ogrenci --- UC7
+    ogrenci --- UC8
+    ogrenci --- UC9
+
+    admin --- UC13
+    admin --- UC14
+
+    zaman --- UC15
+
+    UC1 -. "«include»" .-> UC2
+    UC4 -. "«include»" .-> UC10
+    UC4 -. "«include»" .-> UC11
+    UC12 -. "«extend»<br/>taranmış özgeçmiş" .-> UC10
+    UC5 -. "«include»" .-> UC6
+    UC15 -. "«include»" .-> UC16

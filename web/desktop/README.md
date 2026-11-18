@@ -38,7 +38,7 @@ Arayüz geliştirirken Vite sunucusunu açmak için: `CAREERAI_DEV_URL=http://12
 `VITE_API_URL` zorunlu ve `https://` ile başlamalı; `check-api.cjs` bunu kontrol eder. Verilmezse uygulama sunucuya bağlanamaz.
 
 ```bash
-VITE_API_URL=https://api.cvnebakalim.com npm run dist:win   # release/CareerAI Setup <sürüm>.exe (NSIS)
+VITE_API_URL=https://api.cvnebakalim.com npm run dist:win   # release/CvneBakalim-Setup-<sürüm>.exe (NSIS)
 VITE_API_URL=https://api.cvnebakalim.com npm run dist:mac   # release/*.dmg ve *.zip (sadece macOS'ta)
 ```
 
@@ -54,8 +54,8 @@ PowerShell'de: `$env:VITE_API_URL="https://api.cvnebakalim.com"; npm run dist:wi
 
 ## Canlıya çıkmadan önce
 
-- **CORS:** Backend'in `CORS_ORIGINS` listesine `app://careerai` eklenmeli. Masaüstü uygulamasının istekleri bu kökenden gelir; eklenmezse giriş ekranı "Sunucuya ulaşılamadı" der.
+- **CORS:** Masaüstü uygulamasının istekleri `app://careerai` kökeninden gelir. Backend'in varsayılan listesinde var (`backend/app/core/config.py`); production'da `infra/pc/.env.prod`'daki `CORS_ORIGINS`'e de yazılmalı (ör. `["https://app.cvnebakalim.com","app://careerai"]`). Eksikse giriş ekranı "Sunucuya ulaşılamadı" der.
 - **Otomatik güncelleme ve özel repo:** Repo özel olduğu sürece `electron-updater` sürümleri token'sız indiremez. İki seçenek var:
   - Repo yayından önce herkese açık yapılır (fizibilite raporundaki açık kaynak planı).
   - Kurulum dosyaları ayrı, herkese açık bir "releases" reposuna yüklenir ve `package.json` → `build.publish` o repoya çevrilir.
-- **Simge:** `resources/icon.ico` ve `resources/icon.icns` eklenmeli; şu an Electron'un varsayılan simgesi kullanılıyor. Klasör `build/` değil `resources/`, çünkü kök `.gitignore` `build/`'i yok sayıyor.
+- **Simge:** `resources/icon.png` (1024×1024, şeffaf köşeli). electron-builder Windows `.ico` ve macOS `.icns` dosyalarını bundan üretir. Klasör `build/` değil `resources/`, çünkü kök `.gitignore` `build/`'i yok sayıyor.

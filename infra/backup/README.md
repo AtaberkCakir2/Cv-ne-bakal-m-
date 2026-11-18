@@ -6,7 +6,7 @@ Windows'ta systemd/cron olmadığı için yedek, production compose'unda (`infra
 
 | Dosya | Ne yapar |
 |---|---|
-| `Dockerfile` | restic 0.18 + Postgres 16 istemcisi; `deploy.sh` yerelde derler (`careerai/backup:local`) |
+| `Dockerfile` | restic 0.19.1 + Postgres 16 istemcisi; `deploy.sh` yerelde derler (`careerai/backup:local`) |
 | `scheduler.sh` | Konteynerin ana süreci: 10 dakikada bir son başarılı yedeğe bakar, 02:00'den sonra yedek yoksa `backup.sh`'ı çalıştırır; başarısızsa 30 dk sonra yeniden dener |
 | `backup.sh` | Döküm diske yazılmadan restic'e akar; eski yedekleri siler; başarıda `/state/last-success`, haftalık kontrolde `/state/last-check` yazar |
 | `restore-test.sh [ortam] [snapshot]` | PC'de (Git Bash) yedeği geçici bir Postgres kapsayıcısına yükler, satır sayılarını canlıyla karşılaştırır. Canlı veritabanına yazmaz |
@@ -17,6 +17,8 @@ Windows'ta systemd/cron olmadığı için yedek, production compose'unda (`infra
 
 Depo PC'den ayrı bir yerde olmalı. Veritabanı küçük (Kasım 2026: ~6,5 MB döküm), ücretsiz 10 GB yeter.
 
+restic B2'ye **S3 uyumlu adresinden** bağlanır (`s3:https://s3.eu-central-003.backblazeb2.com/…`), B2'nin kendi arayüzüyle (`b2:`) değil: B2'nin dosya indirme sunucusu (`f003.backblazeb2.com`) Türkiye'deki ağlarda TLS el sıkışmasında kesiliyor ve restic hata vermeden takılı kalıyor (15.11.2026). Anahtar aynı B2 uygulama anahtarıdır; compose bunu `AWS_ACCESS_KEY_ID` / `AWS_SECRET_ACCESS_KEY` olarak verir.
+
 **Kuruldu (06.11.2026, Ataberk):** hesap EU Central bölgesinde, bucket `cvnebakalim-yedek`, uygulama anahtarı `careerai-pc`; anahtarlar ve hesap bilgileri parola yöneticisinde. Yeniden kurmak gerekirse:
 
 1. backblaze.com → **Sign Up** (B2 Cloud Storage), bölge **EU Central**. Hesapta iki adımlı doğrulama açılır.
@@ -26,7 +28,7 @@ Depo PC'den ayrı bir yerde olmalı. Veritabanı küçük (Kasım 2026: ~6,5 MB 
 5. `infra/pc/.env.prod`:
 
    ```
-   RESTIC_REPOSITORY=b2:cvnebakalim-yedek:/careerai
+   RESTIC_REPOSITORY=s3:https://s3.eu-central-003.backblazeb2.com/cvnebakalim-yedek/careerai
    RESTIC_PASSWORD=<openssl rand -base64 32 çıktısı>
    B2_ACCOUNT_ID=<keyID>
    B2_ACCOUNT_KEY=<applicationKey>
@@ -75,7 +77,7 @@ $C up -d
 
 `dropdb` geri alınamaz: önce `restore-test.sh` ile yedeğin açıldığını görün. Deploy öncesi alınan yerel dökümler de `~/careerai-yedek` altındadır (`infra/pc/deploy.sh`).
 
-**PC tamamen bozulursa (T-087):** başka bir bilgisayara repo + Docker Desktop kurulur, `.env.prod` parola yöneticisinden yeniden yazılır, `deploy.sh` ile sistem açılır ve yukarıdaki adımlarla son yedek yüklenir. Tünel token'ı aynı kaldığı için alan adı yeni bilgisayara bağlanır.
+**PC tamamen bozulursa (T-087):** adım adım prosedür, süre hedefleri ve tatbikat kaydı [`docs/runbook/felaket-kurtarma.md`](../../docs/runbook/felaket-kurtarma.md)'de. Özet: başka bir bilgisayara repo + Docker Desktop kurulur, `.env.prod` parola yöneticisinden yeniden yazılır, `deploy.sh` ile sistem açılır ve yukarıdaki adımlarla son yedek yüklenir. Eski PC'nin `cloudflared`'i kapatılmadan yenisi tünele bağlanmaz (aynı token'la iki bağlantı trafiği bölüştürür).
 
 ## Henüz yok
 

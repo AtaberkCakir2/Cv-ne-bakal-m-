@@ -14,9 +14,10 @@ from app.schemas.users import ConsentOut, ConsentsIn, DeleteAccountIn, ExportOut
 from app.services.auth import ConsentInput
 from app.services.users import ProfileChanges, UserError, UserService, profile_out
 
-router = APIRouter(prefix="/users", tags=["Kullanıcı"])
-
 _PROBLEM: dict[str, Any] = {"content": {"application/problem+json": {}}}
+
+# Bu router'daki her uç giriş ister.
+router = APIRouter(prefix="/users", tags=["Kullanıcı"], responses={401: {"description": "Giriş gerekli", **_PROBLEM}})
 
 
 def get_user_service(db: DbSession, settings: AppSettings) -> UserService:
@@ -36,6 +37,7 @@ def _ip(request: Request) -> str | None:
 
 @router.get("/me", response_model=ProfileOut, summary="Profil")
 def me(user: CurrentUser) -> ProfileOut:
+    """Oturum açmış kullanıcının profili ve seçtiği hedef pozisyon (seçilmediyse `null`)."""
     return profile_out(user)
 
 
@@ -56,6 +58,7 @@ def update_me(body: ProfileUpdateIn, user: CurrentUser, users: Users) -> Profile
 
 @router.get("/me/consents", response_model=list[ConsentOut], summary="Onay kayıtlarım (sürümlü)")
 def my_consents(user: CurrentUser, users: Users) -> list[ConsentOut]:
+    """Kabul edilen bütün metin sürümleri, eskiler dahil. Geri alınan açık rızada `withdrawn_at` doludur."""
     return users.consents(user)
 
 

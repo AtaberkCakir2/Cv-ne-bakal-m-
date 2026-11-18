@@ -22,7 +22,7 @@ def _redis_server(url: str) -> tuple[str, int]:
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=REPO_ROOT / ".env", env_file_encoding="utf-8", extra="ignore")
 
-    app_name: str = "CareerAI API"
+    app_name: str = "Cv'ne Bakalım! API"
     environment: str = Field(default="local", description="local | staging | production")
     api_prefix: str = "/api/v1"
     log_level: str = "INFO"
@@ -35,8 +35,9 @@ class Settings(BaseSettings):
 
     # /health/ready içindeki her bağımlılık kontrolü için zaman aşımı (saniye)
     readiness_timeout_s: float = 2.0
-    # Sadece kendi alan adlarımıza izin verilir (karar: güvenlik incelemesi, T-064)
-    cors_origins: list[str] = ["http://localhost:5173", "http://127.0.0.1:5173"]
+    # Sadece kendi alan adlarımıza izin verilir (karar: güvenlik incelemesi, T-064).
+    # app://careerai: masaüstü uygulamasının (Electron, web/desktop/main.cjs) kökeni.
+    cors_origins: list[str] = ["http://localhost:5173", "http://127.0.0.1:5173", "app://careerai"]
 
     # Kimlik doğrulama (T-037). JWT_SECRET production'da mutlaka .env'den gelir (uzun, rastgele).
     jwt_secret: str = Field(default=DEV_JWT_SECRET, min_length=32)
