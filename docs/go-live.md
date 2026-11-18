@@ -151,6 +151,8 @@ Canlıya çıkıştan iki ay önce, sorumlusu Ataberk olan ve production'da bug�
 
 ## Olay prosedürleri (runbook özeti)
 
+Adım adım komutlar: `docs/runbook/operasyon.md` (deploy, geri dönüş, Ollama, disk, kuyruk, veri ihlali) ve `docs/runbook/felaket-kurtarma.md`.
+
 | Olay | Belirti | Önem | Müdahale adımları | Sorumlu |
 |---|---|---|---|---|
 | Hatalı deploy | Smoke test başarısız / 5xx artışı | Kritik | 1) Önceki imaj etiketine dön (docker compose up -d ile TAG=<önceki>) 2) Migration geri alınacaksa alembic downgrade (önce yedek) 3) Ekibe bildir 4) Kök neden analizi | Ataberk |
