@@ -36,12 +36,38 @@ make prod-admin EMAIL=ad@ornek.com
 
 ## Cloudflare Access (production, bir kez)
 
-1. Cloudflare paneli → **Zero Trust** → **Access** → **Applications** → **Add an application** → **Self-hosted**.
-2. **Application name:** `Cv'ne Bakalım! admin`. **Session duration:** 8 hours.
-3. **Add public hostname:** Subdomain `api`, Domain `cvnebakalim.com`, Path `admin`.
-4. **Policy:** ad `ekip`, Action **Allow**, Include → **Emails**: ekip üyelerinin e-postaları.
-5. **Login methods:** **One-time PIN** (e-postaya kod gelir; ayrıca hesap gerekmez).
-6. Kaydedin. **Kontrol:** gizli pencerede `https://api.cvnebakalim.com/admin/login` açılınca panel değil Cloudflare'in e-posta ekranı gelmeli. `https://api.cvnebakalim.com/api/v1/health` ise eskisi gibi doğrudan açılmalı.
+**Durum: kuruldu (18.11.2026, Ataberk).** Zero Trust ekip adı `old-firefly-f6cd` (Free plan). Değiştirmek için: Cloudflare → Zero Trust → Access controls → Applications → `Cv'ne Bakalım! admin`.
+
+| Ayar | Değer |
+|---|---|
+| Uygulama | Self-hosted, ad `Cv'ne Bakalım! admin` |
+| Korunan adres | `api.cvnebakalim.com/admin` (alt yollar dahil) |
+| Politika | `ekip`, Allow, Include → Emails: üç ekip üyesinin e-postası |
+| Giriş yöntemi | Cloudflare (e-postaya tek kullanımlık kod) |
+| Oturum | 6 saat (panelde 8 saat seçeneği yok) |
+
+Yeni ekip üyesi: `ekip` politikasına e-postası eklenir, sonra `make prod-admin EMAIL=…`.
+
+### Kodlanmış eğik çizgi kuralı (WAF)
+
+Access yolu `/admin` ile karşılaştırır, ama uvicorn `%2F`'yi `/`'ye çevirir: `/admin%2Flogin` Access'e takılmadan panelin giriş sayfasına ulaşıyordu (18.11.2026'da denendi). Bu yüzden alan adında bir WAF özel kuralı var: Security → Security rules → `Kodlanmış eğik çizgi engeli (admin Access atlatma)`, eylem **Block**:
+
+```
+(http.host eq "api.cvnebakalim.com" and (raw.http.request.uri.path contains "%2F" or raw.http.request.uri.path contains "%2f" or raw.http.request.uri.path contains "%5C" or raw.http.request.uri.path contains "%5c"))
+```
+
+API'nin hiçbir yolu `%2F`/`%5C` kullanmaz (slug'larda `/` yok). Bu kural silinirse Access atlatılabilir.
+
+### Kontrol (değişiklikten sonra)
+
+```bash
+for p in /admin/login /ADMIN/login /%61dmin/login //admin/login /admin%2Flogin /admin%5Clogin /api/v1/health; do
+  printf "%-18s " "$p"; curl -s -o /dev/null --path-as-is -w "%{http_code}
+" "https://api.cvnebakalim.com$p"
+done
+```
+
+Beklenen: `/admin…` varyantları **302** (Cloudflare giriş ekranı), `%2F`/`%5C` olanlar **403**, `/api/v1/health` **200** (production kapalıysa 530).
 
 Ücretsiz plan 50 kullanıcıya kadar yeterlidir.
 
