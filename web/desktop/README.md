@@ -49,7 +49,7 @@ PowerShell'de: `$env:VITE_API_URL="https://api.cvnebakalim.com"; npm run dist:wi
 - **Güncelleme güvenliği:** İmza olmadığı için güncellemenin bütünlüğü sadece Releases'taki `latest.yml` özetine dayanır. Repoya yazabilen biri tüm kullanıcılara dosya dağıtabilir. Bu yüzden:
   - yayın yetkisi tek kişide olmalı;
   - `GH_TOKEN` sadece bu repo için `contents: write` yetkili, süreli (fine-grained) bir token olmalı.
-- **macOS:** `.dmg` ve `.zip` sadece Mac'te üretilebilir. İmzasız uygulama ilk açılışta Gatekeeper uyarısı verir (sağ tık → Aç). Varsayılan olarak sadece derleyen Mac'in mimarisi üretilir; hem Intel hem Apple Silicon için `mac.target`'a `arch: ["x64", "arm64"]` eklenmeli.
+- **macOS:** `.dmg` ve `.zip` sadece Mac'te üretilebilir. İmzasız uygulama ilk açılışta Gatekeeper uyarısı verir (sağ tık → Aç). Hem Intel (`x64`) hem Apple Silicon (`arm64`) için ayrı `.dmg` ve `.zip` üretilir (`mac.target` → `arch`); kurulum rehberi (`docs/kurulum/masaustu-kurulum.md`) bu dosya adlarını anlatır.
 - **Windows:** İmzasız kurulum SmartScreen uyarısı verir ("Ek bilgi → Yine de çalıştır"). Kod imzalama sertifikası bütçede yok.
 
 ## Canlıya çıkmadan önce
