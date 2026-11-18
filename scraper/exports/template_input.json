@@ -1,0 +1,4470 @@
+{
+ "_aciklama": "Sentetik CV şablon girdisi (T-019). scraper'da `python -m collector export-template` ile üretildi; elle düzenlemeyin. demand_ratio: pozisyonun son 6 aydaki aktif ilanlarının yüzde kaçında isteniyor. tier: core ≥ 0.3, common ≥ 0.1, rare altı. low_data: 50'den az ilan, oranlar kaba. titles: CV başlığında kullanılabilecek unvanlar. Yetkinlik listesi cevap anahtarı DEĞİLDİR; etiketler CV metninde geçene göre elle verilir.",
+ "version": 1,
+ "computed_at": "2026-10-29T21:57:25.856394+03:00",
+ "top_per_role": 30,
+ "roles": [
+  {
+   "slug": "backend-developer",
+   "name": "Backend Developer",
+   "titles": [
+    "backend developer",
+    "backend engineer",
+    "back-end developer",
+    "back-end engineer",
+    "server-side developer",
+    "api developer",
+    "backend geliştirici",
+    "back-end geliştirici",
+    "backend yazılım geliştirici",
+    "sunucu taraflı geliştirici",
+    "backend yazılım mühendisi",
+    "ruby on rails developer",
+    "ruby on rails engineer",
+    "rails developer",
+    "rails engineer",
+    "java developer",
+    "java engineer",
+    ".net developer",
+    ".net engineer",
+    "node.js developer",
+    "node.js engineer",
+    "go developer",
+    "golang developer",
+    "golang engineer",
+    "python developer",
+    "python engineer",
+    "php developer"
+   ],
+   "total_postings": 112,
+   "low_data": false,
+   "skills": [
+    {
+     "slug": "postgresql",
+     "canonical_name": "PostgreSQL",
+     "category": "veritabani",
+     "synonyms": [
+      "postgres",
+      "psql"
+     ],
+     "demand_ratio": 0.429,
+     "posting_count": 48,
+     "tier": "core"
+    },
+    {
+     "slug": "aws",
+     "canonical_name": "AWS",
+     "category": "bulut",
+     "synonyms": [
+      "amazon web services"
+     ],
+     "demand_ratio": 0.357,
+     "posting_count": 40,
+     "tier": "core"
+    },
+    {
+     "slug": "python",
+     "canonical_name": "Python",
+     "category": "dil",
+     "synonyms": [
+      "python3",
+      "py"
+     ],
+     "demand_ratio": 0.357,
+     "posting_count": 40,
+     "tier": "core"
+    },
+    {
+     "slug": "docker",
+     "canonical_name": "Docker",
+     "category": "devops",
+     "synonyms": [
+      "docker compose",
+      "container",
+      "konteyner",
+      "containerization"
+     ],
+     "demand_ratio": 0.348,
+     "posting_count": 39,
+     "tier": "core"
+    },
+    {
+     "slug": "kubernetes",
+     "canonical_name": "Kubernetes",
+     "category": "devops",
+     "synonyms": [
+      "k8s"
+     ],
+     "demand_ratio": 0.268,
+     "posting_count": 30,
+     "tier": "common"
+    },
+    {
+     "slug": "rest-api",
+     "canonical_name": "REST API",
+     "category": "arac",
+     "synonyms": [
+      "rest",
+      "restful",
+      "web api"
+     ],
+     "demand_ratio": 0.268,
+     "posting_count": 30,
+     "tier": "common"
+    },
+    {
+     "slug": "typescript",
+     "canonical_name": "TypeScript",
+     "category": "dil",
+     "synonyms": [
+      "ts"
+     ],
+     "demand_ratio": 0.241,
+     "posting_count": 27,
+     "tier": "common"
+    },
+    {
+     "slug": "ci-cd",
+     "canonical_name": "CI/CD",
+     "category": "devops",
+     "synonyms": [
+      "sürekli entegrasyon",
+      "continuous integration",
+      "continuous delivery",
+      "continuous deployment"
+     ],
+     "demand_ratio": 0.232,
+     "posting_count": 26,
+     "tier": "common"
+    },
+    {
+     "slug": "communication",
+     "canonical_name": "İletişim",
+     "category": "soft",
+     "synonyms": [
+      "communication",
+      "iletişim becerileri",
+      "communication skills"
+     ],
+     "demand_ratio": 0.232,
+     "posting_count": 26,
+     "tier": "common"
+    },
+    {
+     "slug": "microservices",
+     "canonical_name": "Mikroservis Mimarisi",
+     "category": "metodoloji",
+     "synonyms": [
+      "microservices",
+      "mikroservis",
+      "microservice architecture"
+     ],
+     "demand_ratio": 0.196,
+     "posting_count": 22,
+     "tier": "common"
+    },
+    {
+     "slug": "nodejs",
+     "canonical_name": "Node.js",
+     "category": "framework",
+     "synonyms": [
+      "node",
+      "nodejs"
+     ],
+     "demand_ratio": 0.196,
+     "posting_count": 22,
+     "tier": "common"
+    },
+    {
+     "slug": "java",
+     "canonical_name": "Java",
+     "category": "dil",
+     "synonyms": [
+      "java se",
+      "java ee",
+      "jdk",
+      "jakarta ee"
+     ],
+     "demand_ratio": 0.188,
+     "posting_count": 21,
+     "tier": "common"
+    },
+    {
+     "slug": "code-review",
+     "canonical_name": "Kod İnceleme",
+     "category": "metodoloji",
+     "synonyms": [
+      "code review",
+      "code reviews"
+     ],
+     "demand_ratio": 0.188,
+     "posting_count": 21,
+     "tier": "common"
+    },
+    {
+     "slug": "sql",
+     "canonical_name": "SQL",
+     "category": "dil",
+     "synonyms": [
+      "t-sql",
+      "pl/sql",
+      "sql sorguları"
+     ],
+     "demand_ratio": 0.179,
+     "posting_count": 20,
+     "tier": "common"
+    },
+    {
+     "slug": "ownership",
+     "canonical_name": "Sorumluluk Alma",
+     "category": "soft",
+     "synonyms": [
+      "ownership",
+      "sahiplenme"
+     ],
+     "demand_ratio": 0.179,
+     "posting_count": 20,
+     "tier": "common"
+    },
+    {
+     "slug": "distributed-systems",
+     "canonical_name": "Dağıtık Sistemler",
+     "category": "metodoloji",
+     "synonyms": [
+      "distributed systems"
+     ],
+     "demand_ratio": 0.17,
+     "posting_count": 19,
+     "tier": "common"
+    },
+    {
+     "slug": "git",
+     "canonical_name": "Git",
+     "category": "arac",
+     "synonyms": [
+      "versiyon kontrol",
+      "version control",
+      "sürüm kontrolü"
+     ],
+     "demand_ratio": 0.17,
+     "posting_count": 19,
+     "tier": "common"
+    },
+    {
+     "slug": "observability",
+     "canonical_name": "Gözlemlenebilirlik",
+     "category": "metodoloji",
+     "synonyms": [
+      "observability",
+      "monitoring",
+      "izleme"
+     ],
+     "demand_ratio": 0.17,
+     "posting_count": 19,
+     "tier": "common"
+    },
+    {
+     "slug": "react",
+     "canonical_name": "React",
+     "category": "framework",
+     "synonyms": [
+      "react.js",
+      "reactjs"
+     ],
+     "demand_ratio": 0.17,
+     "posting_count": 19,
+     "tier": "common"
+    },
+    {
+     "slug": "agile",
+     "canonical_name": "Agile",
+     "category": "metodoloji",
+     "synonyms": [
+      "çevik",
+      "agile methodology"
+     ],
+     "demand_ratio": 0.152,
+     "posting_count": 17,
+     "tier": "common"
+    },
+    {
+     "slug": "devops",
+     "canonical_name": "DevOps",
+     "category": "metodoloji",
+     "synonyms": [
+      "devops culture"
+     ],
+     "demand_ratio": 0.152,
+     "posting_count": 17,
+     "tier": "common"
+    },
+    {
+     "slug": "go",
+     "canonical_name": "Go",
+     "category": "dil",
+     "synonyms": [
+      "golang"
+     ],
+     "demand_ratio": 0.152,
+     "posting_count": 17,
+     "tier": "common"
+    },
+    {
+     "slug": "english",
+     "canonical_name": "İngilizce",
+     "category": "soft",
+     "synonyms": [
+      "english",
+      "ingilizce"
+     ],
+     "demand_ratio": 0.152,
+     "posting_count": 17,
+     "tier": "common"
+    },
+    {
+     "slug": "mongodb",
+     "canonical_name": "MongoDB",
+     "category": "veritabani",
+     "synonyms": [
+      "mongo"
+     ],
+     "demand_ratio": 0.143,
+     "posting_count": 16,
+     "tier": "common"
+    },
+    {
+     "slug": "event-driven-architecture",
+     "canonical_name": "Olay Güdümlü Mimari",
+     "category": "metodoloji",
+     "synonyms": [
+      "event-driven",
+      "event driven architecture",
+      "event sourcing",
+      "cqrs"
+     ],
+     "demand_ratio": 0.143,
+     "posting_count": 16,
+     "tier": "common"
+    },
+    {
+     "slug": "rust",
+     "canonical_name": "Rust",
+     "category": "dil",
+     "synonyms": [
+      "rustlang"
+     ],
+     "demand_ratio": 0.143,
+     "posting_count": 16,
+     "tier": "common"
+    },
+    {
+     "slug": "csharp",
+     "canonical_name": "C#",
+     "category": "dil",
+     "synonyms": [
+      "c sharp",
+      "csharp"
+     ],
+     "demand_ratio": 0.134,
+     "posting_count": 15,
+     "tier": "common"
+    },
+    {
+     "slug": "azure",
+     "canonical_name": "Microsoft Azure",
+     "category": "bulut",
+     "synonyms": [
+      "azure"
+     ],
+     "demand_ratio": 0.134,
+     "posting_count": 15,
+     "tier": "common"
+    },
+    {
+     "slug": "teamwork",
+     "canonical_name": "Takım Çalışması",
+     "category": "soft",
+     "synonyms": [
+      "teamwork",
+      "ekip çalışması",
+      "collaboration"
+     ],
+     "demand_ratio": 0.134,
+     "posting_count": 15,
+     "tier": "common"
+    },
+    {
+     "slug": "dotnet",
+     "canonical_name": ".NET",
+     "category": "framework",
+     "synonyms": [
+      "asp.net",
+      ".net core",
+      "dotnet",
+      "asp.net core"
+     ],
+     "demand_ratio": 0.125,
+     "posting_count": 14,
+     "tier": "common"
+    }
+   ]
+  },
+  {
+   "slug": "frontend-developer",
+   "name": "Frontend Developer",
+   "titles": [
+    "frontend developer",
+    "frontend engineer",
+    "front-end developer",
+    "front-end engineer",
+    "ui developer",
+    "web developer",
+    "frontend geliştirici",
+    "front-end geliştirici",
+    "önyüz geliştirici",
+    "arayüz geliştirici",
+    "react developer",
+    "react engineer",
+    "angular developer",
+    "vue developer",
+    "vue.js developer"
+   ],
+   "total_postings": 45,
+   "low_data": true,
+   "skills": [
+    {
+     "slug": "react",
+     "canonical_name": "React",
+     "category": "framework",
+     "synonyms": [
+      "react.js",
+      "reactjs"
+     ],
+     "demand_ratio": 0.6,
+     "posting_count": 27,
+     "tier": "core"
+    },
+    {
+     "slug": "javascript",
+     "canonical_name": "JavaScript",
+     "category": "dil",
+     "synonyms": [
+      "js",
+      "ecmascript",
+      "es6",
+      "vanilla js"
+     ],
+     "demand_ratio": 0.533,
+     "posting_count": 24,
+     "tier": "core"
+    },
+    {
+     "slug": "ui-ux",
+     "canonical_name": "UI/UX Tasarım",
+     "category": "metodoloji",
+     "synonyms": [
+      "ui",
+      "ux",
+      "kullanıcı deneyimi",
+      "user experience",
+      "ui/ux"
+     ],
+     "demand_ratio": 0.533,
+     "posting_count": 24,
+     "tier": "core"
+    },
+    {
+     "slug": "css",
+     "canonical_name": "CSS",
+     "category": "dil",
+     "synonyms": [
+      "css3"
+     ],
+     "demand_ratio": 0.511,
+     "posting_count": 23,
+     "tier": "core"
+    },
+    {
+     "slug": "typescript",
+     "canonical_name": "TypeScript",
+     "category": "dil",
+     "synonyms": [
+      "ts"
+     ],
+     "demand_ratio": 0.467,
+     "posting_count": 21,
+     "tier": "core"
+    },
+    {
+     "slug": "html",
+     "canonical_name": "HTML",
+     "category": "dil",
+     "synonyms": [
+      "html5"
+     ],
+     "demand_ratio": 0.422,
+     "posting_count": 19,
+     "tier": "core"
+    },
+    {
+     "slug": "communication",
+     "canonical_name": "İletişim",
+     "category": "soft",
+     "synonyms": [
+      "communication",
+      "iletişim becerileri",
+      "communication skills"
+     ],
+     "demand_ratio": 0.422,
+     "posting_count": 19,
+     "tier": "core"
+    },
+    {
+     "slug": "responsive-design",
+     "canonical_name": "Duyarlı Tasarım",
+     "category": "metodoloji",
+     "synonyms": [
+      "responsive design",
+      "responsive"
+     ],
+     "demand_ratio": 0.4,
+     "posting_count": 18,
+     "tier": "core"
+    },
+    {
+     "slug": "rest-api",
+     "canonical_name": "REST API",
+     "category": "arac",
+     "synonyms": [
+      "rest",
+      "restful",
+      "web api"
+     ],
+     "demand_ratio": 0.4,
+     "posting_count": 18,
+     "tier": "core"
+    },
+    {
+     "slug": "teamwork",
+     "canonical_name": "Takım Çalışması",
+     "category": "soft",
+     "synonyms": [
+      "teamwork",
+      "ekip çalışması",
+      "collaboration"
+     ],
+     "demand_ratio": 0.311,
+     "posting_count": 14,
+     "tier": "core"
+    },
+    {
+     "slug": "git",
+     "canonical_name": "Git",
+     "category": "arac",
+     "synonyms": [
+      "versiyon kontrol",
+      "version control",
+      "sürüm kontrolü"
+     ],
+     "demand_ratio": 0.267,
+     "posting_count": 12,
+     "tier": "common"
+    },
+    {
+     "slug": "accessibility",
+     "canonical_name": "Erişilebilirlik",
+     "category": "metodoloji",
+     "synonyms": [
+      "accessibility",
+      "a11y",
+      "wcag"
+     ],
+     "demand_ratio": 0.244,
+     "posting_count": 11,
+     "tier": "common"
+    },
+    {
+     "slug": "ci-cd",
+     "canonical_name": "CI/CD",
+     "category": "devops",
+     "synonyms": [
+      "sürekli entegrasyon",
+      "continuous integration",
+      "continuous delivery",
+      "continuous deployment"
+     ],
+     "demand_ratio": 0.222,
+     "posting_count": 10,
+     "tier": "common"
+    },
+    {
+     "slug": "nextjs",
+     "canonical_name": "Next.js",
+     "category": "framework",
+     "synonyms": [
+      "nextjs"
+     ],
+     "demand_ratio": 0.222,
+     "posting_count": 10,
+     "tier": "common"
+    },
+    {
+     "slug": "ownership",
+     "canonical_name": "Sorumluluk Alma",
+     "category": "soft",
+     "synonyms": [
+      "ownership",
+      "sahiplenme"
+     ],
+     "demand_ratio": 0.222,
+     "posting_count": 10,
+     "tier": "common"
+    },
+    {
+     "slug": "nodejs",
+     "canonical_name": "Node.js",
+     "category": "framework",
+     "synonyms": [
+      "node",
+      "nodejs"
+     ],
+     "demand_ratio": 0.178,
+     "posting_count": 8,
+     "tier": "common"
+    },
+    {
+     "slug": "tailwind",
+     "canonical_name": "Tailwind CSS",
+     "category": "framework",
+     "synonyms": [
+      "tailwind",
+      "tailwindcss"
+     ],
+     "demand_ratio": 0.178,
+     "posting_count": 8,
+     "tier": "common"
+    },
+    {
+     "slug": "code-review",
+     "canonical_name": "Kod İnceleme",
+     "category": "metodoloji",
+     "synonyms": [
+      "code review",
+      "code reviews"
+     ],
+     "demand_ratio": 0.156,
+     "posting_count": 7,
+     "tier": "common"
+    },
+    {
+     "slug": "aws",
+     "canonical_name": "AWS",
+     "category": "bulut",
+     "synonyms": [
+      "amazon web services"
+     ],
+     "demand_ratio": 0.133,
+     "posting_count": 6,
+     "tier": "common"
+    },
+    {
+     "slug": "observability",
+     "canonical_name": "Gözlemlenebilirlik",
+     "category": "metodoloji",
+     "synonyms": [
+      "observability",
+      "monitoring",
+      "izleme"
+     ],
+     "demand_ratio": 0.133,
+     "posting_count": 6,
+     "tier": "common"
+    },
+    {
+     "slug": "mentoring",
+     "canonical_name": "Mentorluk",
+     "category": "soft",
+     "synonyms": [
+      "mentoring",
+      "mentorship"
+     ],
+     "demand_ratio": 0.133,
+     "posting_count": 6,
+     "tier": "common"
+    },
+    {
+     "slug": "seo",
+     "canonical_name": "SEO",
+     "category": "metodoloji",
+     "synonyms": [
+      "search engine optimization",
+      "arama motoru optimizasyonu"
+     ],
+     "demand_ratio": 0.133,
+     "posting_count": 6,
+     "tier": "common"
+    },
+    {
+     "slug": "generative-ai",
+     "canonical_name": "Üretken Yapay Zeka",
+     "category": "metodoloji",
+     "synonyms": [
+      "generative ai",
+      "genai",
+      "llm",
+      "large language models",
+      "büyük dil modelleri",
+      "llms"
+     ],
+     "demand_ratio": 0.133,
+     "posting_count": 6,
+     "tier": "common"
+    },
+    {
+     "slug": "english",
+     "canonical_name": "İngilizce",
+     "category": "soft",
+     "synonyms": [
+      "english",
+      "ingilizce"
+     ],
+     "demand_ratio": 0.133,
+     "posting_count": 6,
+     "tier": "common"
+    },
+    {
+     "slug": "agile",
+     "canonical_name": "Agile",
+     "category": "metodoloji",
+     "synonyms": [
+      "çevik",
+      "agile methodology"
+     ],
+     "demand_ratio": 0.111,
+     "posting_count": 5,
+     "tier": "common"
+    },
+    {
+     "slug": "angular",
+     "canonical_name": "Angular",
+     "category": "framework",
+     "synonyms": [
+      "angularjs",
+      "angular.js"
+     ],
+     "demand_ratio": 0.111,
+     "posting_count": 5,
+     "tier": "common"
+    },
+    {
+     "slug": "integration-testing",
+     "canonical_name": "Entegrasyon Testi",
+     "category": "metodoloji",
+     "synonyms": [
+      "integration testing",
+      "integration tests"
+     ],
+     "demand_ratio": 0.111,
+     "posting_count": 5,
+     "tier": "common"
+    },
+    {
+     "slug": "figma",
+     "canonical_name": "Figma",
+     "category": "arac",
+     "synonyms": [],
+     "demand_ratio": 0.111,
+     "posting_count": 5,
+     "tier": "common"
+    },
+    {
+     "slug": "performance-optimization",
+     "canonical_name": "Performans Optimizasyonu",
+     "category": "metodoloji",
+     "synonyms": [
+      "performance optimization",
+      "performance tuning"
+     ],
+     "demand_ratio": 0.111,
+     "posting_count": 5,
+     "tier": "common"
+    },
+    {
+     "slug": "tanstack-query",
+     "canonical_name": "TanStack Query",
+     "category": "framework",
+     "synonyms": [
+      "react query"
+     ],
+     "demand_ratio": 0.111,
+     "posting_count": 5,
+     "tier": "common"
+    }
+   ]
+  },
+  {
+   "slug": "full-stack-developer",
+   "name": "Full-Stack Developer",
+   "titles": [
+    "full stack developer",
+    "full-stack developer",
+    "fullstack developer",
+    "full stack engineer",
+    "full-stack engineer",
+    "fullstack engineer",
+    "full stack geliştirici",
+    "full-stack geliştirici",
+    "fullstack geliştirici",
+    "product engineer",
+    "product developer"
+   ],
+   "total_postings": 207,
+   "low_data": false,
+   "skills": [
+    {
+     "slug": "react",
+     "canonical_name": "React",
+     "category": "framework",
+     "synonyms": [
+      "react.js",
+      "reactjs"
+     ],
+     "demand_ratio": 0.609,
+     "posting_count": 126,
+     "tier": "core"
+    },
+    {
+     "slug": "typescript",
+     "canonical_name": "TypeScript",
+     "category": "dil",
+     "synonyms": [
+      "ts"
+     ],
+     "demand_ratio": 0.507,
+     "posting_count": 105,
+     "tier": "core"
+    },
+    {
+     "slug": "postgresql",
+     "canonical_name": "PostgreSQL",
+     "category": "veritabani",
+     "synonyms": [
+      "postgres",
+      "psql"
+     ],
+     "demand_ratio": 0.382,
+     "posting_count": 79,
+     "tier": "core"
+    },
+    {
+     "slug": "python",
+     "canonical_name": "Python",
+     "category": "dil",
+     "synonyms": [
+      "python3",
+      "py"
+     ],
+     "demand_ratio": 0.353,
+     "posting_count": 73,
+     "tier": "core"
+    },
+    {
+     "slug": "aws",
+     "canonical_name": "AWS",
+     "category": "bulut",
+     "synonyms": [
+      "amazon web services"
+     ],
+     "demand_ratio": 0.285,
+     "posting_count": 59,
+     "tier": "common"
+    },
+    {
+     "slug": "ownership",
+     "canonical_name": "Sorumluluk Alma",
+     "category": "soft",
+     "synonyms": [
+      "ownership",
+      "sahiplenme"
+     ],
+     "demand_ratio": 0.28,
+     "posting_count": 58,
+     "tier": "common"
+    },
+    {
+     "slug": "generative-ai",
+     "canonical_name": "Üretken Yapay Zeka",
+     "category": "metodoloji",
+     "synonyms": [
+      "generative ai",
+      "genai",
+      "llm",
+      "large language models",
+      "büyük dil modelleri",
+      "llms"
+     ],
+     "demand_ratio": 0.222,
+     "posting_count": 46,
+     "tier": "common"
+    },
+    {
+     "slug": "nodejs",
+     "canonical_name": "Node.js",
+     "category": "framework",
+     "synonyms": [
+      "node",
+      "nodejs"
+     ],
+     "demand_ratio": 0.203,
+     "posting_count": 42,
+     "tier": "common"
+    },
+    {
+     "slug": "ui-ux",
+     "canonical_name": "UI/UX Tasarım",
+     "category": "metodoloji",
+     "synonyms": [
+      "ui",
+      "ux",
+      "kullanıcı deneyimi",
+      "user experience",
+      "ui/ux"
+     ],
+     "demand_ratio": 0.188,
+     "posting_count": 39,
+     "tier": "common"
+    },
+    {
+     "slug": "communication",
+     "canonical_name": "İletişim",
+     "category": "soft",
+     "synonyms": [
+      "communication",
+      "iletişim becerileri",
+      "communication skills"
+     ],
+     "demand_ratio": 0.179,
+     "posting_count": 37,
+     "tier": "common"
+    },
+    {
+     "slug": "javascript",
+     "canonical_name": "JavaScript",
+     "category": "dil",
+     "synonyms": [
+      "js",
+      "ecmascript",
+      "es6",
+      "vanilla js"
+     ],
+     "demand_ratio": 0.164,
+     "posting_count": 34,
+     "tier": "common"
+    },
+    {
+     "slug": "nextjs",
+     "canonical_name": "Next.js",
+     "category": "framework",
+     "synonyms": [
+      "nextjs"
+     ],
+     "demand_ratio": 0.155,
+     "posting_count": 32,
+     "tier": "common"
+    },
+    {
+     "slug": "anthropic-claude",
+     "canonical_name": "Anthropic Claude",
+     "category": "arac",
+     "synonyms": [
+      "claude",
+      "claude code",
+      "anthropic api"
+     ],
+     "demand_ratio": 0.14,
+     "posting_count": 29,
+     "tier": "common"
+    },
+    {
+     "slug": "rest-api",
+     "canonical_name": "REST API",
+     "category": "arac",
+     "synonyms": [
+      "rest",
+      "restful",
+      "web api"
+     ],
+     "demand_ratio": 0.13,
+     "posting_count": 27,
+     "tier": "common"
+    },
+    {
+     "slug": "code-review",
+     "canonical_name": "Kod İnceleme",
+     "category": "metodoloji",
+     "synonyms": [
+      "code review",
+      "code reviews"
+     ],
+     "demand_ratio": 0.126,
+     "posting_count": 26,
+     "tier": "common"
+    },
+    {
+     "slug": "docker",
+     "canonical_name": "Docker",
+     "category": "devops",
+     "synonyms": [
+      "docker compose",
+      "container",
+      "konteyner",
+      "containerization"
+     ],
+     "demand_ratio": 0.121,
+     "posting_count": 25,
+     "tier": "common"
+    },
+    {
+     "slug": "sql",
+     "canonical_name": "SQL",
+     "category": "dil",
+     "synonyms": [
+      "t-sql",
+      "pl/sql",
+      "sql sorguları"
+     ],
+     "demand_ratio": 0.116,
+     "posting_count": 24,
+     "tier": "common"
+    },
+    {
+     "slug": "ci-cd",
+     "canonical_name": "CI/CD",
+     "category": "devops",
+     "synonyms": [
+      "sürekli entegrasyon",
+      "continuous integration",
+      "continuous delivery",
+      "continuous deployment"
+     ],
+     "demand_ratio": 0.106,
+     "posting_count": 22,
+     "tier": "common"
+    },
+    {
+     "slug": "machine-learning",
+     "canonical_name": "Makine Öğrenmesi",
+     "category": "metodoloji",
+     "synonyms": [
+      "machine learning",
+      "ml",
+      "makine öğrenimi"
+     ],
+     "demand_ratio": 0.106,
+     "posting_count": 22,
+     "tier": "common"
+    },
+    {
+     "slug": "kubernetes",
+     "canonical_name": "Kubernetes",
+     "category": "devops",
+     "synonyms": [
+      "k8s"
+     ],
+     "demand_ratio": 0.101,
+     "posting_count": 21,
+     "tier": "common"
+    },
+    {
+     "slug": "english",
+     "canonical_name": "İngilizce",
+     "category": "soft",
+     "synonyms": [
+      "english",
+      "ingilizce"
+     ],
+     "demand_ratio": 0.101,
+     "posting_count": 21,
+     "tier": "common"
+    },
+    {
+     "slug": "teamwork",
+     "canonical_name": "Takım Çalışması",
+     "category": "soft",
+     "synonyms": [
+      "teamwork",
+      "ekip çalışması",
+      "collaboration"
+     ],
+     "demand_ratio": 0.097,
+     "posting_count": 20,
+     "tier": "rare"
+    },
+    {
+     "slug": "gcp",
+     "canonical_name": "Google Cloud",
+     "category": "bulut",
+     "synonyms": [
+      "gcp",
+      "google cloud platform"
+     ],
+     "demand_ratio": 0.092,
+     "posting_count": 19,
+     "tier": "rare"
+    },
+    {
+     "slug": "graphql",
+     "canonical_name": "GraphQL",
+     "category": "arac",
+     "synonyms": [],
+     "demand_ratio": 0.092,
+     "posting_count": 19,
+     "tier": "rare"
+    },
+    {
+     "slug": "leadership",
+     "canonical_name": "Liderlik",
+     "category": "soft",
+     "synonyms": [
+      "leadership",
+      "takım liderliği",
+      "team lead"
+     ],
+     "demand_ratio": 0.092,
+     "posting_count": 19,
+     "tier": "rare"
+    },
+    {
+     "slug": "git",
+     "canonical_name": "Git",
+     "category": "arac",
+     "synonyms": [
+      "versiyon kontrol",
+      "version control",
+      "sürüm kontrolü"
+     ],
+     "demand_ratio": 0.087,
+     "posting_count": 18,
+     "tier": "rare"
+    },
+    {
+     "slug": "ruby",
+     "canonical_name": "Ruby",
+     "category": "dil",
+     "synonyms": [],
+     "demand_ratio": 0.087,
+     "posting_count": 18,
+     "tier": "rare"
+    },
+    {
+     "slug": "dotnet",
+     "canonical_name": ".NET",
+     "category": "framework",
+     "synonyms": [
+      "asp.net",
+      ".net core",
+      "dotnet",
+      "asp.net core"
+     ],
+     "demand_ratio": 0.082,
+     "posting_count": 17,
+     "tier": "rare"
+    },
+    {
+     "slug": "observability",
+     "canonical_name": "Gözlemlenebilirlik",
+     "category": "metodoloji",
+     "synonyms": [
+      "observability",
+      "monitoring",
+      "izleme"
+     ],
+     "demand_ratio": 0.082,
+     "posting_count": 17,
+     "tier": "rare"
+    },
+    {
+     "slug": "rails",
+     "canonical_name": "Ruby on Rails",
+     "category": "framework",
+     "synonyms": [
+      "rails",
+      "ror"
+     ],
+     "demand_ratio": 0.082,
+     "posting_count": 17,
+     "tier": "rare"
+    }
+   ]
+  },
+  {
+   "slug": "mobile-developer",
+   "name": "Mobile Developer",
+   "titles": [
+    "mobile developer",
+    "mobile engineer",
+    "ios developer",
+    "ios engineer",
+    "android developer",
+    "android engineer",
+    "flutter developer",
+    "react native developer",
+    "mobil geliştirici",
+    "mobil uygulama geliştirici",
+    "ios geliştirici",
+    "android geliştirici"
+   ],
+   "total_postings": 40,
+   "low_data": true,
+   "skills": [
+    {
+     "slug": "android-sdk",
+     "canonical_name": "Android SDK",
+     "category": "framework",
+     "synonyms": [
+      "android jetpack",
+      "android"
+     ],
+     "demand_ratio": 0.675,
+     "posting_count": 27,
+     "tier": "core"
+    },
+    {
+     "slug": "swift",
+     "canonical_name": "Swift",
+     "category": "dil",
+     "synonyms": [],
+     "demand_ratio": 0.425,
+     "posting_count": 17,
+     "tier": "core"
+    },
+    {
+     "slug": "kotlin",
+     "canonical_name": "Kotlin",
+     "category": "dil",
+     "synonyms": [],
+     "demand_ratio": 0.4,
+     "posting_count": 16,
+     "tier": "core"
+    },
+    {
+     "slug": "react-native",
+     "canonical_name": "React Native",
+     "category": "framework",
+     "synonyms": [
+      "rn"
+     ],
+     "demand_ratio": 0.375,
+     "posting_count": 15,
+     "tier": "core"
+    },
+    {
+     "slug": "ownership",
+     "canonical_name": "Sorumluluk Alma",
+     "category": "soft",
+     "synonyms": [
+      "ownership",
+      "sahiplenme"
+     ],
+     "demand_ratio": 0.325,
+     "posting_count": 13,
+     "tier": "core"
+    },
+    {
+     "slug": "ui-ux",
+     "canonical_name": "UI/UX Tasarım",
+     "category": "metodoloji",
+     "synonyms": [
+      "ui",
+      "ux",
+      "kullanıcı deneyimi",
+      "user experience",
+      "ui/ux"
+     ],
+     "demand_ratio": 0.325,
+     "posting_count": 13,
+     "tier": "core"
+    },
+    {
+     "slug": "communication",
+     "canonical_name": "İletişim",
+     "category": "soft",
+     "synonyms": [
+      "communication",
+      "iletişim becerileri",
+      "communication skills"
+     ],
+     "demand_ratio": 0.325,
+     "posting_count": 13,
+     "tier": "core"
+    },
+    {
+     "slug": "rest-api",
+     "canonical_name": "REST API",
+     "category": "arac",
+     "synonyms": [
+      "rest",
+      "restful",
+      "web api"
+     ],
+     "demand_ratio": 0.275,
+     "posting_count": 11,
+     "tier": "common"
+    },
+    {
+     "slug": "code-review",
+     "canonical_name": "Kod İnceleme",
+     "category": "metodoloji",
+     "synonyms": [
+      "code review",
+      "code reviews"
+     ],
+     "demand_ratio": 0.225,
+     "posting_count": 9,
+     "tier": "common"
+    },
+    {
+     "slug": "typescript",
+     "canonical_name": "TypeScript",
+     "category": "dil",
+     "synonyms": [
+      "ts"
+     ],
+     "demand_ratio": 0.225,
+     "posting_count": 9,
+     "tier": "common"
+    },
+    {
+     "slug": "firebase",
+     "canonical_name": "Firebase",
+     "category": "veritabani",
+     "synonyms": [
+      "firestore"
+     ],
+     "demand_ratio": 0.2,
+     "posting_count": 8,
+     "tier": "common"
+    },
+    {
+     "slug": "mentoring",
+     "canonical_name": "Mentorluk",
+     "category": "soft",
+     "synonyms": [
+      "mentoring",
+      "mentorship"
+     ],
+     "demand_ratio": 0.2,
+     "posting_count": 8,
+     "tier": "common"
+    },
+    {
+     "slug": "c",
+     "canonical_name": "C",
+     "category": "dil",
+     "synonyms": [
+      "ansi c",
+      "c dili"
+     ],
+     "demand_ratio": 0.175,
+     "posting_count": 7,
+     "tier": "common"
+    },
+    {
+     "slug": "ci-cd",
+     "canonical_name": "CI/CD",
+     "category": "devops",
+     "synonyms": [
+      "sürekli entegrasyon",
+      "continuous integration",
+      "continuous delivery",
+      "continuous deployment"
+     ],
+     "demand_ratio": 0.175,
+     "posting_count": 7,
+     "tier": "common"
+    },
+    {
+     "slug": "jetpack-compose",
+     "canonical_name": "Jetpack Compose",
+     "category": "framework",
+     "synonyms": [
+      "compose multiplatform"
+     ],
+     "demand_ratio": 0.175,
+     "posting_count": 7,
+     "tier": "common"
+    },
+    {
+     "slug": "swiftui",
+     "canonical_name": "SwiftUI",
+     "category": "framework",
+     "synonyms": [],
+     "demand_ratio": 0.175,
+     "posting_count": 7,
+     "tier": "common"
+    },
+    {
+     "slug": "teamwork",
+     "canonical_name": "Takım Çalışması",
+     "category": "soft",
+     "synonyms": [
+      "teamwork",
+      "ekip çalışması",
+      "collaboration"
+     ],
+     "demand_ratio": 0.175,
+     "posting_count": 7,
+     "tier": "common"
+    },
+    {
+     "slug": "software-testing",
+     "canonical_name": "Yazılım Testi",
+     "category": "metodoloji",
+     "synonyms": [
+      "software testing",
+      "qa",
+      "quality assurance",
+      "manual testing",
+      "kalite güvence"
+     ],
+     "demand_ratio": 0.175,
+     "posting_count": 7,
+     "tier": "common"
+    },
+    {
+     "slug": "english",
+     "canonical_name": "İngilizce",
+     "category": "soft",
+     "synonyms": [
+      "english",
+      "ingilizce"
+     ],
+     "demand_ratio": 0.175,
+     "posting_count": 7,
+     "tier": "common"
+    },
+    {
+     "slug": "agile",
+     "canonical_name": "Agile",
+     "category": "metodoloji",
+     "synonyms": [
+      "çevik",
+      "agile methodology"
+     ],
+     "demand_ratio": 0.15,
+     "posting_count": 6,
+     "tier": "common"
+    },
+    {
+     "slug": "git",
+     "canonical_name": "Git",
+     "category": "arac",
+     "synonyms": [
+      "versiyon kontrol",
+      "version control",
+      "sürüm kontrolü"
+     ],
+     "demand_ratio": 0.15,
+     "posting_count": 6,
+     "tier": "common"
+    },
+    {
+     "slug": "uikit",
+     "canonical_name": "UIKit",
+     "category": "framework",
+     "synonyms": [],
+     "demand_ratio": 0.15,
+     "posting_count": 6,
+     "tier": "common"
+    },
+    {
+     "slug": "flutter",
+     "canonical_name": "Flutter",
+     "category": "framework",
+     "synonyms": [],
+     "demand_ratio": 0.125,
+     "posting_count": 5,
+     "tier": "common"
+    },
+    {
+     "slug": "observability",
+     "canonical_name": "Gözlemlenebilirlik",
+     "category": "metodoloji",
+     "synonyms": [
+      "observability",
+      "monitoring",
+      "izleme"
+     ],
+     "demand_ratio": 0.125,
+     "posting_count": 5,
+     "tier": "common"
+    },
+    {
+     "slug": "javascript",
+     "canonical_name": "JavaScript",
+     "category": "dil",
+     "synonyms": [
+      "js",
+      "ecmascript",
+      "es6",
+      "vanilla js"
+     ],
+     "demand_ratio": 0.125,
+     "posting_count": 5,
+     "tier": "common"
+    },
+    {
+     "slug": "objective-c",
+     "canonical_name": "Objective-C",
+     "category": "dil",
+     "synonyms": [
+      "objc",
+      "obj-c"
+     ],
+     "demand_ratio": 0.125,
+     "posting_count": 5,
+     "tier": "common"
+    },
+    {
+     "slug": "react",
+     "canonical_name": "React",
+     "category": "framework",
+     "synonyms": [
+      "react.js",
+      "reactjs"
+     ],
+     "demand_ratio": 0.125,
+     "posting_count": 5,
+     "tier": "common"
+    },
+    {
+     "slug": "redux",
+     "canonical_name": "Redux",
+     "category": "framework",
+     "synonyms": [
+      "redux toolkit",
+      "rtk"
+     ],
+     "demand_ratio": 0.125,
+     "posting_count": 5,
+     "tier": "common"
+    },
+    {
+     "slug": "aws",
+     "canonical_name": "AWS",
+     "category": "bulut",
+     "synonyms": [
+      "amazon web services"
+     ],
+     "demand_ratio": 0.1,
+     "posting_count": 4,
+     "tier": "common"
+    },
+    {
+     "slug": "anthropic-claude",
+     "canonical_name": "Anthropic Claude",
+     "category": "arac",
+     "synonyms": [
+      "claude",
+      "claude code",
+      "anthropic api"
+     ],
+     "demand_ratio": 0.1,
+     "posting_count": 4,
+     "tier": "common"
+    }
+   ]
+  },
+  {
+   "slug": "data-scientist",
+   "name": "Data Scientist",
+   "titles": [
+    "data scientist",
+    "applied scientist",
+    "research scientist",
+    "veri bilimci",
+    "veri bilimcisi",
+    "veri bilimi uzmanı"
+   ],
+   "total_postings": 24,
+   "low_data": true,
+   "skills": [
+    {
+     "slug": "machine-learning",
+     "canonical_name": "Makine Öğrenmesi",
+     "category": "metodoloji",
+     "synonyms": [
+      "machine learning",
+      "ml",
+      "makine öğrenimi"
+     ],
+     "demand_ratio": 0.792,
+     "posting_count": 19,
+     "tier": "core"
+    },
+    {
+     "slug": "python",
+     "canonical_name": "Python",
+     "category": "dil",
+     "synonyms": [
+      "python3",
+      "py"
+     ],
+     "demand_ratio": 0.708,
+     "posting_count": 17,
+     "tier": "core"
+    },
+    {
+     "slug": "generative-ai",
+     "canonical_name": "Üretken Yapay Zeka",
+     "category": "metodoloji",
+     "synonyms": [
+      "generative ai",
+      "genai",
+      "llm",
+      "large language models",
+      "büyük dil modelleri",
+      "llms"
+     ],
+     "demand_ratio": 0.375,
+     "posting_count": 9,
+     "tier": "core"
+    },
+    {
+     "slug": "aws",
+     "canonical_name": "AWS",
+     "category": "bulut",
+     "synonyms": [
+      "amazon web services"
+     ],
+     "demand_ratio": 0.292,
+     "posting_count": 7,
+     "tier": "common"
+    },
+    {
+     "slug": "sql",
+     "canonical_name": "SQL",
+     "category": "dil",
+     "synonyms": [
+      "t-sql",
+      "pl/sql",
+      "sql sorguları"
+     ],
+     "demand_ratio": 0.292,
+     "posting_count": 7,
+     "tier": "common"
+    },
+    {
+     "slug": "gcp",
+     "canonical_name": "Google Cloud",
+     "category": "bulut",
+     "synonyms": [
+      "gcp",
+      "google cloud platform"
+     ],
+     "demand_ratio": 0.25,
+     "posting_count": 6,
+     "tier": "common"
+    },
+    {
+     "slug": "pytorch",
+     "canonical_name": "PyTorch",
+     "category": "framework",
+     "synonyms": [
+      "torch"
+     ],
+     "demand_ratio": 0.25,
+     "posting_count": 6,
+     "tier": "common"
+    },
+    {
+     "slug": "statistics",
+     "canonical_name": "İstatistik",
+     "category": "metodoloji",
+     "synonyms": [
+      "statistics",
+      "istatistiksel analiz",
+      "statistical analysis"
+     ],
+     "demand_ratio": 0.25,
+     "posting_count": 6,
+     "tier": "common"
+    },
+    {
+     "slug": "deep-learning",
+     "canonical_name": "Derin Öğrenme",
+     "category": "metodoloji",
+     "synonyms": [
+      "deep learning",
+      "dl"
+     ],
+     "demand_ratio": 0.208,
+     "posting_count": 5,
+     "tier": "common"
+    },
+    {
+     "slug": "pandas",
+     "canonical_name": "Pandas",
+     "category": "framework",
+     "synonyms": [],
+     "demand_ratio": 0.208,
+     "posting_count": 5,
+     "tier": "common"
+    },
+    {
+     "slug": "numpy",
+     "canonical_name": "NumPy",
+     "category": "framework",
+     "synonyms": [],
+     "demand_ratio": 0.167,
+     "posting_count": 4,
+     "tier": "common"
+    },
+    {
+     "slug": "tensorflow",
+     "canonical_name": "TensorFlow",
+     "category": "framework",
+     "synonyms": [
+      "tf"
+     ],
+     "demand_ratio": 0.167,
+     "posting_count": 4,
+     "tier": "common"
+    },
+    {
+     "slug": "data-analysis",
+     "canonical_name": "Veri Analizi",
+     "category": "metodoloji",
+     "synonyms": [
+      "data analysis",
+      "veri analitiği",
+      "data analytics"
+     ],
+     "demand_ratio": 0.167,
+     "posting_count": 4,
+     "tier": "common"
+    },
+    {
+     "slug": "scikit-learn",
+     "canonical_name": "scikit-learn",
+     "category": "framework",
+     "synonyms": [
+      "sklearn",
+      "scikit learn"
+     ],
+     "demand_ratio": 0.167,
+     "posting_count": 4,
+     "tier": "common"
+    },
+    {
+     "slug": "english",
+     "canonical_name": "İngilizce",
+     "category": "soft",
+     "synonyms": [
+      "english",
+      "ingilizce"
+     ],
+     "demand_ratio": 0.167,
+     "posting_count": 4,
+     "tier": "common"
+    },
+    {
+     "slug": "algorithms",
+     "canonical_name": "Algoritmalar ve Veri Yapıları",
+     "category": "metodoloji",
+     "synonyms": [
+      "algorithms",
+      "data structures",
+      "veri yapıları",
+      "algoritmalar"
+     ],
+     "demand_ratio": 0.125,
+     "posting_count": 3,
+     "tier": "common"
+    },
+    {
+     "slug": "nlp",
+     "canonical_name": "Doğal Dil İşleme",
+     "category": "metodoloji",
+     "synonyms": [
+      "nlp",
+      "natural language processing"
+     ],
+     "demand_ratio": 0.125,
+     "posting_count": 3,
+     "tier": "common"
+    },
+    {
+     "slug": "etl",
+     "canonical_name": "ETL",
+     "category": "metodoloji",
+     "synonyms": [
+      "elt",
+      "veri hattı",
+      "data pipeline",
+      "data pipelines"
+     ],
+     "demand_ratio": 0.125,
+     "posting_count": 3,
+     "tier": "common"
+    },
+    {
+     "slug": "fastapi",
+     "canonical_name": "FastAPI",
+     "category": "framework",
+     "synonyms": [],
+     "demand_ratio": 0.125,
+     "posting_count": 3,
+     "tier": "common"
+    },
+    {
+     "slug": "github",
+     "canonical_name": "GitHub",
+     "category": "arac",
+     "synonyms": [],
+     "demand_ratio": 0.125,
+     "posting_count": 3,
+     "tier": "common"
+    },
+    {
+     "slug": "azure",
+     "canonical_name": "Microsoft Azure",
+     "category": "bulut",
+     "synonyms": [
+      "azure"
+     ],
+     "demand_ratio": 0.125,
+     "posting_count": 3,
+     "tier": "common"
+    },
+    {
+     "slug": "postgresql",
+     "canonical_name": "PostgreSQL",
+     "category": "veritabani",
+     "synonyms": [
+      "postgres",
+      "psql"
+     ],
+     "demand_ratio": 0.125,
+     "posting_count": 3,
+     "tier": "common"
+    },
+    {
+     "slug": "r",
+     "canonical_name": "R",
+     "category": "dil",
+     "synonyms": [
+      "r programlama",
+      "rlang"
+     ],
+     "demand_ratio": 0.125,
+     "posting_count": 3,
+     "tier": "common"
+    },
+    {
+     "slug": "rust",
+     "canonical_name": "Rust",
+     "category": "dil",
+     "synonyms": [
+      "rustlang"
+     ],
+     "demand_ratio": 0.125,
+     "posting_count": 3,
+     "tier": "common"
+    },
+    {
+     "slug": "sap",
+     "canonical_name": "SAP",
+     "category": "arac",
+     "synonyms": [
+      "sap erp",
+      "sap s/4hana"
+     ],
+     "demand_ratio": 0.125,
+     "posting_count": 3,
+     "tier": "common"
+    },
+    {
+     "slug": "ownership",
+     "canonical_name": "Sorumluluk Alma",
+     "category": "soft",
+     "synonyms": [
+      "ownership",
+      "sahiplenme"
+     ],
+     "demand_ratio": 0.125,
+     "posting_count": 3,
+     "tier": "common"
+    },
+    {
+     "slug": "typescript",
+     "canonical_name": "TypeScript",
+     "category": "dil",
+     "synonyms": [
+      "ts"
+     ],
+     "demand_ratio": 0.125,
+     "posting_count": 3,
+     "tier": "common"
+    },
+    {
+     "slug": "communication",
+     "canonical_name": "İletişim",
+     "category": "soft",
+     "synonyms": [
+      "communication",
+      "iletişim becerileri",
+      "communication skills"
+     ],
+     "demand_ratio": 0.125,
+     "posting_count": 3,
+     "tier": "common"
+    },
+    {
+     "slug": "agile",
+     "canonical_name": "Agile",
+     "category": "metodoloji",
+     "synonyms": [
+      "çevik",
+      "agile methodology"
+     ],
+     "demand_ratio": 0.083,
+     "posting_count": 2,
+     "tier": "rare"
+    },
+    {
+     "slug": "spark",
+     "canonical_name": "Apache Spark",
+     "category": "framework",
+     "synonyms": [
+      "spark",
+      "pyspark",
+      "spark sql"
+     ],
+     "demand_ratio": 0.083,
+     "posting_count": 2,
+     "tier": "rare"
+    }
+   ]
+  },
+  {
+   "slug": "devops-engineer",
+   "name": "DevOps Engineer",
+   "titles": [
+    "devops engineer",
+    "site reliability engineer",
+    "sre",
+    "platform engineer",
+    "infrastructure engineer",
+    "cloud engineer",
+    "devops mühendisi",
+    "platform mühendisi",
+    "altyapı mühendisi",
+    "bulut mühendisi",
+    "infra engineer"
+   ],
+   "total_postings": 122,
+   "low_data": false,
+   "skills": [
+    {
+     "slug": "observability",
+     "canonical_name": "Gözlemlenebilirlik",
+     "category": "metodoloji",
+     "synonyms": [
+      "observability",
+      "monitoring",
+      "izleme"
+     ],
+     "demand_ratio": 0.508,
+     "posting_count": 62,
+     "tier": "core"
+    },
+    {
+     "slug": "kubernetes",
+     "canonical_name": "Kubernetes",
+     "category": "devops",
+     "synonyms": [
+      "k8s"
+     ],
+     "demand_ratio": 0.492,
+     "posting_count": 60,
+     "tier": "core"
+    },
+    {
+     "slug": "aws",
+     "canonical_name": "AWS",
+     "category": "bulut",
+     "synonyms": [
+      "amazon web services"
+     ],
+     "demand_ratio": 0.467,
+     "posting_count": 57,
+     "tier": "core"
+    },
+    {
+     "slug": "python",
+     "canonical_name": "Python",
+     "category": "dil",
+     "synonyms": [
+      "python3",
+      "py"
+     ],
+     "demand_ratio": 0.434,
+     "posting_count": 53,
+     "tier": "core"
+    },
+    {
+     "slug": "terraform",
+     "canonical_name": "Terraform",
+     "category": "devops",
+     "synonyms": [],
+     "demand_ratio": 0.402,
+     "posting_count": 49,
+     "tier": "core"
+    },
+    {
+     "slug": "ci-cd",
+     "canonical_name": "CI/CD",
+     "category": "devops",
+     "synonyms": [
+      "sürekli entegrasyon",
+      "continuous integration",
+      "continuous delivery",
+      "continuous deployment"
+     ],
+     "demand_ratio": 0.385,
+     "posting_count": 47,
+     "tier": "core"
+    },
+    {
+     "slug": "devops",
+     "canonical_name": "DevOps",
+     "category": "metodoloji",
+     "synonyms": [
+      "devops culture"
+     ],
+     "demand_ratio": 0.369,
+     "posting_count": 45,
+     "tier": "core"
+    },
+    {
+     "slug": "iac",
+     "canonical_name": "Infrastructure as Code",
+     "category": "metodoloji",
+     "synonyms": [
+      "iac",
+      "kod olarak altyapı"
+     ],
+     "demand_ratio": 0.328,
+     "posting_count": 40,
+     "tier": "core"
+    },
+    {
+     "slug": "networking",
+     "canonical_name": "Ağ Temelleri",
+     "category": "metodoloji",
+     "synonyms": [
+      "networking",
+      "tcp/ip",
+      "ağ yönetimi",
+      "computer networks"
+     ],
+     "demand_ratio": 0.279,
+     "posting_count": 34,
+     "tier": "common"
+    },
+    {
+     "slug": "docker",
+     "canonical_name": "Docker",
+     "category": "devops",
+     "synonyms": [
+      "docker compose",
+      "container",
+      "konteyner",
+      "containerization"
+     ],
+     "demand_ratio": 0.246,
+     "posting_count": 30,
+     "tier": "common"
+    },
+    {
+     "slug": "cloud-computing",
+     "canonical_name": "Bulut Bilişim",
+     "category": "bulut",
+     "synonyms": [
+      "cloud computing",
+      "bulut bilişim",
+      "cloud infrastructure"
+     ],
+     "demand_ratio": 0.238,
+     "posting_count": 29,
+     "tier": "common"
+    },
+    {
+     "slug": "linux",
+     "canonical_name": "Linux",
+     "category": "devops",
+     "synonyms": [
+      "ubuntu",
+      "debian",
+      "centos",
+      "rhel",
+      "red hat enterprise linux"
+     ],
+     "demand_ratio": 0.238,
+     "posting_count": 29,
+     "tier": "common"
+    },
+    {
+     "slug": "communication",
+     "canonical_name": "İletişim",
+     "category": "soft",
+     "synonyms": [
+      "communication",
+      "iletişim becerileri",
+      "communication skills"
+     ],
+     "demand_ratio": 0.221,
+     "posting_count": 27,
+     "tier": "common"
+    },
+    {
+     "slug": "go",
+     "canonical_name": "Go",
+     "category": "dil",
+     "synonyms": [
+      "golang"
+     ],
+     "demand_ratio": 0.213,
+     "posting_count": 26,
+     "tier": "common"
+    },
+    {
+     "slug": "azure",
+     "canonical_name": "Microsoft Azure",
+     "category": "bulut",
+     "synonyms": [
+      "azure"
+     ],
+     "demand_ratio": 0.213,
+     "posting_count": 26,
+     "tier": "common"
+    },
+    {
+     "slug": "ownership",
+     "canonical_name": "Sorumluluk Alma",
+     "category": "soft",
+     "synonyms": [
+      "ownership",
+      "sahiplenme"
+     ],
+     "demand_ratio": 0.205,
+     "posting_count": 25,
+     "tier": "common"
+    },
+    {
+     "slug": "gcp",
+     "canonical_name": "Google Cloud",
+     "category": "bulut",
+     "synonyms": [
+      "gcp",
+      "google cloud platform"
+     ],
+     "demand_ratio": 0.189,
+     "posting_count": 23,
+     "tier": "common"
+    },
+    {
+     "slug": "bash",
+     "canonical_name": "Bash",
+     "category": "dil",
+     "synonyms": [
+      "shell",
+      "shell scripting",
+      "kabuk betiği",
+      "zsh"
+     ],
+     "demand_ratio": 0.18,
+     "posting_count": 22,
+     "tier": "common"
+    },
+    {
+     "slug": "distributed-systems",
+     "canonical_name": "Dağıtık Sistemler",
+     "category": "metodoloji",
+     "synonyms": [
+      "distributed systems"
+     ],
+     "demand_ratio": 0.18,
+     "posting_count": 22,
+     "tier": "common"
+    },
+    {
+     "slug": "postgresql",
+     "canonical_name": "PostgreSQL",
+     "category": "veritabani",
+     "synonyms": [
+      "postgres",
+      "psql"
+     ],
+     "demand_ratio": 0.172,
+     "posting_count": 21,
+     "tier": "common"
+    },
+    {
+     "slug": "machine-learning",
+     "canonical_name": "Makine Öğrenmesi",
+     "category": "metodoloji",
+     "synonyms": [
+      "machine learning",
+      "ml",
+      "makine öğrenimi"
+     ],
+     "demand_ratio": 0.164,
+     "posting_count": 20,
+     "tier": "common"
+    },
+    {
+     "slug": "rust",
+     "canonical_name": "Rust",
+     "category": "dil",
+     "synonyms": [
+      "rustlang"
+     ],
+     "demand_ratio": 0.147,
+     "posting_count": 18,
+     "tier": "common"
+    },
+    {
+     "slug": "sre",
+     "canonical_name": "Site Reliability Engineering",
+     "category": "metodoloji",
+     "synonyms": [
+      "site reliability"
+     ],
+     "demand_ratio": 0.147,
+     "posting_count": 18,
+     "tier": "common"
+    },
+    {
+     "slug": "teamwork",
+     "canonical_name": "Takım Çalışması",
+     "category": "soft",
+     "synonyms": [
+      "teamwork",
+      "ekip çalışması",
+      "collaboration"
+     ],
+     "demand_ratio": 0.147,
+     "posting_count": 18,
+     "tier": "common"
+    },
+    {
+     "slug": "typescript",
+     "canonical_name": "TypeScript",
+     "category": "dil",
+     "synonyms": [
+      "ts"
+     ],
+     "demand_ratio": 0.139,
+     "posting_count": 17,
+     "tier": "common"
+    },
+    {
+     "slug": "grafana",
+     "canonical_name": "Grafana",
+     "category": "devops",
+     "synonyms": [],
+     "demand_ratio": 0.131,
+     "posting_count": 16,
+     "tier": "common"
+    },
+    {
+     "slug": "eks",
+     "canonical_name": "Amazon EKS",
+     "category": "bulut",
+     "synonyms": [
+      "eks"
+     ],
+     "demand_ratio": 0.123,
+     "posting_count": 15,
+     "tier": "common"
+    },
+    {
+     "slug": "ansible",
+     "canonical_name": "Ansible",
+     "category": "devops",
+     "synonyms": [],
+     "demand_ratio": 0.115,
+     "posting_count": 14,
+     "tier": "common"
+    },
+    {
+     "slug": "aws-iam",
+     "canonical_name": "AWS IAM",
+     "category": "bulut",
+     "synonyms": [
+      "iam"
+     ],
+     "demand_ratio": 0.107,
+     "posting_count": 13,
+     "tier": "common"
+    },
+    {
+     "slug": "s3",
+     "canonical_name": "Amazon S3",
+     "category": "bulut",
+     "synonyms": [
+      "s3"
+     ],
+     "demand_ratio": 0.107,
+     "posting_count": 13,
+     "tier": "common"
+    }
+   ]
+  },
+  {
+   "slug": "qa-engineer",
+   "name": "QA Engineer",
+   "titles": [
+    "qa engineer",
+    "quality assurance engineer",
+    "test engineer",
+    "software tester",
+    "sdet",
+    "test automation engineer",
+    "qa automation engineer",
+    "test mühendisi",
+    "yazılım test mühendisi",
+    "kalite güvence mühendisi",
+    "test otomasyon mühendisi",
+    "qa",
+    "qa automation",
+    "qa automation tester",
+    "qa tester",
+    "quality engineer"
+   ],
+   "total_postings": 65,
+   "low_data": false,
+   "skills": [
+    {
+     "slug": "software-testing",
+     "canonical_name": "Yazılım Testi",
+     "category": "metodoloji",
+     "synonyms": [
+      "software testing",
+      "qa",
+      "quality assurance",
+      "manual testing",
+      "kalite güvence"
+     ],
+     "demand_ratio": 0.908,
+     "posting_count": 59,
+     "tier": "core"
+    },
+    {
+     "slug": "test-automation",
+     "canonical_name": "Test Otomasyonu",
+     "category": "metodoloji",
+     "synonyms": [
+      "test automation",
+      "automated testing",
+      "otomasyon testi"
+     ],
+     "demand_ratio": 0.569,
+     "posting_count": 37,
+     "tier": "core"
+    },
+    {
+     "slug": "communication",
+     "canonical_name": "İletişim",
+     "category": "soft",
+     "synonyms": [
+      "communication",
+      "iletişim becerileri",
+      "communication skills"
+     ],
+     "demand_ratio": 0.569,
+     "posting_count": 37,
+     "tier": "core"
+    },
+    {
+     "slug": "agile",
+     "canonical_name": "Agile",
+     "category": "metodoloji",
+     "synonyms": [
+      "çevik",
+      "agile methodology"
+     ],
+     "demand_ratio": 0.462,
+     "posting_count": 30,
+     "tier": "core"
+    },
+    {
+     "slug": "ci-cd",
+     "canonical_name": "CI/CD",
+     "category": "devops",
+     "synonyms": [
+      "sürekli entegrasyon",
+      "continuous integration",
+      "continuous delivery",
+      "continuous deployment"
+     ],
+     "demand_ratio": 0.415,
+     "posting_count": 27,
+     "tier": "core"
+    },
+    {
+     "slug": "playwright",
+     "canonical_name": "Playwright",
+     "category": "arac",
+     "synonyms": [],
+     "demand_ratio": 0.369,
+     "posting_count": 24,
+     "tier": "core"
+    },
+    {
+     "slug": "selenium",
+     "canonical_name": "Selenium",
+     "category": "arac",
+     "synonyms": [
+      "selenium webdriver"
+     ],
+     "demand_ratio": 0.369,
+     "posting_count": 24,
+     "tier": "core"
+    },
+    {
+     "slug": "sql",
+     "canonical_name": "SQL",
+     "category": "dil",
+     "synonyms": [
+      "t-sql",
+      "pl/sql",
+      "sql sorguları"
+     ],
+     "demand_ratio": 0.339,
+     "posting_count": 22,
+     "tier": "core"
+    },
+    {
+     "slug": "english",
+     "canonical_name": "İngilizce",
+     "category": "soft",
+     "synonyms": [
+      "english",
+      "ingilizce"
+     ],
+     "demand_ratio": 0.323,
+     "posting_count": 21,
+     "tier": "core"
+    },
+    {
+     "slug": "teamwork",
+     "canonical_name": "Takım Çalışması",
+     "category": "soft",
+     "synonyms": [
+      "teamwork",
+      "ekip çalışması",
+      "collaboration"
+     ],
+     "demand_ratio": 0.292,
+     "posting_count": 19,
+     "tier": "common"
+    },
+    {
+     "slug": "rest-api",
+     "canonical_name": "REST API",
+     "category": "arac",
+     "synonyms": [
+      "rest",
+      "restful",
+      "web api"
+     ],
+     "demand_ratio": 0.262,
+     "posting_count": 17,
+     "tier": "common"
+    },
+    {
+     "slug": "python",
+     "canonical_name": "Python",
+     "category": "dil",
+     "synonyms": [
+      "python3",
+      "py"
+     ],
+     "demand_ratio": 0.246,
+     "posting_count": 16,
+     "tier": "common"
+    },
+    {
+     "slug": "typescript",
+     "canonical_name": "TypeScript",
+     "category": "dil",
+     "synonyms": [
+      "ts"
+     ],
+     "demand_ratio": 0.246,
+     "posting_count": 16,
+     "tier": "common"
+    },
+    {
+     "slug": "scrum",
+     "canonical_name": "Scrum",
+     "category": "metodoloji",
+     "synonyms": [],
+     "demand_ratio": 0.231,
+     "posting_count": 15,
+     "tier": "common"
+    },
+    {
+     "slug": "cypress",
+     "canonical_name": "Cypress",
+     "category": "arac",
+     "synonyms": [],
+     "demand_ratio": 0.215,
+     "posting_count": 14,
+     "tier": "common"
+    },
+    {
+     "slug": "jira",
+     "canonical_name": "Jira",
+     "category": "arac",
+     "synonyms": [],
+     "demand_ratio": 0.215,
+     "posting_count": 14,
+     "tier": "common"
+    },
+    {
+     "slug": "postman",
+     "canonical_name": "Postman",
+     "category": "arac",
+     "synonyms": [],
+     "demand_ratio": 0.2,
+     "posting_count": 13,
+     "tier": "common"
+    },
+    {
+     "slug": "devops",
+     "canonical_name": "DevOps",
+     "category": "metodoloji",
+     "synonyms": [
+      "devops culture"
+     ],
+     "demand_ratio": 0.185,
+     "posting_count": 12,
+     "tier": "common"
+    },
+    {
+     "slug": "integration-testing",
+     "canonical_name": "Entegrasyon Testi",
+     "category": "metodoloji",
+     "synonyms": [
+      "integration testing",
+      "integration tests"
+     ],
+     "demand_ratio": 0.185,
+     "posting_count": 12,
+     "tier": "common"
+    },
+    {
+     "slug": "java",
+     "canonical_name": "Java",
+     "category": "dil",
+     "synonyms": [
+      "java se",
+      "java ee",
+      "jdk",
+      "jakarta ee"
+     ],
+     "demand_ratio": 0.185,
+     "posting_count": 12,
+     "tier": "common"
+    },
+    {
+     "slug": "javascript",
+     "canonical_name": "JavaScript",
+     "category": "dil",
+     "synonyms": [
+      "js",
+      "ecmascript",
+      "es6",
+      "vanilla js"
+     ],
+     "demand_ratio": 0.185,
+     "posting_count": 12,
+     "tier": "common"
+    },
+    {
+     "slug": "ownership",
+     "canonical_name": "Sorumluluk Alma",
+     "category": "soft",
+     "synonyms": [
+      "ownership",
+      "sahiplenme"
+     ],
+     "demand_ratio": 0.185,
+     "posting_count": 12,
+     "tier": "common"
+    },
+    {
+     "slug": "ui-ux",
+     "canonical_name": "UI/UX Tasarım",
+     "category": "metodoloji",
+     "synonyms": [
+      "ui",
+      "ux",
+      "kullanıcı deneyimi",
+      "user experience",
+      "ui/ux"
+     ],
+     "demand_ratio": 0.185,
+     "posting_count": 12,
+     "tier": "common"
+    },
+    {
+     "slug": "git",
+     "canonical_name": "Git",
+     "category": "arac",
+     "synonyms": [
+      "versiyon kontrol",
+      "version control",
+      "sürüm kontrolü"
+     ],
+     "demand_ratio": 0.169,
+     "posting_count": 11,
+     "tier": "common"
+    },
+    {
+     "slug": "aws",
+     "canonical_name": "AWS",
+     "category": "bulut",
+     "synonyms": [
+      "amazon web services"
+     ],
+     "demand_ratio": 0.154,
+     "posting_count": 10,
+     "tier": "common"
+    },
+    {
+     "slug": "observability",
+     "canonical_name": "Gözlemlenebilirlik",
+     "category": "metodoloji",
+     "synonyms": [
+      "observability",
+      "monitoring",
+      "izleme"
+     ],
+     "demand_ratio": 0.154,
+     "posting_count": 10,
+     "tier": "common"
+    },
+    {
+     "slug": "microservices",
+     "canonical_name": "Mikroservis Mimarisi",
+     "category": "metodoloji",
+     "synonyms": [
+      "microservices",
+      "mikroservis",
+      "microservice architecture"
+     ],
+     "demand_ratio": 0.139,
+     "posting_count": 9,
+     "tier": "common"
+    },
+    {
+     "slug": "jmeter",
+     "canonical_name": "Apache JMeter",
+     "category": "arac",
+     "synonyms": [
+      "jmeter"
+     ],
+     "demand_ratio": 0.123,
+     "posting_count": 8,
+     "tier": "common"
+    },
+    {
+     "slug": "distributed-systems",
+     "canonical_name": "Dağıtık Sistemler",
+     "category": "metodoloji",
+     "synonyms": [
+      "distributed systems"
+     ],
+     "demand_ratio": 0.123,
+     "posting_count": 8,
+     "tier": "common"
+    },
+    {
+     "slug": "docker",
+     "canonical_name": "Docker",
+     "category": "devops",
+     "synonyms": [
+      "docker compose",
+      "container",
+      "konteyner",
+      "containerization"
+     ],
+     "demand_ratio": 0.123,
+     "posting_count": 8,
+     "tier": "common"
+    }
+   ]
+  },
+  {
+   "slug": "ml-engineer",
+   "name": "ML Engineer",
+   "titles": [
+    "machine learning engineer",
+    "ml engineer",
+    "ai engineer",
+    "mlops engineer",
+    "deep learning engineer",
+    "llm engineer",
+    "makine öğrenmesi mühendisi",
+    "yapay zeka mühendisi",
+    "yapay zekâ mühendisi"
+   ],
+   "total_postings": 97,
+   "low_data": false,
+   "skills": [
+    {
+     "slug": "python",
+     "canonical_name": "Python",
+     "category": "dil",
+     "synonyms": [
+      "python3",
+      "py"
+     ],
+     "demand_ratio": 0.557,
+     "posting_count": 54,
+     "tier": "core"
+    },
+    {
+     "slug": "generative-ai",
+     "canonical_name": "Üretken Yapay Zeka",
+     "category": "metodoloji",
+     "synonyms": [
+      "generative ai",
+      "genai",
+      "llm",
+      "large language models",
+      "büyük dil modelleri",
+      "llms"
+     ],
+     "demand_ratio": 0.557,
+     "posting_count": 54,
+     "tier": "core"
+    },
+    {
+     "slug": "machine-learning",
+     "canonical_name": "Makine Öğrenmesi",
+     "category": "metodoloji",
+     "synonyms": [
+      "machine learning",
+      "ml",
+      "makine öğrenimi"
+     ],
+     "demand_ratio": 0.474,
+     "posting_count": 46,
+     "tier": "core"
+    },
+    {
+     "slug": "rag",
+     "canonical_name": "RAG",
+     "category": "metodoloji",
+     "synonyms": [
+      "retrieval augmented generation",
+      "retrieval-augmented generation"
+     ],
+     "demand_ratio": 0.32,
+     "posting_count": 31,
+     "tier": "core"
+    },
+    {
+     "slug": "observability",
+     "canonical_name": "Gözlemlenebilirlik",
+     "category": "metodoloji",
+     "synonyms": [
+      "observability",
+      "monitoring",
+      "izleme"
+     ],
+     "demand_ratio": 0.289,
+     "posting_count": 28,
+     "tier": "common"
+    },
+    {
+     "slug": "aws",
+     "canonical_name": "AWS",
+     "category": "bulut",
+     "synonyms": [
+      "amazon web services"
+     ],
+     "demand_ratio": 0.258,
+     "posting_count": 25,
+     "tier": "common"
+    },
+    {
+     "slug": "docker",
+     "canonical_name": "Docker",
+     "category": "devops",
+     "synonyms": [
+      "docker compose",
+      "container",
+      "konteyner",
+      "containerization"
+     ],
+     "demand_ratio": 0.216,
+     "posting_count": 21,
+     "tier": "common"
+    },
+    {
+     "slug": "ci-cd",
+     "canonical_name": "CI/CD",
+     "category": "devops",
+     "synonyms": [
+      "sürekli entegrasyon",
+      "continuous integration",
+      "continuous delivery",
+      "continuous deployment"
+     ],
+     "demand_ratio": 0.206,
+     "posting_count": 20,
+     "tier": "common"
+    },
+    {
+     "slug": "openai-api",
+     "canonical_name": "OpenAI API",
+     "category": "arac",
+     "synonyms": [
+      "openai",
+      "gpt api",
+      "chatgpt api"
+     ],
+     "demand_ratio": 0.196,
+     "posting_count": 19,
+     "tier": "common"
+    },
+    {
+     "slug": "ownership",
+     "canonical_name": "Sorumluluk Alma",
+     "category": "soft",
+     "synonyms": [
+      "ownership",
+      "sahiplenme"
+     ],
+     "demand_ratio": 0.196,
+     "posting_count": 19,
+     "tier": "common"
+    },
+    {
+     "slug": "typescript",
+     "canonical_name": "TypeScript",
+     "category": "dil",
+     "synonyms": [
+      "ts"
+     ],
+     "demand_ratio": 0.186,
+     "posting_count": 18,
+     "tier": "common"
+    },
+    {
+     "slug": "gcp",
+     "canonical_name": "Google Cloud",
+     "category": "bulut",
+     "synonyms": [
+      "gcp",
+      "google cloud platform"
+     ],
+     "demand_ratio": 0.165,
+     "posting_count": 16,
+     "tier": "common"
+    },
+    {
+     "slug": "communication",
+     "canonical_name": "İletişim",
+     "category": "soft",
+     "synonyms": [
+      "communication",
+      "iletişim becerileri",
+      "communication skills"
+     ],
+     "demand_ratio": 0.165,
+     "posting_count": 16,
+     "tier": "common"
+    },
+    {
+     "slug": "azure",
+     "canonical_name": "Microsoft Azure",
+     "category": "bulut",
+     "synonyms": [
+      "azure"
+     ],
+     "demand_ratio": 0.155,
+     "posting_count": 15,
+     "tier": "common"
+    },
+    {
+     "slug": "sql",
+     "canonical_name": "SQL",
+     "category": "dil",
+     "synonyms": [
+      "t-sql",
+      "pl/sql",
+      "sql sorguları"
+     ],
+     "demand_ratio": 0.155,
+     "posting_count": 15,
+     "tier": "common"
+    },
+    {
+     "slug": "anthropic-claude",
+     "canonical_name": "Anthropic Claude",
+     "category": "arac",
+     "synonyms": [
+      "claude",
+      "claude code",
+      "anthropic api"
+     ],
+     "demand_ratio": 0.144,
+     "posting_count": 14,
+     "tier": "common"
+    },
+    {
+     "slug": "langchain",
+     "canonical_name": "LangChain",
+     "category": "framework",
+     "synonyms": [],
+     "demand_ratio": 0.134,
+     "posting_count": 13,
+     "tier": "common"
+    },
+    {
+     "slug": "pytorch",
+     "canonical_name": "PyTorch",
+     "category": "framework",
+     "synonyms": [
+      "torch"
+     ],
+     "demand_ratio": 0.134,
+     "posting_count": 13,
+     "tier": "common"
+    },
+    {
+     "slug": "react",
+     "canonical_name": "React",
+     "category": "framework",
+     "synonyms": [
+      "react.js",
+      "reactjs"
+     ],
+     "demand_ratio": 0.134,
+     "posting_count": 13,
+     "tier": "common"
+    },
+    {
+     "slug": "etl",
+     "canonical_name": "ETL",
+     "category": "metodoloji",
+     "synonyms": [
+      "elt",
+      "veri hattı",
+      "data pipeline",
+      "data pipelines"
+     ],
+     "demand_ratio": 0.124,
+     "posting_count": 12,
+     "tier": "common"
+    },
+    {
+     "slug": "github",
+     "canonical_name": "GitHub",
+     "category": "arac",
+     "synonyms": [],
+     "demand_ratio": 0.113,
+     "posting_count": 11,
+     "tier": "common"
+    },
+    {
+     "slug": "teamwork",
+     "canonical_name": "Takım Çalışması",
+     "category": "soft",
+     "synonyms": [
+      "teamwork",
+      "ekip çalışması",
+      "collaboration"
+     ],
+     "demand_ratio": 0.113,
+     "posting_count": 11,
+     "tier": "common"
+    },
+    {
+     "slug": "cursor",
+     "canonical_name": "Cursor",
+     "category": "arac",
+     "synonyms": [
+      "cursor ide"
+     ],
+     "demand_ratio": 0.103,
+     "posting_count": 10,
+     "tier": "common"
+    },
+    {
+     "slug": "leadership",
+     "canonical_name": "Liderlik",
+     "category": "soft",
+     "synonyms": [
+      "leadership",
+      "takım liderliği",
+      "team lead"
+     ],
+     "demand_ratio": 0.103,
+     "posting_count": 10,
+     "tier": "common"
+    },
+    {
+     "slug": "mlops",
+     "canonical_name": "MLOps",
+     "category": "metodoloji",
+     "synonyms": [],
+     "demand_ratio": 0.103,
+     "posting_count": 10,
+     "tier": "common"
+    },
+    {
+     "slug": "prompt-engineering",
+     "canonical_name": "Prompt Engineering",
+     "category": "metodoloji",
+     "synonyms": [
+      "prompt mühendisliği"
+     ],
+     "demand_ratio": 0.103,
+     "posting_count": 10,
+     "tier": "common"
+    },
+    {
+     "slug": "ab-testing",
+     "canonical_name": "A/B Testi",
+     "category": "metodoloji",
+     "synonyms": [
+      "a/b testing",
+      "a/b test",
+      "experimentation"
+     ],
+     "demand_ratio": 0.093,
+     "posting_count": 9,
+     "tier": "rare"
+    },
+    {
+     "slug": "rest-api",
+     "canonical_name": "REST API",
+     "category": "arac",
+     "synonyms": [
+      "rest",
+      "restful",
+      "web api"
+     ],
+     "demand_ratio": 0.093,
+     "posting_count": 9,
+     "tier": "rare"
+    },
+    {
+     "slug": "tensorflow",
+     "canonical_name": "TensorFlow",
+     "category": "framework",
+     "synonyms": [
+      "tf"
+     ],
+     "demand_ratio": 0.083,
+     "posting_count": 8,
+     "tier": "rare"
+    },
+    {
+     "slug": "english",
+     "canonical_name": "İngilizce",
+     "category": "soft",
+     "synonyms": [
+      "english",
+      "ingilizce"
+     ],
+     "demand_ratio": 0.083,
+     "posting_count": 8,
+     "tier": "rare"
+    }
+   ]
+  },
+  {
+   "slug": "security-engineer",
+   "name": "Security Engineer",
+   "titles": [
+    "security engineer",
+    "cybersecurity engineer",
+    "application security engineer",
+    "penetration tester",
+    "security analyst",
+    "soc analyst",
+    "siber güvenlik uzmanı",
+    "siber güvenlik mühendisi",
+    "güvenlik mühendisi",
+    "sızma testi uzmanı"
+   ],
+   "total_postings": 29,
+   "low_data": true,
+   "skills": [
+    {
+     "slug": "python",
+     "canonical_name": "Python",
+     "category": "dil",
+     "synonyms": [
+      "python3",
+      "py"
+     ],
+     "demand_ratio": 0.414,
+     "posting_count": 12,
+     "tier": "core"
+    },
+    {
+     "slug": "cyber-security",
+     "canonical_name": "Siber Güvenlik",
+     "category": "metodoloji",
+     "synonyms": [
+      "cyber security",
+      "bilgi güvenliği",
+      "cybersecurity",
+      "information security"
+     ],
+     "demand_ratio": 0.379,
+     "posting_count": 11,
+     "tier": "core"
+    },
+    {
+     "slug": "ci-cd",
+     "canonical_name": "CI/CD",
+     "category": "devops",
+     "synonyms": [
+      "sürekli entegrasyon",
+      "continuous integration",
+      "continuous delivery",
+      "continuous deployment"
+     ],
+     "demand_ratio": 0.31,
+     "posting_count": 9,
+     "tier": "core"
+    },
+    {
+     "slug": "code-review",
+     "canonical_name": "Kod İnceleme",
+     "category": "metodoloji",
+     "synonyms": [
+      "code review",
+      "code reviews"
+     ],
+     "demand_ratio": 0.276,
+     "posting_count": 8,
+     "tier": "common"
+    },
+    {
+     "slug": "teamwork",
+     "canonical_name": "Takım Çalışması",
+     "category": "soft",
+     "synonyms": [
+      "teamwork",
+      "ekip çalışması",
+      "collaboration"
+     ],
+     "demand_ratio": 0.276,
+     "posting_count": 8,
+     "tier": "common"
+    },
+    {
+     "slug": "communication",
+     "canonical_name": "İletişim",
+     "category": "soft",
+     "synonyms": [
+      "communication",
+      "iletişim becerileri",
+      "communication skills"
+     ],
+     "demand_ratio": 0.276,
+     "posting_count": 8,
+     "tier": "common"
+    },
+    {
+     "slug": "cryptography",
+     "canonical_name": "Kriptografi",
+     "category": "metodoloji",
+     "synonyms": [
+      "cryptography",
+      "şifreleme",
+      "encryption"
+     ],
+     "demand_ratio": 0.241,
+     "posting_count": 7,
+     "tier": "common"
+    },
+    {
+     "slug": "terraform",
+     "canonical_name": "Terraform",
+     "category": "devops",
+     "synonyms": [],
+     "demand_ratio": 0.241,
+     "posting_count": 7,
+     "tier": "common"
+    },
+    {
+     "slug": "observability",
+     "canonical_name": "Gözlemlenebilirlik",
+     "category": "metodoloji",
+     "synonyms": [
+      "observability",
+      "monitoring",
+      "izleme"
+     ],
+     "demand_ratio": 0.207,
+     "posting_count": 6,
+     "tier": "common"
+    },
+    {
+     "slug": "generative-ai",
+     "canonical_name": "Üretken Yapay Zeka",
+     "category": "metodoloji",
+     "synonyms": [
+      "generative ai",
+      "genai",
+      "llm",
+      "large language models",
+      "büyük dil modelleri",
+      "llms"
+     ],
+     "demand_ratio": 0.207,
+     "posting_count": 6,
+     "tier": "common"
+    },
+    {
+     "slug": "go",
+     "canonical_name": "Go",
+     "category": "dil",
+     "synonyms": [
+      "golang"
+     ],
+     "demand_ratio": 0.172,
+     "posting_count": 5,
+     "tier": "common"
+    },
+    {
+     "slug": "kubernetes",
+     "canonical_name": "Kubernetes",
+     "category": "devops",
+     "synonyms": [
+      "k8s"
+     ],
+     "demand_ratio": 0.172,
+     "posting_count": 5,
+     "tier": "common"
+    },
+    {
+     "slug": "owasp",
+     "canonical_name": "OWASP",
+     "category": "metodoloji",
+     "synonyms": [
+      "owasp top 10"
+     ],
+     "demand_ratio": 0.172,
+     "posting_count": 5,
+     "tier": "common"
+    },
+    {
+     "slug": "aws",
+     "canonical_name": "AWS",
+     "category": "bulut",
+     "synonyms": [
+      "amazon web services"
+     ],
+     "demand_ratio": 0.138,
+     "posting_count": 4,
+     "tier": "common"
+    },
+    {
+     "slug": "bash",
+     "canonical_name": "Bash",
+     "category": "dil",
+     "synonyms": [
+      "shell",
+      "shell scripting",
+      "kabuk betiği",
+      "zsh"
+     ],
+     "demand_ratio": 0.138,
+     "posting_count": 4,
+     "tier": "common"
+    },
+    {
+     "slug": "cloud-computing",
+     "canonical_name": "Bulut Bilişim",
+     "category": "bulut",
+     "synonyms": [
+      "cloud computing",
+      "bulut bilişim",
+      "cloud infrastructure"
+     ],
+     "demand_ratio": 0.138,
+     "posting_count": 4,
+     "tier": "common"
+    },
+    {
+     "slug": "devops",
+     "canonical_name": "DevOps",
+     "category": "metodoloji",
+     "synonyms": [
+      "devops culture"
+     ],
+     "demand_ratio": 0.138,
+     "posting_count": 4,
+     "tier": "common"
+    },
+    {
+     "slug": "docker",
+     "canonical_name": "Docker",
+     "category": "devops",
+     "synonyms": [
+      "docker compose",
+      "container",
+      "konteyner",
+      "containerization"
+     ],
+     "demand_ratio": 0.138,
+     "posting_count": 4,
+     "tier": "common"
+    },
+    {
+     "slug": "iac",
+     "canonical_name": "Infrastructure as Code",
+     "category": "metodoloji",
+     "synonyms": [
+      "iac",
+      "kod olarak altyapı"
+     ],
+     "demand_ratio": 0.138,
+     "posting_count": 4,
+     "tier": "common"
+    },
+    {
+     "slug": "leadership",
+     "canonical_name": "Liderlik",
+     "category": "soft",
+     "synonyms": [
+      "leadership",
+      "takım liderliği",
+      "team lead"
+     ],
+     "demand_ratio": 0.138,
+     "posting_count": 4,
+     "tier": "common"
+    },
+    {
+     "slug": "azure",
+     "canonical_name": "Microsoft Azure",
+     "category": "bulut",
+     "synonyms": [
+      "azure"
+     ],
+     "demand_ratio": 0.138,
+     "posting_count": 4,
+     "tier": "common"
+    },
+    {
+     "slug": "rest-api",
+     "canonical_name": "REST API",
+     "category": "arac",
+     "synonyms": [
+      "rest",
+      "restful",
+      "web api"
+     ],
+     "demand_ratio": 0.138,
+     "posting_count": 4,
+     "tier": "common"
+    },
+    {
+     "slug": "ownership",
+     "canonical_name": "Sorumluluk Alma",
+     "category": "soft",
+     "synonyms": [
+      "ownership",
+      "sahiplenme"
+     ],
+     "demand_ratio": 0.138,
+     "posting_count": 4,
+     "tier": "common"
+    },
+    {
+     "slug": "aws-iam",
+     "canonical_name": "AWS IAM",
+     "category": "bulut",
+     "synonyms": [
+      "iam"
+     ],
+     "demand_ratio": 0.103,
+     "posting_count": 3,
+     "tier": "common"
+    },
+    {
+     "slug": "agile",
+     "canonical_name": "Agile",
+     "category": "metodoloji",
+     "synonyms": [
+      "çevik",
+      "agile methodology"
+     ],
+     "demand_ratio": 0.103,
+     "posting_count": 3,
+     "tier": "common"
+    },
+    {
+     "slug": "networking",
+     "canonical_name": "Ağ Temelleri",
+     "category": "metodoloji",
+     "synonyms": [
+      "networking",
+      "tcp/ip",
+      "ağ yönetimi",
+      "computer networks"
+     ],
+     "demand_ratio": 0.103,
+     "posting_count": 3,
+     "tier": "common"
+    },
+    {
+     "slug": "blockchain",
+     "canonical_name": "Blockchain",
+     "category": "metodoloji",
+     "synonyms": [
+      "web3",
+      "smart contracts",
+      "akıllı sözleşmeler"
+     ],
+     "demand_ratio": 0.103,
+     "posting_count": 3,
+     "tier": "common"
+    },
+    {
+     "slug": "distributed-systems",
+     "canonical_name": "Dağıtık Sistemler",
+     "category": "metodoloji",
+     "synonyms": [
+      "distributed systems"
+     ],
+     "demand_ratio": 0.103,
+     "posting_count": 3,
+     "tier": "common"
+    },
+    {
+     "slug": "machine-learning",
+     "canonical_name": "Makine Öğrenmesi",
+     "category": "metodoloji",
+     "synonyms": [
+      "machine learning",
+      "ml",
+      "makine öğrenimi"
+     ],
+     "demand_ratio": 0.103,
+     "posting_count": 3,
+     "tier": "common"
+    },
+    {
+     "slug": "mentoring",
+     "canonical_name": "Mentorluk",
+     "category": "soft",
+     "synonyms": [
+      "mentoring",
+      "mentorship"
+     ],
+     "demand_ratio": 0.103,
+     "posting_count": 3,
+     "tier": "common"
+    }
+   ]
+  },
+  {
+   "slug": "game-developer",
+   "name": "Game Developer",
+   "titles": [
+    "game developer",
+    "game programmer",
+    "gameplay programmer",
+    "unity developer",
+    "unreal developer",
+    "game engineer",
+    "oyun geliştirici",
+    "oyun programcısı",
+    "oyun yazılım geliştirici"
+   ],
+   "total_postings": 4,
+   "low_data": true,
+   "skills": [
+    {
+     "slug": "csharp",
+     "canonical_name": "C#",
+     "category": "dil",
+     "synonyms": [
+      "c sharp",
+      "csharp"
+     ],
+     "demand_ratio": 0.5,
+     "posting_count": 2,
+     "tier": "core"
+    },
+    {
+     "slug": "code-review",
+     "canonical_name": "Kod İnceleme",
+     "category": "metodoloji",
+     "synonyms": [
+      "code review",
+      "code reviews"
+     ],
+     "demand_ratio": 0.5,
+     "posting_count": 2,
+     "tier": "core"
+    },
+    {
+     "slug": "teamwork",
+     "canonical_name": "Takım Çalışması",
+     "category": "soft",
+     "synonyms": [
+      "teamwork",
+      "ekip çalışması",
+      "collaboration"
+     ],
+     "demand_ratio": 0.5,
+     "posting_count": 2,
+     "tier": "core"
+    },
+    {
+     "slug": "unity",
+     "canonical_name": "Unity",
+     "category": "arac",
+     "synonyms": [
+      "unity3d"
+     ],
+     "demand_ratio": 0.5,
+     "posting_count": 2,
+     "tier": "core"
+    },
+    {
+     "slug": "communication",
+     "canonical_name": "İletişim",
+     "category": "soft",
+     "synonyms": [
+      "communication",
+      "iletişim becerileri",
+      "communication skills"
+     ],
+     "demand_ratio": 0.5,
+     "posting_count": 2,
+     "tier": "core"
+    },
+    {
+     "slug": "dotnet",
+     "canonical_name": ".NET",
+     "category": "framework",
+     "synonyms": [
+      "asp.net",
+      ".net core",
+      "dotnet",
+      "asp.net core"
+     ],
+     "demand_ratio": 0.25,
+     "posting_count": 1,
+     "tier": "common"
+    },
+    {
+     "slug": "aws",
+     "canonical_name": "AWS",
+     "category": "bulut",
+     "synonyms": [
+      "amazon web services"
+     ],
+     "demand_ratio": 0.25,
+     "posting_count": 1,
+     "tier": "common"
+    },
+    {
+     "slug": "agile",
+     "canonical_name": "Agile",
+     "category": "metodoloji",
+     "synonyms": [
+      "çevik",
+      "agile methodology"
+     ],
+     "demand_ratio": 0.25,
+     "posting_count": 1,
+     "tier": "common"
+    },
+    {
+     "slug": "anthropic-claude",
+     "canonical_name": "Anthropic Claude",
+     "category": "arac",
+     "synonyms": [
+      "claude",
+      "claude code",
+      "anthropic api"
+     ],
+     "demand_ratio": 0.25,
+     "posting_count": 1,
+     "tier": "common"
+    },
+    {
+     "slug": "blockchain",
+     "canonical_name": "Blockchain",
+     "category": "metodoloji",
+     "synonyms": [
+      "web3",
+      "smart contracts",
+      "akıllı sözleşmeler"
+     ],
+     "demand_ratio": 0.25,
+     "posting_count": 1,
+     "tier": "common"
+    },
+    {
+     "slug": "cpp",
+     "canonical_name": "C++",
+     "category": "dil",
+     "synonyms": [
+      "cpp",
+      "c plus plus"
+     ],
+     "demand_ratio": 0.25,
+     "posting_count": 1,
+     "tier": "common"
+    },
+    {
+     "slug": "ci-cd",
+     "canonical_name": "CI/CD",
+     "category": "devops",
+     "synonyms": [
+      "sürekli entegrasyon",
+      "continuous integration",
+      "continuous delivery",
+      "continuous deployment"
+     ],
+     "demand_ratio": 0.25,
+     "posting_count": 1,
+     "tier": "common"
+    },
+    {
+     "slug": "git",
+     "canonical_name": "Git",
+     "category": "arac",
+     "synonyms": [
+      "versiyon kontrol",
+      "version control",
+      "sürüm kontrolü"
+     ],
+     "demand_ratio": 0.25,
+     "posting_count": 1,
+     "tier": "common"
+    },
+    {
+     "slug": "github",
+     "canonical_name": "GitHub",
+     "category": "arac",
+     "synonyms": [],
+     "demand_ratio": 0.25,
+     "posting_count": 1,
+     "tier": "common"
+    },
+    {
+     "slug": "mentoring",
+     "canonical_name": "Mentorluk",
+     "category": "soft",
+     "synonyms": [
+      "mentoring",
+      "mentorship"
+     ],
+     "demand_ratio": 0.25,
+     "posting_count": 1,
+     "tier": "common"
+    },
+    {
+     "slug": "game-design",
+     "canonical_name": "Oyun Tasarımı",
+     "category": "metodoloji",
+     "synonyms": [
+      "game design"
+     ],
+     "demand_ratio": 0.25,
+     "posting_count": 1,
+     "tier": "common"
+    },
+    {
+     "slug": "performance-optimization",
+     "canonical_name": "Performans Optimizasyonu",
+     "category": "metodoloji",
+     "synonyms": [
+      "performance optimization",
+      "performance tuning"
+     ],
+     "demand_ratio": 0.25,
+     "posting_count": 1,
+     "tier": "common"
+    },
+    {
+     "slug": "react",
+     "canonical_name": "React",
+     "category": "framework",
+     "synonyms": [
+      "react.js",
+      "reactjs"
+     ],
+     "demand_ratio": 0.25,
+     "posting_count": 1,
+     "tier": "common"
+    },
+    {
+     "slug": "ownership",
+     "canonical_name": "Sorumluluk Alma",
+     "category": "soft",
+     "synonyms": [
+      "ownership",
+      "sahiplenme"
+     ],
+     "demand_ratio": 0.25,
+     "posting_count": 1,
+     "tier": "common"
+    },
+    {
+     "slug": "ui-ux",
+     "canonical_name": "UI/UX Tasarım",
+     "category": "metodoloji",
+     "synonyms": [
+      "ui",
+      "ux",
+      "kullanıcı deneyimi",
+      "user experience",
+      "ui/ux"
+     ],
+     "demand_ratio": 0.25,
+     "posting_count": 1,
+     "tier": "common"
+    },
+    {
+     "slug": "unreal-engine",
+     "canonical_name": "Unreal Engine",
+     "category": "arac",
+     "synonyms": [
+      "unreal",
+      "ue5",
+      "ue4"
+     ],
+     "demand_ratio": 0.25,
+     "posting_count": 1,
+     "tier": "common"
+    },
+    {
+     "slug": "vue",
+     "canonical_name": "Vue.js",
+     "category": "framework",
+     "synonyms": [
+      "vue",
+      "vuejs"
+     ],
+     "demand_ratio": 0.25,
+     "posting_count": 1,
+     "tier": "common"
+    },
+    {
+     "slug": "english",
+     "canonical_name": "İngilizce",
+     "category": "soft",
+     "synonyms": [
+      "english",
+      "ingilizce"
+     ],
+     "demand_ratio": 0.25,
+     "posting_count": 1,
+     "tier": "common"
+    }
+   ]
+  },
+  {
+   "slug": "data-engineer",
+   "name": "Data Engineer",
+   "titles": [
+    "data engineer",
+    "big data engineer",
+    "etl developer",
+    "analytics engineer",
+    "veri mühendisi",
+    "büyük veri mühendisi"
+   ],
+   "total_postings": 42,
+   "low_data": true,
+   "skills": [
+    {
+     "slug": "sql",
+     "canonical_name": "SQL",
+     "category": "dil",
+     "synonyms": [
+      "t-sql",
+      "pl/sql",
+      "sql sorguları"
+     ],
+     "demand_ratio": 0.548,
+     "posting_count": 23,
+     "tier": "core"
+    },
+    {
+     "slug": "python",
+     "canonical_name": "Python",
+     "category": "dil",
+     "synonyms": [
+      "python3",
+      "py"
+     ],
+     "demand_ratio": 0.524,
+     "posting_count": 22,
+     "tier": "core"
+    },
+    {
+     "slug": "etl",
+     "canonical_name": "ETL",
+     "category": "metodoloji",
+     "synonyms": [
+      "elt",
+      "veri hattı",
+      "data pipeline",
+      "data pipelines"
+     ],
+     "demand_ratio": 0.476,
+     "posting_count": 20,
+     "tier": "core"
+    },
+    {
+     "slug": "machine-learning",
+     "canonical_name": "Makine Öğrenmesi",
+     "category": "metodoloji",
+     "synonyms": [
+      "machine learning",
+      "ml",
+      "makine öğrenimi"
+     ],
+     "demand_ratio": 0.333,
+     "posting_count": 14,
+     "tier": "core"
+    },
+    {
+     "slug": "dbt",
+     "canonical_name": "dbt",
+     "category": "arac",
+     "synonyms": [
+      "data build tool"
+     ],
+     "demand_ratio": 0.309,
+     "posting_count": 13,
+     "tier": "core"
+    },
+    {
+     "slug": "observability",
+     "canonical_name": "Gözlemlenebilirlik",
+     "category": "metodoloji",
+     "synonyms": [
+      "observability",
+      "monitoring",
+      "izleme"
+     ],
+     "demand_ratio": 0.286,
+     "posting_count": 12,
+     "tier": "common"
+    },
+    {
+     "slug": "data-modeling",
+     "canonical_name": "Veri Modelleme",
+     "category": "metodoloji",
+     "synonyms": [
+      "data modeling",
+      "data modelling",
+      "veritabanı tasarımı"
+     ],
+     "demand_ratio": 0.286,
+     "posting_count": 12,
+     "tier": "common"
+    },
+    {
+     "slug": "communication",
+     "canonical_name": "İletişim",
+     "category": "soft",
+     "synonyms": [
+      "communication",
+      "iletişim becerileri",
+      "communication skills"
+     ],
+     "demand_ratio": 0.286,
+     "posting_count": 12,
+     "tier": "common"
+    },
+    {
+     "slug": "ci-cd",
+     "canonical_name": "CI/CD",
+     "category": "devops",
+     "synonyms": [
+      "sürekli entegrasyon",
+      "continuous integration",
+      "continuous delivery",
+      "continuous deployment"
+     ],
+     "demand_ratio": 0.262,
+     "posting_count": 11,
+     "tier": "common"
+    },
+    {
+     "slug": "ownership",
+     "canonical_name": "Sorumluluk Alma",
+     "category": "soft",
+     "synonyms": [
+      "ownership",
+      "sahiplenme"
+     ],
+     "demand_ratio": 0.262,
+     "posting_count": 11,
+     "tier": "common"
+    },
+    {
+     "slug": "aws",
+     "canonical_name": "AWS",
+     "category": "bulut",
+     "synonyms": [
+      "amazon web services"
+     ],
+     "demand_ratio": 0.214,
+     "posting_count": 9,
+     "tier": "common"
+    },
+    {
+     "slug": "databricks",
+     "canonical_name": "Databricks",
+     "category": "veritabani",
+     "synonyms": [
+      "delta lake"
+     ],
+     "demand_ratio": 0.214,
+     "posting_count": 9,
+     "tier": "common"
+    },
+    {
+     "slug": "snowflake",
+     "canonical_name": "Snowflake",
+     "category": "veritabani",
+     "synonyms": [],
+     "demand_ratio": 0.214,
+     "posting_count": 9,
+     "tier": "common"
+    },
+    {
+     "slug": "spark",
+     "canonical_name": "Apache Spark",
+     "category": "framework",
+     "synonyms": [
+      "spark",
+      "pyspark",
+      "spark sql"
+     ],
+     "demand_ratio": 0.191,
+     "posting_count": 8,
+     "tier": "common"
+    },
+    {
+     "slug": "bigquery",
+     "canonical_name": "Google BigQuery",
+     "category": "veritabani",
+     "synonyms": [
+      "bigquery"
+     ],
+     "demand_ratio": 0.191,
+     "posting_count": 8,
+     "tier": "common"
+    },
+    {
+     "slug": "git",
+     "canonical_name": "Git",
+     "category": "arac",
+     "synonyms": [
+      "versiyon kontrol",
+      "version control",
+      "sürüm kontrolü"
+     ],
+     "demand_ratio": 0.167,
+     "posting_count": 7,
+     "tier": "common"
+    },
+    {
+     "slug": "gcp",
+     "canonical_name": "Google Cloud",
+     "category": "bulut",
+     "synonyms": [
+      "gcp",
+      "google cloud platform"
+     ],
+     "demand_ratio": 0.167,
+     "posting_count": 7,
+     "tier": "common"
+    },
+    {
+     "slug": "postgresql",
+     "canonical_name": "PostgreSQL",
+     "category": "veritabani",
+     "synonyms": [
+      "postgres",
+      "psql"
+     ],
+     "demand_ratio": 0.167,
+     "posting_count": 7,
+     "tier": "common"
+    },
+    {
+     "slug": "data-warehouse",
+     "canonical_name": "Veri Ambarı",
+     "category": "metodoloji",
+     "synonyms": [
+      "data warehouse",
+      "data warehousing",
+      "veri ambarı"
+     ],
+     "demand_ratio": 0.167,
+     "posting_count": 7,
+     "tier": "common"
+    },
+    {
+     "slug": "airflow",
+     "canonical_name": "Apache Airflow",
+     "category": "arac",
+     "synonyms": [
+      "airflow"
+     ],
+     "demand_ratio": 0.143,
+     "posting_count": 6,
+     "tier": "common"
+    },
+    {
+     "slug": "cloud-computing",
+     "canonical_name": "Bulut Bilişim",
+     "category": "bulut",
+     "synonyms": [
+      "cloud computing",
+      "bulut bilişim",
+      "cloud infrastructure"
+     ],
+     "demand_ratio": 0.143,
+     "posting_count": 6,
+     "tier": "common"
+    },
+    {
+     "slug": "docker",
+     "canonical_name": "Docker",
+     "category": "devops",
+     "synonyms": [
+      "docker compose",
+      "container",
+      "konteyner",
+      "containerization"
+     ],
+     "demand_ratio": 0.143,
+     "posting_count": 6,
+     "tier": "common"
+    },
+    {
+     "slug": "leadership",
+     "canonical_name": "Liderlik",
+     "category": "soft",
+     "synonyms": [
+      "leadership",
+      "takım liderliği",
+      "team lead"
+     ],
+     "demand_ratio": 0.143,
+     "posting_count": 6,
+     "tier": "common"
+    },
+    {
+     "slug": "azure",
+     "canonical_name": "Microsoft Azure",
+     "category": "bulut",
+     "synonyms": [
+      "azure"
+     ],
+     "demand_ratio": 0.143,
+     "posting_count": 6,
+     "tier": "common"
+    },
+    {
+     "slug": "terraform",
+     "canonical_name": "Terraform",
+     "category": "devops",
+     "synonyms": [],
+     "demand_ratio": 0.143,
+     "posting_count": 6,
+     "tier": "common"
+    },
+    {
+     "slug": "algorithms",
+     "canonical_name": "Algoritmalar ve Veri Yapıları",
+     "category": "metodoloji",
+     "synonyms": [
+      "algorithms",
+      "data structures",
+      "veri yapıları",
+      "algoritmalar"
+     ],
+     "demand_ratio": 0.119,
+     "posting_count": 5,
+     "tier": "common"
+    },
+    {
+     "slug": "anthropic-claude",
+     "canonical_name": "Anthropic Claude",
+     "category": "arac",
+     "synonyms": [
+      "claude",
+      "claude code",
+      "anthropic api"
+     ],
+     "demand_ratio": 0.119,
+     "posting_count": 5,
+     "tier": "common"
+    },
+    {
+     "slug": "kubernetes",
+     "canonical_name": "Kubernetes",
+     "category": "devops",
+     "synonyms": [
+      "k8s"
+     ],
+     "demand_ratio": 0.119,
+     "posting_count": 5,
+     "tier": "common"
+    },
+    {
+     "slug": "cursor",
+     "canonical_name": "Cursor",
+     "category": "arac",
+     "synonyms": [
+      "cursor ide"
+     ],
+     "demand_ratio": 0.095,
+     "posting_count": 4,
+     "tier": "rare"
+    },
+    {
+     "slug": "devops",
+     "canonical_name": "DevOps",
+     "category": "metodoloji",
+     "synonyms": [
+      "devops culture"
+     ],
+     "demand_ratio": 0.095,
+     "posting_count": 4,
+     "tier": "rare"
+    }
+   ]
+  },
+  {
+   "slug": "data-analyst",
+   "name": "Data Analyst",
+   "titles": [
+    "data analyst",
+    "business intelligence analyst",
+    "bi analyst",
+    "bi developer",
+    "product analyst",
+    "veri analisti",
+    "iş zekası analisti",
+    "iş zekası uzmanı"
+   ],
+   "total_postings": 5,
+   "low_data": true,
+   "skills": [
+    {
+     "slug": "python",
+     "canonical_name": "Python",
+     "category": "dil",
+     "synonyms": [
+      "python3",
+      "py"
+     ],
+     "demand_ratio": 1.0,
+     "posting_count": 5,
+     "tier": "core"
+    },
+    {
+     "slug": "sql",
+     "canonical_name": "SQL",
+     "category": "dil",
+     "synonyms": [
+      "t-sql",
+      "pl/sql",
+      "sql sorguları"
+     ],
+     "demand_ratio": 1.0,
+     "posting_count": 5,
+     "tier": "core"
+    },
+    {
+     "slug": "data-analysis",
+     "canonical_name": "Veri Analizi",
+     "category": "metodoloji",
+     "synonyms": [
+      "data analysis",
+      "veri analitiği",
+      "data analytics"
+     ],
+     "demand_ratio": 0.6,
+     "posting_count": 3,
+     "tier": "core"
+    },
+    {
+     "slug": "etl",
+     "canonical_name": "ETL",
+     "category": "metodoloji",
+     "synonyms": [
+      "elt",
+      "veri hattı",
+      "data pipeline",
+      "data pipelines"
+     ],
+     "demand_ratio": 0.4,
+     "posting_count": 2,
+     "tier": "core"
+    },
+    {
+     "slug": "communication",
+     "canonical_name": "İletişim",
+     "category": "soft",
+     "synonyms": [
+      "communication",
+      "iletişim becerileri",
+      "communication skills"
+     ],
+     "demand_ratio": 0.4,
+     "posting_count": 2,
+     "tier": "core"
+    },
+    {
+     "slug": "statistics",
+     "canonical_name": "İstatistik",
+     "category": "metodoloji",
+     "synonyms": [
+      "statistics",
+      "istatistiksel analiz",
+      "statistical analysis"
+     ],
+     "demand_ratio": 0.4,
+     "posting_count": 2,
+     "tier": "core"
+    },
+    {
+     "slug": "aws",
+     "canonical_name": "AWS",
+     "category": "bulut",
+     "synonyms": [
+      "amazon web services"
+     ],
+     "demand_ratio": 0.2,
+     "posting_count": 1,
+     "tier": "common"
+    },
+    {
+     "slug": "algorithms",
+     "canonical_name": "Algoritmalar ve Veri Yapıları",
+     "category": "metodoloji",
+     "synonyms": [
+      "algorithms",
+      "data structures",
+      "veri yapıları",
+      "algoritmalar"
+     ],
+     "demand_ratio": 0.2,
+     "posting_count": 1,
+     "tier": "common"
+    },
+    {
+     "slug": "airflow",
+     "canonical_name": "Apache Airflow",
+     "category": "arac",
+     "synonyms": [
+      "airflow"
+     ],
+     "demand_ratio": 0.2,
+     "posting_count": 1,
+     "tier": "common"
+    },
+    {
+     "slug": "spark",
+     "canonical_name": "Apache Spark",
+     "category": "framework",
+     "synonyms": [
+      "spark",
+      "pyspark",
+      "spark sql"
+     ],
+     "demand_ratio": 0.2,
+     "posting_count": 1,
+     "tier": "common"
+    },
+    {
+     "slug": "cursor",
+     "canonical_name": "Cursor",
+     "category": "arac",
+     "synonyms": [
+      "cursor ide"
+     ],
+     "demand_ratio": 0.2,
+     "posting_count": 1,
+     "tier": "common"
+    },
+    {
+     "slug": "observability",
+     "canonical_name": "Gözlemlenebilirlik",
+     "category": "metodoloji",
+     "synonyms": [
+      "observability",
+      "monitoring",
+      "izleme"
+     ],
+     "demand_ratio": 0.2,
+     "posting_count": 1,
+     "tier": "common"
+    },
+    {
+     "slug": "leadership",
+     "canonical_name": "Liderlik",
+     "category": "soft",
+     "synonyms": [
+      "leadership",
+      "takım liderliği",
+      "team lead"
+     ],
+     "demand_ratio": 0.2,
+     "posting_count": 1,
+     "tier": "common"
+    },
+    {
+     "slug": "mssql",
+     "canonical_name": "Microsoft SQL Server",
+     "category": "veritabani",
+     "synonyms": [
+      "mssql",
+      "sql server"
+     ],
+     "demand_ratio": 0.2,
+     "posting_count": 1,
+     "tier": "common"
+    },
+    {
+     "slug": "pandas",
+     "canonical_name": "Pandas",
+     "category": "framework",
+     "synonyms": [],
+     "demand_ratio": 0.2,
+     "posting_count": 1,
+     "tier": "common"
+    },
+    {
+     "slug": "performance-optimization",
+     "canonical_name": "Performans Optimizasyonu",
+     "category": "metodoloji",
+     "synonyms": [
+      "performance optimization",
+      "performance tuning"
+     ],
+     "demand_ratio": 0.2,
+     "posting_count": 1,
+     "tier": "common"
+    },
+    {
+     "slug": "postgresql",
+     "canonical_name": "PostgreSQL",
+     "category": "veritabani",
+     "synonyms": [
+      "postgres",
+      "psql"
+     ],
+     "demand_ratio": 0.2,
+     "posting_count": 1,
+     "tier": "common"
+    },
+    {
+     "slug": "power-bi",
+     "canonical_name": "Power BI",
+     "category": "arac",
+     "synonyms": [
+      "powerbi"
+     ],
+     "demand_ratio": 0.2,
+     "posting_count": 1,
+     "tier": "common"
+    },
+    {
+     "slug": "problem-solving",
+     "canonical_name": "Problem Çözme",
+     "category": "soft",
+     "synonyms": [
+      "problem solving",
+      "analitik düşünme",
+      "analytical thinking"
+     ],
+     "demand_ratio": 0.2,
+     "posting_count": 1,
+     "tier": "common"
+    },
+    {
+     "slug": "ownership",
+     "canonical_name": "Sorumluluk Alma",
+     "category": "soft",
+     "synonyms": [
+      "ownership",
+      "sahiplenme"
+     ],
+     "demand_ratio": 0.2,
+     "posting_count": 1,
+     "tier": "common"
+    },
+    {
+     "slug": "presentation-skills",
+     "canonical_name": "Sunum Becerisi",
+     "category": "soft",
+     "synonyms": [
+      "presentation skills",
+      "public speaking"
+     ],
+     "demand_ratio": 0.2,
+     "posting_count": 1,
+     "tier": "common"
+    },
+    {
+     "slug": "data-visualization",
+     "canonical_name": "Veri Görselleştirme",
+     "category": "metodoloji",
+     "synonyms": [
+      "data visualization",
+      "veri görselleştirme"
+     ],
+     "demand_ratio": 0.2,
+     "posting_count": 1,
+     "tier": "common"
+    },
+    {
+     "slug": "english",
+     "canonical_name": "İngilizce",
+     "category": "soft",
+     "synonyms": [
+      "english",
+      "ingilizce"
+     ],
+     "demand_ratio": 0.2,
+     "posting_count": 1,
+     "tier": "common"
+    }
+   ]
+  }
+ ]
+}

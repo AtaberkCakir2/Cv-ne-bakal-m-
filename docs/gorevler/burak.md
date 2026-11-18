@@ -1,6 +1,6 @@
 # Burak — Görevler
 
-**Alan:** AI / NLP + Mobil · **29 görev · 276 saat**
+**Alan:** AI / NLP + Mobil · **28 görev · 260 saat**
 
 Bu dosya Burak'ın görev listesidir ve görev durumlarının tek doğru kaynağıdır. Sadece Burak (veya onun Claude'u) günceller.
 
@@ -16,53 +16,48 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-018 · Ollama kurulumu ve model benchmark'ı
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 19.10.2026 – 01.11.2026 · **Öncelik:** P0 · **Efor:** 10 saat · **Alan:** AI / NLP
 - **Bağımlılık:** T-007 (Ataberk)
 - **Destek:** —
 - **Çıktı:** Benchmark raporu (poster için de kullanılacak)
 - **Kabul kriteri:** Aday modeller: Llama 3.x 8B Instruct (q4_K_M), Gemma 9B, Qwen 7B. 10 Türkçe CV ile: JSON uyumu, yetkinlik doğruluğu, token/sn, RAM. CPU ve (varsa) GPU ölçümü. Kazanan model + yedek model seçildi.
+- **Not:** Rapor `ai/eval/benchmark/README.md`, karar #26: Llama 3.1 8B (yedek Gemma 2 9B), JSON şeması zorunlu. Referans etiketler geçici (Claude); T-019 gold gelince ve VPS'te (T-056) tekrar ölçülmeli. Docker gerekmedi: Ollama Windows'a doğrudan kuruldu (0.40.13).
 
 ### T-019 · Etiketli değerlendirme veri seti (altın standart)
 
-- **Durum:** Yapılacak
-- **Tarih:** 19.10.2026 – 01.11.2026 · **Öncelik:** P0 · **Efor:** 12 saat · **Alan:** AI / NLP
+- **Durum:** Devam Ediyor
+- **Tarih:** 19.10.2026 – 28.11.2026 · **Öncelik:** P0 · **Efor:** 12 saat (Burak; ekipçe toplam ~26–36 kişi-saat) · **Alan:** AI / NLP
 - **Bağımlılık:** —
-- **Destek:** Ataberk, Anıl
-- **Çıktı:** eval/dataset (anonim)
-- **Kabul kriteri:** En az 50 anonimleştirilmiş CV (TR + EN, farklı formatlar, 5 taranmış). Her CV'nin yetkinlikleri 2 kişi tarafından elle etiketlendi; anlaşmazlıklar 3. kişiyle çözüldü. Gerçek CV'ler için sahiplerinden yazılı izin.
+- **Destek:** Ataberk (şablon girdisi, etiketleme), Anıl (etiketleme)
+- **Çıktı:** ai/eval/dataset (sentetik)
+- **Kabul kriteri:** 50 sentetik CV (karar #20: gerçek kişilere ait CV toplanmaz): 25 TR + 25 EN; 10 pozisyon × 5; tek ve çok sütunlu; en az 5 taranmış; yeni mezun / stajyer / deneyimli dengeli. Tamamı en az 1 kişi, 20'si 2 kişi tarafından bağımsız elle etiketlendi; anlaşmazlıklar 3. kişiyle çözüldü; çift etiketlenen alt kümede etiketleyiciler arası F1 ≥ 0,85. Çift etiketlenen 20 CV dengeli seçilir: en az 8 TR + 8 EN, en az 6 çok sütunlu, en az 2 taranmış, üç deneyim düzeyinden de. Etiketler sıfırdan verilir; şablonun yetkinlik listesi veya bir eşleyicinin çıktısı cevap anahtarı olarak kullanılmaz.
+- **Not:** Plan #30'da Ataberk'le kararlaştırıldı (29.10.2026). İlk 10 Türkçe CV T-018 benchmark'ı için öncelikli (hedef 03.11). Şablon betiği `ai/eval/`'de; girdi listesi (pozisyon × yetkinlik × eş anlamlı, `role_skill_stats` oranlarıyla) Ataberk'ten JSON olarak gelir. CV üretiminde ÜYZ kullanılırsa araç adı ve sürümü TÜBİTAK beyanına eklenir.
+- **Devam notu (30.10.2026):** Yapılan: plan ve `agreement.py --write-gold` düzeltmesi main'de (#34); Ataberk'in şablon girdisi main'de (#38, `scraper/exports/template_input.json`); `ai/eval/scripts/generate_cvs.py` (JSON → tek/çok sütunlu PDF, taranmış benzetimi, manifest) ve **ilk 10 TR CV** (`syn-004`…`syn-013`; metinleri Claude Opus 5.5 ile yazıldı, ÜYZ beyanında) bu branch'te (PR #35). · Sıradaki adım: (1) 10 TR CV'yi etiketle → T-018 referansını (`ai/eval/benchmark/reference_draft.json`) gerçek etiketle değiştir; (2) kalan 37 CV (25 EN dahil) `template_input.json`'dan; low_data pozisyonlarda (game-developer 4, data-analyst 5 ilan) yetkinlik listesi yakın pozisyonla tamamlanır; (3) çift etiketlenecek 20 CV'yi dengeli seç (`double: true`; bu 10 CV'nin hepsi şu an false, en az 8 TR gerekli); ilerleme: `.venv\Scripts\python ai/eval/scripts/check_labels.py`. · Açık sorular / engeller: Ataberk'in önerisi, kalan taranmış CV'lerde ±1–2° eğim ve hafif gürültü (T-029 için). · Branch: `burak/sentetik-cv-uretimi` (PR #35)
 
 ### T-024 · UML diyagramları
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 19.10.2026 – 25.10.2026 · **Öncelik:** P0 · **Efor:** 6 saat · **Alan:** Dokümantasyon
 - **Bağımlılık:** T-011 (Ataberk)
 - **Destek:** Ataberk, Anıl
 - **Çıktı:** docs/diagrams
 - **Kabul kriteri:** Use Case, Sequence (CV yükleme → sonuç), Component/Deployment ve ERD diyagramları. Poster ve final raporda kullanılacak.
+- **Not:** ERD `docs/veritabani.md`'den çizildi; T-011 (Ataberk) kesinleşince karşılaştırılıp güncellenecek.
 
 ### T-020 · PDF metin çıkarma modülü
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 26.10.2026 – 01.11.2026 · **Öncelik:** P0 · **Efor:** 10 saat · **Alan:** AI / NLP
 - **Bağımlılık:** T-007 (Ataberk)
 - **Destek:** —
 - **Çıktı:** ai/parsing modülü + testler
 - **Kabul kriteri:** pdfplumber + PyMuPDF yedeği; çok sütunlu CV düzeni; tamamen bellek içi (BytesIO), diske yazma yok. Bozuk/şifreli PDF için anlamlı hata kodu.
+- **Not:** Testler bellekte üretilen sentetik PDF'lerle (tek sütun, iki sütun, tablo, taranmış, şifreli, bozuk). Gerçek CV düzenleri (Word/Canva çıktıları) T-019 veri setiyle ayrıca denenmeli. T-007 (Docker) gerekmedi; modül saf Python.
 
 ---
 
 ## Sprint 1
-
-### T-028 · TÜBİTAK 2209-A başvuru dosyası
-
-- **Durum:** Yapılacak
-- **Tarih:** 02.11.2026 – 15.11.2026 · **Öncelik:** P0 · **Efor:** 16 saat · **Alan:** Kongre / TÜBİTAK
-- **Bağımlılık:** T-000 (Anıl)
-- **Destek:** Ataberk, Anıl
-- **Çıktı:** Başvuru dosyası
-- **Kabul kriteri:** Özgün değer, yöntem, iş-zaman planı, risk yönetimi, bütçe ve yaygın etki bölümleri; danışman onayı ve sisteme yükleme. Son tarihi güncel çağrı takviminden doğrulayın.
-- **Not:** Son tarih çağrı duyurusuna göre güncellenmeli.
 
 ### T-029 · OCR yedek akışı (Tesseract)
 
@@ -75,30 +70,33 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-030 · Kişisel veri anonimleştirme (PII maskeleme)
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 02.11.2026 – 08.11.2026 · **Öncelik:** P0 · **Efor:** 10 saat · **Alan:** Güvenlik & KVKK
 - **Bağımlılık:** T-020
 - **Destek:** —
 - **Çıktı:** ai/pii modülü + testler
 - **Kabul kriteri:** LLM'e gitmeden ÖNCE ad-soyad, telefon, e-posta, adres, TC kimlik no, doğum tarihi maskelenir (regex + NER). Test: telefon/e-posta/TCKN için %100 maskeleme.
+- **Not:** Ad tespiti kurallar + yerel BERTurk NER (karar #24). #37 incelemesi (Ataberk) düzeltildi: unvan satırındaki yetkinlikler ad sayılmıyor, adres ipucu tek başına adres değil, NER kütüphaneleri sabit sürümde. Ataberk'e devredilenler: worker-ai imajına `ai[ner]` (CPU torch) kurulup model derleme sırasında indirilmeli (`HF_HUB_OFFLINE=1`) (CI'daki mypy komutu ve ilan maskelemesi `pii.mask_posting` Ataberk'te yapıldı). #43 incelemesinde (Ataberk, gerçek ilanlar) bulunanlar düzeltildi: maskeleme idempotent (etiketler tekrar maskelenmez), İngilizce metinde "Bay" hitap değil, unvanla başlayan marka adları küçük bir istisna listesinde ("Dr. Squatch"), bağlantı içindeki ön eksiz sayı telefon/TCKN değil, hash içindeki 11 hane TCKN değil. #44 incelemesindeki üç sızıntı da kapatıldı: harfe bitişik TCKN ("TC12345678901") ve unvandan sonra tek soyadı ("Mr. Johnson") maskeleniyor, bağlantıdaki telefon biçimli numara (05…, +90…, `?phone=`) telefon sayılıyor.
 
 ### T-031 · Yetkinlik çıkarımı v1 (sözlük + kural)
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 02.11.2026 – 15.11.2026 · **Öncelik:** P0 · **Efor:** 12 saat · **Alan:** AI / NLP
 - **Bağımlılık:** T-017 (Ataberk), T-020
 - **Destek:** Ataberk
 - **Çıktı:** ai/extraction v1
 - **Kabul kriteri:** Taksonomi + eş anlamlılarla hızlı eşleme (FlashText/regex); deneyim yılı ve seviye ipuçları ("ileri düzey", "3 yıl"). LLM çalışmasa bile sonuç üretir (yedek yol).
+- **Not:** `ai/extraction` (sözlük + kural, LLM'siz). 10 TR sentetik CV'de geçici referansa göre P 0,98 / R 0,97 (referans da sözlükle üretildiği için iyimser; T-019 gold ile tekrar ölç). Referans düzeltme önerileri: syn-012 Kriptografi CTF cümlesinde de geçiyor (geri eklenmeli); "GitHub Actions" içindeki GitHub ayrı sayılmamalı; MLOps/DevOps başlıkları tutarlı olmalı. Ataberk'le ortaklaştırma: `extraction/taxonomy.py` ve `scraper/etl/skills.py` aynı kurallar; CI mypy komutuna `extraction` eklenmeli.
 
 ### T-044 · Prompt versiyonlama
 
-- **Durum:** Yapılacak
+- **Durum:** Devam Ediyor
 - **Tarih:** 09.11.2026 – 15.11.2026 · **Öncelik:** P1 · **Efor:** 4 saat · **Alan:** AI / NLP
 - **Bağımlılık:** T-031
 - **Destek:** —
 - **Çıktı:** Prompt kütüphanesi
 - **Kabul kriteri:** Prompt'lar /ai/prompts altında versiyonlu; her analizde model_name ve prompt_version kaydedilir (tekrarlanabilirlik).
+- **Devam notu (10.11.2026):** Yapılan: `ai/prompts/` (`get_prompt`, `model_info`, `skill_extraction/v1.txt`, #68); T-032 (#78) LLM çağrısında `get_prompt("skill_extraction")` kullanıyor ve `ExtractionResult.model` alanında `{"name", "prompt_version"}` döndürüyor. · Sıradaki adım: T-057'de işçi `result.model` değerini analiz sonucuna ve `analyses` tablosuna yazınca kriterin "her analizde kaydedilir" kısmı kapanır, görev o zaman Tamamlandı yapılır. · Açık sorular / engeller: T-043 ikinci prompt'u getirince sözleşmedeki tek `prompt_version` alanının nasıl kullanılacağı karar ister. · Branch: yok (kod main'de; kalan iş T-057'nin dalında)
 
 ---
 
@@ -106,39 +104,43 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-032 · Yetkinlik çıkarımı v2 (LLM)
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 16.11.2026 – 22.11.2026 · **Öncelik:** P0 · **Efor:** 14 saat · **Alan:** AI / NLP
 - **Bağımlılık:** T-031, T-018, T-030
 - **Destek:** —
 - **Çıktı:** ai/extraction v2
 - **Kabul kriteri:** Ollama structured output (JSON şeması), temperature 0.1. v1 sonucu ile birleştirilir; taksonomide olmayan yetkinlik "doğrulanmamış" işaretlenir (halüsinasyon filtresi).
+- **Not:** v1 ile v2'nin F1 karşılaştırması ve LLM'in tamamladığı seviyelerin doğruluğu T-019 altın standardı gelince ölçülecek (doğru değilse seviye tamamlama kapatılır). Ataberk'e taksonomi önerisi: "Express" (Express.js) tek başına eşleşmiyor.
 
 ### T-041 · Embedding servisi
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 16.11.2026 – 22.11.2026 · **Öncelik:** P0 · **Efor:** 10 saat · **Alan:** AI / NLP
 - **Bağımlılık:** T-013 (Ataberk), T-033 (Ataberk)
 - **Destek:** Ataberk
 - **Çıktı:** ai/embedding modülü
 - **Kabul kriteri:** Çok dilli model (paraphrase-multilingual-MiniLM-L12-v2 veya multilingual-e5-small, 384 boyut). Yetkinlik ve ilan vektörleri toplu üretilip pgvector'e yazılır.
+- **Not:** Model MiniLM yerine multilingual-e5-small (leave-one-out doğruluk %53 → %65; ölçüm `ai/README.md`), `docs/kararlar.md`'ye ekip kararı olarak yazılmalı. T-042 eşiği bu modelde ~0,90 (0,80 her şeyi eşler). Ataberk için: gece toplamasına `python -m embedding` adımı, işçi imajına modelin önceden indirilmesi, `catalog.py`'deki model yorumu ve T-013 ölçümünün gerçek vektörlerle tekrarı.
 
 ### T-042 · Eşleştirme algoritması
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 16.11.2026 – 29.11.2026 · **Öncelik:** P0 · **Efor:** 16 saat · **Alan:** AI / NLP
 - **Bağımlılık:** T-041, T-032, T-045 (Ataberk)
 - **Destek:** —
 - **Çıktı:** ai/matching modülü
 - **Kabul kriteri:** Pozisyon için talep ağırlığı = ilan frekansı × TF-IDF; kosinüs benzerliği ile anlamsal eşleşme (eşik 0,80, ayarlanabilir); 0-100 uyum skoru; eksik yetkinlikler talep oranına göre sıralanır.
+- **Not:** `ai/matching` (`match`, `load_role_demand`). Anlamsal eşik varsayılanı 0,90: kriterdeki 0,80 MiniLM içindi, T-041'de seçilen e5-small'da her şeyi eşliyor; eşik parametre olarak ayarlanabilir. Anlamsal eşleşme sadece taksonomide olmayan adlara uygulanır (farklı taksonomi yetkinlikleri vektörle eşlenmez). Sözleşmede `low_data` alanı yok; karar #23'teki uyarı için API'ye ayrı alan gerekirse sözleşme önerisi yapılmalı (Anıl). 10 sentetik CV'de hedef pozisyon 9'unda 1. sırada (README). #79 (T-041) birleşince PR açılır.
 
 ### T-043 · Kaynak öneri üretimi (RAG)
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 23.11.2026 – 29.11.2026 · **Öncelik:** P0 · **Efor:** 12 saat · **Alan:** AI / NLP
 - **Bağımlılık:** T-042, T-046 (Ataberk)
 - **Destek:** Ataberk
 - **Çıktı:** ai/recommendation modülü
 - **Kabul kriteri:** Eksik yetkinlik için aday kaynaklar DB'den çekilir; LLM SADECE bu listeden seçer ve Türkçe gerekçe yazar → uydurma link imkânsız. Örn: "İncelenen 150 ilanın %75'i Docker istiyor".
+- **Not:** 17.11.2026. `ai/recommendation` (`load_candidates`, `recommend`): adaylar `resources`'tan (sadece `is_alive`); LLM sadece aday numarası seçer, numara o yetkinliğin adaylarında yoksa atılır, link/başlık her zaman DB kaydından gelir. İlan istatistiği cümlesi koddan üretilir (LLM sayı yazmaz); bozuk gerekçe veya LLM hatasında kurallı seçim ve gerekçe. Prompt `prompts/recommendation/v1.txt`. Deneme: `resources.csv` adayları + Llama 3.1 8B, 9/9 geçerli seçim, 9/9 LLM gerekçesi, 7,8 sn (ilk çağrı 85 sn). SQL geçici tablolarla test edildi; gerçek `resources` tablosuyla deneme T-057'de. Açık soru: analizde artık iki prompt var (`skill_extraction` v1, `recommendation` v1), sözleşmede tek `prompt_version` alanı; T-057'de nasıl yazılacağı kararlaştırılmalı (bkz. T-044).
 
 ---
 

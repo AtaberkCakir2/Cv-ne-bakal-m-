@@ -1,32 +1,161 @@
-# Lokal geliştirme altyapısı. API ve worker servisleri ilerleyen sprintlerde eklenecek.
+# Lokal geliştirme ortamı (T-007). Sadece geliştirme içindir; production ayarları (kaynak limitleri,
+# şifreli Redis, iç ağ) T-075'te ayrı profil olarak eklenecek.
+#
+# Başlatma: `make up` (ya da make yoksa `docker compose up -d --wait`). Ayrıntı: README.md
+#
+# api ve worker servisleri kendi profillerindedir; `backend/Dockerfile` ve `ai/Dockerfile` eklenince
+# `make up` onları otomatik olarak da başlatır. Portlar sadece bu bilgisayara (127.0.0.1) açılır.
+name: careerai
+
+x-app-env: &app-env
+  # Konteyner içinden servislere localhost ile değil servis adıyla erişilir.
+  # (Eksik değişken hatasını postgres servisi verir; burada tekrar uyarı basılmasın diye :- kullanılır.)
+  DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-}:${POSTGRES_PASSWORD:-}@postgres:5432/${POSTGRES_DB:-}
+  REDIS_URL: redis://redis:6379/0
+  CV_REDIS_URL: redis://cv-redis:6379/0
+  OLLAMA_URL: http://ollama:11434
+
 services:
   postgres:
     image: pgvector/pgvector:pg16
     environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER:?.env dosyasında POSTGRES_USER yok}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?.env dosyasında POSTGRES_PASSWORD yok}
+      POSTGRES_DB: ${POSTGRES_DB:?.env dosyasında POSTGRES_DB yok}
+      TZ: Europe/Istanbul
     ports:
-      - "5432:5432"
+      - "127.0.0.1:5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
-      interval: 10s
-      retries: 5
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    restart: unless-stopped
 
   redis:
     image: redis:7
     ports:
-      - "6379:6379"
+      - "127.0.0.1:6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    restart: unless-stopped
+
+  # Kuyruktaki CV baytlarının geçici deposu (T-039, karar #9). Kuyruk Redis'inden AYRI ve kalıcılığı kapalı:
+  # RDB/AOF yok, /data bellekte (tmpfs); kapsayıcı durunca içindekiler silinir. Bellek dolunca anahtar
+  # silinmez, yazma reddedilir (noeviction) ve API 503 döner. 256 MB: en fazla 8 bekleyen CV × 5 MB'ın çok üstü.
+  cv-redis:
+    image: redis:7
+    command: ["redis-server", "--save", "", "--appendonly", "no", "--maxmemory", "256mb", "--maxmemory-policy", "noeviction"]
+    tmpfs:
+      - /data
+    ports:
+      - "127.0.0.1:6380:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    restart: unless-stopped
 
   ollama:
-    image: ollama/ollama
+    # Sürüm sabit: herkes aynı Ollama ile çalışsın. Yükseltme PR ile yapılır. 0.40.13: T-018 benchmark sürümü.
+    image: ollama/ollama:0.40.13
     ports:
-      - "11434:11434"
+      - "127.0.0.1:11434:11434"
     volumes:
       - ollama:/root/.ollama
+    healthcheck:
+      test: ["CMD", "ollama", "list"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+  # FastAPI (sahibi: Anıl). backend/Dockerfile eklenince aktif olur.
+  api:
+    profiles: ["api"]
+    build: ./backend
+    image: careerai/api:dev
+    env_file: .env
+    environment: *app-env
+    ports:
+      - "127.0.0.1:8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      cv-redis:
+        condition: service_healthy
+
+  # Analiz işçisi (T-039; kod: backend/app/worker, sahibi Anıl). API imajını kullanır. `backend/app/worker/`
+  # main'e gelince `make up` bunu da başlatır. -E (olaylar) kullanılmaz: hata izini broker Redis'ine yazardı.
+  worker-analysis:
+    profiles: ["analysis"]
+    image: careerai/api:dev
+    build: ./backend
+    command: ["celery", "-A", "app.worker.celery_app", "worker", "-Q", "analysis", "--concurrency", "1",
+              "-n", "analysis@%h", "--loglevel", "INFO"]
+    env_file: .env
+    environment: *app-env
+    healthcheck:
+      # İmajdaki API sağlık kontrolü (8000 portu) işçi için geçersiz.
+      test: ["CMD-SHELL", "celery -A app.worker.celery_app inspect ping -d analysis@$$HOSTNAME --timeout 5"]
+      interval: 30s
+      timeout: 15s
+      start_period: 20s
+      retries: 3
+    # Kapanırken süren analiz bitsin (en fazla 200 sn); yoksa iş 10 dk sonra yeniden teslim edilir.
+    stop_grace_period: 210s
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      cv-redis:
+        condition: service_healthy
+
+  # Celery AI worker'ı (sahibi: Burak). ai/Dockerfile eklenince aktif olur.
+  worker:
+    profiles: ["worker"]
+    build: ./ai
+    image: careerai/worker:dev
+    env_file: .env
+    environment: *app-env
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      ollama:
+        condition: service_healthy
+
+  # Veri işçisi: Celery beat + gece ilan toplama 03:00 (sahibi: Ataberk, T-034).
+  worker-data:
+    profiles: ["data"]
+    build:
+      context: .
+      dockerfile: scraper/Dockerfile
+    image: careerai/worker-data:dev
+    env_file: .env
+    environment: *app-env
+    mem_limit: 1536m  # docs/mimari.md: 1,5 GB (Playwright gelince)
+    volumes:
+      - scraper-data:/srv/scraper/data  # YouTube arama durumu (T-046)
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
 
 volumes:
   pgdata:
   ollama:
+  scraper-data:

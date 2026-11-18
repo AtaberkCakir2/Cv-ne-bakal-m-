@@ -1,0 +1,2 @@
+# Betikler Linux sunucuda çalışır: Windows checkout'unda da satır sonu LF kalsın (scp ile kopyalanıyor).
+*.sh text eol=lf
