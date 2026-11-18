@@ -8,7 +8,7 @@ from typing import Any
 from sqlalchemy import Row, func, select, text
 from sqlalchemy.orm import Session
 
-from app.db.enums import AnalysisStatus
+from app.db.enums import AnalysisStatus, ResourceProvider
 from app.db.models import Analysis, JobPosting, JobSource, Resource, ScrapeRun, Skill, User
 
 MIN_RESOURCES_PER_SKILL = 3  # T-046 kabul kriteri
@@ -21,7 +21,7 @@ class Stats:
     postings_last_7d: int
     resources_alive: int
     resources_dead: int
-    resources_by_provider: Sequence[Row[Any]]  # sağlayıcı, sayı
+    resources_by_provider: Sequence[tuple[ResourceProvider, int]]  # sağlayıcı, sayı
     skills_active: int
     skills_under_min: int
     analyses: dict[str, dict[str, int]]
@@ -91,14 +91,15 @@ def collect(session: Session, now: datetime | None = None) -> Stats:
         postings_last_7d=session.scalar(select(func.count()).where(JobPosting.created_at >= week_ago)) or 0,
         resources_alive=session.scalar(select(func.count()).where(Resource.is_alive)) or 0,
         resources_dead=session.scalar(select(func.count()).where(Resource.is_alive.is_(False))) or 0,
-        resources_by_provider=list(
-            session.execute(
+        resources_by_provider=[
+            (provider, n)
+            for provider, n in session.execute(
                 select(Resource.provider, func.count())
                 .where(Resource.is_alive)
                 .group_by(Resource.provider)
                 .order_by(func.count().desc())
-            ).all()
-        ),
+            )
+        ],
         skills_active=session.scalar(select(func.count()).where(Skill.is_active)) or 0,
         skills_under_min=session.scalar(
             select(func.count()).where(Skill.is_active, alive_per_skill < MIN_RESOURCES_PER_SKILL)

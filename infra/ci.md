@@ -6,13 +6,23 @@ Tanım: [`.github/workflows/ci.yml`](../.github/workflows/ci.yml). Her PR'da ve 
 
 | İş | Ne zaman | Ne yapar |
 |---|---|---|
-| Modülleri bul | Her zaman | Hangi modüllerin kurulu olduğuna bakar (`ai/pyproject.toml`, `web/package.json` vb.) |
-| Backend | Her zaman | `ruff check`, `ruff format --check`, `mypy app tests`, `pytest`. Postgres + pgvector servisiyle `tests/db` de çalışır: migration upgrade → downgrade → upgrade ve `alembic check` |
-| Scraper | `scraper/pyproject.toml` varsa | `ruff`, `mypy collector tests`, `pytest`; Postgres servisiyle içe aktarma testleri (şema backend migration'larıyla kurulur) |
-| AI | `ai/pyproject.toml` varsa | `ruff`, `mypy parsing tests eval/scripts`, `pytest` (ai/README.md'deki komutlar) |
-| Web | `web/package.json` varsa | `npm ci`, `npm run lint` (eslint), `npx tsc -b` |
-| Mobil | `mobile/package.json` varsa | `npm ci`, `npm run lint` (varsa), `npx tsc --noEmit` |
-| Docker | Her zaman | `docker compose config`, API imajını build eder ve `/api/v1/health` ile açıldığını dener; `ai/Dockerfile` varsa worker imajını da build eder |
+| Modülleri bul | Her zaman | Hangi modüllerin kurulu olduğuna ve PR'da hangi dosyaların değiştiğine bakar |
+| Backend | `backend/` değişince | `ruff check`, `ruff format --check`, `mypy app tests`, `pytest`. Postgres + pgvector servisiyle `tests/db` de çalışır: migration upgrade → downgrade → upgrade ve `alembic check` |
+| Scraper | `scraper/`, `backend/` veya `ai/` değişince (scraper ikisini de kurar) | `ruff`, `mypy collector tests`, `pytest`; Postgres servisiyle içe aktarma testleri (şema backend migration'larıyla kurulur) |
+| AI | `ai/` değişince | `ruff`, `mypy parsing tests eval/scripts`, `pytest` (ai/README.md'deki komutlar) |
+| Web | `web/` değişince | `npm ci`, `npm run lint` (eslint), `npx tsc -b` |
+| Mobil | `mobile/` değişince | `npm ci`, `npm run lint` (varsa), `npx tsc --noEmit` |
+| Docker | `backend/`, `scraper/`, `ai/`, `docker-compose*.yml` veya `.env.example` değişince | `docker compose config`, API imajını build eder ve `/api/v1/health` ile açıldığını dener; `ai/Dockerfile` varsa worker imajını da build eder |
+
+### Hangi iş ne zaman
+
+"… değişince" sadece PR için geçerli: `main`'e her push'ta (yani her birleştirmede) bütün işler çalışır. `contracts/` veya `ci.yml` değişen PR'da da hepsi çalışır. Modülün dosyası yoksa (ör. `mobile/package.json`) işi hiç çalışmaz.
+
+Neden: repo gizli, Actions dakikası ayda sınırlı (GitHub Pro: 3.000 dk). Kasım 2026'da her PR güncellemesinde ~18 iş çalıştığı için kota 17.11'de doldu ve CI durdu (iş başlamıyor, "spending limit" hatası). Atlanan zorunlu iş GitHub'da **başarılı** sayılır; sadece doküman değiştiren PR'da yalnızca "Modülleri bul" çalışır ve PR birleştirilebilir.
+
+Dikkat: kota bittiğinde de bütün işler başlamadan düşer ve zorunlu işler "skipped" görünüp geçmiş sayılır. Actions sekmesinde işler saniyeler içinde kırmızıysa CI çalışmıyordur; birleştirmeden önce değişen modülü yerelde deneyin (`infra/guvenlik.md` ve modül README'leri). Kullanım: GitHub → Settings → Billing and licensing → Usage.
+
+Güvenlik taramaları (`security.yml`) da aynı mantıkla çalışır: sır taraması her PR'da; pip-audit, npm audit ve Trivy PR'da/main'de sadece ilgili `pyproject.toml`, `package*.json`, Dockerfile veya `infra/backup/` değişince; haftalık (pazartesi) çalışmada hepsi.
 
 Yeni modül eklemek için workflow'a dokunmak gerekmez: dosyası repoya girdiği anda ilgili iş devreye girer. Komutlar değişirse (ör. mypy yolları) hem modülün README'si hem `ci.yml` aynı PR'da güncellenir.
 
