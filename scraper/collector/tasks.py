@@ -13,7 +13,7 @@ from zoneinfo import ZoneInfo
 
 from app.core.config import get_settings
 from app.core.logging import configure_logging
-from app.db.models import ScrapeRun
+from app.db.models import Resource, ScrapeRun
 from app.db.session import get_sessionmaker
 from celery import Celery
 from celery.schedules import crontab
@@ -40,6 +40,8 @@ TZ = ZoneInfo("Europe/Istanbul")
 NIGHTLY_HOUR = 3
 # Saatin hemen ardından açılan işçide beat zaten tetikler; telafi ikinci kez kuyruğa koymasın.
 CATCH_UP_GRACE = timedelta(minutes=10)
+# Link kontrolü haftalık (pazar 07:00). PC o saatte kapalıysa kaçar; son kontrol bundan eskiyse açılışta yapılır.
+CHECK_EVERY = timedelta(days=7)
 
 app = Celery("careerai-data", broker=get_settings().redis_url)
 app.conf.update(
@@ -119,6 +121,35 @@ def _catch_up_missed_nightly(**_: Any) -> None:
         nightly.apply_async(expires=6 * 3600)
 
 
+def missed_link_check(last_checked: datetime | None, now: datetime) -> bool:
+    """Haftalık link kontrolü kaçtı mı: son kontrol 7 günden eski veya hiç yapılmamış (go-live #35).
+
+    Pazar 07:00 beat'i PC kapalıyken hiç çalışmaz; production'da kontrol bu yüzden hiç yapılmamıştı.
+    """
+    if last_checked is None:
+        return True
+    if last_checked.tzinfo is None:
+        last_checked = last_checked.replace(tzinfo=UTC)
+    return now - last_checked > CHECK_EVERY + CATCH_UP_GRACE
+
+
+@worker_ready.connect
+def _catch_up_missed_link_check(**_: Any) -> None:
+    """İşçi açılınca kaçan haftalık link kontrolünü kuyruğa koyar.
+
+    Kuyruk tek eşzamanlı: aynı açılışta kaçan gece toplaması da varsa ondan sonra çalışır.
+    """
+    try:
+        with get_sessionmaker()() as session:
+            last = session.scalar(select(func.max(Resource.last_checked_at)))
+    except Exception:
+        log.exception("Kaçan link kontrolü kontrol edilemedi")
+        return
+    if missed_link_check(last, datetime.now(UTC)):
+        log.warning("Haftalık link kontrolü kaçmış (son kontrol: %s), kuyruğa kondu", last)
+        resources_check.apply_async(expires=12 * 3600)
+
+
 @app.task(name=NIGHTLY_TASK, soft_time_limit=SOFT_LIMIT_S, time_limit=SOFT_LIMIT_S + 600)
 def nightly() -> dict[str, Any]:
     # Elle tetikleme ile beat aynı anda düşerse iki toplama üst üste binmesin.
@@ -161,5 +192,13 @@ def resources_check() -> dict[str, Any]:
             PoliteClient(delay_s=resources.YOUTUBE_DELAY_S, max_retries=0),
             key,
         )
-    log.info("Link kontrolü: %d link, %d ölü, %d geri geldi", r.checked, r.dead, r.revived)
-    return {"checked": r.checked, "dead": r.dead, "revived": r.revived}
+        rep = resources.report(session)
+    log.info(
+        "Link kontrolü: %d link, %d ölü, %d geri geldi; ölü oranı %%%.1f (hedef < %%%d)",
+        r.checked,
+        r.dead,
+        r.revived,
+        rep["dead_ratio"] * 100,
+        resources.MAX_DEAD_RATIO_PCT,
+    )
+    return {"checked": r.checked, "dead": r.dead, "revived": r.revived, "dead_ratio": rep["dead_ratio"]}

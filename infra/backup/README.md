@@ -10,6 +10,7 @@ Windows'ta systemd/cron olmadığı için yedek, production compose'unda (`infra
 | `scheduler.sh` | Konteynerin ana süreci: 10 dakikada bir son başarılı yedeğe bakar, 02:00'den sonra yedek yoksa `backup.sh`'ı çalıştırır; başarısızsa 30 dk sonra yeniden dener |
 | `backup.sh` | Döküm diske yazılmadan restic'e akar; eski yedekleri siler; başarıda `/state/last-success`, haftalık kontrolde `/state/last-check` yazar |
 | `restore-test.sh [ortam] [snapshot]` | PC'de (Git Bash) yedeği geçici bir Postgres kapsayıcısına yükler, satır sayılarını canlıyla karşılaştırır. Canlı veritabanına yazmaz |
+| `migration-test.sh [ortam] [snapshot]` | Yedeğin kopyasında migration geri alma testi: bir adım geri + ileri (satır sayıları korunmalı), sonra base'e kadar tek tek geri ve head'e. Production konteynerlerine dokunmaz (`make backup-migration-test`) |
 
 **Yedekte ne var, ne yok:** Sadece Postgres (kullanıcılar, rızalar, analiz sonuçları, ilanlar, kaynaklar). CV dosyası ve ham metni veritabanında olmadığı için yedekte de yoktur. Redis (geçici kuyruk) ve Ollama modelleri yedeklenmez, yeniden kurulur. `infra/pc/.env.prod` ve restic parolası yedeğe girmez, ekibin parola yöneticisinde durur: onlar olmadan yedek açılamaz.
 
@@ -61,6 +62,14 @@ bash infra/backup/restore-test.sh production
 ```
 
 Yükleme süresini ve tablo sayılarını DR tatbikatı notuna yazın (T-087). Canlı sayılar yedekten sonra biraz değişmiş olabilir; temel tablolar boşsa test başarısızdır. 06.11.2026'da prova ortamında dev verisiyle denendi: 6,5 MB yedek ~3 sn, geri yükleme 11 sn, 11 tablonun sayıları eşleşti.
+
+## Migration geri alma testi (yeni migration'dan önce ve go-live öncesi)
+
+```bash
+make backup-migration-test          # = PY=python bash infra/backup/migration-test.sh production
+```
+
+Son yedeği geçici bir Postgres'e yükler (yedek `backup` imajıyla tek seferlik okunur; production kapalıyken de çalışır) ve o kopyada: 1) `downgrade -1` + `upgrade head` (rollback provası; temel tabloların satır sayıları değişmemeli), 2) her migration tek tek base'e kadar geri alınır, sonra head'e çıkılır. Alembic yerel Python'la çalışır: venv açık değilse `PY=/c/venv/careerai/Scripts/python`. 18.11.2026, production yedeği (0004, 1.783 ilan, 530 kaynak): yükleme 10 sn, rollback provası 7 sn (sayılar aynı), tam geri alma ve geri dönüş 26 sn; toplam 48 sn.
 
 ## Gerçek geri yükleme (veri kaybında)
 
