@@ -1,6 +1,6 @@
 # Production PC'si — kurulum ve kontrol listesi (T-009)
 
-Karar #30: CareerAI için sunucu kiralanmaz. Production Ataberk'in bilgisayarında Docker Compose ile çalışır ve alan adına Cloudflare Tunnel ile bağlanır. Bu dosya PC'nin sunucu gibi çalışması için gerekenleri anlatır. Sırlar (tünel token'ı, şifreler) burada yazmaz; sadece PC'deki `.env` dosyasında durur.
+Karar #30: Cv'ne Bakalım! için sunucu kiralanmaz. Production Ataberk'in bilgisayarında Docker Compose ile çalışır ve alan adına Cloudflare Tunnel ile bağlanır. Bu dosya PC'nin sunucu gibi çalışması için gerekenleri anlatır. Sırlar (tünel token'ı, şifreler) burada yazmaz; sadece PC'deki `.env` dosyasında durur.
 
 | Özellik | Değer (06.11.2026) |
 |---|---|
