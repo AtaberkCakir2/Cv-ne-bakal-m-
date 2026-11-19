@@ -2,6 +2,8 @@
 # Branch protection'da zorunlu değil: yeni çıkan bir açık başkasının ilgisiz PR'ını kilitlemesin. Kırmızıysa
 # ilgili modülün sahibi düzeltir (go-live #7, #8: kritik/yüksek açık = 0). Haftalık çalışma, kod değişmese de
 # yeni yayımlanan açıkları yakalar; başarısız olursa GitHub e-postayla haber verir.
+# Actions dakikası için: sır taraması her PR'da; bağımlılık ve imaj taramaları PR'da/main'de sadece ilgili
+# bağımlılık dosyası veya Dockerfile değişince çalışır. Haftalık ve elle çalıştırmada hepsi taranır.
 name: Güvenlik
 
 on:
@@ -24,6 +26,45 @@ env:
   TRIVY_IMAGE: aquasec/trivy:0.67.2
 
 jobs:
+  detect:
+    name: Neyin taranacağını bul
+    runs-on: ubuntu-24.04
+    outputs:
+      python: ${{ steps.find.outputs.python }}
+      node: ${{ steps.find.outputs.node }}
+      images: ${{ steps.find.outputs.images }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # PR'da HEAD = PR'ın main ile birleşmiş hâli, main'e push'ta merge commit'i; HEAD^1 önceki main.
+          fetch-depth: 2
+      - id: find
+        run: |
+          if [ "$GITHUB_EVENT_NAME" = pull_request ] || [ "$GITHUB_EVENT_NAME" = push ]; then
+            git diff --name-only HEAD^1 HEAD > "$RUNNER_TEMP/degisen"
+            echo "Değişen dosyalar:"; sed 's/^/  /' "$RUNNER_TEMP/degisen"
+          else
+            : > "$RUNNER_TEMP/degisen"; HEPSI=1
+          fi
+          if grep -qE '^\.github/(workflows/security\.yml|gitleaks\.toml)$' "$RUNNER_TEMP/degisen"; then HEPSI=1; fi
+          degisti() { [ -n "${HEPSI:-}" ] || grep -qE "$1" "$RUNNER_TEMP/degisen"; }
+          # JSON dizisi: "a","b" → ["a","b"]; boşsa []
+          dizi() { local IFS=,; echo "[$*]"; }
+          py=(); for m in backend scraper ai; do degisti "^$m/pyproject\.toml$" && py+=("\"$m\""); done
+          js=(); for m in web mobile; do degisti "^$m/package(-lock)?\.json$" && js+=("\"$m\""); done
+          im=()
+          degisti '^backend/(Dockerfile|pyproject\.toml)$' \
+            && im+=('{"name":"api","context":"backend","file":"backend/Dockerfile","ignore":""}')
+          degisti '^((scraper|backend|ai)/pyproject\.toml|scraper/Dockerfile)$' \
+            && im+=('{"name":"worker-data","context":".","file":"scraper/Dockerfile","ignore":""}')
+          degisti '^infra/backup/' \
+            && im+=('{"name":"backup","context":"infra/backup","file":"infra/backup/Dockerfile","ignore":"infra/backup/.trivyignore"}')
+          {
+            echo "python=$(dizi "${py[@]}")"
+            echo "node=$(dizi "${js[@]}")"
+            echo "images=$(dizi "${im[@]}")"
+          } | tee -a "$GITHUB_OUTPUT"
+
   secrets:
     name: Sır taraması (gitleaks, tüm geçmiş)
     runs-on: ubuntu-24.04
@@ -37,11 +78,13 @@ jobs:
 
   python:
     name: Python bağımlılıkları (pip-audit, ${{ matrix.module }})
+    needs: detect
+    if: needs.detect.outputs.python != '[]'
     runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
       matrix:
-        module: [backend, scraper, ai]
+        module: ${{ fromJSON(needs.detect.outputs.python) }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -53,11 +96,13 @@ jobs:
 
   node:
     name: npm bağımlılıkları (${{ matrix.module }})
+    needs: detect
+    if: needs.detect.outputs.node != '[]'
     runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
       matrix:
-        module: [web, mobile]
+        module: ${{ fromJSON(needs.detect.outputs.node) }}
     steps:
       - uses: actions/checkout@v4
       - name: npm audit (sadece üretim bağımlılıkları, yüksek ve üstü)
@@ -71,14 +116,13 @@ jobs:
 
   images:
     name: İmaj taraması (Trivy, ${{ matrix.name }})
+    needs: detect
+    if: needs.detect.outputs.images != '[]'
     runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
       matrix:
-        include:
-          - { name: api, context: backend, file: backend/Dockerfile, ignore: "" }
-          - { name: worker-data, context: ., file: scraper/Dockerfile, ignore: "" }
-          - { name: backup, context: infra/backup, file: infra/backup/Dockerfile, ignore: infra/backup/.trivyignore }
+        include: ${{ fromJSON(needs.detect.outputs.images) }}
     steps:
       - uses: actions/checkout@v4
       # --pull: taban imajın son yamalı hâli; production imajı da deploy'da sıfırdan derlenir.
