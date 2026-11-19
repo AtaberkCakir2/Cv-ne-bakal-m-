@@ -35,6 +35,8 @@ SEARCHED_FILE = TAXONOMY_DIR.parent / "data" / "youtube_searched.json"
 WANTED: dict[Lang, int] = {"tr": 3, "en": 2}  # arama başına alınacak video; Türkçe öncelikli
 MIN_PER_SKILL = 3
 CHECK_DELAY_S = 1.0
+# go-live #35: ölü link oranı hedefi (yüzde).
+MAX_DEAD_RATIO_PCT = 2
 YOUTUBE_DELAY_S = 0.2
 DEAD_STATUSES = {404, 410}  # 403/429/5xx link ölümü değildir (bot koruması, geçici hata)
 
@@ -258,7 +260,8 @@ def check_links(session: Session, client: PoliteClient, yt_client: PoliteClient 
 
 
 def report(session: Session) -> dict[str, Any]:
-    """Kabul kriteri: toplam ≥ 900, her yetkinlikte ≥ 3 canlı kaynak."""
+    """Kabul kriteri: toplam ≥ 900, her yetkinlikte ≥ 3 canlı kaynak. Ölü link oranı: kontrol edilmiş kaynaklarda
+    pasif olanların payı (go-live #35, hedef < %2); hiç kontrol yoksa 0 ve `last_checked` boş."""
     counts = Counter(
         dict(
             session.execute(
@@ -272,7 +275,18 @@ def report(session: Session) -> dict[str, Any]:
         )
     )
     slugs = list(_skill_ids(session))
+    checked, dead, last_checked = session.execute(
+        select(
+            func.count(),
+            func.count().filter(Resource.is_alive.is_(False)),
+            func.max(Resource.last_checked_at),
+        ).where(Resource.last_checked_at.is_not(None))
+    ).one()
     return {
+        "checked": checked,
+        "dead": dead,
+        "dead_ratio": dead / checked if checked else 0.0,
+        "last_checked": last_checked,
         "total": sum(counts.values()),
         "skills": len(slugs),
         "short": sorted(s for s in slugs if counts[s] < MIN_PER_SKILL),
