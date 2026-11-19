@@ -1,7 +1,8 @@
 """Yönetim paneli (T-063): SQLAdmin ile kaynak havuzu, ilan kaynakları, toplama çalışmaları ve istatistikler.
 
 `/admin` altında açılır, sadece `role = admin` kullanıcılar girer (go-live #14). Production'da ayrıca Cloudflare
-Access arkasındadır (app/admin/README.md). Kişisel veri gösterilmez: kullanıcı, analiz ve CV tabloları panelde yok.
+Access arkasındadır ve Access belgesi panelde de doğrulanır (app/admin/access.py, README.md). Kişisel veri
+gösterilmez: kullanıcı, analiz ve CV tabloları panelde yok.
 """
 
 from pathlib import Path
@@ -10,7 +11,9 @@ from fastapi import FastAPI
 from sqladmin import Admin
 from sqladmin.i18n import I18nConfig
 from sqlalchemy.orm import Session, sessionmaker
+from starlette.middleware import Middleware
 
+from app.admin.access import AccessConfig, AccessGuard, config_from_env
 from app.admin.audit import AdminAuditBackend
 from app.admin.auth import AdminAuth
 from app.admin.views import JobSourceAdmin, ResourceAdmin, ScrapeRunAdmin, StatsView
@@ -21,8 +24,17 @@ BASE_URL = "/admin"
 TEMPLATES = Path(__file__).parent / "templates"
 
 
-def mount_admin(app: FastAPI, settings: Settings, maker: sessionmaker[Session]) -> Admin:
-    """Paneli `app`'e bağlar. Veritabanına ilk istekte bağlanılır (engine tembel kurulur)."""
+def mount_admin(
+    app: FastAPI,
+    settings: Settings,
+    maker: sessionmaker[Session],
+    access: AccessConfig | None = None,
+) -> Admin:
+    """Paneli `app`'e bağlar. Veritabanına ilk istekte bağlanılır (engine tembel kurulur).
+
+    `access` verilmezse Cloudflare Access ayarı ortam değişkenlerinden okunur (app/admin/access.py).
+    """
+    access = access or config_from_env()
 
     def limiter() -> RateLimiter | None:
         # Sınırlayıcı create_app'te app.state'e konur; panel ayrı bir alt uygulama olduğu için buradan okunur.
@@ -34,6 +46,8 @@ def mount_admin(app: FastAPI, settings: Settings, maker: sessionmaker[Session]) 
         session_maker=maker,
         base_url=BASE_URL,
         title="Cv'ne Bakalım! Yönetim",
+        # İlk sıradaki en dış katmandır: Access belgesi oturum ve giriş sayfasından önce kontrol edilir.
+        middlewares=[Middleware(AccessGuard, config=access, required=settings.is_production)],
         templates_dir=str(TEMPLATES),
         authentication_backend=AdminAuth(settings, maker, limiter),
         audit_backend=AdminAuditBackend(maker),
