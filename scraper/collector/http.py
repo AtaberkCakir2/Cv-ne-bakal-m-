@@ -11,7 +11,7 @@ from typing import Any
 
 import httpx
 
-USER_AGENT = "CareerAI-Bot/0.1 (bitirme projesi; +https://github.com/AtaberkCakir2/Cv-ne-bakal-m-)"
+USER_AGENT = "CvneBakalim-Bot/0.1 (bitirme projesi; +https://github.com/AtaberkCakir2/Cv-ne-bakal-m-)"
 RETRY_STATUSES = {429, 500, 502, 503, 504}
 BACKOFF_BASE_S = 5.0  # ilk tekrar en az bu kadar sonra; her denemede iki katı
 MAX_RETRY_AFTER_S = 600.0

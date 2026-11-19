@@ -96,7 +96,7 @@ Her gece **03:00 (İstanbul)** Celery beat `collector.nightly` görevini başlat
 |---|---|
 | İstekler arası 3–5 sn rastgele bekleme | `PoliteClient(jitter=(3, 5))`; kaynağın kendi alt sınırı daha büyükse o (Remotive 30 sn) |
 | Üstel geri çekilme | 429/5xx ve ağ hatalarında 5 → 10 → 20 → 40 sn (+ %50'ye kadar rastgele), en çok 4 tekrar; `Retry-After` varsa o (en çok 10 dk) |
-| User-Agent | Kimliğini belirten **tek** UA (`CareerAI-Bot/…`). Dönüşümlü/sahte UA kullanılmaz: `kaynak-uygunluk.md` kural 3-4 |
+| User-Agent | Kimliğini belirten **tek** UA (`CvneBakalim-Bot/…`). Dönüşümlü/sahte UA kullanılmaz: `kaynak-uygunluk.md` kural 3-4 |
 | Bir kaynak düşerse | Diğerleri devam eder; her kaynak `scrape_runs`'a ayrı yazılır (`success` / `partial` / `failed`) |
 | 403 veya tekrarlara rağmen 429 | Kaynak `job_sources.is_active = false` yapılır ve sonraki geceler atlanır (kural 3). Durum incelenip elle açılır: `UPDATE job_sources SET is_active = true WHERE name = '…'` |
 | Üst üste binme | Redis kilidi: elle tetikleme ile beat çakışırsa ikincisi atlanır. Süre sınırı 3 saat |
@@ -163,5 +163,5 @@ python -m collector resources-report          # toplam ve 3'ten az kaynağı ola
 - `.env`'de `YOUTUBE_API_KEY` gerekir; boşsa arama atlanır.
 - Günde en fazla 100 arama (Türkçe ve İngilizce ayrı arama). Kota Pasifik saatiyle gece yarısı (TR ~10:00) yenilenir. Aramalar talebi yüksek yetkinlikten başlar, durum `data/youtube_searched.json`'da.
 - `resources_youtube.csv` sadece video kimliği, yetkinlik, dil ve seviye tutar. Başlık ve süre repoya yazılmaz (30 gün kuralı), yüklerken API'den alınır; silinen video atlanır.
-- `worker-data` her gün 06:00'da aramaya devam eder, pazar 07:00'de linkleri kontrol eder.
+- `worker-data` her gün 06:00'da aramaya devam eder, pazar 07:00'de linkleri kontrol eder. PC o saatte kapalıysa kontrol kaçar: işçi açılırken son kontrol 7 günden eskiyse (veya hiç yoksa) kontrol hemen kuyruğa konur (gece toplamasının telafisi gibi). `resources-report` ölü link oranını da yazar (go-live #35, hedef < %2).
 - Filtre: 10 dk–12 sa, TR ≥ 1.000 / EN ≥ 10.000 izlenme, başlıkta yetkinlik adı ve öğretim ipucu var, tanıtım kelimesi yok. Seviye başlıktan okunur, ipucu yoksa `beginner`.
