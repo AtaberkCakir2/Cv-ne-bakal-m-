@@ -118,6 +118,14 @@ GRANT SELECT (id, name) ON job_sources TO careerai_monitor;
 SQL
 }
 
+# Yavaş sorgu ölçümü (go-live #18): eklenti sahip rolle kurulur; postgres'in shared_preload_libraries ayarı compose.yml'de.
+# İzleme rolü (pg_monitor) ve `make prod-slow-queries` okur.
+setup_stats() {
+  # shellcheck disable=SC2016  # değişkenler konteynerin içinde açılmalı
+  compose exec -T postgres sh -c 'psql -q -v ON_ERROR_STOP=1 -U "$POSTGRES_USER" -d "$POSTGRES_DB"' \
+    <<<"SET client_min_messages = warning; CREATE EXTENSION IF NOT EXISTS pg_stat_statements;"
+}
+
 # `if roll_out` içinde `set -e` çalışmaz: her adım && ile bağlı, yoksa hatalı migration başarı sayılır.
 roll_out() {
   compose up -d --no-build --wait postgres redis ollama \
@@ -125,6 +133,7 @@ roll_out() {
     && migrate \
     && setup_app_role \
     && setup_monitor_role \
+    && setup_stats \
     && compose up -d --no-build --wait --remove-orphans \
     && compose exec -T api python -c \
       "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/v1/health/ready', timeout=5)"

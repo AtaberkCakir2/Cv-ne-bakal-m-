@@ -356,12 +356,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-088 · Operasyon runbook'u
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 04.01.2027 – 10.01.2027 · **Öncelik:** P0 · **Efor:** 6 saat · **Alan:** Operasyon / İzleme
 - **Bağımlılık:** T-087
 - **Destek:** Burak, Anıl
 - **Çıktı:** docs/runbook
 - **Kabul kriteri:** Deploy, rollback, Ollama yeniden başlatma, disk dolu, kuyruk birikmesi, veri ihlali şüphesi senaryoları için adım adım prosedür ("Operasyon & SLO" sayfası).
+- **Not:** 18.11.2026: `docs/runbook/operasyon.md`: altı senaryo, her biri uyarı adı, sorumlu, hedef süre ve production PC'sinde Git Bash'te çalışan komutlarla. Rollback'teki migration geri alma `make backup-migration-test` ile gerçek veride denendi. Veri ihlali bölümü sır yenileme tablosu ve 72 saat KVK Kurulu bildirimini içerir (go-live #39). Ollama (Burak) ve analiz kuyruğu (Anıl) bölümleri PR incelemesinde sahiplerince kontrol edilmeli; ekibin okuması go-live #44. T-087 tatbikatı bitince felaket-kurtarma.md'deki süreler buraya da yansıtılır.
 
 ### T-091 · Go-live provası
 
