@@ -68,6 +68,15 @@ code { font-family: var(--font-mono); font-size: 0.9em; }
   padding: var(--space-6) var(--space-4);
 }
 
+.footer {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 var(--space-4) var(--space-6);
+  font-size: var(--text-sm);
+}
+
+.footer a { color: var(--text-muted); }
+
 .muted { color: var(--text-muted); }
 
 .stack { display: grid; gap: var(--space-4); }
