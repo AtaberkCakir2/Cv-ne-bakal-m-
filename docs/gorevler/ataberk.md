@@ -372,6 +372,7 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 - **Destek:** Burak, Anıl
 - **Çıktı:** Prova notu
 - **Kabul kriteri:** PC'de prova projesinde (`careerai-staging`) production'ın birebir kopyasıyla deploy + rollback provası; checklist üzerinden kuru çalıştırma; sunum B planı (127.0.0.1'de yerel demo, telefondan internet paylaşımı) denendi.
+- **Not (21.11.2026, B planı):** `make prod-local` + yeni `make prod-local-web` / `prod-local-down` ile yerel demo ~1 dk'da hazır, production verisiyle tarayıcıda denendi (`infra/pc/deploy.md` §6). Düzeltilen: B planında CORS kapalıydı, yerel web derleme komutu yoktu. Kalan: telefondan internet paylaşımıyla tünel denemesi (Ataberk, elle), analiz akışı T-057'den sonra.
 
 ---
 
