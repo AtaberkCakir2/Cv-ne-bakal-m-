@@ -122,6 +122,21 @@ Canlıya çıkıştan iki ay önce, sorumlusu Ataberk olan ve production'da bug�
 | 34 Gece toplaması 7 gün hatasız | **Değil** | 12 çalışmanın 12'si başarılı, ama sadece 15.11 ve 18.11 günleri: PC kapalı kaldığı için 7 günlük kesintisiz seri yok |
 | 35 Ölü link < %2 | **Uygun** | 20.11.2026, deploy sonrası işçi açılışında telafi edilen ilk kontrol: 526 link, **4 ölü = %0,8**, geri gelen 0 (`python -m collector resources-report`, worker-data içinde). YouTube videoları yüklendikten sonra 4/1.565 = %0,3 (yeni videolar yüklenirken API'den doğrulanır). Haftalık kontrol pazar 07:00; PC kapalıysa açılışta telafi edilir |
 
+### Ön kontrol (18.11.2026, Anıl)
+
+Sorumlusu Anıl olan maddeler, Ataberk'in tablosuyla aynı amaçla. Kutular işaretlenmedi.
+
+| Madde | Bugünkü durum | Kanıt / eksik |
+|---|---|---|
+| 9 ★ IDOR | Uygun (otomatik test) | `test_result_of_another_user_is_404`: başkasının analizine GET ve DELETE 404, listede görünmüyor, kayıt silinmiyor. `test_status_is_visible_only_to_the_owner`: durum yoklaması sadece sahibine açık. Production'da iki hesapla elle deneme yapılmadı |
+| 10 ★ Dosya yükleme sınırları | Uygun (otomatik test) | `backend/app/core/uploads.py`: 5 MB, 5 sayfa. Testlerde: 5 MB'tan büyük dosya ve sınırı aşan istek gövdesi okunmadan reddediliyor; 6 sayfa reddediliyor; PDF diye gönderilen PNG/ZIP (magic byte) ve şifreli PDF 415 alıyor (`backend/tests/test_analyses_upload.py`). Kötü dosya setiyle production'da deneme yapılmadı |
+| 26 ★ Doğrulama ve sıfırlama e-postaları | Ölçülmedi | Production'dan Gmail ve Outlook'a deneme gönderimi yapılmadı |
+| 27 Hata ekranları | Uygun (yerel, elle) | 18.11'de e2e yığınında (`tests/e2e/ortam.sh`) web'den denendi. Her durumda Türkçe ve ne yapılacağını söyleyen mesaj çıktı: 6 MB dosya, 6 sayfa, şifreli PDF, bozuk PDF, PDF diye gönderilen PNG, kuyruk Redis'i kapalıyken 503 ("Sistem şu an yoğun… 60 saniye sonra tekrar dene", yanıt ~9 sn), saatlik sınır 429 ("… 60 dakika sonra tekrar dene"). Bulgular: reddedilen yüklemeler saatlik 5 hakkı harcıyordu (düzeltme #127); 6 sayfalık dosyada mesaj, sınırlardan hangisinin aşıldığını söylemiyor (P2). Analiz zaman aşımı: 19.11'de işçi durdurulup `ANALYSIS_STALE_AFTER_S=40` ile denendi; süre dolunca analiz `failed` (INTERNAL) oldu ve web'de "Analiz tamamlanamadı. Lütfen tekrar deneyin." ile "Tekrar dene" düğmesi çıktı. Production'da bu süre 65 dk; bekleme ekranı 7. dakikadan sonra "beklenenden uzun sürüyor" uyarısı gösteriyor |
+| 28 Electron kurulumu | Kısmen | Windows: kurulum dosyası (0.1.0, 121 MB) 19.11'de geliştirme bilgisayarında sessiz kurulumla (kullanıcı kapsamı) kurulup kaldırıldı: kurulum 12 sn, kısayollar ve kayıt girdisi oluştu, kurulu uygulama `--smoke` ile açıldı, kaldırma 11 sn ve iz bırakmadı. Kaldırınca oturum klasörünün kalması bulgusu #125'te düzeltildi. Eksik: temiz Windows 10/11 makinesi ve sihirbazın elle tıklanarak denenmesi; macOS (Mac erişimi yok, CI ile derleme önerisi #141) |
+| 29 Otomatik güncelleme | **Engelli** | Repo özel olduğu için Releases dosyaları token'sız indirilemiyor; yayın yeri önerisi karar #36. Karar çıkmadan v1.0.0 → v1.0.1 testi yapılamaz |
+| 41 ★ Play kapalı testi | Başlamadı | 21.12.2026'da en az 12 testçiyle başlamalı (T-076); testçiler beta listesinden (`docs/uat/beta-uat-plani.md`) |
+| 47 Destek e-postası, hata bildirme | Kısmen | Web ve masaüstünde "Hata bildir" bağlantısı `iletisim@cvnebakalim.com` adresine e-posta açıyor (#124). Adresin posta alıp almadığı ve gelen kutusunu kimin okuyacağı belirlenmedi |
+
 ## Hizmet seviyesi hedefleri (SLO)
 
 | Metrik | Hedef | Ölçüm | Hedef tutmazsa | Sorumlu |
