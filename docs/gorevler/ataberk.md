@@ -372,6 +372,7 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 - **Destek:** Burak, Anıl
 - **Çıktı:** Prova notu
 - **Kabul kriteri:** PC'de prova projesinde (`careerai-staging`) production'ın birebir kopyasıyla deploy + rollback provası; checklist üzerinden kuru çalıştırma; sunum B planı (127.0.0.1'de yerel demo, telefondan internet paylaşımı) denendi.
+- **Not:** 21.11.2026: deploy + rollback provasının ilk turu yapıldı (go-live #49): production dökümüyle 146 sn, geri yükleme prosedüründeki yetki hatası düzeltildi (`docs/runbook/operasyon.md` 2. bölüm). `infra/pc/.env.staging` bu PC'de oluşturuldu. Ocak'ta v1.0.0 adayıyla tekrarlanacak; kalan: checklist kuru çalıştırma, sunum B planı.
 
 ---
 
