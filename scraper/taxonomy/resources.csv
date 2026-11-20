@@ -45,7 +45,7 @@ azure-devops,Azure DevOps: resmi belgeler ve başlangıç rehberi,https://learn.
 azure-functions,Azure Functions: resmi belgeler ve başlangıç rehberi,https://learn.microsoft.com/en-us/azure/azure-functions/functions-overview,docs,en,intermediate,,1
 azure-ml,Azure Machine Learning: resmi belgeler ve başlangıç rehberi,https://learn.microsoft.com/en-us/azure/machine-learning/overview-what-is-azure-machine-learning,docs,en,intermediate,,1
 babel,Babel: resmi belgeler ve başlangıç rehberi,https://babeljs.io/docs/,docs,en,intermediate,,1
-bash,Bash: resmi belgeler ve başlangıç rehberi,https://www.gnu.org/software/bash/manual/bash.html,docs,en,intermediate,,1
+bash,Bash: resmi belgeler ve başlangıç rehberi,https://www.gnu.org/software/bash/manual/html_node/index.html,docs,en,intermediate,,1
 bash,Bash alıştırmaları (Exercism),https://exercism.org/tracks/bash,other,en,beginner,,1
 bash,Bash öğrenme yol haritası (roadmap.sh),https://roadmap.sh/shell-bash,other,en,beginner,,1
 bdd,Behavior Driven Development: resmi belgeler ve başlangıç rehberi,https://cucumber.io/docs/bdd/,docs,en,intermediate,,1
@@ -197,6 +197,7 @@ go,Go öğrenme yol haritası (roadmap.sh),https://roadmap.sh/golang,other,en,be
 godot,Godot: resmi belgeler ve başlangıç rehberi,https://docs.godotengine.org/en/stable/getting_started/introduction/,docs,en,intermediate,,1
 google-analytics,Google Analytics: resmi belgeler ve başlangıç rehberi,https://support.google.com/analytics/,docs,en,intermediate,,1
 gradle,Gradle: resmi belgeler ve başlangıç rehberi,https://docs.gradle.org/current/userguide/getting_started_eng.html,docs,en,intermediate,,1
+gradle,Gradle: adım adım öğretici (resmi),https://docs.gradle.org/current/userguide/part1_gradle_init.html,docs,en,beginner,,1
 grafana,Grafana: resmi belgeler ve başlangıç rehberi,https://grafana.com/docs/grafana/latest/getting-started/,docs,en,intermediate,,1
 graphql,GraphQL: resmi belgeler ve başlangıç rehberi,https://graphql.org/learn/,docs,en,intermediate,,1
 graphql,GraphQL öğrenme yol haritası (roadmap.sh),https://roadmap.sh/graphql,other,en,beginner,,1
@@ -215,7 +216,7 @@ html,HTML: resmi belgeler ve başlangıç rehberi,https://developer.mozilla.org/
 html,HTML öğrenme yol haritası (roadmap.sh),https://roadmap.sh/html,other,en,beginner,,1
 iac,Infrastructure as Code: başlangıç rehberi,https://learn.microsoft.com/en-us/devops/deliver/what-is-infrastructure-as-code,docs,en,intermediate,,1
 ibm-cloud,IBM Cloud: resmi belgeler ve başlangıç rehberi,https://cloud.ibm.com/docs,docs,en,intermediate,,1
-ibm-cloud,IBM Cloud: başlangıç rehberi,https://cloud.ibm.com/docs/overview?topic=overview-getting-started,docs,en,beginner,,1
+ibm-cloud,IBM Cloud: hesap açma ve ilk adımlar,https://cloud.ibm.com/docs/account?topic=account-account-getting-started,docs,en,beginner,,1
 ibm-cloud,IBM SkillsBuild ücretsiz eğitimler,https://skillsbuild.org/,other,en,beginner,,1
 influxdb,InfluxDB: resmi belgeler ve başlangıç rehberi,https://docs.influxdata.com/influxdb/,docs,en,intermediate,,1
 integration-testing,Entegrasyon Testi: resmi belgeler ve başlangıç rehberi,https://martinfowler.com/bliki/IntegrationTest.html,docs,en,intermediate,,1
@@ -485,7 +486,7 @@ traefik,Traefik: resmi belgeler ve başlangıç rehberi,https://doc.traefik.io/t
 transformers,Hugging Face Transformers: resmi belgeler ve başlangıç rehberi,https://huggingface.co/docs/transformers/index,docs,en,intermediate,,1
 trello,Trello: resmi belgeler ve başlangıç rehberi,https://trello.com/guide,docs,en,intermediate,,1
 turkish,Yazılı İletişim Teknikleri (BTK Akademi),https://www.btkakademi.gov.tr/portal/course/yazili-iletisim-teknikleri-650,btk_akademi,tr,beginner,,1
-turkish,TDK: Noktalama işaretleri,https://tdk.gov.tr/icerik/yazim-kurallari/noktalama-isaretleri-aciklamalar/,docs,tr,beginner,,1
+turkish,TDK Güncel Türkçe Sözlük ve Yazım Kılavuzu,https://sozluk.gov.tr/,docs,tr,beginner,,1
 turkish,Yunus Emre Enstitüsü: Türkçe öğren (Türkçe Ana Dili olmayanlar için),https://www.turkcenet.org/,other,tr,beginner,,1
 twilio,Twilio: resmi belgeler ve başlangıç rehberi,https://www.twilio.com/docs,docs,en,intermediate,,1
 typeorm,TypeORM: resmi belgeler ve başlangıç rehberi,https://typeorm.io/,docs,en,intermediate,,1
@@ -513,7 +514,7 @@ vitest,Vitest: resmi belgeler ve başlangıç rehberi,https://vitest.dev/guide/,
 vscode,Visual Studio Code: resmi belgeler ve başlangıç rehberi,https://code.visualstudio.com/docs,docs,en,intermediate,,1
 vue,Vue.js: resmi belgeler ve başlangıç rehberi,https://vuejs.org/guide/introduction.html,docs,en,intermediate,,1
 vue,Vue.js öğrenme yol haritası (roadmap.sh),https://roadmap.sh/vue,other,en,beginner,,1
-wandb,Weights & Biases: resmi belgeler ve başlangıç rehberi,https://docs.wandb.ai/quickstart/,docs,en,intermediate,,1
+wandb,Weights & Biases: resmi belgeler ve başlangıç rehberi,https://docs.coreweave.com/products/wandb/quickstart,docs,en,intermediate,,1
 wandb,W&B deney takibi rehberi,https://docs.coreweave.com/products/wandb/track,docs,en,beginner,,1
 weaviate,Weaviate: resmi belgeler ve başlangıç rehberi,https://weaviate.io/developers/weaviate,docs,en,intermediate,,1
 weaviate,Weaviate hızlı başlangıç,https://docs.weaviate.io/weaviate/quickstart,docs,en,beginner,,1
