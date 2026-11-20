@@ -82,6 +82,8 @@ Durum ve loglar: `make prod-ps`, `make prod-logs`.
 
 Yönetim paneline admin vermek (kişi önce uygulamadan kayıt olur): `make prod-admin EMAIL=ad@ornek.com`.
 
+Yavaş sorgu raporu (go-live #18): `make prod-slow-queries`. Uygulama rolünün (`careerai_app`) en az 5 kez çalışmış sorgularını ortalama, yaklaşık p95 (ortalama + 1,645 × standart sapma) ve en yüksek süreyle listeler; hedef 50 ms üstü sorgu 0. Kaynak `pg_stat_statements`: `compose.yml`'de postgres'e yüklenir, eklentiyi `deploy.sh` (`setup_stats`) kurar. Sorgu metinleri normalleştirilmiştir (değerler `$1`), kişisel veri görünmez. Yeni ölçüm dönemi başlatmak (sayaçları sıfırlar): Git Bash'te `docker compose -p careerai-prod --env-file infra/pc/.env.prod -f infra/pc/compose.yml exec -T postgres sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c "SELECT pg_stat_statements_reset()"'`.
+
 **Kaçan gece toplaması (R-18):** PC 03:00'te kapalıysa veri işçisi açılışta son toplamanın zamanına bakar, kaçmışsa hemen başlatır (`scraper/collector/tasks.py`, `missed_nightly`). Logda `Gece toplaması kaçmış (…), şimdi başlatılıyor` görünür; elle bir şey yapmak gerekmez.
 
 ## 5. Prova ortamı
