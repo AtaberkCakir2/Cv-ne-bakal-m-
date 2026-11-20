@@ -321,12 +321,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-089 · Masaüstü dağıtım
 
-- **Durum:** Yapılacak
+- **Durum:** Devam Ediyor
 - **Tarih:** 04.01.2027 – 10.01.2027 · **Öncelik:** P1 · **Efor:** 4 saat · **Alan:** Web / Masaüstü
 - **Bağımlılık:** T-059
 - **Destek:** —
 - **Çıktı:** Release v1.0.0-rc
 - **Kabul kriteri:** Windows kurulum dosyası ve macOS dmg; imzasız kurulum uyarıları (SmartScreen/Gatekeeper) için kullanıcı rehberi; indirme sayfası.
+- **Devam notu (18.11.2026):** Yapılan: imzasız kurulum rehberi `docs/kurulum/masaustu-kurulum.md` (SmartScreen, Gatekeeper, macOS elle güncelleme, SHA-256 doğrulama, kaldırma, sorun giderme); yayın yeri önerisi karar #36 (ayrı, açık sürüm reposu). · Sıradaki adım: #36 onaylanınca Ataberk repoyu açar, `build.publish.repo` değişir; rehber #71 birleşince yasal sitede indirme sayfası olur; v1.0.0-rc yayınında dosya adları ve SHA-256 özetleri sayfaya eklenir. · Açık sorular / engeller: karar #36 onayı; macOS dmg için Mac erişimi (T-059). · Branch: anil/masaustu-kurulum-rehberi
 
 ### T-090 · Mağaza kayıtları
 
