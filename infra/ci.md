@@ -13,6 +13,7 @@ Tanım: [`.github/workflows/ci.yml`](../.github/workflows/ci.yml). Her PR'da ve 
 | Web | `web/` değişince | `npm ci`, `npm run lint` (eslint), `npx tsc -b` |
 | Mobil | `mobile/` değişince | `npm ci`, `npm run lint` (varsa), `npx tsc --noEmit` |
 | Docker | `backend/`, `scraper/`, `ai/`, `docker-compose*.yml` veya `.env.example` değişince | `docker compose config`, API imajını build eder ve `/api/v1/health` ile açıldığını dener; `ai/Dockerfile` varsa worker imajını da build eder |
+| Production compose | `infra/pc/`, `infra/backup/` veya `infra/monitoring/` değişince | `infra/pc/compose.yml`'yi `.env.example`'daki boş değerler sahteyle doldurularak bütün profillerle (tunnel, backup, monitoring), production ve staging için ve `compose.local.yml` ile `docker compose config` ile doğrular. Zorunlu değil; yazım hatası deploy'dan önce görülür |
 
 ### Hangi iş ne zaman
 
