@@ -2,6 +2,9 @@ from fastapi import APIRouter, FastAPI, HTTPException
 from fastapi.testclient import TestClient
 from pydantic import BaseModel
 
+from app.core.config import Settings
+from app.main import create_app
+
 PROBLEM = "application/problem+json"
 
 
@@ -105,3 +108,12 @@ def test_openapi_is_served_under_api_prefix(client: TestClient) -> None:
     paths = response.json()["paths"]
     assert "/api/v1/health" in paths and "/api/v1/health/ready" in paths
     assert client.get("/docs").status_code == 200
+
+
+def test_docs_are_hidden_in_production() -> None:
+    # Güvenlik raporu G-6: Swagger arayüzü ve şema production'da kapalı.
+    settings = Settings(_env_file=None, environment="production", jwt_secret="x" * 40, rate_limit_enabled=False)
+    with TestClient(create_app(settings)) as prod:
+        assert prod.get("/docs").status_code == 404
+        assert prod.get("/api/v1/openapi.json").status_code == 404
+        assert prod.get("/api/v1/health").status_code == 200
