@@ -1,4 +1,4 @@
-# CareerAI
+# Cv'ne Bakalım!
 
 Yapay zeka destekli kariyer ve eğitim yönlendirme sistemi. Öğrencinin CV'sini hedef pozisyondaki güncel iş ilanlarıyla karşılaştırır, eksik yetkinlikleri bulur ve bu eksikleri kapatacak eğitim kaynaklarını önerir.
 

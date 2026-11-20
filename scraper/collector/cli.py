@@ -50,7 +50,7 @@ def _api(info: SourceInfo, fetch: Callable[[PoliteClient], Iterable[Posting]]) -
 
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(prog="collector", description="CareerAI ilan toplayıcı")
+    parser = argparse.ArgumentParser(prog="collector", description="Cv'ne Bakalım! ilan toplayıcı")
     sub = parser.add_subparsers(dest="command", required=True)
 
     imp = sub.add_parser("import", help="Bir kaynaktan ilanları içe aktar")
@@ -194,6 +194,13 @@ def main(argv: list[str] | None = None) -> int:
             rep = resources.report(session)
         print(f"{rep['total']} canlı kaynak, dil: {rep['languages']}")
         print(f"{resources.MIN_PER_SKILL}'ten az kaynağı olan: {len(rep['short'])}/{rep['skills']} yetkinlik")
+        if rep["last_checked"] is None:
+            print("Link kontrolü hiç yapılmadı (python -m collector resources-check)")
+        else:
+            print(
+                f"Ölü link: {rep['dead']}/{rep['checked']} = %{rep['dead_ratio'] * 100:.1f} "
+                f"(hedef < %{resources.MAX_DEAD_RATIO_PCT}), son kontrol {rep['last_checked']:%d.%m.%Y %H:%M} UTC"
+            )
         return 0
 
     if args.command == "nightly":

@@ -10,7 +10,7 @@ PROFILES := $(if $(wildcard backend/Dockerfile),--profile api) $(if $(wildcard a
 COMPOSE  := docker compose $(PROFILES)
 MODEL    ?= $(or $(OLLAMA_MODEL),llama3.1:8b)
 
-.PHONY: help up down restart ps logs model psql redis-cli reset check-env prod-ps prod-logs prod-local prod-model prod-admin staging-ps staging-down prod-monitoring-reload monitoring-check backup-init backup-now backup-list
+.PHONY: help up down restart ps logs model psql redis-cli reset check-env prod-ps prod-logs prod-local prod-model prod-admin staging-ps staging-down prod-monitoring-reload monitoring-check backup-init backup-now backup-list backup-migration-test
 
 # $(info) kabuk kullanmaz; Windows (cmd) ve macOS/Linux'ta aynı çıktıyı verir.
 help:
@@ -92,6 +92,11 @@ prod-admin:
 	$(if $(EMAIL),,$(error Kullanim: make prod-admin EMAIL=ad@ornek.com))
 	$(PC_PROD) exec api python -m app.admin.promote "$(EMAIL)" $(REVOKE)
 
+# Yavaş sorgu raporu (go-live #18): pg_stat_statements'tan uygulama sorgularının süreleri. infra/pc/slow-queries.sql
+.PHONY: prod-slow-queries
+prod-slow-queries:
+	$(PC_PROD) exec -T postgres sh -c 'psql -U "$$POSTGRES_USER" -d "$$POSTGRES_DB"' < infra/pc/slow-queries.sql
+
 staging-ps:
 	$(PC_STAGING) ps
 
@@ -119,3 +124,7 @@ backup-now:
 
 backup-list:
 	$(PC_PROD) exec backup restic snapshots
+
+# Son yedeğin kopyasında migration geri alma testi (go-live #15). Production'a dokunmaz, kapalıyken de çalışır. Git Bash.
+backup-migration-test:
+	bash infra/backup/migration-test.sh production
