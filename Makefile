@@ -92,6 +92,11 @@ prod-admin:
 	$(if $(EMAIL),,$(error Kullanim: make prod-admin EMAIL=ad@ornek.com))
 	$(PC_PROD) exec api python -m app.admin.promote "$(EMAIL)" $(REVOKE)
 
+# Yavaş sorgu raporu (go-live #18): pg_stat_statements'tan uygulama sorgularının süreleri. infra/pc/slow-queries.sql
+.PHONY: prod-slow-queries
+prod-slow-queries:
+	$(PC_PROD) exec -T postgres sh -c 'psql -U "$$POSTGRES_USER" -d "$$POSTGRES_DB"' < infra/pc/slow-queries.sql
+
 staging-ps:
 	$(PC_STAGING) ps
 
