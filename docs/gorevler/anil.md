@@ -279,12 +279,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-078 · Beta / UAT planı ve beta kullanıcı toplama
 
-- **Durum:** Yapılacak
+- **Durum:** Devam Ediyor
 - **Tarih:** 21.12.2026 – 27.12.2026 · **Öncelik:** P0 · **Efor:** 6 saat · **Alan:** Test & QA
 - **Bağımlılık:** T-053
 - **Destek:** Ataberk, Burak
 - **Çıktı:** UAT planı
 - **Kabul kriteri:** 20-30 öğrenci beta kullanıcısı; test senaryoları; geri bildirim formu + SUS anketi; hata bildirme kanalı.
+- **Devam notu (18.11.2026):** Yapılan: UAT planı `docs/uat/beta-uat-plani.md` (takvim, katılımcı toplama ve duyuru metni, onam, 6 görev senaryosu ve başarı ölçütleri, P0–P3 triyaj, ölçümler, SUS ve ek sorular); web'de her sayfada "Hata bildir" bağlantısı (`web/src/support.ts`, `iletisim@cvnebakalim.com`, go-live #47). · Sıradaki adım: 15.12'ye kadar kayıt ve anket formu, duyuru; 21.12'de Play kapalı testçileri bu listeden. · Açık sorular / engeller: etik kurul onayı/muafiyet (Burak), form aracı ve gelen kutusunu kimin okuyacağı (ekip), `iletisim@` adresinin gerçekten posta alıp almadığı (Ataberk, Cloudflare Email Routing). · Branch: anil/beta-uat-plani
 
 ### T-080 · API dokümantasyonu ve README'ler
 

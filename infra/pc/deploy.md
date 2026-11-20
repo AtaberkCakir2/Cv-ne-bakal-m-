@@ -100,6 +100,21 @@ Go-live provası (T-091) ve aylık yedekten geri yükleme testi burada yapılır
 
 Alan adı açılmazsa api'yi sadece bu PC'ye açın: `make prod-local` → `http://127.0.0.1:8100`. Ağdaki başka cihazlar erişemez. Olay adımları: `docs/go-live.md`.
 
+## 7. Vektörler (T-057 gelene kadar elle)
+
+Eşleştirme `skills.embedding` ve `job_postings.embedding` sütunlarını kullanır (pgvector, karar #35). AI işçisi production'a girene kadar bunları üreten servis yok; gece toplamasının eklediği yeni ilanların vektörü boş kalır. Git Bash'te, repo kökünde:
+
+```bash
+make backup-now
+docker build -t careerai/embedding-gecici:local -f infra/pc/embedding/Dockerfile ai   # ~3,3 GB, model içinde
+env_value() { sed -n "s/^$1=//p" infra/pc/.env.prod | tail -n 1 | tr -d '\r'; }
+export DATABASE_URL="postgresql+psycopg://careerai_app:$(env_value APP_DB_PASSWORD)@postgres:5432/$(env_value POSTGRES_DB)"
+docker run --rm --network careerai-prod_default -e DATABASE_URL careerai/embedding-gecici:local python -m embedding
+unset DATABASE_URL; docker rmi careerai/embedding-gecici:local
+```
+
+Sadece vektörü boş satırlar işlenir, her parti ayrı kaydedilir (yarıda kesilirse kaldığı yerden sürer). Uygulama rolüyle (`careerai_app`) bağlanır; parola komut satırında görünmez. İlk çalışma 20.11.2026: 374 yetkinlik 3 sn, 2.213 ilan 4 dk (CPU). Model değişirse `python -m embedding --hepsi`.
+
 ## Henüz eksik
 
 - `worker-ai` / analiz işçisi ve CV Redis'i: `ai/Dockerfile` (Burak) ve #58/#60 main'e girince eklenecek; o zamana kadar analizler çalışmaz.
