@@ -102,18 +102,14 @@ Alan adı açılmazsa api'yi sadece bu PC'ye açın: `make prod-local` → `http
 
 ## 7. Vektörler (T-057 gelene kadar elle)
 
-Eşleştirme `skills.embedding` ve `job_postings.embedding` sütunlarını kullanır (pgvector, karar #35). AI işçisi production'a girene kadar bunları üreten servis yok; gece toplamasının eklediği yeni ilanların vektörü boş kalır. Git Bash'te, repo kökünde:
+Eşleştirme `skills.embedding` ve `job_postings.embedding` sütunlarını kullanır (pgvector, karar #35). AI işçisi production'a girene kadar bunları üreten servis yok; gece toplamasının eklediği yeni ilanların vektörü boş kalır. Gece toplamasından sonra (veya Grafana'da yeni ilan görünce) Git Bash'te, repo kökünde:
 
 ```bash
-make backup-now
-docker build -t careerai/embedding-gecici:local -f infra/pc/embedding/Dockerfile ai   # ~3,3 GB, model içinde
-env_value() { sed -n "s/^$1=//p" infra/pc/.env.prod | tail -n 1 | tr -d '\r'; }
-export DATABASE_URL="postgresql+psycopg://careerai_app:$(env_value APP_DB_PASSWORD)@postgres:5432/$(env_value POSTGRES_DB)"
-docker run --rm --network careerai-prod_default -e DATABASE_URL careerai/embedding-gecici:local python -m embedding
-unset DATABASE_URL; docker rmi careerai/embedding-gecici:local
+make prod-embed            # önce yedek alır, sadece vektörü boş satırlar
+make prod-embed HEPSI=1    # model değiştiyse hepsi baştan
 ```
 
-Sadece vektörü boş satırlar işlenir, her parti ayrı kaydedilir (yarıda kesilirse kaldığı yerden sürer). Uygulama rolüyle (`careerai_app`) bağlanır; parola komut satırında görünmez. İlk çalışma 20.11.2026: 374 yetkinlik 3 sn, 2.213 ilan 4 dk (CPU). Model değişirse `python -m embedding --hepsi`.
+Betik `infra/pc/embed.sh`: yedek (`backup.sh`) → geçici imajı derler (`infra/pc/embedding/Dockerfile`, ~3,3 GB, model içinde; ilk seferde ~5 dk, sonra önbellekten) → `python -m embedding` → kalan boş vektör sayısını yazar. İmaj PC'de kalır; kaldırmak: `docker rmi careerai/embedding-gecici:local`. Her parti ayrı kaydedilir (yarıda kesilirse kaldığı yerden sürer). Uygulama rolüyle (`careerai_app`) bağlanır; parola komut satırında görünmez. İlk çalışma 20.11.2026: 374 yetkinlik 3 sn, 2.213 ilan 4 dk (CPU). T-057 (Burak) analiz işçisini production'a alınca bu adım ve imaj kaldırılır.
 
 ## Henüz eksik
 
