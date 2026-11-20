@@ -110,7 +110,13 @@ Sürüm alma tek komuttur; betik imajları indirir, migration öncesi döküm al
    Deploy dökümleri `~/careerai-yedek` altında son 5 tanesiyle sınırlı; gerekirse en eskileri silinebilir (PC dışı yedek restic'te).
 3. **Asla:** `docker volume prune`, `docker system prune --volumes`, `$C down -v` — veritabanı, model ve yedek durumu volume'larda.
 4. Konteyner logları zaten 10 MB × 3 ile sınırlı (`compose.yml` `x-logging`); Loki 14 gün tutar.
-5. Docker Desktop'ın sanal diski (WSL `ext4.vhdx`) içinden silinen veri Windows'a kendiliğinden geri verilmez; `docker system df` küçüldüğü hâlde C: boşalmadıysa sebep budur. Sanal diski küçültmek bakım penceresinde yapılır (önce `make backup-now`, Docker Desktop kapatılır, `wsl --shutdown`, sonra `diskpart` ile `compact vdisk`). Docker Desktop'taki **"Clean / Purge data"** düğmesine basılmaz: tüm volume'ları (veritabanı dahil) siler.
+5. Docker Desktop'ın sanal diski (`%LOCALAPPDATA%\Docker\wsl\disk\docker_data.vhdx`) içinden silinen veri Windows'a kendiliğinden geri verilmez; `docker system df` küçüldüğü hâlde C: boşalmadıysa sebep budur. Sanal diski küçültmek bakım penceresinde yapılır (production ~10 dk kapalı; 20.11.2026'da denendi, 40,6 → 22,8 GB):
+   ```bash
+   make backup-now
+   docker run --rm --privileged --pid=host alpine:3.21 nsenter -t 1 -m -- fstrim -av   # boş blokları işaretle
+   $C stop && docker desktop stop && wsl --shutdown
+   ```
+   Sonra **yönetici** PowerShell'de: `Optimize-VHD -Path "$env:LOCALAPPDATA\Docker\wsl\disk\docker_data.vhdx" -Mode Full` (Hyper-V modülü yoksa `diskpart` → `select vdisk file=…` → `compact vdisk`). Ardından `docker desktop start` ve `$C up -d --no-build --wait`. Docker Desktop'taki **"Clean / Purge data"** düğmesine basılmaz: tüm volume'ları (veritabanı dahil) siler.
 6. Kalıcı çözüm gerekiyorsa (sürekli doluyorsa) Ollama modeli veya imajlar için başka sürücü planlayın ve `docs/kararlar.md`'ye yazın.
 
 ## 5. Kuyruk birikmesi
