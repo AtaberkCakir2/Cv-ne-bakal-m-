@@ -109,7 +109,7 @@ make prod-embed            # önce yedek alır, sadece vektörü boş satırlar
 make prod-embed HEPSI=1    # model değiştiyse hepsi baştan
 ```
 
-Betik `infra/pc/embed.sh`: yedek (`backup.sh`) → geçici imajı derler (`infra/pc/embedding/Dockerfile`, ~3,3 GB, model içinde; ilk seferde ~5 dk, sonra önbellekten) → `python -m embedding` → kalan boş vektör sayısını yazar. İmaj PC'de kalır; kaldırmak: `docker rmi careerai/embedding-gecici:local`. Her parti ayrı kaydedilir (yarıda kesilirse kaldığı yerden sürer). Uygulama rolüyle (`careerai_app`) bağlanır; parola komut satırında görünmez. İlk çalışma 20.11.2026: 374 yetkinlik 3 sn, 2.213 ilan 4 dk (CPU). T-057 (Burak) analiz işçisini production'a alınca bu adım ve imaj kaldırılır.
+Betik `infra/pc/embed.sh`: yedek (`backup.sh`) → geçici imajı derler (`infra/pc/embedding/Dockerfile`, ~3,3 GB, model içinde; ilk seferde ~5 dk, sonra önbellekten) → `python -m embedding` → kalan boş vektör sayısını yazar (pasif ilanlar vektör almaz, sayılmaz). İmaj PC'de kalır; kaldırmak: `docker rmi careerai/embedding-gecici:local`. Her parti ayrı kaydedilir (yarıda kesilirse kaldığı yerden sürer). Uygulama rolüyle (`careerai_app`) bağlanır; parola komut satırında görünmez. İlk çalışma 20.11.2026: 374 yetkinlik 3 sn, 2.213 ilan 4 dk (CPU). T-057 (Burak) analiz işçisini production'a alınca bu adım ve imaj kaldırılır.
 
 ## Henüz eksik
 

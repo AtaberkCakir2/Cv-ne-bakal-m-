@@ -34,5 +34,6 @@ unset DATABASE_URL
 # shellcheck disable=SC2016  # değişkenler konteynerin içinde açılmalı
 compose exec -T postgres sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -At -F " " -c "
   select '"'"'yetkinlik'"'"', count(*) filter (where embedding is null), count(*) from skills
-  union all select '"'"'ilan'"'"', count(*) filter (where embedding is null), count(*) from job_postings"' \
-  | tr -d '\r' | while read -r ad bos toplam; do echo "$ad: vektörü boş $bos / $toplam"; done
+  union all select '"'"'aktif_ilan'"'"', count(*) filter (where embedding is null), count(*) from job_postings where is_active"' \
+  | tr -d '\r' | while read -r ad bos toplam; do echo "${ad/_/ }: vektörü boş $bos / $toplam"; done
+# Pasif ilanlar (benzer kopya, süresi dolmuş) eşleştirmede kullanılmadığı için vektör almaz.
