@@ -51,6 +51,10 @@ services:
       # ağına (cloudflared) güvenilir: uvicorn listeyi sondan okur ve bu alt ağın dışındaki ilk adresi alır,
       # yani Cloudflare'in eklediği gerçek IP'yi. "*" olsaydı istemcinin uydurduğu ilk adres kullanılırdı.
       FORWARDED_ALLOW_IPS: ${COMPOSE_SUBNET:?env dosyasında COMPOSE_SUBNET yok}
+      # Yönetim paneli Cloudflare Access belgesini doğrular (backend/app/admin/access.py). Production'da boşsa
+      # panel 503 döner, API'nin geri kalanı etkilenmez.
+      CF_ACCESS_TEAM_DOMAIN: ${CF_ACCESS_TEAM_DOMAIN:-}
+      CF_ACCESS_AUD: ${CF_ACCESS_AUD:-}
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/v1/health', timeout=3)"]
       interval: 10s

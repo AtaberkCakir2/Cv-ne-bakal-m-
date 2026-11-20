@@ -111,7 +111,7 @@ Canlıya çıkıştan iki ay önce, sorumlusu Ataberk olan ve production'da bug�
 | 2 ★ Port açık değil | Uygun | `docker compose config`: hiçbir serviste `ports:` yok; tek istisna Grafana `127.0.0.1:3000`. Ağdan nmap henüz yapılmadı |
 | 5 Bellek limiti, restart | Uygun | 15 servisin hepsinde `mem_limit` ve `restart: unless-stopped` |
 | 6 Disk ≥ 40 GB boş | **Sınırda** | C: 49 GB boş (%90 dolu; 06.11'de 71 GB). Docker: 4,7 GB kullanılmayan build cache, 3,6 GB kullanılmayan imaj temizlenebilir |
-| 15 ★ Migration'lar | Kısmen | `alembic_version` = 0004 (head). Downgrade testi yapılmadı. Not: uygulama rolü `alembic_version`'ı okuyamaz (en az yetki), kontrol sahip rolle yapılır |
+| 15 ★ Migration'lar | Uygun | `alembic_version` = 0004 (head). Downgrade gerçek veriyle denendi (18.11.2026, `make backup-migration-test`): production yedeğinin kopyasında 0004 → 0003 → 0004 satır sayıları aynı; base'e kadar tek tek geri alma ve head'e dönüş 26 sn. Not: uygulama rolü `alembic_version`'ı okuyamaz (en az yetki), kontrol sahip rolle yapılır |
 | 16 ★ Seed verisi | **Eksik** | Yetkinlik 374 (≥ 300 ✓), pozisyon 12 (≥ 10 ✓), kaynak **530** (≥ 900 ✗), aktif ilan **1.682** (≥ 2.000 ✗, gece toplamasıyla artıyor) |
 | 17 En az yetkili DB kullanıcısı | Uygun | `careerai_app`: süper kullanıcı değil, hiçbir tablonun sahibi değil, `TRUNCATE` yok; `careerai_monitor` salt okunur (T-075) |
 | 18 Yavaş sorgu yok | Ölçüm hazır | HNSW indeksleri var. `pg_stat_statements` açıldı (18.11.2026: `compose.yml` + `deploy.sh setup_stats`); bir sonraki deploy'dan sonra birkaç gün kullanımın ardından `make prod-slow-queries` ile ölçülecek (≈p95 = ortalama + 1,645σ; kesin p95 Loki'deki istek süresinden) |
@@ -120,7 +120,7 @@ Canlıya çıkıştan iki ay önce, sorumlusu Ataberk olan ve production'da bug�
 | 21 ★ Grafana, 12 kural, dış prob | Uygun | 12 uyarı kuralı yüklü, dış prob `api.cvnebakalim.com` `up`. Tünel durdurma testi yapılmadı |
 | 24 Loglarda kişisel veri yok | Uygun (örneklem) | Son 1 saatin api ve worker-data loglarında e-posta adresi biçiminde metin yok |
 | 34 Gece toplaması 7 gün hatasız | **Değil** | 12 çalışmanın 12'si başarılı, ama sadece 15.11 ve 18.11 günleri: PC kapalı kaldığı için 7 günlük kesintisiz seri yok |
-| 35 Ölü link < %2 | Ölçülmedi | Production'da link kontrolü hiç çalışmadı (530 kaynağın hepsinde `last_checked_at` boş) |
+| 35 Ölü link < %2 | Ölçülmedi | Production'da link kontrolü hiç çalışmadı (530 kaynağın hepsinde `last_checked_at` boş): pazar 07:00'de PC kapalıydı. 18.11.2026: kaçan kontrol artık işçi açılışında telafi ediliyor; oran `python -m collector resources-report` ile (worker-data içinde) okunur. Bir sonraki deploy'dan sonra ölçülecek |
 
 ## Hizmet seviyesi hedefleri (SLO)
 
