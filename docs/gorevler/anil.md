@@ -30,12 +30,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-001 · Kick-off toplantısı ve rol dağılımı
 
-- **Durum:** Yapılacak
+- **Durum:** Devam Ediyor
 - **Tarih:** 19.10.2026 – 19.10.2026 · **Öncelik:** P0 · **Efor:** 3 saat · **Alan:** Proje Yönetimi
 - **Bağımlılık:** —
 - **Destek:** Ataberk, Burak
 - **Çıktı:** Toplantı notu + RACI
 - **Kabul kriteri:** RACI onaylandı; iletişim kanalı (Discord/WhatsApp) açıldı; haftalık toplantı günü ve danışman görüşme periyodu (2 haftada bir) belirlendi.
+- **Not:** Gündem hazır: `docs/toplantilar/2026-10-kickoff.md`. Toplantı yapılıp notları yazılınca tamamlanır.
 
 ### T-002 · Kanban panosu kurulumu (GitHub Projects)
 
@@ -48,12 +49,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-003 · MVP kapsamının dondurulması (MoSCoW)
 
-- **Durum:** Yapılacak
+- **Durum:** Devam Ediyor
 - **Tarih:** 19.10.2026 – 25.10.2026 · **Öncelik:** P0 · **Efor:** 4 saat · **Alan:** Proje Yönetimi
 - **Bağımlılık:** T-001
 - **Destek:** Ataberk, Burak
 - **Çıktı:** Kapsam dokümanı
 - **Kabul kriteri:** Must/Should/Could/Won't listesi yazıldı. Karar: v1.0 = Web + Windows/macOS (Electron) + Android. iOS = v1.1. Kapsam değişikliği sadece ekip kararıyla.
+- **Not:** Taslak: `docs/kapsam.md`. Kick-off toplantısında 3 kişinin onayı ve açık soruların kapanmasıyla tamamlanır.
 
 ### T-004 · Arayüz sözleşmelerinin yazılması (JSON şemaları)
 
