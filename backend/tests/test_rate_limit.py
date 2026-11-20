@@ -132,6 +132,9 @@ def test_store_failure_fails_open_and_backs_off() -> None:
             calls += 1
             raise OSError("redis yok")
 
+        async def undo(self, key: str) -> None:
+            pass
+
     limiter = RateLimiter(Broken(), SETTINGS)
     limit = Limit("x", 1, 60)
     assert asyncio.run(limiter.retry_after(limit, "s")) is None
@@ -182,7 +185,7 @@ def test_rejected_uploads_do_not_use_the_hourly_analysis_limit(limited_app: Fast
 
     def upload() -> int:
         files = {"file": ("cv.pdf", b"%PDF-1.4", "application/pdf")}
-        return client.post(f"{API}/analyses", files=files, data={"target_role_id": "1"}).status_code
+        return int(client.post(f"{API}/analyses", files=files, data={"target_role_id": "1"}).status_code)
 
     assert [upload() for _ in range(6)] == [422, 503, 415, 202, 202, 429]
 
