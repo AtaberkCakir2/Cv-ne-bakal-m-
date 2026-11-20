@@ -21,7 +21,9 @@ dependencies = [
     "pgvector>=0.3.6",
     # Kimlik doğrulama (T-037)
     "argon2-cffi>=23.1",
-    "pyjwt>=2.9",
+    # [crypto]: RS256 için cryptography. Panelin Cloudflare Access doğrulaması (#132, app/admin/access.py) bunu
+    # gerektirir; şimdiye kadar sadece pypdf[crypto] üzerinden dolaylı geliyordu (greenlet olayındaki gibi kırılgan).
+    "pyjwt[crypto]>=2.9",
     "email-validator>=2.2",
     # Yönetim paneli (T-063 — Ataberk, app/admin/). itsdangerous: panel oturum çerezi (Starlette SessionMiddleware).
     "sqladmin==0.32.0",
