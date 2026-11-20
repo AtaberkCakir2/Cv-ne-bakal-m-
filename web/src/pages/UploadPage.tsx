@@ -235,7 +235,11 @@ function uploadErrorMessage(error: unknown, response: Response): string {
   if (response.status === 503) {
     return `Sistem şu an yoğun, analiz başlatılamadı.${wait > 0 ? ` ${formatWait(wait)} sonra tekrar dene.` : ""}`;
   }
-  if (problem?.code === "PDF_TOO_LARGE") return `Dosya 5 MB veya ${MAX_CV_PAGES} sayfadan büyük olamaz.`;
+  if (problem?.code === "PDF_TOO_LARGE") {
+    // Backend hangi sınırın aşıldığını yazar ("CV en fazla 5 sayfa olabilir (6 sayfa)."); yoksa durum kodundan anlaşılır.
+    if (problem.detail) return problem.detail;
+    return response.status === 413 ? "Dosya en fazla 5 MB olabilir." : `CV en fazla ${MAX_CV_PAGES} sayfa olabilir.`;
+  }
   if (problem?.code === "PDF_UNREADABLE") return "PDF okunamadı. Dosya bozuk ya da şifreli olabilir.";
   if (problem?.code === "CONSENT_WITHDRAWN") {
     return "CV analizi için açık rızan geri alınmış. Profil → Verilerim bölümünden yeniden verebilirsin.";
