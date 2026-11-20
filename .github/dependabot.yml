@@ -27,6 +27,12 @@ updates:
     directories: [/backend, /scraper, /infra/backup]
     schedule: { interval: weekly, day: monday, time: "08:00", timezone: Europe/Istanbul }
     commit-message: { prefix: "chore" }
+    # Python sürümü projede 3.12'de sabit (CLAUDE.md, pyproject.toml, CI). 3.13+ geçişi üç modülün birlikte
+    # taşınmasını gerektiren ayrı bir karar; Dependabot her yeni Python için PR açmasın (#101, #102 kapatıldı).
+    # 3.12 içindeki yamalar ve imajın kendi güncellemeleri gelmeye devam eder. Yükseltmeye karar verilince silinir.
+    ignore:
+      - dependency-name: python
+        update-types: [version-update:semver-minor, version-update:semver-major]
 
   - package-ecosystem: github-actions
     directory: /
