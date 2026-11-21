@@ -8,3 +8,6 @@ import { Platform } from "react-native";
 const fallback = Platform.OS === "android" ? "http://10.0.2.2:8000" : "http://127.0.0.1:8000";
 
 export const API_URL: string = (process.env.EXPO_PUBLIC_API_URL || fallback).replace(/\/+$/, "");
+
+/** KVKK ve kullanım metinlerinin yayınlandığı site (Cloudflare Pages, T-065/T-070); uygulama bunları tarayıcıda açar. */
+export const LEGAL_URL = "https://cvnebakalim.com";

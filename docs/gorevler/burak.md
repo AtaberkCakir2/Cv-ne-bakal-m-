@@ -185,12 +185,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-061 · Mobil ekranlar — giriş, KVKK onayı, CV yükleme
 
-- **Durum:** Yapılacak
+- **Durum:** Devam Ediyor
 - **Tarih:** 07.12.2026 – 13.12.2026 · **Öncelik:** P0 · **Efor:** 12 saat · **Alan:** Mobil
 - **Bağımlılık:** T-060, T-039 (Anıl)
 - **Destek:** Anıl
 - **Çıktı:** Mobil akış (1/2)
 - **Kabul kriteri:** Giriş/kayıt, KVKK onayı, CV seçme (expo-document-picker), analiz bekleme ekranı. Android cihazda test.
+- **Devam notu (21.11.2026):** Yapılan: `mobile/src/screens/` (Login, Register + üç KVKK onayı ve metin bağlantıları, Upload: pozisyon seçimi + `expo-document-picker` + yükleme, Analysis: 3 sn yoklama, arka planda durur, hata kodu ipuçları, bitince özet), `App.tsx` React Navigation (oturuma göre ekranlar, çıkış), `src/ui/` ortak bileşenler ve açık/koyu tema. Kurallar ve metinler web ile aynı. typecheck, lint ve `expo export --platform android` temiz. · Sıradaki adım: Android cihazda (Expo Go veya `eas build --profile preview` APK) yerel backend'e karşı uçtan uca deneme: kayıt → giriş → PDF seç → yükle → bekleme → sonuç/hata; özellikle dosya yüklemesinin (FormData `{uri,name,type}` + openapi-fetch + 401 yenileme kopyası) cihazda çalıştığını doğrula. Sorun yoksa durum Tamamlandı. · Açık sorular / engeller: T-060 PR'ı (#156) birleşmeden bu branch'in PR'ı açılmamalı (onun üstüne kurulu); yasal metin adresleri (`cvnebakalim.com/aydinlatma/` …) site yayına girince açılır. · Branch: burak/mobil-ekranlar-1
 
 ---
 
