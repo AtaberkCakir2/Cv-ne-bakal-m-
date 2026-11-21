@@ -1,0 +1,16 @@
+{
+  "name": "careerai-e2e",
+  "private": true,
+  "description": "Uçtan uca testler (T-071). Çalıştırma: tests/e2e/README.md",
+  "type": "module",
+  "scripts": {
+    "test": "playwright test",
+    "rapor": "playwright show-report",
+    "tip": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.65.1",
+    "@types/node": "^26.6.6",
+    "typescript": "~5.9.3"
+  }
+}

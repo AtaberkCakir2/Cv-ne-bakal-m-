@@ -90,12 +90,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-044 · Prompt versiyonlama
 
-- **Durum:** Yapılacak
+- **Durum:** Devam Ediyor
 - **Tarih:** 09.11.2026 – 15.11.2026 · **Öncelik:** P1 · **Efor:** 4 saat · **Alan:** AI / NLP
 - **Bağımlılık:** T-031
 - **Destek:** —
 - **Çıktı:** Prompt kütüphanesi
 - **Kabul kriteri:** Prompt'lar /ai/prompts altında versiyonlu; her analizde model_name ve prompt_version kaydedilir (tekrarlanabilirlik).
+- **Devam notu (10.11.2026):** Yapılan: `ai/prompts/` (`get_prompt`, `model_info`, `skill_extraction/v1.txt`, #68); T-032 (#78) LLM çağrısında `get_prompt("skill_extraction")` kullanıyor ve `ExtractionResult.model` alanında `{"name", "prompt_version"}` döndürüyor. · Sıradaki adım: T-057'de işçi `result.model` değerini analiz sonucuna ve `analyses` tablosuna yazınca kriterin "her analizde kaydedilir" kısmı kapanır, görev o zaman Tamamlandı yapılır. · Açık sorular / engeller: T-043 ikinci prompt'u getirince sözleşmedeki tek `prompt_version` alanının nasıl kullanılacağı karar ister. · Branch: yok (kod main'de; kalan iş T-057'nin dalında)
 
 ---
 
@@ -103,39 +104,43 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-032 · Yetkinlik çıkarımı v2 (LLM)
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 16.11.2026 – 22.11.2026 · **Öncelik:** P0 · **Efor:** 14 saat · **Alan:** AI / NLP
 - **Bağımlılık:** T-031, T-018, T-030
 - **Destek:** —
 - **Çıktı:** ai/extraction v2
 - **Kabul kriteri:** Ollama structured output (JSON şeması), temperature 0.1. v1 sonucu ile birleştirilir; taksonomide olmayan yetkinlik "doğrulanmamış" işaretlenir (halüsinasyon filtresi).
+- **Not:** v1 ile v2'nin F1 karşılaştırması ve LLM'in tamamladığı seviyelerin doğruluğu T-019 altın standardı gelince ölçülecek (doğru değilse seviye tamamlama kapatılır). Ataberk'e taksonomi önerisi: "Express" (Express.js) tek başına eşleşmiyor.
 
 ### T-041 · Embedding servisi
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 16.11.2026 – 22.11.2026 · **Öncelik:** P0 · **Efor:** 10 saat · **Alan:** AI / NLP
 - **Bağımlılık:** T-013 (Ataberk), T-033 (Ataberk)
 - **Destek:** Ataberk
 - **Çıktı:** ai/embedding modülü
 - **Kabul kriteri:** Çok dilli model (paraphrase-multilingual-MiniLM-L12-v2 veya multilingual-e5-small, 384 boyut). Yetkinlik ve ilan vektörleri toplu üretilip pgvector'e yazılır.
+- **Not:** Model MiniLM yerine multilingual-e5-small (leave-one-out doğruluk %53 → %65; ölçüm `ai/README.md`), `docs/kararlar.md`'ye ekip kararı olarak yazılmalı. T-042 eşiği bu modelde ~0,90 (0,80 her şeyi eşler). Ataberk için: gece toplamasına `python -m embedding` adımı, işçi imajına modelin önceden indirilmesi, `catalog.py`'deki model yorumu ve T-013 ölçümünün gerçek vektörlerle tekrarı.
 
 ### T-042 · Eşleştirme algoritması
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 16.11.2026 – 29.11.2026 · **Öncelik:** P0 · **Efor:** 16 saat · **Alan:** AI / NLP
 - **Bağımlılık:** T-041, T-032, T-045 (Ataberk)
 - **Destek:** —
 - **Çıktı:** ai/matching modülü
 - **Kabul kriteri:** Pozisyon için talep ağırlığı = ilan frekansı × TF-IDF; kosinüs benzerliği ile anlamsal eşleşme (eşik 0,80, ayarlanabilir); 0-100 uyum skoru; eksik yetkinlikler talep oranına göre sıralanır.
+- **Not:** `ai/matching` (`match`, `load_role_demand`). Anlamsal eşik varsayılanı 0,90: kriterdeki 0,80 MiniLM içindi, T-041'de seçilen e5-small'da her şeyi eşliyor; eşik parametre olarak ayarlanabilir. Anlamsal eşleşme sadece taksonomide olmayan adlara uygulanır (farklı taksonomi yetkinlikleri vektörle eşlenmez). Sözleşmede `low_data` alanı yok; karar #23'teki uyarı için API'ye ayrı alan gerekirse sözleşme önerisi yapılmalı (Anıl). 10 sentetik CV'de hedef pozisyon 9'unda 1. sırada (README). #79 (T-041) birleşince PR açılır.
 
 ### T-043 · Kaynak öneri üretimi (RAG)
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 23.11.2026 – 29.11.2026 · **Öncelik:** P0 · **Efor:** 12 saat · **Alan:** AI / NLP
 - **Bağımlılık:** T-042, T-046 (Ataberk)
 - **Destek:** Ataberk
 - **Çıktı:** ai/recommendation modülü
 - **Kabul kriteri:** Eksik yetkinlik için aday kaynaklar DB'den çekilir; LLM SADECE bu listeden seçer ve Türkçe gerekçe yazar → uydurma link imkânsız. Örn: "İncelenen 150 ilanın %75'i Docker istiyor".
+- **Not:** 17.11.2026. `ai/recommendation` (`load_candidates`, `recommend`): adaylar `resources`'tan (sadece `is_alive`); LLM sadece aday numarası seçer, numara o yetkinliğin adaylarında yoksa atılır, link/başlık her zaman DB kaydından gelir. İlan istatistiği cümlesi koddan üretilir (LLM sayı yazmaz); bozuk gerekçe veya LLM hatasında kurallı seçim ve gerekçe. Prompt `prompts/recommendation/v1.txt`. Deneme: `resources.csv` adayları + Llama 3.1 8B, 9/9 geçerli seçim, 9/9 LLM gerekçesi, 7,8 sn (ilk çağrı 85 sn). SQL geçici tablolarla test edildi; gerçek `resources` tablosuyla deneme T-057'de. Açık soru: analizde artık iki prompt var (`skill_extraction` v1, `recommendation` v1), sözleşmede tek `prompt_version` alanı; T-057'de nasıl yazılacağı kararlaştırılmalı (bkz. T-044).
 
 ---
 
@@ -161,21 +166,23 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-057 · AI worker'ının kuyruğa entegrasyonu
 
-- **Durum:** Yapılacak
+- **Durum:** Devam Ediyor
 - **Tarih:** 30.11.2026 – 06.12.2026 · **Öncelik:** P0 · **Efor:** 8 saat · **Alan:** AI / NLP
 - **Bağımlılık:** T-039 (Anıl), T-043
 - **Destek:** Anıl
 - **Çıktı:** worker servisi
 - **Kabul kriteri:** Celery worker eşzamanlılık = 1 (RAM koruması), görev zaman aşımı, başarısız işler için hata kaydı ve kullanıcıya anlamlı mesaj; LLM düşerse v1 sözlük sonucuyla devam.
+- **Devam notu (21.11.2026):** Yapılan: AI tarafı `ai/pipeline` (`analyze_cv(pdf, role_id=, conn=)`): PDF → maskeleme → çıkarım v2 → eşleştirme → öneri; sözleşme hata kodları (`AnalysisError`), 165 sn bütçe, LLM düşerse v1 + kurallı öneri; karar önerisi #38 (`prompt_version` biçimi). Eşzamanlılık 1, 180 sn sınır ve hata kaydı Anıl'ın işçisinde (T-039, #123) hazır. · Sıradaki adım: Anıl `backend/app/services/analyzer.py`'de `AiAnalyzer` ile `analyze_cv` sonucunu `output_from_result`'a bağlar (`AnalysisError.code` → `AnalysisFailed`); analiz işçisinin imajına `ai` paketi ve modeller (Ataberk/Anıl); sonra gerçek veritabanı ve Ollama ile uçtan uca deneme, görev Tamamlandı. · Açık sorular / engeller: karar #38 onayı; production kaynak havuzu küçük (yetkinlik başına 2, Ataberk büyütüyor). · Branch: burak/ai-pipeline
 
 ### T-060 · React Native (Expo) proje kurulumu
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 30.11.2026 – 06.12.2026 · **Öncelik:** P0 · **Efor:** 6 saat · **Alan:** Mobil
 - **Bağımlılık:** T-040 (Anıl)
 - **Destek:** Anıl
 - **Çıktı:** mobile/ iskeleti
 - **Kabul kriteri:** Expo + TypeScript; web ile ortak API istemcisi ve tipler; expo-secure-store ile token saklama; EAS Build yapılandırması.
+- **Not:** 21.11.2026. `mobile/`: Expo SDK 58 + TypeScript (5.9, web ile aynı ana sürüm; openapi-typescript TS 6'yı desteklemiyor). Tipler web'in `openapi.json`'ından `npm run gen:api` ile üretilir, istemci web'deki gibi `openapi-fetch` + aynı yenileme kuralları (`src/auth/session.ts`). Refresh token `expo-secure-store`'da (bu cihaza özel), access token bellekte. `eas.json`: `preview` (APK) ve `production` (AAB), API `https://api.cvnebakalim.com`; ilk EAS derlemesi için Expo hesabı ve `eas init` gerekir. `npm run typecheck` temiz, `expo export --platform android` paketliyor. `package-lock.json` eklendi (güvenlik raporu G-8); `npm audit`: 3 orta seviye, Expo'nun derleme aracındaki minimatch (uygulamaya girmiyor, düzeltme Expo güncellemesiyle). Ekran şimdilik backend sağlığı; giriş ve CV yükleme T-061.
 
 ### T-061 · Mobil ekranlar — giriş, KVKK onayı, CV yükleme
 

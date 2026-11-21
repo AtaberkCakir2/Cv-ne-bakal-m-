@@ -11,7 +11,7 @@ from typing import Any
 
 import httpx
 
-USER_AGENT = "CareerAI-Bot/0.1 (bitirme projesi; +https://github.com/AtaberkCakir2/Cv-ne-bakal-m-)"
+USER_AGENT = "CvneBakalim-Bot/0.1 (bitirme projesi; +https://github.com/AtaberkCakir2/Cv-ne-bakal-m-)"
 RETRY_STATUSES = {429, 500, 502, 503, 504}
 BACKOFF_BASE_S = 5.0  # ilk tekrar en az bu kadar sonra; her denemede iki katı
 MAX_RETRY_AFTER_S = 600.0
@@ -50,13 +50,29 @@ class PoliteClient:
         base: float = max(self._delay_s, BACKOFF_BASE_S) * 2.0**attempt
         return base + random.uniform(0, base / 2)  # noqa: S311 — aynı anda tekrar denemesinler
 
-    def get_json(self, url: str, params: dict[str, str | int] | None = None) -> Any:
+    def status(self, url: str) -> int | None:
+        """Link kontrolü: son HTTP durum kodu; bağlantı kurulamazsa None. Tekrar denenmez."""
+        wait = self._last_request + self._gap() - time.monotonic()
+        if wait > 0:
+            time.sleep(wait)
+        try:
+            with self._client.stream("GET", url) as response:  # gövde okunmaz
+                return response.status_code
+        except httpx.TransportError:
+            return None
+        finally:
+            self._last_request = time.monotonic()
+            self.requests += 1
+
+    def get_json(
+        self, url: str, params: dict[str, str | int] | None = None, *, headers: dict[str, str] | None = None
+    ) -> Any:
         for attempt in range(self._max_retries + 1):
             wait = self._last_request + self._gap() - time.monotonic()
             if wait > 0:
                 time.sleep(wait)
             try:
-                response = self._client.get(url, params=params)
+                response = self._client.get(url, params=params, headers=headers)
             except httpx.TransportError:
                 # Bağlantı/zaman aşımı: geçici olabilir, aynı geri çekilmeyle tekrar denenir.
                 if attempt == self._max_retries:

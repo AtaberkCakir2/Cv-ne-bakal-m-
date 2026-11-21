@@ -1,10 +1,11 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { flushSync } from "react-dom";
-import { NavLink, Outlet, useNavigate } from "react-router-dom";
+import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 
 import { api } from "../api/client";
 import { clearSession, currentRefreshToken, pendingRefresh } from "../auth/session";
 import { useSession } from "../auth/useSession";
+import { bugReportHref } from "../support";
 import { ThemeToggle } from "../ui";
 
 const LINKS = [
@@ -18,6 +19,7 @@ const LINKS = [
 export function Layout() {
   const session = useSession();
   const navigate = useNavigate();
+  const location = useLocation();
   const queryClient = useQueryClient();
 
   async function logout() {
@@ -36,7 +38,7 @@ export function Layout() {
     <>
       <header className="topbar">
         <NavLink to="/" className="brand">
-          CareerAI
+          Cv'ne Bakalım!
         </NavLink>
         <nav>
           {LINKS.map((l) => (
@@ -57,6 +59,9 @@ export function Layout() {
       <main className="content">
         <Outlet />
       </main>
+      <footer className="footer">
+        <a href={bugReportHref(location.pathname)}>Hata bildir</a>
+      </footer>
     </>
   );
 }

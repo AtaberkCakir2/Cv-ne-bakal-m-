@@ -1,0 +1,23 @@
+# Klasör sahipliği (CLAUDE.md tablosu, T-006). PR açılınca ilgili sahip otomatik inceleyici olarak eklenir.
+# Sonraki satır öncekini ezer: genelden özele sıralı. Onay kuralı ayrı: herhangi 1 ekip üyesinin onayı yeter (infra/ci.md, "main koruması").
+*                   @AtaberkCakir2 @burakdgnn @akyilanil-cyber
+
+/scraper/           @AtaberkCakir2
+/infra/             @AtaberkCakir2
+/.github/           @AtaberkCakir2
+/docker-compose.yml @AtaberkCakir2
+
+/ai/                @burakdgnn
+/mobile/            @burakdgnn
+
+/backend/           @akyilanil-cyber
+/web/               @akyilanil-cyber
+/backend/app/db/    @AtaberkCakir2
+/backend/app/admin/ @AtaberkCakir2
+/backend/tests/auth/test_admin_panel.py @AtaberkCakir2
+/backend/tests/auth/test_admin_access.py @AtaberkCakir2
+
+# Ortak: değişiklik 3 kişinin onayıyla (CLAUDE.md kural 2).
+/contracts/         @AtaberkCakir2 @burakdgnn @akyilanil-cyber
+/docs/              @AtaberkCakir2 @burakdgnn @akyilanil-cyber
+/CLAUDE.md          @AtaberkCakir2 @burakdgnn @akyilanil-cyber

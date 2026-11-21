@@ -2,6 +2,10 @@
 # Modeller backend paketinden geldiği için bağlam repo kökü: docker build -f scraper/Dockerfile .
 FROM python:3.12-slim
 
+# Taban imajdaki Debian paketlerinin güvenlik yamaları: Docker Hub imajı yenilenene kadar Trivy HIGH buluyor
+# (ör. zlib CVE-2026-85091, 17.11.2026). infra/backup/Dockerfile'daki apk upgrade ile aynı amaç.
+RUN apt-get update && apt-get upgrade -y && rm -rf /var/lib/apt/lists/*
+
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     PIP_NO_CACHE_DIR=1 \
@@ -28,7 +32,9 @@ COPY scraper/collector scraper/collector
 COPY scraper/etl scraper/etl
 COPY scraper/taxonomy scraper/taxonomy
 
-RUN useradd --create-home --uid 10001 careerai
+# data/: YouTube arama durumu (T-046), compose'da kalıcı volume.
+RUN useradd --create-home --uid 10001 careerai \
+    && mkdir -p scraper/data && chown careerai scraper/data
 USER careerai
 WORKDIR /srv/scraper
 

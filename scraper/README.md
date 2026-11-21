@@ -27,6 +27,7 @@ python -m collector import remoteok
 python -m collector import remotive             # günde en fazla birkaç kez
 python -m collector import jobicy
 python -m collector import arbeitnow
+python -m collector import pythonorg             # Playwright; pip install -e ".[browser]" && playwright install chromium --only-shell
 python -m collector import emscad --csv data/fake_job_postings.csv   # yedek veri seti, pasif yüklenir
 python -m collector stats                       # kaynak başına ilan sayısı
 ```
@@ -39,6 +40,7 @@ python -m collector stats                       # kaynak başına ilan sayısı
 | Remotive | `remotive` | Yazılım kategorisi | Ücretsiz API az ilan veriyor (~10) |
 | Jobicy | `jobicy` | Yazılım, veri, DevOps, güvenlik, test | Sadece son 7 gün; kaynak adı zorunlu |
 | Arbeitnow | `arbeitnow` | Avrupa ilanları (yazılım başlıkları) | Almanca ilanlar elenir; Arbeitnow.com'a link zorunlu |
+| Python.org | `pythonorg` | Python iş ilanları (HTML) | Playwright PoC'si; ~20 ilan; gece akışında yok |
 | EMSCAD | `kaggle-emscad` | 2012–2014 Workable ilanları, CC0 | Tarih yok ve eski: `is_active=false` (son 6 ay istatistiğine girmez); `--active` sadece API'ler çalışmazsa |
 
 EMSCAD dosyası repoya girmez (`data/` git dışı). [Kaggle sayfasından](https://www.kaggle.com/datasets/shivamb/real-or-fake-fake-jobposting-prediction) indirip `fake_job_postings.csv`'yi `scraper/data/` altına koyun.
@@ -94,7 +96,7 @@ Her gece **03:00 (İstanbul)** Celery beat `collector.nightly` görevini başlat
 |---|---|
 | İstekler arası 3–5 sn rastgele bekleme | `PoliteClient(jitter=(3, 5))`; kaynağın kendi alt sınırı daha büyükse o (Remotive 30 sn) |
 | Üstel geri çekilme | 429/5xx ve ağ hatalarında 5 → 10 → 20 → 40 sn (+ %50'ye kadar rastgele), en çok 4 tekrar; `Retry-After` varsa o (en çok 10 dk) |
-| User-Agent | Kimliğini belirten **tek** UA (`CareerAI-Bot/…`). Dönüşümlü/sahte UA kullanılmaz: `kaynak-uygunluk.md` kural 3-4 |
+| User-Agent | Kimliğini belirten **tek** UA (`CvneBakalim-Bot/…`). Dönüşümlü/sahte UA kullanılmaz: `kaynak-uygunluk.md` kural 3-4 |
 | Bir kaynak düşerse | Diğerleri devam eder; her kaynak `scrape_runs`'a ayrı yazılır (`success` / `partial` / `failed`) |
 | 403 veya tekrarlara rağmen 429 | Kaynak `job_sources.is_active = false` yapılır ve sonraki geceler atlanır (kural 3). Durum incelenip elle açılır: `UPDATE job_sources SET is_active = true WHERE name = '…'` |
 | Üst üste binme | Redis kilidi: elle tetikleme ile beat çakışırsa ikincisi atlanır. Süre sınırı 3 saat |
@@ -144,3 +146,22 @@ mypy .
 ```
 
 Testler ağa çıkmaz; kaynaklar uydurma JSON ile denenir.
+
+## Eğitim kaynağı havuzu (T-046)
+
+Öneri linkleri sadece `resources` tablosundan gelir (karar #10). İki kaynak: elle derlenen `taxonomy/resources.csv` ve YouTube Data API.
+
+```bash
+python -m collector resources-seed            # CSV → resources (aynı URL tekrar eklenmez)
+python -m collector resources-youtube --limit 10  # YouTube araması; --limit olmadan kota dolana kadar
+python -m collector resources-export          # bulunan videolar → taxonomy/resources_youtube.csv
+python -m collector resources-import          # o dosyayı yeni ortama yükle (arama kotası harcamaz)
+python -m collector resources-check           # ölü linkler + YouTube bilgilerini yenileme
+python -m collector resources-report          # toplam ve 3'ten az kaynağı olan yetkinlikler
+```
+
+- `.env`'de `YOUTUBE_API_KEY` gerekir; boşsa arama atlanır.
+- Günde en fazla 100 arama (Türkçe ve İngilizce ayrı arama). Kota Pasifik saatiyle gece yarısı (TR ~10:00) yenilenir. Aramalar talebi yüksek yetkinlikten başlar, durum `data/youtube_searched.json`'da.
+- `resources_youtube.csv` sadece video kimliği, yetkinlik, dil ve seviye tutar. Başlık ve süre repoya yazılmaz (30 gün kuralı), yüklerken API'den alınır; silinen video atlanır.
+- `worker-data` her gün 06:00'da aramaya devam eder, pazar 07:00'de linkleri kontrol eder. PC o saatte kapalıysa kontrol kaçar: işçi açılırken son kontrol 7 günden eskiyse (veya hiç yoksa) kontrol hemen kuyruğa konur (gece toplamasının telafisi gibi). `resources-report` ölü link oranını da yazar (go-live #35, hedef < %2).
+- Filtre: 10 dk–12 sa, TR ≥ 1.000 / EN ≥ 10.000 izlenme, başlıkta yetkinlik adı ve öğretim ipucu var, tanıtım kelimesi yok. Seviye başlıktan okunur, ipucu yoksa `beginner`.

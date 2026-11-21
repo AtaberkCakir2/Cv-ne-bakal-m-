@@ -1,0 +1,63 @@
+# Uçtan uca testler (T-071, sahibi: Ataberk). Her gece main'e karşı çalışır: docker compose ile geçici bir yığın
+# kurulur (karar #30: ayrı staging sunucusu yok), web derlenir, Playwright kritik akışı dener, sonra her şey silinir.
+# PR'da sadece E2E dosyaları değişince çalışır (iş akışının kendisi bozulmasın diye); elle de çalıştırılabilir.
+# Branch protection'da zorunlu değil. Başarısız olursa GitHub e-postayla haber verir; rapor ve izler artifact'ta.
+name: E2E
+
+on:
+  schedule:
+    - cron: "30 0 * * *"  # her gece 03:30 (TSİ), gece toplamasından sonra
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - "tests/e2e/**"
+      - ".github/workflows/e2e.yml"
+
+concurrency:
+  group: e2e-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  e2e:
+    name: Kritik akış (Playwright)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+      - name: Test ortamını kur (api, analiz işçisi, postgres, redis; migration ve seed)
+        run: bash tests/e2e/ortam.sh up
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "20"
+          cache: npm
+          cache-dependency-path: |
+            web/package-lock.json
+            tests/e2e/package-lock.json
+      - run: npm ci
+        working-directory: web
+      - run: npm ci
+        working-directory: tests/e2e
+      - run: npx playwright install --with-deps chromium
+        working-directory: tests/e2e
+      - run: npx tsc --noEmit
+        working-directory: tests/e2e
+      - name: Playwright
+        run: npx playwright test
+        working-directory: tests/e2e
+      - name: Servis logları (hata olursa)
+        if: failure()
+        run: bash tests/e2e/ortam.sh logs
+      - uses: actions/upload-artifact@v7
+        if: failure()
+        with:
+          name: e2e-rapor
+          path: |
+            tests/e2e/playwright-report/
+            tests/e2e/test-results/
+          retention-days: 7
+      - name: Ortamı kaldır
+        if: always()
+        run: bash tests/e2e/ortam.sh down

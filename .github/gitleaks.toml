@@ -1,0 +1,19 @@
+# gitleaks ayarı (T-064). security.yml bunu --config ile kullanır; yerelde aynı komut infra/guvenlik.md'de.
+# Varsayılan kurallar aynen geçerli; sadece bilinen örnek/test değerleri istisna. Yeni istisna eklerken
+# yolu değil değeri yazın: test klasörüne gerçek bir anahtar düşerse yine yakalansın.
+[extend]
+useDefault = true
+
+[allowlist]
+description = "OpenAPI örnekleri ve testlerdeki sahte parolalar/jetonlar"
+regexTarget = "line"
+regexes = [
+  # backend/app/schemas → docs/api/openapi.json, web/src/api/openapi.json
+  '''ornek-sifre-(123|456)''',
+  '''eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9\.\.\.''',
+  # backend/tests
+  '''Test-parola-123''',
+  '''yeni-parola-(123|456)''',
+  # backend/tests/auth/test_admin_access.py: uydurma Cloudflare Access AUD değeri
+  '''aud-ornek-123''',
+]

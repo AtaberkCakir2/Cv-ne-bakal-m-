@@ -1,0 +1,16 @@
+# E2E ortamına özel ayarlar (ortam.sh, docker-compose.yml'nin üstüne). Servisler kök `.env`'i okur (env_file);
+# geliştiricinin kendi .env'i ne olursa olsun test ortamı aynı davransın diye burada sabitlenir.
+x-e2e-env: &e2e-env
+  # test: örnek analiz (AI yerine sözleşme örneği), e-posta bağlantıları loglanmaz, geliştirme JWT anahtarı.
+  ENVIRONMENT: test
+  CORS_ORIGINS: '["http://127.0.0.1:5173"]'
+  # Yük testi (tests/yuk) 20 kullanıcıyı tek IP'den gönderir; IP başına sınır onları keserdi. Varsayılan açık.
+  RATE_LIMIT_ENABLED: ${RATE_LIMIT_ENABLED:-true}
+
+services:
+  api:
+    environment: *e2e-env
+  worker-analysis:
+    environment: *e2e-env
+  worker-data:
+    environment: *e2e-env

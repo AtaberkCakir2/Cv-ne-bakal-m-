@@ -1,0 +1,4 @@
+# Trivy istisnaları: yedek imajı (T-064). security.yml bu dosyayı --ignorefile ile kullanır.
+# 21.11.2026: restic 0.20.0 ile istisna kalmadı (yüksek/kritik açık 0); 0.19.1'in 21 Go kütüphanesi istisnası silindi.
+# Yeni istisna gerekirse: CVE kimliği + "exp:YYYY-AA-GG" (süre dolunca tarama yeniden kırmızı olur) ve gerekçe yorumu.
+# exp tarihi geçince: restic yeni sürüm çıkarmış mı bakın, Dockerfile'daki sürümü yükseltin, kalanları gözden geçirin.

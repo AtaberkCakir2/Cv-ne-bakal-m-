@@ -24,6 +24,7 @@ _TITLES = {
     404: "Bulunamadı",
     405: "Bu yöntem desteklenmiyor",
     409: "Çakışma",
+    411: "Content-Length gerekli",
     413: "Dosya çok büyük",
     415: "Desteklenmeyen dosya türü",
     422: "Doğrulama hatası",

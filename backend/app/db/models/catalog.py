@@ -53,6 +53,9 @@ class Skill(TimestampMixin, Base):
 
     resources: Mapped[list["Resource"]] = relationship(back_populates="skill")
 
+    def __str__(self) -> str:  # yönetim panelinde ve formlarda görünen ad
+        return self.canonical_name
+
 
 class Resource(TimestampMixin, Base):
     """Eğitim kaynağı. Öneri linkleri sadece buradan gelir; LLM link üretmez (karar #10)."""

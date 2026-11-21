@@ -1,0 +1,532 @@
+skill_slug,title,url,provider,language,level,duration_min,is_free
+ab-testing,A/B Testi: resmi belgeler ve başlangıç rehberi,https://www.nngroup.com/articles/ab-testing/,docs,en,intermediate,,1
+ab-testing,Optimizely: A/B testi sözlüğü,https://www.optimizely.com/optimization-glossary/ab-testing,blog,en,beginner,,1
+abap,ABAP: resmi belgeler ve başlangıç rehberi,https://help.sap.com/doc/abapdocu_latest_index_htm/latest/en-US/index.htm,docs,en,intermediate,,1
+accessibility,Erişilebilirlik: resmi belgeler ve başlangıç rehberi,https://developer.mozilla.org/en-US/docs/Web/Accessibility,docs,en,intermediate,,1
+accessibility,Web erişilebilirliği öğren (web.dev),https://web.dev/learn/accessibility/,docs,en,beginner,,1
+accessibility,W3C WAI: Erişilebilirliğe giriş,https://www.w3.org/WAI/fundamentals/accessibility-intro/,docs,en,beginner,,1
+adaptability,Stresle Başa Çıkma ve Bilinçli Farkındalık (BTK Akademi),https://www.btkakademi.gov.tr/portal/course/stresle-basa-cikma-ve-bilincli-farkindalik-26814,btk_akademi,tr,beginner,,1
+adaptability,Adaptability and Resiliency (Coursera),https://www.coursera.org/learn/adaptability-and-resiliency,coursera,en,beginner,,0
+adaptability,Genç Profesyoneller için Kariyeri Tehdit Eden Yaklaşımlar (BTK Akademi),https://www.btkakademi.gov.tr/portal/course/genc-profesyoneller-icin-kariyeri-tehdit-eden-yaklasimlar-26265,btk_akademi,tr,beginner,,1
+agile,Agile: başlangıç rehberi,https://www.atlassian.com/agile,docs,en,intermediate,,1
+airflow,Apache Airflow: resmi belgeler ve başlangıç rehberi,https://airflow.apache.org/docs/apache-airflow/stable/tutorial/index.html,docs,en,intermediate,,1
+aks,Azure Kubernetes Service: resmi belgeler ve başlangıç rehberi,https://learn.microsoft.com/en-us/azure/aks/what-is-aks,docs,en,intermediate,,1
+algorithms,Algoritmalar ve Veri Yapıları: resmi belgeler ve başlangıç rehberi,https://cp-algorithms.com/,docs,en,intermediate,,1
+algorithms,Algoritmalar ve Veri Yapıları öğrenme yol haritası (roadmap.sh),https://roadmap.sh/datastructures-and-algorithms,other,en,beginner,,1
+android-sdk,Android SDK: resmi belgeler ve başlangıç rehberi,https://developer.android.com/courses,docs,en,intermediate,,1
+android-sdk,Android SDK öğrenme yol haritası (roadmap.sh),https://roadmap.sh/android,other,en,beginner,,1
+android-studio,Android Studio: resmi belgeler ve başlangıç rehberi,https://developer.android.com/studio/intro,docs,en,intermediate,,1
+angular,Angular: resmi belgeler ve başlangıç rehberi,https://angular.dev/overview,docs,en,intermediate,,1
+angular,Angular öğrenme yol haritası (roadmap.sh),https://roadmap.sh/angular,other,en,beginner,,1
+ansible,Ansible: resmi belgeler ve başlangıç rehberi,https://docs.ansible.com/ansible/latest/getting_started/index.html,docs,en,intermediate,,1
+ant-design,Ant Design: resmi belgeler ve başlangıç rehberi,https://ant.design/docs/react/introduce,docs,en,intermediate,,1
+ant-design,Ant Design bileşenleri (resmi),https://ant.design/components/overview/,docs,en,beginner,,1
+anthropic-claude,Anthropic Claude: resmi belgeler ve başlangıç rehberi,https://docs.claude.com/en/docs/get-started,docs,en,intermediate,,1
+apache-httpd,Apache HTTP Server: resmi belgeler ve başlangıç rehberi,https://httpd.apache.org/docs/current/getting-started.html,docs,en,intermediate,,1
+apache-httpd,Apache HTTP Server: yapılandırma dosyaları (resmi),https://httpd.apache.org/docs/current/configuring.html,docs,en,intermediate,,1
+apache-httpd,Ubuntu'ya Apache kurulumu (DigitalOcean),https://www.digitalocean.com/community/tutorials/how-to-install-the-apache-web-server-on-ubuntu-22-04,blog,en,beginner,,1
+apex,Apex Basics & Database (Trailhead modülü),https://trailhead.salesforce.com/content/learn/modules/apex_database,other,en,beginner,,1
+apex,Apex Triggers (Trailhead modülü),https://trailhead.salesforce.com/content/learn/modules/apex_triggers,other,en,intermediate,,1
+apex,Apex Testing (Trailhead modülü),https://trailhead.salesforce.com/content/learn/modules/apex_testing,other,en,intermediate,,1
+apollo,Apollo GraphQL: resmi belgeler ve başlangıç rehberi,https://www.apollographql.com/docs/,docs,en,intermediate,,1
+argo-cd,Argo CD: resmi belgeler ve başlangıç rehberi,https://argo-cd.readthedocs.io/en/stable/getting_started/,docs,en,intermediate,,1
+assembly,Assembly: x86-64 başlangıç rehberi,https://diveintosystems.org/book/C7-x86_64/index.html,docs,en,intermediate,,1
+assembly,Assembly alıştırmaları (Exercism),https://exercism.org/tracks/x86-64-assembly,other,en,beginner,,1
+astro,Astro: resmi belgeler ve başlangıç rehberi,https://docs.astro.build/en/tutorial/0-introduction/,docs,en,intermediate,,1
+aurora,Amazon Aurora: resmi belgeler ve başlangıç rehberi,https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/CHAP_AuroraOverview.html,docs,en,intermediate,,1
+auth0,Auth0: resmi belgeler ve başlangıç rehberi,https://auth0.com/docs/get-started,docs,en,intermediate,,1
+auth0,Auth0 React hızlı başlangıç,https://auth0.com/docs/quickstart/spa/react,docs,en,beginner,,1
+aws,AWS: resmi belgeler ve başlangıç rehberi,https://aws.amazon.com/getting-started/,docs,en,intermediate,,1
+aws,AWS öğrenme yol haritası (roadmap.sh),https://roadmap.sh/aws,other,en,beginner,,1
+aws-iam,AWS IAM: resmi belgeler ve başlangıç rehberi,https://docs.aws.amazon.com/IAM/latest/UserGuide/introduction.html,docs,en,intermediate,,1
+aws-lambda,AWS Lambda: resmi belgeler ve başlangıç rehberi,https://docs.aws.amazon.com/lambda/latest/dg/welcome.html,docs,en,intermediate,,1
+azure,Microsoft Azure: resmi belgeler ve başlangıç rehberi,https://learn.microsoft.com/en-us/azure/,docs,en,intermediate,,1
+azure-devops,Azure DevOps: resmi belgeler ve başlangıç rehberi,https://learn.microsoft.com/en-us/azure/devops/user-guide/what-is-azure-devops,docs,en,intermediate,,1
+azure-functions,Azure Functions: resmi belgeler ve başlangıç rehberi,https://learn.microsoft.com/en-us/azure/azure-functions/functions-overview,docs,en,intermediate,,1
+azure-ml,Azure Machine Learning: resmi belgeler ve başlangıç rehberi,https://learn.microsoft.com/en-us/azure/machine-learning/overview-what-is-azure-machine-learning,docs,en,intermediate,,1
+babel,Babel: resmi belgeler ve başlangıç rehberi,https://babeljs.io/docs/,docs,en,intermediate,,1
+bash,Bash: resmi belgeler ve başlangıç rehberi,https://www.gnu.org/software/bash/manual/html_node/index.html,docs,en,intermediate,,1
+bash,Bash alıştırmaları (Exercism),https://exercism.org/tracks/bash,other,en,beginner,,1
+bash,Bash öğrenme yol haritası (roadmap.sh),https://roadmap.sh/shell-bash,other,en,beginner,,1
+bdd,Behavior Driven Development: resmi belgeler ve başlangıç rehberi,https://cucumber.io/docs/bdd/,docs,en,intermediate,,1
+bdd,Behave: Python ile BDD (resmi),https://behave.readthedocs.io/en/latest/tutorial/,docs,en,beginner,,1
+bigquery,Google BigQuery: resmi belgeler ve başlangıç rehberi,https://cloud.google.com/bigquery/docs/introduction,docs,en,intermediate,,1
+bitbucket,Bitbucket: resmi belgeler ve başlangıç rehberi,https://support.atlassian.com/bitbucket-cloud/,docs,en,intermediate,,1
+blazor,Blazor: resmi belgeler ve başlangıç rehberi,https://learn.microsoft.com/en-us/aspnet/core/blazor/,docs,en,intermediate,,1
+blender,Blender: resmi belgeler ve başlangıç rehberi,https://docs.blender.org/manual/en/latest/,docs,en,intermediate,,1
+blockchain,Blockchain: resmi belgeler ve başlangıç rehberi,https://ethereum.org/en/developers/docs/,docs,en,intermediate,,1
+bootstrap,Bootstrap: resmi belgeler ve başlangıç rehberi,https://getbootstrap.com/docs/,docs,en,intermediate,,1
+burp-suite,Burp Suite: resmi belgeler ve başlangıç rehberi,https://portswigger.net/burp/documentation,docs,en,intermediate,,1
+c,C: resmi belgeler ve başlangıç rehberi,https://en.cppreference.com/w/c,docs,en,intermediate,,1
+c,C alıştırmaları (Exercism),https://exercism.org/tracks/c,other,en,beginner,,1
+cassandra,Cassandra: resmi belgeler ve başlangıç rehberi,https://cassandra.apache.org/doc/latest/,docs,en,intermediate,,1
+celery,Celery: resmi belgeler ve başlangıç rehberi,https://docs.celeryq.dev/en/stable/getting-started/first-steps-with-celery.html,docs,en,intermediate,,1
+celery,Celery kullanıcı kılavuzu,https://docs.celeryq.dev/en/stable/userguide/index.html,docs,en,intermediate,,1
+chef,Chef: resmi belgeler ve başlangıç rehberi,https://docs.chef.io/,docs,en,intermediate,,1
+chef,Learn Chef (resmi eğitimler),https://www.chef.io/training,other,en,beginner,,1
+ci-cd,CI/CD: resmi belgeler ve başlangıç rehberi,https://docs.github.com/en/actions/get-started/continuous-integration,docs,en,intermediate,,1
+circleci,CircleCI: resmi belgeler ve başlangıç rehberi,https://circleci.com/docs/getting-started/,docs,en,intermediate,,1
+clickhouse,ClickHouse: resmi belgeler ve başlangıç rehberi,https://clickhouse.com/docs/getting-started/quick-start,docs,en,intermediate,,1
+clickhouse,ClickHouse SQL başvurusu (resmi),https://clickhouse.com/docs/reference/home,docs,en,intermediate,,1
+clickhouse,ClickHouse Academy (ücretsiz eğitimler),https://clickhouse.com/learn,other,en,beginner,,1
+clojure,Clojure: resmi belgeler ve başlangıç rehberi,https://clojure.org/guides/learn/clojure,docs,en,intermediate,,1
+clojure,Clojure alıştırmaları (Exercism),https://exercism.org/tracks/clojure,other,en,beginner,,1
+cloud-computing,Bulut Bilişim: resmi belgeler ve başlangıç rehberi,https://aws.amazon.com/what-is-cloud-computing/,docs,en,intermediate,,1
+cloud-computing,Google Cloud ile Bulut Bilişim (BTK Akademi),https://www.btkakademi.gov.tr/portal/course/google-cloud-ile-bulut-bilisim-16431,btk_akademi,tr,beginner,,1
+cloud-run,Google Cloud Run: resmi belgeler ve başlangıç rehberi,https://cloud.google.com/run/docs/overview/what-is-cloud-run,docs,en,intermediate,,1
+cloudflare,Cloudflare: resmi belgeler ve başlangıç rehberi,https://developers.cloudflare.com/,docs,en,intermediate,,1
+cloudformation,AWS CloudFormation: resmi belgeler ve başlangıç rehberi,https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/Welcome.html,docs,en,intermediate,,1
+cloudwatch,Amazon CloudWatch: resmi belgeler ve başlangıç rehberi,https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/WhatIsCloudWatch.html,docs,en,intermediate,,1
+cobol,COBOL: Open Mainframe Project ücretsiz kursu,https://github.com/openmainframeproject/cobol-programming-course,docs,en,intermediate,,1
+cobol,COBOL alıştırmaları (Exercism),https://exercism.org/tracks/cobol,other,en,beginner,,1
+cockroachdb,CockroachDB: resmi belgeler ve başlangıç rehberi,https://www.cockroachlabs.com/docs/stable/,docs,en,intermediate,,1
+cockroachdb,CockroachDB University (ücretsiz kurslar),https://learn.cockroachlabs.com/,other,en,beginner,,1
+code-review,Kod İnceleme: resmi belgeler ve başlangıç rehberi,https://google.github.io/eng-practices/review/,docs,en,intermediate,,1
+code-review,Kod İnceleme öğrenme yol haritası (roadmap.sh),https://roadmap.sh/code-review,other,en,beginner,,1
+computer-vision,Bilgisayarlı Görü: resmi belgeler ve başlangıç rehberi,https://cs231n.github.io/,docs,en,intermediate,,1
+concurrency,Eşzamanlı Programlama: başlangıç rehberi (Java),https://docs.oracle.com/javase/tutorial/essential/concurrency/index.html,docs,en,intermediate,,1
+concurrency,Python asyncio belgeleri,https://docs.python.org/3/library/asyncio.html,docs,en,intermediate,,1
+concurrency,Go Tour: eşzamanlılık,https://go.dev/tour/concurrency/1,docs,en,beginner,,1
+confluence,Confluence: resmi belgeler ve başlangıç rehberi,https://support.atlassian.com/confluence-cloud/,docs,en,intermediate,,1
+consul,Consul: resmi belgeler ve başlangıç rehberi,https://developer.hashicorp.com/consul/tutorials,docs,en,intermediate,,1
+cosmos-db,Azure Cosmos DB: resmi belgeler ve başlangıç rehberi,https://learn.microsoft.com/en-us/azure/cosmos-db/introduction,docs,en,intermediate,,1
+couchbase,Couchbase: resmi belgeler ve başlangıç rehberi,https://docs.couchbase.com/home/index.html,docs,en,intermediate,,1
+couchbase,NoSQL Doküman Veritabanları (BTK Akademi),https://www.btkakademi.gov.tr/portal/course/nosql-dokueman-veritabanlari-21625,btk_akademi,tr,beginner,,1
+cpp,C++: resmi belgeler ve başlangıç rehberi,https://www.learncpp.com/,docs,en,intermediate,,1
+cpp,C++ alıştırmaları (Exercism),https://exercism.org/tracks/cpp,other,en,beginner,,1
+cpp,C++ öğrenme yol haritası (roadmap.sh),https://roadmap.sh/cpp,other,en,beginner,,1
+critical-thinking,Critical Thinking Skills for the Professional (Coursera),https://www.coursera.org/learn/critical-thinking-skills,coursera,en,beginner,,0
+critical-thinking,Veri Okuryazarlığı (BTK Akademi),https://www.btkakademi.gov.tr/portal/course/veri-okuryazarligi-62857,btk_akademi,tr,beginner,,1
+critical-thinking,Foundation for Critical Thinking: eleştirel düşünmenin tanımı,https://www.criticalthinking.org/pages/defining-critical-thinking/766,blog,en,beginner,,1
+cryptography,Kriptografi: resmi belgeler ve başlangıç rehberi,https://cryptobook.nakov.com/,docs,en,intermediate,,1
+csharp,C#: resmi belgeler ve başlangıç rehberi,https://learn.microsoft.com/en-us/dotnet/csharp/,docs,en,intermediate,,1
+csharp,C# alıştırmaları (Exercism),https://exercism.org/tracks/csharp,other,en,beginner,,1
+css,CSS: resmi belgeler ve başlangıç rehberi,https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Styling_basics,docs,en,intermediate,,1
+css,CSS öğrenme yol haritası (roadmap.sh),https://roadmap.sh/css,other,en,beginner,,1
+cucumber,Cucumber: resmi belgeler ve başlangıç rehberi,https://cucumber.io/docs/guides/10-minute-tutorial/,docs,en,intermediate,,1
+cursor,Cursor: resmi belgeler ve başlangıç rehberi,https://docs.cursor.com/,docs,en,intermediate,,1
+cyber-security,Siber Güvenlik öğrenme yol haritası (roadmap.sh),https://roadmap.sh/cyber-security,other,en,beginner,,1
+cyber-security,Siber Güvenliğe Giriş (BTK Akademi),https://www.btkakademi.gov.tr/portal/course/siber-guvenlige-giris-27928,btk_akademi,tr,beginner,,1
+cypress,Cypress: resmi belgeler ve başlangıç rehberi,https://docs.cypress.io/app/get-started/why-cypress,docs,en,intermediate,,1
+dart,Dart: resmi belgeler ve başlangıç rehberi,https://dart.dev/language,docs,en,intermediate,,1
+dart,Dart alıştırmaları (Exercism),https://exercism.org/tracks/dart,other,en,beginner,,1
+data-analysis,Veri Analizi: resmi belgeler ve başlangıç rehberi,https://wesmckinney.com/book/,docs,en,intermediate,,1
+data-analysis,Veri Analizi öğrenme yol haritası (roadmap.sh),https://roadmap.sh/data-analyst,other,en,beginner,,1
+data-modeling,Veri Modelleme: resmi belgeler ve başlangıç rehberi,https://www.ibm.com/think/topics/data-modeling,docs,en,intermediate,,1
+data-modeling,Veri Modelleme (BTK Akademi),https://www.btkakademi.gov.tr/portal/course/veri-modelleme-16515,btk_akademi,tr,beginner,,1
+data-modeling,MongoDB veri modelleme (resmi),https://www.mongodb.com/docs/manual/data-modeling/,docs,en,intermediate,,1
+data-visualization,Veri Görselleştirme: resmi belgeler ve başlangıç rehberi,https://clauswilke.com/dataviz/,docs,en,intermediate,,1
+data-warehouse,Veri Ambarı: resmi belgeler ve başlangıç rehberi,https://www.ibm.com/think/topics/data-warehouse,docs,en,intermediate,,1
+data-warehouse,Google BigQuery: veri ambarına giriş,https://docs.cloud.google.com/bigquery/docs/introduction,docs,en,beginner,,1
+databricks,Databricks: resmi belgeler ve başlangıç rehberi,https://docs.databricks.com/en/getting-started/index.html,docs,en,intermediate,,1
+datadog,Datadog: resmi belgeler ve başlangıç rehberi,https://docs.datadoghq.com/getting_started/,docs,en,intermediate,,1
+dbt,dbt: resmi belgeler ve başlangıç rehberi,https://docs.getdbt.com/docs/introduction,docs,en,intermediate,,1
+ddd,Domain Driven Design: resmi belgeler ve başlangıç rehberi,https://martinfowler.com/tags/domain%20driven%20design.html,docs,en,intermediate,,1
+deep-learning,Derin Öğrenme: resmi belgeler ve başlangıç rehberi,https://www.deeplearningbook.org/,docs,en,intermediate,,1
+design-patterns,Tasarım Desenleri: resmi belgeler ve başlangıç rehberi,https://refactoring.guru/design-patterns,docs,en,intermediate,,1
+design-patterns,Tasarım Desenleri öğrenme yol haritası (roadmap.sh),https://roadmap.sh/software-design-architecture,other,en,beginner,,1
+design-patterns,Yazılım Tasarım Desenleri (BTK Akademi),https://www.btkakademi.gov.tr/portal/course/yazilim-tasarim-desenleri-12150,btk_akademi,tr,intermediate,,1
+devops,DevOps: başlangıç rehberi,https://learn.microsoft.com/en-us/devops/what-is-devops,docs,en,intermediate,,1
+devops,DevOps öğrenme yol haritası (roadmap.sh),https://roadmap.sh/devops,other,en,beginner,,1
+digitalocean,DigitalOcean: resmi belgeler ve başlangıç rehberi,https://docs.digitalocean.com/,docs,en,intermediate,,1
+distributed-systems,Dağıtık Sistemler: resmi belgeler ve başlangıç rehberi,https://book.mixu.net/distsys/,docs,en,intermediate,,1
+django,Django: resmi belgeler ve başlangıç rehberi,https://docs.djangoproject.com/en/stable/intro/tutorial01/,docs,en,intermediate,,1
+django,Django öğrenme yol haritası (roadmap.sh),https://roadmap.sh/django,other,en,beginner,,1
+docker,Docker: resmi belgeler ve başlangıç rehberi,https://docs.docker.com/get-started/,docs,en,intermediate,,1
+docker,Docker öğrenme yol haritası (roadmap.sh),https://roadmap.sh/docker,other,en,beginner,,1
+dotnet,.NET: resmi belgeler ve başlangıç rehberi,https://learn.microsoft.com/en-us/dotnet/core/introduction,docs,en,intermediate,,1
+dotnet-maui,.NET MAUI: resmi belgeler ve başlangıç rehberi,https://learn.microsoft.com/en-us/dotnet/maui/what-is-maui,docs,en,intermediate,,1
+duckdb,DuckDB: resmi belgeler ve başlangıç rehberi,https://duckdb.org/docs/,docs,en,intermediate,,1
+dynamodb,Amazon DynamoDB: resmi belgeler ve başlangıç rehberi,https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/GettingStartedDynamoDB.html,docs,en,intermediate,,1
+e2e-testing,Uçtan Uca Test: resmi belgeler ve başlangıç rehberi,https://playwright.dev/docs/writing-tests,docs,en,intermediate,,1
+e2e-testing,Cypress: uçtan uca testlere giriş,https://docs.cypress.io/app/end-to-end-testing/writing-your-first-end-to-end-test,docs,en,beginner,,1
+e2e-testing,Selenium WebDriver belgeleri,https://www.selenium.dev/documentation/webdriver/,docs,en,beginner,,1
+ec2,Amazon EC2: resmi belgeler ve başlangıç rehberi,https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/concepts.html,docs,en,intermediate,,1
+ecs,Amazon ECS: resmi belgeler ve başlangıç rehberi,https://docs.aws.amazon.com/AmazonECS/latest/developerguide/Welcome.html,docs,en,intermediate,,1
+eks,Amazon EKS: resmi belgeler ve başlangıç rehberi,https://docs.aws.amazon.com/eks/latest/userguide/what-is-eks.html,docs,en,intermediate,,1
+elasticsearch,Elasticsearch: resmi belgeler ve başlangıç rehberi,https://www.elastic.co/docs/get-started,docs,en,intermediate,,1
+electron,Electron: resmi belgeler ve başlangıç rehberi,https://www.electronjs.org/docs/latest/,docs,en,intermediate,,1
+elixir,Elixir: resmi belgeler ve başlangıç rehberi,https://elixir-lang.org/getting-started/introduction.html,docs,en,intermediate,,1
+elixir,Elixir alıştırmaları (Exercism),https://exercism.org/tracks/elixir,other,en,beginner,,1
+elk-stack,ELK Stack: resmi belgeler ve başlangıç rehberi,https://www.elastic.co/docs/get-started/the-stack,docs,en,intermediate,,1
+embedded-systems,Gömülü Sistemler: başlangıç rehberi,https://users.ece.utexas.edu/~valvano/Volume1/E-Book/,docs,en,intermediate,,1
+ember,Ember.js: resmi belgeler ve başlangıç rehberi,https://guides.emberjs.com/,docs,en,intermediate,,1
+entity-framework,Entity Framework: resmi belgeler ve başlangıç rehberi,https://learn.microsoft.com/en-us/ef/core/get-started/overview/first-app,docs,en,intermediate,,1
+erlang,Erlang: resmi belgeler ve başlangıç rehberi,https://www.erlang.org/docs,docs,en,intermediate,,1
+erlang,Erlang alıştırmaları (Exercism),https://exercism.org/tracks/erlang,other,en,beginner,,1
+etl,ETL: resmi belgeler ve başlangıç rehberi,https://www.ibm.com/think/topics/etl,docs,en,intermediate,,1
+etl,ETL öğrenme yol haritası (roadmap.sh),https://roadmap.sh/data-engineer,other,en,beginner,,1
+event-driven-architecture,Olay Güdümlü Mimari: resmi belgeler ve başlangıç rehberi,https://martinfowler.com/articles/201701-event-driven.html,docs,en,intermediate,,1
+excel,Microsoft Excel: resmi belgeler ve başlangıç rehberi,https://support.microsoft.com/en-us/excel,docs,en,intermediate,,1
+express,Express.js: resmi belgeler ve başlangıç rehberi,https://expressjs.com/en/starter/installing.html,docs,en,intermediate,,1
+fastapi,FastAPI: resmi belgeler ve başlangıç rehberi,https://fastapi.tiangolo.com/tutorial/,docs,en,intermediate,,1
+fastify,Fastify: resmi belgeler ve başlangıç rehberi,https://fastify.dev/docs/latest/Guides/Getting-Started/,docs,en,intermediate,,1
+figma,Figma: resmi belgeler ve başlangıç rehberi,https://help.figma.com/hc/en-us/categories/360002051613-Get-started,docs,en,intermediate,,1
+firebase,Firebase: resmi belgeler ve başlangıç rehberi,https://firebase.google.com/docs,docs,en,intermediate,,1
+flask,Flask: resmi belgeler ve başlangıç rehberi,https://flask.palletsprojects.com/en/stable/tutorial/,docs,en,intermediate,,1
+flink,Apache Flink: resmi belgeler ve başlangıç rehberi,https://nightlies.apache.org/flink/flink-docs-stable/,docs,en,intermediate,,1
+flutter,Flutter: resmi belgeler ve başlangıç rehberi,https://docs.flutter.dev/get-started/learn-flutter,docs,en,intermediate,,1
+flutter,Flutter öğrenme yol haritası (roadmap.sh),https://roadmap.sh/flutter,other,en,beginner,,1
+fortran,Fortran: resmi belgeler ve başlangıç rehberi,https://fortran-lang.org/learn/,docs,en,intermediate,,1
+fortran,Fortran alıştırmaları (Exercism),https://exercism.org/tracks/fortran,other,en,beginner,,1
+fsharp,F#: resmi belgeler ve başlangıç rehberi,https://learn.microsoft.com/en-us/dotnet/fsharp/,docs,en,intermediate,,1
+fsharp,F# alıştırmaları (Exercism),https://exercism.org/tracks/fsharp,other,en,beginner,,1
+functional-programming,Fonksiyonel Programlama: resmi belgeler ve başlangıç rehberi,https://learnyouahaskell.github.io/,docs,en,intermediate,,1
+functional-programming,MDN: JavaScript'te fonksiyonlar birinci sınıf,https://developer.mozilla.org/en-US/docs/Glossary/First-class_Function,docs,en,beginner,,1
+game-design,Oyun Tasarımı: ücretsiz kurs,https://gamedesignconcepts.wordpress.com/,docs,en,intermediate,,1
+game-design,MIT OpenCourseWare: Game Design,https://ocw.mit.edu/courses/cms-608-game-design-spring-2014/,other,en,beginner,,1
+game-design,Game Developer: oyun tasarımı yazıları,https://www.gamedeveloper.com/design,blog,en,intermediate,,1
+gatsby,Gatsby: resmi belgeler ve başlangıç rehberi,https://www.gatsbyjs.com/docs/tutorial/,docs,en,intermediate,,1
+gatsby,Gatsby belgeleri: temel kavramlar,https://www.gatsbyjs.com/docs/conceptual/,docs,en,intermediate,,1
+gcp,Google Cloud: resmi belgeler ve başlangıç rehberi,https://cloud.google.com/docs/get-started,docs,en,intermediate,,1
+generative-ai,Üretken Yapay Zeka: resmi belgeler ve başlangıç rehberi,https://developers.google.com/machine-learning/resources/intro-llms,docs,en,intermediate,,1
+generative-ai,Üretken Yapay Zeka öğrenme yol haritası (roadmap.sh),https://roadmap.sh/ai-engineer,other,en,beginner,,1
+generative-ai,Microsoft: Yeni başlayanlar için üretken yapay zeka,https://microsoft.github.io/generative-ai-for-beginners/,other,en,beginner,,1
+gin,Gin: resmi belgeler ve başlangıç rehberi,https://gin-gonic.com/en/docs/,docs,en,intermediate,,1
+git,Git: resmi belgeler ve başlangıç rehberi,https://git-scm.com/book/en/v2,docs,en,intermediate,,1
+git,Git öğrenme yol haritası (roadmap.sh),https://roadmap.sh/git-github,other,en,beginner,,1
+github,GitHub: resmi belgeler ve başlangıç rehberi,https://docs.github.com/en/get-started,docs,en,intermediate,,1
+github-actions,GitHub Actions: resmi belgeler ve başlangıç rehberi,https://docs.github.com/en/actions,docs,en,intermediate,,1
+github-copilot,GitHub Copilot: resmi belgeler ve başlangıç rehberi,https://docs.github.com/en/copilot,docs,en,intermediate,,1
+gitlab,GitLab: resmi belgeler ve başlangıç rehberi,https://docs.gitlab.com/tutorials/,docs,en,intermediate,,1
+gitlab-ci,GitLab CI: resmi belgeler ve başlangıç rehberi,https://docs.gitlab.com/ci/,docs,en,intermediate,,1
+gke,Google Kubernetes Engine: resmi belgeler ve başlangıç rehberi,https://cloud.google.com/kubernetes-engine/docs/concepts/kubernetes-engine-overview,docs,en,intermediate,,1
+go,Go: resmi belgeler ve başlangıç rehberi,https://go.dev/doc/tutorial/getting-started,docs,en,intermediate,,1
+go,Go alıştırmaları (Exercism),https://exercism.org/tracks/go,other,en,beginner,,1
+go,Go öğrenme yol haritası (roadmap.sh),https://roadmap.sh/golang,other,en,beginner,,1
+godot,Godot: resmi belgeler ve başlangıç rehberi,https://docs.godotengine.org/en/stable/getting_started/introduction/,docs,en,intermediate,,1
+google-analytics,Google Analytics: resmi belgeler ve başlangıç rehberi,https://support.google.com/analytics/,docs,en,intermediate,,1
+gradle,Gradle: resmi belgeler ve başlangıç rehberi,https://docs.gradle.org/current/userguide/getting_started_eng.html,docs,en,intermediate,,1
+gradle,Gradle: adım adım öğretici (resmi),https://docs.gradle.org/current/userguide/part1_gradle_init.html,docs,en,beginner,,1
+grafana,Grafana: resmi belgeler ve başlangıç rehberi,https://grafana.com/docs/grafana/latest/getting-started/,docs,en,intermediate,,1
+graphql,GraphQL: resmi belgeler ve başlangıç rehberi,https://graphql.org/learn/,docs,en,intermediate,,1
+graphql,GraphQL öğrenme yol haritası (roadmap.sh),https://roadmap.sh/graphql,other,en,beginner,,1
+groovy,Groovy: resmi belgeler ve başlangıç rehberi,https://groovy-lang.org/documentation.html,docs,en,intermediate,,1
+groovy,Groovy alıştırmaları (Exercism),https://exercism.org/tracks/groovy,other,en,beginner,,1
+grpc,gRPC: resmi belgeler ve başlangıç rehberi,https://grpc.io/docs/what-is-grpc/introduction/,docs,en,intermediate,,1
+hadoop,Hadoop: resmi belgeler ve başlangıç rehberi,https://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-common/SingleCluster.html,docs,en,intermediate,,1
+haproxy,HAProxy: resmi belgeler ve başlangıç rehberi,https://www.haproxy.com/documentation/haproxy-configuration-tutorials/,docs,en,intermediate,,1
+haskell,Haskell: resmi belgeler ve başlangıç rehberi,https://www.haskell.org/documentation/,docs,en,intermediate,,1
+haskell,Haskell alıştırmaları (Exercism),https://exercism.org/tracks/haskell,other,en,beginner,,1
+helm,Helm: resmi belgeler ve başlangıç rehberi,https://helm.sh/docs/intro/quickstart/,docs,en,intermediate,,1
+heroku,Heroku: resmi belgeler ve başlangıç rehberi,https://devcenter.heroku.com/start,docs,en,intermediate,,1
+hibernate,Hibernate: resmi belgeler ve başlangıç rehberi,https://hibernate.org/orm/documentation/,docs,en,intermediate,,1
+hive,Apache Hive: resmi belgeler ve başlangıç rehberi,https://hive.apache.org/docs/latest/,docs,en,intermediate,,1
+html,HTML: resmi belgeler ve başlangıç rehberi,https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Structuring_content,docs,en,intermediate,,1
+html,HTML öğrenme yol haritası (roadmap.sh),https://roadmap.sh/html,other,en,beginner,,1
+iac,Infrastructure as Code: başlangıç rehberi,https://learn.microsoft.com/en-us/devops/deliver/what-is-infrastructure-as-code,docs,en,intermediate,,1
+ibm-cloud,IBM Cloud: resmi belgeler ve başlangıç rehberi,https://cloud.ibm.com/docs,docs,en,intermediate,,1
+ibm-cloud,IBM Cloud: hesap açma ve ilk adımlar,https://cloud.ibm.com/docs/account?topic=account-account-getting-started,docs,en,beginner,,1
+ibm-cloud,IBM SkillsBuild ücretsiz eğitimler,https://skillsbuild.org/,other,en,beginner,,1
+influxdb,InfluxDB: resmi belgeler ve başlangıç rehberi,https://docs.influxdata.com/influxdb/,docs,en,intermediate,,1
+integration-testing,Entegrasyon Testi: resmi belgeler ve başlangıç rehberi,https://martinfowler.com/bliki/IntegrationTest.html,docs,en,intermediate,,1
+integration-testing,Spring Boot ile test (resmi rehber),https://spring.io/guides/gs/testing-web/,docs,en,intermediate,,1
+integration-testing,Testcontainers: başlangıç rehberi,https://testcontainers.com/getting-started/,docs,en,intermediate,,1
+intellij,IntelliJ IDEA: resmi belgeler ve başlangıç rehberi,https://www.jetbrains.com/help/idea/getting-started.html,docs,en,intermediate,,1
+ionic,Ionic: resmi belgeler ve başlangıç rehberi,https://ionicframework.com/docs,docs,en,intermediate,,1
+istio,Istio: resmi belgeler ve başlangıç rehberi,https://istio.io/latest/docs/setup/getting-started/,docs,en,intermediate,,1
+java,Java: resmi belgeler ve başlangıç rehberi,https://dev.java/learn/,docs,en,intermediate,,1
+java,Java alıştırmaları (Exercism),https://exercism.org/tracks/java,other,en,beginner,,1
+java,Java öğrenme yol haritası (roadmap.sh),https://roadmap.sh/java,other,en,beginner,,1
+javascript,JavaScript: resmi belgeler ve başlangıç rehberi,https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide,docs,en,intermediate,,1
+javascript,JavaScript alıştırmaları (Exercism),https://exercism.org/tracks/javascript,other,en,beginner,,1
+javascript,JavaScript öğrenme yol haritası (roadmap.sh),https://roadmap.sh/javascript,other,en,beginner,,1
+jax,JAX: resmi belgeler ve başlangıç rehberi,https://docs.jax.dev/en/latest/,docs,en,intermediate,,1
+jenkins,Jenkins: resmi belgeler ve başlangıç rehberi,https://www.jenkins.io/doc/tutorials/,docs,en,intermediate,,1
+jest,Jest: resmi belgeler ve başlangıç rehberi,https://jestjs.io/docs/getting-started,docs,en,intermediate,,1
+jetpack-compose,Jetpack Compose: resmi belgeler ve başlangıç rehberi,https://developer.android.com/develop/ui/compose/tutorial,docs,en,intermediate,,1
+jira,Jira: resmi belgeler ve başlangıç rehberi,https://support.atlassian.com/jira-software-cloud/,docs,en,intermediate,,1
+jmeter,Apache JMeter: resmi belgeler ve başlangıç rehberi,https://jmeter.apache.org/usermanual/get-started.html,docs,en,intermediate,,1
+jquery,jQuery: resmi belgeler ve başlangıç rehberi,https://learn.jquery.com/,docs,en,intermediate,,1
+julia,Julia: resmi belgeler ve başlangıç rehberi,https://docs.julialang.org/en/v1/,docs,en,intermediate,,1
+julia,Julia alıştırmaları (Exercism),https://exercism.org/tracks/julia,other,en,beginner,,1
+junit,JUnit: resmi belgeler ve başlangıç rehberi,https://docs.junit.org/current/user-guide/,docs,en,intermediate,,1
+jupyter,Jupyter: resmi belgeler ve başlangıç rehberi,https://docs.jupyter.org/en/latest/,docs,en,intermediate,,1
+jwt,JWT: resmi belgeler ve başlangıç rehberi,https://jwt.io/introduction,docs,en,intermediate,,1
+k6,k6: resmi belgeler ve başlangıç rehberi,https://grafana.com/docs/k6/latest/,docs,en,intermediate,,1
+kafka,Apache Kafka: resmi belgeler ve başlangıç rehberi,https://kafka.apache.org/quickstart,docs,en,intermediate,,1
+kali-linux,Kali Linux: resmi belgeler ve başlangıç rehberi,https://www.kali.org/docs/,docs,en,intermediate,,1
+kanban,Kanban: resmi belgeler ve başlangıç rehberi,https://kanbanguides.org/,docs,en,intermediate,,1
+kanban,Atlassian: Kanban nedir,https://www.atlassian.com/agile/kanban,blog,en,beginner,,1
+keras,Keras: resmi belgeler ve başlangıç rehberi,https://keras.io/getting_started/,docs,en,intermediate,,1
+keycloak,Keycloak: resmi belgeler ve başlangıç rehberi,https://www.keycloak.org/guides,docs,en,intermediate,,1
+kotlin,Kotlin: resmi belgeler ve başlangıç rehberi,https://kotlinlang.org/docs/getting-started.html,docs,en,intermediate,,1
+kotlin,Kotlin alıştırmaları (Exercism),https://exercism.org/tracks/kotlin,other,en,beginner,,1
+kotlin,Kotlin öğrenme yol haritası (roadmap.sh),https://roadmap.sh/kotlin,other,en,beginner,,1
+kubeflow,Kubeflow: resmi belgeler ve başlangıç rehberi,https://www.kubeflow.org/docs/started/,docs,en,intermediate,,1
+kubernetes,Kubernetes: resmi belgeler ve başlangıç rehberi,https://kubernetes.io/docs/tutorials/kubernetes-basics/,docs,en,intermediate,,1
+kubernetes,Kubernetes öğrenme yol haritası (roadmap.sh),https://roadmap.sh/kubernetes,other,en,beginner,,1
+langchain,LangChain: resmi belgeler ve başlangıç rehberi,https://python.langchain.com/docs/introduction/,docs,en,intermediate,,1
+laravel,Laravel: resmi belgeler ve başlangıç rehberi,https://laravel.com/docs/,docs,en,intermediate,,1
+laravel,Laravel öğrenme yol haritası (roadmap.sh),https://roadmap.sh/laravel,other,en,beginner,,1
+leadership,Ekip Liderliği (BTK Akademi),https://www.btkakademi.gov.tr/portal/course/ekip-liderligi-264,btk_akademi,tr,beginner,,1
+leadership,Koçluk (BTK Akademi),https://www.btkakademi.gov.tr/portal/course/kocluk-680,btk_akademi,tr,intermediate,,1
+lightgbm,LightGBM: resmi belgeler ve başlangıç rehberi,https://lightgbm.readthedocs.io/en/stable/Quick-Start.html,docs,en,intermediate,,1
+linux,Linux öğrenme yol haritası (roadmap.sh),https://roadmap.sh/linux,other,en,beginner,,1
+llamaindex,LlamaIndex: resmi belgeler ve başlangıç rehberi,https://docs.llamaindex.ai/,docs,en,intermediate,,1
+looker,Looker: resmi belgeler ve başlangıç rehberi,https://cloud.google.com/looker/docs,docs,en,intermediate,,1
+lua,Lua: resmi belgeler ve başlangıç rehberi,https://www.lua.org/manual/5.4/,docs,en,intermediate,,1
+lua,Lua alıştırmaları (Exercism),https://exercism.org/tracks/lua,other,en,beginner,,1
+machine-learning,Makine Öğrenmesi: resmi belgeler ve başlangıç rehberi,https://developers.google.com/machine-learning/crash-course,docs,en,intermediate,,1
+machine-learning,Makine Öğrenmesi öğrenme yol haritası (roadmap.sh),https://roadmap.sh/machine-learning,other,en,beginner,,1
+mariadb,MariaDB: resmi belgeler ve başlangıç rehberi,https://mariadb.com/docs/server/mariadb-quickstart-guides,docs,en,intermediate,,1
+material-ui,Material UI: resmi belgeler ve başlangıç rehberi,https://mui.com/material-ui/getting-started/,docs,en,intermediate,,1
+matplotlib,Matplotlib: resmi belgeler ve başlangıç rehberi,https://matplotlib.org/stable/users/getting_started/,docs,en,intermediate,,1
+maven,Maven: resmi belgeler ve başlangıç rehberi,https://maven.apache.org/guides/getting-started/,docs,en,intermediate,,1
+memcached,Memcached: resmi belgeler ve başlangıç rehberi,https://docs.memcached.org/,docs,en,intermediate,,1
+metasploit,Metasploit: resmi belgeler ve başlangıç rehberi,https://docs.metasploit.com/,docs,en,intermediate,,1
+micronaut,Micronaut: resmi belgeler ve başlangıç rehberi,https://guides.micronaut.io/,docs,en,intermediate,,1
+micronaut,Micronaut kullanım kılavuzu (resmi),https://docs.micronaut.io/latest/guide/,docs,en,intermediate,,1
+micronaut,Micronaut ilk uygulama rehberi,https://guides.micronaut.io/latest/creating-your-first-micronaut-app.html,docs,en,beginner,,1
+microservices,Mikroservis Mimarisi: resmi belgeler ve başlangıç rehberi,https://microservices.io/,docs,en,intermediate,,1
+milvus,Milvus: resmi belgeler ve başlangıç rehberi,https://milvus.io/docs,docs,en,intermediate,,1
+milvus,Milvus kaynak kodu ve örnekler (GitHub),https://github.com/milvus-io/milvus,other,en,intermediate,,1
+mlflow,MLflow: resmi belgeler ve başlangıç rehberi,https://mlflow.org/docs/latest/,docs,en,intermediate,,1
+mlops,MLOps: resmi belgeler ve başlangıç rehberi,https://ml-ops.org/,docs,en,intermediate,,1
+mlops,MLOps öğrenme yol haritası (roadmap.sh),https://roadmap.sh/mlops,other,en,beginner,,1
+mocha,Mocha: resmi belgeler ve başlangıç rehberi,https://mochajs.org/,docs,en,intermediate,,1
+mocha,Node.js modülünü Mocha ve Assert ile test etme (DigitalOcean),https://www.digitalocean.com/community/tutorials/how-to-test-a-node-js-module-with-mocha-and-assert,blog,en,beginner,,1
+mocha,Chai assertion kütüphanesi rehberi (Mocha ile),https://www.chaijs.com/guide/,docs,en,beginner,,1
+mongodb,MongoDB: resmi belgeler ve başlangıç rehberi,https://www.mongodb.com/docs/manual/tutorial/getting-started/,docs,en,intermediate,,1
+mongodb,MongoDB öğrenme yol haritası (roadmap.sh),https://roadmap.sh/mongodb,other,en,beginner,,1
+mssql,Microsoft SQL Server: resmi belgeler ve başlangıç rehberi,https://learn.microsoft.com/en-us/sql/sql-server/,docs,en,intermediate,,1
+mysql,MySQL: resmi belgeler ve başlangıç rehberi,https://dev.mysql.com/doc/refman/8.4/en/tutorial.html,docs,en,intermediate,,1
+neo4j,Neo4j: resmi belgeler ve başlangıç rehberi,https://neo4j.com/docs/getting-started/,docs,en,intermediate,,1
+nestjs,NestJS: resmi belgeler ve başlangıç rehberi,https://docs.nestjs.com/,docs,en,intermediate,,1
+netlify,Netlify: resmi belgeler ve başlangıç rehberi,https://docs.netlify.com/,docs,en,intermediate,,1
+netlify,Netlify: başlangıç rehberi,https://docs.netlify.com/start/choose-your-path/,docs,en,beginner,,1
+new-relic,New Relic: resmi belgeler ve başlangıç rehberi,https://docs.newrelic.com/docs/new-relic-solutions/get-started/intro-new-relic/,docs,en,intermediate,,1
+nextjs,Next.js: resmi belgeler ve başlangıç rehberi,https://nextjs.org/learn,docs,en,intermediate,,1
+nextjs,Next.js öğrenme yol haritası (roadmap.sh),https://roadmap.sh/nextjs,other,en,beginner,,1
+nginx,Nginx: resmi belgeler ve başlangıç rehberi,https://nginx.org/en/docs/beginners_guide.html,docs,en,intermediate,,1
+nlp,Doğal Dil İşleme: resmi belgeler ve başlangıç rehberi,https://huggingface.co/learn/nlp-course,docs,en,intermediate,,1
+nltk,NLTK: resmi belgeler ve başlangıç rehberi,https://www.nltk.org/book/,docs,en,intermediate,,1
+nmap,Nmap: resmi belgeler ve başlangıç rehberi,https://nmap.org/book/man.html,docs,en,intermediate,,1
+nodejs,Node.js: resmi belgeler ve başlangıç rehberi,https://nodejs.org/en/learn,docs,en,intermediate,,1
+nodejs,Node.js öğrenme yol haritası (roadmap.sh),https://roadmap.sh/nodejs,other,en,beginner,,1
+notion,Notion: resmi belgeler ve başlangıç rehberi,https://www.notion.com/help/guides,docs,en,intermediate,,1
+npm,npm: resmi belgeler ve başlangıç rehberi,https://docs.npmjs.com/getting-started,docs,en,intermediate,,1
+numpy,NumPy: resmi belgeler ve başlangıç rehberi,https://numpy.org/doc/stable/user/absolute_beginners.html,docs,en,intermediate,,1
+nuxt,Nuxt: resmi belgeler ve başlangıç rehberi,https://nuxt.com/docs/getting-started/introduction,docs,en,intermediate,,1
+oauth,OAuth: resmi belgeler ve başlangıç rehberi,https://oauth.net/2/,docs,en,intermediate,,1
+objective-c,Objective-C: resmi belgeler ve başlangıç rehberi,https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/ProgrammingWithObjectiveC/,docs,en,intermediate,,1
+objective-c,Objective-C alıştırmaları (Exercism),https://exercism.org/tracks/objective-c,other,en,beginner,,1
+observability,Gözlemlenebilirlik: resmi belgeler ve başlangıç rehberi,https://opentelemetry.io/docs/concepts/observability-primer/,docs,en,intermediate,,1
+observability,Google SRE kitabı: dağıtık sistemleri izleme,https://sre.google/sre-book/monitoring-distributed-systems/,other,en,intermediate,,1
+observability,Grafana: başlangıç rehberleri,https://grafana.com/docs/grafana/latest/fundamentals/getting-started/,docs,en,beginner,,1
+ocaml,OCaml: resmi belgeler ve başlangıç rehberi,https://ocaml.org/docs,docs,en,intermediate,,1
+ocaml,OCaml alıştırmaları (Exercism),https://exercism.org/tracks/ocaml,other,en,beginner,,1
+ollama,Ollama: resmi belgeler ve başlangıç rehberi,https://docs.ollama.com/,docs,en,intermediate,,1
+oop,OOP: resmi belgeler ve başlangıç rehberi,https://docs.oracle.com/javase/tutorial/java/concepts/,docs,en,intermediate,,1
+openai-api,OpenAI API: resmi belgeler ve başlangıç rehberi,https://platform.openai.com/docs/quickstart,docs,en,intermediate,,1
+openapi,OpenAPI: resmi belgeler ve başlangıç rehberi,https://learn.openapis.org/,docs,en,intermediate,,1
+opensearch,OpenSearch: resmi belgeler ve başlangıç rehberi,https://docs.opensearch.org/latest/getting-started/,docs,en,intermediate,,1
+openshift,OpenShift: resmi belgeler ve başlangıç rehberi,https://docs.openshift.com/,docs,en,intermediate,,1
+opentelemetry,OpenTelemetry: resmi belgeler ve başlangıç rehberi,https://opentelemetry.io/docs/getting-started/,docs,en,intermediate,,1
+oracle-cloud,Oracle Cloud: resmi belgeler ve başlangıç rehberi,https://docs.oracle.com/en-us/iaas/Content/home.htm,docs,en,intermediate,,1
+oracle-cloud,Oracle Cloud ücretsiz eğitimler (MyLearn),https://mylearn.oracle.com/ou/learning-path/become-an-oci-foundations-associate-2025/147631,other,en,beginner,,1
+oracle-db,Oracle Database: resmi belgeler ve başlangıç rehberi,https://docs.oracle.com/en/database/oracle/oracle-database/,docs,en,intermediate,,1
+owasp,OWASP: resmi belgeler ve başlangıç rehberi,https://owasp.org/www-project-top-ten/,docs,en,intermediate,,1
+ownership,Amazon liderlik ilkeleri: Ownership,https://www.amazon.jobs/content/en/our-workplace/leadership-principles,blog,en,beginner,,1
+ownership,GitLab el kitabı: değerler (sonuç ve sahiplenme),https://handbook.gitlab.com/handbook/company/operating-principles/,other,en,beginner,,1
+ownership,Kariyerde Hedef Belirleme (BTK Akademi),https://www.btkakademi.gov.tr/portal/course/kariyerde-hedef-belirleme-26717,btk_akademi,tr,beginner,,1
+packer,Packer: resmi belgeler ve başlangıç rehberi,https://developer.hashicorp.com/packer/tutorials,docs,en,intermediate,,1
+pandas,Pandas: resmi belgeler ve başlangıç rehberi,https://pandas.pydata.org/docs/getting_started/,docs,en,intermediate,,1
+penetration-testing,Sızma Testi: resmi belgeler ve başlangıç rehberi,https://owasp.org/www-project-web-security-testing-guide/,docs,en,intermediate,,1
+performance-optimization,Performans Optimizasyonu: resmi belgeler ve başlangıç rehberi,https://web.dev/learn/performance/,docs,en,intermediate,,1
+performance-optimization,MDN: Web performansı,https://developer.mozilla.org/en-US/docs/Web/Performance,docs,en,intermediate,,1
+performance-optimization,PostgreSQL performans ipuçları (resmi),https://www.postgresql.org/docs/current/performance-tips.html,docs,en,intermediate,,1
+perl,Perl: resmi belgeler ve başlangıç rehberi,https://perldoc.perl.org/perlintro,docs,en,intermediate,,1
+perl,Perl alıştırmaları (Exercism),https://exercism.org/tracks/perl5,other,en,beginner,,1
+pgvector,pgvector: resmi belgeler ve başlangıç rehberi,https://github.com/pgvector/pgvector,docs,en,intermediate,,1
+pgvector,Supabase: pgvector rehberi,https://supabase.com/docs/guides/database/extensions/pgvector,docs,en,beginner,,1
+phoenix,Phoenix: resmi belgeler ve başlangıç rehberi,https://hexdocs.pm/phoenix/overview.html,docs,en,intermediate,,1
+phoenix,Phoenix: Up and Running,https://phoenix.hexdocs.pm/up_and_running.html,docs,en,beginner,,1
+php,PHP: resmi belgeler ve başlangıç rehberi,https://www.php.net/manual/en/getting-started.php,docs,en,intermediate,,1
+php,PHP alıştırmaları (Exercism),https://exercism.org/tracks/php,other,en,beginner,,1
+php,PHP öğrenme yol haritası (roadmap.sh),https://roadmap.sh/php,other,en,beginner,,1
+pinecone,Pinecone: resmi belgeler ve başlangıç rehberi,https://docs.pinecone.io/guides/get-started/overview,docs,en,intermediate,,1
+playwright,Playwright: resmi belgeler ve başlangıç rehberi,https://playwright.dev/docs/intro,docs,en,intermediate,,1
+plotly,Plotly: resmi belgeler ve başlangıç rehberi,https://plotly.com/python/getting-started/,docs,en,intermediate,,1
+podman,Podman: resmi belgeler ve başlangıç rehberi,https://podman.io/docs,docs,en,intermediate,,1
+polars,Polars: resmi belgeler ve başlangıç rehberi,https://docs.pola.rs/user-guide/getting-started/,docs,en,intermediate,,1
+postgresql,PostgreSQL: resmi belgeler ve başlangıç rehberi,https://www.postgresql.org/docs/current/tutorial.html,docs,en,intermediate,,1
+postgresql,PostgreSQL öğrenme yol haritası (roadmap.sh),https://roadmap.sh/postgresql-dba,other,en,beginner,,1
+postman,Postman: resmi belgeler ve başlangıç rehberi,https://learning.postman.com/docs/getting-started/overview/,docs,en,intermediate,,1
+power-bi,Power BI: resmi belgeler ve başlangıç rehberi,https://learn.microsoft.com/en-us/power-bi/fundamentals/power-bi-overview,docs,en,intermediate,,1
+powershell,PowerShell: resmi belgeler ve başlangıç rehberi,https://learn.microsoft.com/en-us/powershell/scripting/overview,docs,en,intermediate,,1
+powershell,PowerShell alıştırmaları (Exercism),https://exercism.org/tracks/powershell,other,en,beginner,,1
+presentation-skills,Etkili Sunum Teknikleri (BTK Akademi),https://www.btkakademi.gov.tr/portal/course/etkili-sunum-teknikleri-204,btk_akademi,tr,beginner,,1
+presentation-skills,Topluluk Önünde Konuşma ve Etkili Sunum Teknikleri (BTK Akademi),https://www.btkakademi.gov.tr/portal/course/topluluk-onunde-konusma-ve-etkili-sunum-teknikleri-26459,btk_akademi,tr,beginner,,1
+presentation-skills,Girişimcilikte Sunum Teknikleri ve İletişim Yönetimi (BTK Akademi),https://www.btkakademi.gov.tr/portal/course/girisimcilikte-sunum-teknikleri-ve-iletisim-yonetimi-28808,btk_akademi,tr,intermediate,,1
+prisma,Prisma: resmi belgeler ve başlangıç rehberi,https://www.prisma.io/docs/getting-started,docs,en,intermediate,,1
+problem-solving,Problem Çözme Teknikleri (BTK Akademi),https://www.btkakademi.gov.tr/portal/course/problem-cozme-teknikleri-34529,btk_akademi,tr,beginner,,1
+problem-solving,Algoritma ve Programlamaya Giriş (BTK Akademi),https://www.btkakademi.gov.tr/portal/course/algoritma-programlama-ve-veri-yap-lar-na-giris-12565,btk_akademi,tr,beginner,,1
+problem-solving,Creative Problem Solving (Coursera),https://www.coursera.org/learn/creative-problem-solving,coursera,en,beginner,,0
+prometheus,Prometheus: resmi belgeler ve başlangıç rehberi,https://prometheus.io/docs/introduction/overview/,docs,en,intermediate,,1
+prometheus,Prometheus: ilk adımlar,https://prometheus.io/docs/introduction/first_steps/,docs,en,beginner,,1
+prompt-engineering,Prompt Engineering: resmi belgeler ve başlangıç rehberi,https://www.promptingguide.ai/,docs,en,intermediate,,1
+prompt-engineering,Prompt Engineering öğrenme yol haritası (roadmap.sh),https://roadmap.sh/prompt-engineering,other,en,beginner,,1
+pulumi,Pulumi: resmi belgeler ve başlangıç rehberi,https://www.pulumi.com/docs/get-started/,docs,en,intermediate,,1
+puppet,Puppet: resmi belgeler,https://help.puppet.com/core/8/Content/PuppetCore/puppet_index.htm,docs,en,intermediate,,1
+puppet,Puppet ile yapılandırma yönetimi (DigitalOcean),https://www.digitalocean.com/community/tutorials/getting-started-with-puppet-code-manifests-and-modules,blog,en,beginner,,1
+puppet,Puppet kaynak kodu ve örnekler (GitHub),https://github.com/puppetlabs/puppet,other,en,intermediate,,1
+pydantic,Pydantic: resmi belgeler ve başlangıç rehberi,https://docs.pydantic.dev/latest/,docs,en,intermediate,,1
+pytest,pytest: resmi belgeler ve başlangıç rehberi,https://docs.pytest.org/en/stable/getting-started.html,docs,en,intermediate,,1
+python,Python: resmi belgeler ve başlangıç rehberi,https://docs.python.org/3/tutorial/,docs,en,intermediate,,1
+python,Python alıştırmaları (Exercism),https://exercism.org/tracks/python,other,en,beginner,,1
+python,Python öğrenme yol haritası (roadmap.sh),https://roadmap.sh/python,other,en,beginner,,1
+qdrant,Qdrant: resmi belgeler ve başlangıç rehberi,https://qdrant.tech/documentation/,docs,en,intermediate,,1
+qdrant,Qdrant hızlı başlangıç,https://qdrant.tech/documentation/quickstart/,docs,en,beginner,,1
+qdrant,Qdrant temel kavramlar,https://qdrant.tech/documentation/concepts/,docs,en,intermediate,,1
+qt,Qt: resmi belgeler ve başlangıç rehberi,https://doc.qt.io/qt-6/gettingstarted.html,docs,en,intermediate,,1
+quarkus,Quarkus: resmi belgeler ve başlangıç rehberi,https://quarkus.io/get-started/,docs,en,intermediate,,1
+r,R alıştırmaları (Exercism),https://exercism.org/tracks/r,other,en,beginner,,1
+rabbitmq,RabbitMQ: resmi belgeler ve başlangıç rehberi,https://www.rabbitmq.com/tutorials,docs,en,intermediate,,1
+rag,RAG: resmi belgeler ve başlangıç rehberi,https://docs.langchain.com/oss/python/deepagents/rag,docs,en,intermediate,,1
+rails,Ruby on Rails: resmi belgeler ve başlangıç rehberi,https://guides.rubyonrails.org/getting_started.html,docs,en,intermediate,,1
+rds,Amazon RDS: resmi belgeler ve başlangıç rehberi,https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Welcome.html,docs,en,intermediate,,1
+react,React: resmi belgeler ve başlangıç rehberi,https://react.dev/learn,docs,en,intermediate,,1
+react,React öğrenme yol haritası (roadmap.sh),https://roadmap.sh/react,other,en,beginner,,1
+react-native,React Native: resmi belgeler ve başlangıç rehberi,https://reactnative.dev/docs/getting-started,docs,en,intermediate,,1
+react-native,React Native öğrenme yol haritası (roadmap.sh),https://roadmap.sh/react-native,other,en,beginner,,1
+redis,Redis: resmi belgeler ve başlangıç rehberi,https://redis.io/docs/latest/develop/get-started/,docs,en,intermediate,,1
+redis,Redis öğrenme yol haritası (roadmap.sh),https://roadmap.sh/redis,other,en,beginner,,1
+redshift,Amazon Redshift: resmi belgeler ve başlangıç rehberi,https://docs.aws.amazon.com/redshift/latest/gsg/new-user-serverless.html,docs,en,intermediate,,1
+redux,Redux: resmi belgeler ve başlangıç rehberi,https://redux.js.org/tutorials/essentials/part-1-overview-concepts,docs,en,intermediate,,1
+remix,Remix: resmi belgeler ve başlangıç rehberi,https://remix.run/docs,docs,en,intermediate,,1
+remix,React Router (Remix) öğretici,https://reactrouter.com/tutorials/address-book,docs,en,beginner,,1
+responsive-design,Duyarlı Tasarım: resmi belgeler ve başlangıç rehberi,https://web.dev/learn/design/,docs,en,intermediate,,1
+responsive-design,MDN: Duyarlı tasarım,https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/CSS_layout/Responsive_Design,docs,en,beginner,,1
+responsive-design,freeCodeCamp: Duyarlı web tasarımı sertifikası,https://www.freecodecamp.org/learn/2022/responsive-web-design,other,en,beginner,,1
+rest-api,REST API: başlangıç rehberi,https://learn.microsoft.com/en-us/azure/architecture/best-practices/api-design,docs,en,intermediate,,1
+ruby,Ruby: resmi belgeler ve başlangıç rehberi,https://www.ruby-lang.org/en/documentation/,docs,en,intermediate,,1
+ruby,Ruby alıştırmaları (Exercism),https://exercism.org/tracks/ruby,other,en,beginner,,1
+rust,Rust: resmi belgeler ve başlangıç rehberi,https://doc.rust-lang.org/book/,docs,en,intermediate,,1
+rust,Rust alıştırmaları (Exercism),https://exercism.org/tracks/rust,other,en,beginner,,1
+rust,Rust öğrenme yol haritası (roadmap.sh),https://roadmap.sh/rust,other,en,beginner,,1
+rxjs,RxJS: resmi belgeler ve başlangıç rehberi,https://rxjs.dev/guide/overview,docs,en,intermediate,,1
+s3,Amazon S3: resmi belgeler ve başlangıç rehberi,https://docs.aws.amazon.com/AmazonS3/latest/userguide/Welcome.html,docs,en,intermediate,,1
+sagemaker,AWS SageMaker: resmi belgeler ve başlangıç rehberi,https://docs.aws.amazon.com/sagemaker/latest/dg/whatis.html,docs,en,intermediate,,1
+salesforce,Salesforce: resmi belgeler ve başlangıç rehberi,https://trailhead.salesforce.com/,docs,en,intermediate,,1
+sap,SAP: resmi belgeler ve başlangıç rehberi,https://learning.sap.com/,docs,en,intermediate,,1
+sass,Sass: resmi belgeler ve başlangıç rehberi,https://sass-lang.com/guide/,docs,en,intermediate,,1
+scala,Scala: resmi belgeler ve başlangıç rehberi,https://docs.scala-lang.org/tour/tour-of-scala.html,docs,en,intermediate,,1
+scala,Scala alıştırmaları (Exercism),https://exercism.org/tracks/scala,other,en,beginner,,1
+scikit-learn,scikit-learn: resmi belgeler ve başlangıç rehberi,https://scikit-learn.org/stable/getting_started.html,docs,en,intermediate,,1
+scrum,Scrum: resmi belgeler ve başlangıç rehberi,https://scrumguides.org/scrum-guide.html,docs,en,intermediate,,1
+scylladb,ScyllaDB: resmi belgeler ve başlangıç rehberi,https://docs.scylladb.com/,docs,en,intermediate,,1
+scylladb,ScyllaDB University (ücretsiz kurslar),https://university.scylladb.com/,other,en,beginner,,1
+scylladb,ScyllaDB: başlangıç (resmi),https://docs.scylladb.com/manual/stable/getting-started/,docs,en,beginner,,1
+seaborn,Seaborn: resmi belgeler ve başlangıç rehberi,https://seaborn.pydata.org/tutorial.html,docs,en,intermediate,,1
+selenium,Selenium: resmi belgeler ve başlangıç rehberi,https://www.selenium.dev/documentation/,docs,en,intermediate,,1
+sentry,Sentry: resmi belgeler ve başlangıç rehberi,https://docs.sentry.io/,docs,en,intermediate,,1
+sentry,Sentry Python SDK,https://docs.sentry.io/platforms/python/,docs,en,beginner,,1
+seo,SEO: resmi belgeler ve başlangıç rehberi,https://developers.google.com/search/docs/fundamentals/seo-starter-guide,docs,en,intermediate,,1
+sequelize,Sequelize: resmi belgeler ve başlangıç rehberi,https://sequelize.org/docs/v6/getting-started/,docs,en,intermediate,,1
+serverless,Serverless: resmi belgeler ve başlangıç rehberi,https://www.serverless.com/framework/docs,docs,en,intermediate,,1
+servicenow,ServiceNow: resmi belgeler ve başlangıç rehberi,https://developer.servicenow.com/dev.do,docs,en,intermediate,,1
+shopify,Shopify: resmi belgeler ve başlangıç rehberi,https://shopify.dev/docs,docs,en,intermediate,,1
+snowflake,Snowflake: resmi belgeler ve başlangıç rehberi,https://docs.snowflake.com/en/user-guide-getting-started,docs,en,intermediate,,1
+sns,Amazon SNS: resmi belgeler ve başlangıç rehberi,https://docs.aws.amazon.com/sns/latest/dg/welcome.html,docs,en,intermediate,,1
+sns,AWS SNS başlangıç,https://docs.aws.amazon.com/sns/latest/dg/sns-getting-started.html,docs,en,beginner,,1
+socket-io,Socket.IO: resmi belgeler ve başlangıç rehberi,https://socket.io/docs/v4/tutorial/introduction,docs,en,intermediate,,1
+socket-io,Socket.IO ile sohbet uygulaması (resmi öğretici),https://socket.io/get-started/chat,docs,en,beginner,,1
+software-testing,Yazılım Testi: resmi belgeler ve başlangıç rehberi,https://martinfowler.com/articles/practical-test-pyramid.html,docs,en,intermediate,,1
+software-testing,Yazılım Testi öğrenme yol haritası (roadmap.sh),https://roadmap.sh/qa,other,en,beginner,,1
+software-testing,Yazılım Testine Giriş (BTK Akademi),https://www.btkakademi.gov.tr/portal/course/yazilim-testine-giris-28883,btk_akademi,tr,beginner,,1
+solid,SOLID: resmi belgeler ve başlangıç rehberi,https://www.digitalocean.com/community/conceptual-articles/s-o-l-i-d-the-first-five-principles-of-object-oriented-design,docs,en,intermediate,,1
+solid,SOLID ilkeleri (freeCodeCamp),https://www.freecodecamp.org/news/solid-principles-explained-in-plain-english/,blog,en,beginner,,1
+solid,Robert C. Martin: OOD ilkeleri,http://butunclebob.com/ArticleS.UncleBob.PrinciplesOfOod,blog,en,intermediate,,1
+solidity,Solidity: resmi belgeler ve başlangıç rehberi,https://docs.soliditylang.org/,docs,en,intermediate,,1
+spacy,spaCy: resmi belgeler ve başlangıç rehberi,https://spacy.io/usage/spacy-101,docs,en,intermediate,,1
+spark,Apache Spark: resmi belgeler ve başlangıç rehberi,https://spark.apache.org/docs/latest/quick-start.html,docs,en,intermediate,,1
+splunk,Splunk arama öğreticisi,https://help.splunk.com/en/splunk-cloud-platform/get-started/search-tutorial/10.7/introduction/about-the-search-tutorial,docs,en,beginner,,1
+spring-boot,Spring Boot: resmi belgeler ve başlangıç rehberi,https://spring.io/guides/gs/spring-boot/,docs,en,intermediate,,1
+spring-boot,Spring Boot öğrenme yol haritası (roadmap.sh),https://roadmap.sh/spring-boot,other,en,beginner,,1
+sql,SQL: resmi belgeler ve başlangıç rehberi,https://www.postgresql.org/docs/current/tutorial-sql.html,docs,en,intermediate,,1
+sql,SQL öğrenme yol haritası (roadmap.sh),https://roadmap.sh/sql,other,en,beginner,,1
+sqlalchemy,SQLAlchemy: resmi belgeler ve başlangıç rehberi,https://docs.sqlalchemy.org/en/20/tutorial/,docs,en,intermediate,,1
+sqlite,SQLite: resmi belgeler ve başlangıç rehberi,https://www.sqlite.org/quickstart.html,docs,en,intermediate,,1
+sqs,Amazon SQS: resmi belgeler ve başlangıç rehberi,https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/welcome.html,docs,en,intermediate,,1
+sre,Site Reliability Engineering: resmi belgeler ve başlangıç rehberi,https://sre.google/sre-book/table-of-contents/,docs,en,intermediate,,1
+stakeholder-management,Proje Yönetim Temelleri (BTK Akademi),https://www.btkakademi.gov.tr/portal/course/proje-yoenetim-temelleri-22068,btk_akademi,tr,beginner,,1
+stakeholder-management,Çevik Proje Yönetimi (BTK Akademi),https://www.btkakademi.gov.tr/portal/course/cevik-proje-yonetimi-16550,btk_akademi,tr,beginner,,1
+statistics,İstatistik: resmi belgeler ve başlangıç rehberi,https://openstax.org/details/books/introductory-statistics-2e,docs,en,intermediate,,1
+statistics,Khan Academy: İstatistik ve olasılık,https://www.khanacademy.org/math/statistics-probability,other,en,beginner,,1
+storybook,Storybook: resmi belgeler ve başlangıç rehberi,https://storybook.js.org/docs,docs,en,intermediate,,1
+streamlit,Streamlit: resmi belgeler ve başlangıç rehberi,https://docs.streamlit.io/get-started,docs,en,intermediate,,1
+stripe,Stripe: resmi belgeler ve başlangıç rehberi,https://docs.stripe.com/,docs,en,intermediate,,1
+supabase,Supabase: resmi belgeler ve başlangıç rehberi,https://supabase.com/docs,docs,en,intermediate,,1
+svelte,Svelte: resmi belgeler ve başlangıç rehberi,https://svelte.dev/tutorial,docs,en,intermediate,,1
+swagger-ui,Swagger UI: resmi belgeler ve başlangıç rehberi,https://swagger.io/docs/open-source-tools/swagger-ui/usage/installation/,docs,en,intermediate,,1
+swagger-ui,OpenAPI belirtimi rehberi (Swagger),https://swagger.io/docs/specification/v3_0/about/,docs,en,beginner,,1
+swift,Swift: resmi belgeler ve başlangıç rehberi,https://docs.swift.org/swift-book/documentation/the-swift-programming-language/,docs,en,intermediate,,1
+swift,Swift alıştırmaları (Exercism),https://exercism.org/tracks/swift,other,en,beginner,,1
+swift,Swift öğrenme yol haritası (roadmap.sh),https://roadmap.sh/ios,other,en,beginner,,1
+swiftui,SwiftUI: resmi belgeler ve başlangıç rehberi,https://developer.apple.com/tutorials/swiftui,docs,en,intermediate,,1
+symfony,Symfony: resmi belgeler ve başlangıç rehberi,https://symfony.com/doc/current/index.html,docs,en,intermediate,,1
+system-design,Sistem Tasarımı: resmi belgeler ve başlangıç rehberi,https://github.com/donnemartin/system-design-primer,docs,en,intermediate,,1
+system-design,Sistem Tasarımı öğrenme yol haritası (roadmap.sh),https://roadmap.sh/system-design,other,en,beginner,,1
+tailwind,Tailwind CSS: resmi belgeler ve başlangıç rehberi,https://tailwindcss.com/docs,docs,en,intermediate,,1
+tanstack-query,TanStack Query: resmi belgeler ve başlangıç rehberi,https://tanstack.com/query/latest/docs/framework/react/overview,docs,en,intermediate,,1
+tauri,Tauri: resmi belgeler ve başlangıç rehberi,https://tauri.app/start/,docs,en,intermediate,,1
+tdd,Test Driven Development: resmi belgeler ve başlangıç rehberi,https://martinfowler.com/bliki/TestDrivenDevelopment.html,docs,en,intermediate,,1
+teamwork,Teamwork Skills: Communicating Effectively in Groups (Coursera),https://www.coursera.org/learn/teamwork-skills-effective-communication,coursera,en,beginner,,0
+teamwork,Etkili İletişim Stratejileri (BTK Akademi),https://www.btkakademi.gov.tr/portal/course/etkili-iletisim-stratejileri-21064,btk_akademi,tr,beginner,,1
+tensorflow,TensorFlow: resmi belgeler ve başlangıç rehberi,https://www.tensorflow.org/tutorials,docs,en,intermediate,,1
+terraform,Terraform: resmi belgeler ve başlangıç rehberi,https://developer.hashicorp.com/terraform/tutorials,docs,en,intermediate,,1
+terraform,Terraform öğrenme yol haritası (roadmap.sh),https://roadmap.sh/terraform,other,en,beginner,,1
+test-automation,Test Otomasyonu: resmi belgeler ve başlangıç rehberi,https://www.selenium.dev/documentation/test_practices/,docs,en,intermediate,,1
+test-automation,Yazılım Test Otomasyonu (BTK Akademi),https://www.btkakademi.gov.tr/portal/course/yaz-l-m-test-otomasyonu-12117,btk_akademi,tr,intermediate,,1
+threejs,Three.js: resmi belgeler ve başlangıç rehberi,https://threejs.org/docs/,docs,en,intermediate,,1
+time-management,Work Smarter Not Harder: Time Management (Coursera),https://www.coursera.org/learn/work-smarter-not-harder,coursera,en,beginner,,0
+timescaledb,TimescaleDB: resmi belgeler ve başlangıç rehberi,https://docs.timescale.com/getting-started/latest/,docs,en,intermediate,,1
+traefik,Traefik: resmi belgeler ve başlangıç rehberi,https://doc.traefik.io/traefik/getting-started/quick-start/,docs,en,intermediate,,1
+transformers,Hugging Face Transformers: resmi belgeler ve başlangıç rehberi,https://huggingface.co/docs/transformers/index,docs,en,intermediate,,1
+trello,Trello: resmi belgeler ve başlangıç rehberi,https://trello.com/guide,docs,en,intermediate,,1
+turkish,Yazılı İletişim Teknikleri (BTK Akademi),https://www.btkakademi.gov.tr/portal/course/yazili-iletisim-teknikleri-650,btk_akademi,tr,beginner,,1
+turkish,TDK Güncel Türkçe Sözlük ve Yazım Kılavuzu,https://sozluk.gov.tr/,docs,tr,beginner,,1
+turkish,Yunus Emre Enstitüsü: Türkçe öğren (Türkçe Ana Dili olmayanlar için),https://www.turkcenet.org/,other,tr,beginner,,1
+twilio,Twilio: resmi belgeler ve başlangıç rehberi,https://www.twilio.com/docs,docs,en,intermediate,,1
+typeorm,TypeORM: resmi belgeler ve başlangıç rehberi,https://typeorm.io/,docs,en,intermediate,,1
+typescript,TypeScript: resmi belgeler ve başlangıç rehberi,https://www.typescriptlang.org/docs/handbook/intro.html,docs,en,intermediate,,1
+typescript,TypeScript alıştırmaları (Exercism),https://exercism.org/tracks/typescript,other,en,beginner,,1
+typescript,TypeScript öğrenme yol haritası (roadmap.sh),https://roadmap.sh/typescript,other,en,beginner,,1
+ui-ux,UI/UX Tasarım: resmi belgeler ve başlangıç rehberi,https://www.nngroup.com/articles/definition-user-experience/,docs,en,intermediate,,1
+ui-ux,UI/UX Tasarım öğrenme yol haritası (roadmap.sh),https://roadmap.sh/ux-design,other,en,beginner,,1
+uikit,UIKit: resmi belgeler ve başlangıç rehberi,https://developer.apple.com/documentation/uikit,docs,en,intermediate,,1
+unit-testing,Unit Testing: resmi belgeler ve başlangıç rehberi,https://martinfowler.com/bliki/UnitTest.html,docs,en,intermediate,,1
+unity,Unity: resmi belgeler ve başlangıç rehberi,https://learn.unity.com/,docs,en,intermediate,,1
+unreal-engine,Unreal Engine: resmi belgeler ve başlangıç rehberi,https://dev.epicgames.com/documentation/en-us/unreal-engine/,docs,en,intermediate,,1
+vagrant,Vagrant: resmi belgeler ve başlangıç rehberi,https://developer.hashicorp.com/vagrant/tutorials/getting-started,docs,en,intermediate,,1
+vault,HashiCorp Vault: resmi belgeler ve başlangıç rehberi,https://developer.hashicorp.com/vault/tutorials/get-started,docs,en,intermediate,,1
+vb-net,Visual Basic .NET: resmi belgeler ve başlangıç rehberi,https://learn.microsoft.com/en-us/dotnet/visual-basic/,docs,en,intermediate,,1
+vb-net,Visual Basic .NET alıştırmaları (Exercism),https://exercism.org/tracks/vbnet,other,en,beginner,,1
+vector-database,Vektör Veritabanı: resmi belgeler ve başlangıç rehberi,https://www.pinecone.io/learn/vector-database/,docs,en,intermediate,,1
+vector-database,Cloudflare: Vektör veritabanı nedir,https://www.cloudflare.com/learning/ai/what-is-vector-database/,blog,en,beginner,,1
+vercel,Vercel: resmi belgeler ve başlangıç rehberi,https://vercel.com/docs,docs,en,intermediate,,1
+vercel,Vercel: başlangıç rehberi,https://vercel.com/docs/getting-started-with-vercel,docs,en,beginner,,1
+vercel,Vercel: dağıtımlar (resmi belgeler),https://vercel.com/docs/deployments,docs,en,beginner,,1
+vertex-ai,Vertex AI: resmi belgeler ve başlangıç rehberi,https://cloud.google.com/vertex-ai/docs/start/introduction-unified-platform,docs,en,intermediate,,1
+vite,Vite: resmi belgeler ve başlangıç rehberi,https://vite.dev/guide/,docs,en,intermediate,,1
+vitest,Vitest: resmi belgeler ve başlangıç rehberi,https://vitest.dev/guide/,docs,en,intermediate,,1
+vscode,Visual Studio Code: resmi belgeler ve başlangıç rehberi,https://code.visualstudio.com/docs,docs,en,intermediate,,1
+vue,Vue.js: resmi belgeler ve başlangıç rehberi,https://vuejs.org/guide/introduction.html,docs,en,intermediate,,1
+vue,Vue.js öğrenme yol haritası (roadmap.sh),https://roadmap.sh/vue,other,en,beginner,,1
+wandb,Weights & Biases: resmi belgeler ve başlangıç rehberi,https://docs.coreweave.com/products/wandb/quickstart,docs,en,intermediate,,1
+wandb,W&B deney takibi rehberi,https://docs.coreweave.com/products/wandb/track,docs,en,beginner,,1
+weaviate,Weaviate: resmi belgeler ve başlangıç rehberi,https://weaviate.io/developers/weaviate,docs,en,intermediate,,1
+weaviate,Weaviate hızlı başlangıç,https://docs.weaviate.io/weaviate/quickstart,docs,en,beginner,,1
+weaviate,Weaviate Academy,https://academy.weaviate.io/,other,en,beginner,,1
+webassembly,WebAssembly: resmi belgeler ve başlangıç rehberi,https://developer.mozilla.org/en-US/docs/WebAssembly,docs,en,intermediate,,1
+webpack,Webpack: resmi belgeler ve başlangıç rehberi,https://webpack.js.org/guides/getting-started/,docs,en,intermediate,,1
+websocket,WebSocket: resmi belgeler ve başlangıç rehberi,https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API,docs,en,intermediate,,1
+windows-server,Windows Server: resmi belgeler ve başlangıç rehberi,https://learn.microsoft.com/en-us/windows-server/,docs,en,intermediate,,1
+wireshark,Wireshark: resmi belgeler ve başlangıç rehberi,https://www.wireshark.org/docs/wsug_html_chunked/,docs,en,intermediate,,1
+wordpress,WordPress: resmi belgeler ve başlangıç rehberi,https://learn.wordpress.org/,docs,en,intermediate,,1
+xcode,Xcode: resmi belgeler ve başlangıç rehberi,https://developer.apple.com/documentation/xcode,docs,en,intermediate,,1
+xgboost,XGBoost: resmi belgeler ve başlangıç rehberi,https://xgboost.readthedocs.io/en/stable/get_started.html,docs,en,intermediate,,1
+zig,Zig: resmi belgeler ve başlangıç rehberi,https://ziglang.org/learn/,docs,en,intermediate,,1
+zig,Zig alıştırmaları (Exercism),https://exercism.org/tracks/zig,other,en,beginner,,1
+zustand,Zustand: resmi belgeler ve başlangıç rehberi,https://zustand.docs.pmnd.rs/,docs,en,intermediate,,1

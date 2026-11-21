@@ -24,6 +24,9 @@ class JobSource(TimestampMixin, Base):
     # Sadece uygunluk tablosunda ✅ olan kaynak açılır.
     is_active: Mapped[bool] = mapped_column(server_default=text("false"))
 
+    def __str__(self) -> str:  # yönetim panelinde görünen ad
+        return self.name
+
 
 class JobPosting(TimestampMixin, Base):
     __tablename__ = "job_postings"
@@ -74,3 +77,5 @@ class ScrapeRun(TimestampMixin, Base):
     duplicates: Mapped[int] = mapped_column(server_default=text("0"))
     errors: Mapped[int] = mapped_column(server_default=text("0"))
     error_log: Mapped[str | None] = mapped_column(Text)
+
+    source: Mapped[JobSource] = relationship()

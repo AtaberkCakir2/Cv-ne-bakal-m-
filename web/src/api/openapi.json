@@ -1,8 +1,8 @@
 {
   "openapi": "3.1.0",
   "info": {
-    "title": "CareerAI API",
-    "description": "CareerAI REST API. Sözleşme: contracts/api.md · Hatalar RFC 7807 (application/problem+json).",
+    "title": "Cv'ne Bakalım! API",
+    "description": "Cv'ne Bakalım! REST API. Sözleşme: `contracts/api.md` · Rehber ve örnek akış: `docs/api/README.md`.\n\n- **Kimlik doğrulama:** `POST /auth/login` ile alınan access token `Authorization: Bearer <token>` başlığında gider.\n  Süresi dolunca `POST /auth/refresh` ile yenilenir (refresh token her kullanımda değişir).\n- **Hatalar:** Tüm 4xx/5xx yanıtları RFC 7807 biçimindedir (`application/problem+json`, şema: `Problem`).\n- **İstek sınırları:** Genel 100/dk/IP; giriş, kayıt, e-posta doğrulama ve şifre sıfırlama 10/dk/IP;\n  analiz 5/saat/kullanıcı. Sınır aşılınca 429 ve `Retry-After` başlığı döner.\n- **Gizlilik:** CV dosyası saklanmaz; sadece SHA-256 özeti ve çıkarılan yetkinlikler tutulur.\n",
     "version": "0.1.0"
   },
   "paths": {
@@ -56,6 +56,16 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "İstek sınırı aşıldı; `Retry-After` kaç saniye sonra denenebileceğini söyler",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
           }
         }
       }
@@ -92,13 +102,31 @@
           "409": {
             "description": "E-posta kayıtlı",
             "content": {
-              "application/problem+json": {}
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
             }
           },
           "422": {
             "description": "Eksik onay",
             "content": {
-              "application/problem+json": {}
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "İstek sınırı aşıldı; `Retry-After` kaç saniye sonra denenebileceğini söyler",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
             }
           }
         }
@@ -110,6 +138,7 @@
           "Kimlik doğrulama"
         ],
         "summary": "Giriş",
+        "description": "Access token 15 dk, refresh token 7 gün geçerlidir. E-posta doğrulanmamış olsa da giriş yapılabilir.\n\nE-posta kayıtlı değilse de şifre yanlışsa da aynı 401 döner (hesap var mı yok mu belli edilmez).",
         "operationId": "login_api_v1_auth_login_post",
         "parameters": [
           {
@@ -153,21 +182,29 @@
           "401": {
             "description": "Hatalı bilgi",
             "content": {
-              "application/problem+json": {}
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
             }
           },
           "429": {
             "description": "Çok fazla deneme",
             "content": {
-              "application/problem+json": {}
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
             }
           },
           "422": {
-            "description": "Validation Error",
+            "description": "Geçersiz alanlar (`errors` listesinde)",
             "content": {
-              "application/json": {
+              "application/problem+json": {
                 "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
+                  "$ref": "#/components/schemas/Problem"
                 }
               }
             }
@@ -225,15 +262,29 @@
           "401": {
             "description": "Geçersiz / kullanılmış / süresi dolmuş",
             "content": {
-              "application/problem+json": {}
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
             }
           },
           "422": {
-            "description": "Validation Error",
+            "description": "Geçersiz alanlar (`errors` listesinde)",
             "content": {
-              "application/json": {
+              "application/problem+json": {
                 "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "İstek sınırı aşıldı; `Retry-After` kaç saniye sonra denenebileceğini söyler",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
                 }
               }
             }
@@ -247,6 +298,7 @@
           "Kimlik doğrulama"
         ],
         "summary": "Çıkış (refresh token iptali)",
+        "description": "Verilen refresh token iptal edilir. Token bilinmiyor veya zaten iptal edilmişse de 204 döner.\n\nAccess token süresi dolana kadar (en fazla 15 dk) geçerli kalır; istemci onu kendisi siler.",
         "operationId": "logout_api_v1_auth_logout_post",
         "requestBody": {
           "content": {
@@ -263,11 +315,21 @@
             "description": "Successful Response"
           },
           "422": {
-            "description": "Validation Error",
+            "description": "Geçersiz alanlar (`errors` listesinde)",
             "content": {
-              "application/json": {
+              "application/problem+json": {
                 "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "İstek sınırı aşıldı; `Retry-After` kaç saniye sonra denenebileceğini söyler",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
                 }
               }
             }
@@ -281,6 +343,7 @@
           "Kimlik doğrulama"
         ],
         "summary": "E-posta doğrulama",
+        "description": "Kayıt e-postasındaki bağlantının token'ı gönderilir. Bağlantı 24 saat geçerli ve tek kullanımlıktır.",
         "operationId": "verify_email_api_v1_auth_verify_email_post",
         "requestBody": {
           "content": {
@@ -299,15 +362,29 @@
           "400": {
             "description": "Bağlantı geçersiz",
             "content": {
-              "application/problem+json": {}
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
             }
           },
           "422": {
-            "description": "Validation Error",
+            "description": "Geçersiz alanlar (`errors` listesinde)",
             "content": {
-              "application/json": {
+              "application/problem+json": {
                 "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "İstek sınırı aşıldı; `Retry-After` kaç saniye sonra denenebileceğini söyler",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
                 }
               }
             }
@@ -343,11 +420,21 @@
             }
           },
           "422": {
-            "description": "Validation Error",
+            "description": "Geçersiz alanlar (`errors` listesinde)",
             "content": {
-              "application/json": {
+              "application/problem+json": {
                 "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "İstek sınırı aşıldı; `Retry-After` kaç saniye sonra denenebileceğini söyler",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
                 }
               }
             }
@@ -380,15 +467,29 @@
           "400": {
             "description": "Bağlantı geçersiz",
             "content": {
-              "application/problem+json": {}
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
             }
           },
           "422": {
-            "description": "Validation Error",
+            "description": "Geçersiz alanlar (`errors` listesinde)",
             "content": {
-              "application/json": {
+              "application/problem+json": {
                 "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "İstek sınırı aşıldı; `Retry-After` kaç saniye sonra denenebileceğini söyler",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
                 }
               }
             }
@@ -402,6 +503,7 @@
           "Kullanıcı"
         ],
         "summary": "Profil",
+        "description": "Oturum açmış kullanıcının profili ve seçtiği hedef pozisyon (seçilmediyse `null`).",
         "operationId": "me_api_v1_users_me_get",
         "responses": {
           "200": {
@@ -410,6 +512,26 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ProfileOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Giriş gerekli",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "İstek sınırı aşıldı; `Retry-After` kaç saniye sonra denenebileceğini söyler",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
                 }
               }
             }
@@ -442,24 +564,42 @@
           "204": {
             "description": "Successful Response"
           },
+          "401": {
+            "description": "Giriş gerekli",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
           "403": {
             "description": "Şifre hatalı",
             "content": {
-              "application/problem+json": {}
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
             }
           },
           "429": {
             "description": "Çok fazla deneme",
             "content": {
-              "application/problem+json": {}
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
             }
           },
           "422": {
-            "description": "Validation Error",
+            "description": "Geçersiz alanlar (`errors` listesinde)",
             "content": {
-              "application/json": {
+              "application/problem+json": {
                 "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
+                  "$ref": "#/components/schemas/Problem"
                 }
               }
             }
@@ -499,10 +639,34 @@
               }
             }
           },
+          "401": {
+            "description": "Giriş gerekli",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
           "422": {
             "description": "Pozisyon bulunamadı",
             "content": {
-              "application/problem+json": {}
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "İstek sınırı aşıldı; `Retry-After` kaç saniye sonra denenebileceğini söyler",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
             }
           }
         },
@@ -519,6 +683,7 @@
           "Kullanıcı"
         ],
         "summary": "Onay kayıtlarım (sürümlü)",
+        "description": "Kabul edilen bütün metin sürümleri, eskiler dahil. Geri alınan açık rızada `withdrawn_at` doludur.",
         "operationId": "my_consents_api_v1_users_me_consents_get",
         "responses": {
           "200": {
@@ -531,6 +696,26 @@
                   },
                   "type": "array",
                   "title": "Response My Consents Api V1 Users Me Consents Get"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Giriş gerekli",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "İstek sınırı aşıldı; `Retry-After` kaç saniye sonra denenebileceğini söyler",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
                 }
               }
             }
@@ -574,12 +759,32 @@
               }
             }
           },
-          "422": {
-            "description": "Validation Error",
+          "401": {
+            "description": "Giriş gerekli",
             "content": {
-              "application/json": {
+              "application/problem+json": {
                 "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Geçersiz alanlar (`errors` listesinde)",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "İstek sınırı aşıldı; `Retry-After` kaç saniye sonra denenebileceğini söyler",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
                 }
               }
             }
@@ -630,10 +835,34 @@
               }
             }
           },
+          "401": {
+            "description": "Giriş gerekli",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
           "422": {
             "description": "Bu onay türü geri alınamaz",
             "content": {
-              "application/problem+json": {}
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "İstek sınırı aşıldı; `Retry-After` kaç saniye sonra denenebileceğini söyler",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
             }
           }
         }
@@ -657,6 +886,26 @@
                 }
               }
             }
+          },
+          "401": {
+            "description": "Giriş gerekli",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "İstek sınırı aşıldı; `Retry-After` kaç saniye sonra denenebileceğini söyler",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
           }
         },
         "security": [
@@ -665,10 +914,928 @@
           }
         ]
       }
+    },
+    "/api/v1/analyses": {
+      "get": {
+        "tags": [
+          "Analiz"
+        ],
+        "summary": "Geçmiş analizlerim",
+        "description": "Yeniden eskiye. Sadece kullanıcının kendi, silinmemiş analizleri.",
+        "operationId": "list_analyses_api_v1_analyses_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 20,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AnalysisListOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Giriş gerekli",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Geçersiz alanlar (`errors` listesinde)",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "İstek sınırı aşıldı; `Retry-After` kaç saniye sonra denenebileceğini söyler",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Analiz"
+        ],
+        "summary": "CV yükle ve analiz başlat",
+        "description": "CV dosyası diske yazılmaz ve saklanmaz; sadece SHA-256 özeti ve sayfa sayısı kaydedilir.\nSonuç için `GET /analyses/{id}` yoklanır.",
+        "operationId": "create_analysis_api_v1_analyses_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_create_analysis_api_v1_analyses_post"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AnalysisCreated"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Giriş gerekli",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Açık rıza geri alınmış",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "411": {
+            "description": "Content-Length yok",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Dosya 5 MB'tan büyük (PDF_TOO_LARGE)",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "PDF değil (PDF_UNREADABLE)",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Bozuk/şifreli PDF (PDF_UNREADABLE), 5 sayfadan uzun (PDF_TOO_LARGE) veya eksik alan",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Saatlik analiz sınırı",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Kuyruk dolu veya kullanılamıyor",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/analyses/{analysis_id}": {
+      "get": {
+        "tags": [
+          "Analiz"
+        ],
+        "summary": "Analiz durumu ve sonucu",
+        "description": "Durum: queued, processing, done, failed. Başkasının veya silinmiş analiz 404 döner.",
+        "operationId": "get_analysis_api_v1_analyses__analysis_id__get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "analysis_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Analysis Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AnalysisOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Giriş gerekli",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Analiz bulunamadı",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Geçersiz alanlar (`errors` listesinde)",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "İstek sınırı aşıldı; `Retry-After` kaç saniye sonra denenebileceğini söyler",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Analiz"
+        ],
+        "summary": "Analizi sil",
+        "description": "Analiz hemen listeden ve sonuçtan kalkar, 30 gün içinde kalıcı silinir. Başkasının analizi de 404 döner.",
+        "operationId": "delete_analysis_api_v1_analyses__analysis_id__delete",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "analysis_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Analysis Id"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "401": {
+            "description": "Giriş gerekli",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Analiz bulunamadı",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Geçersiz alanlar (`errors` listesinde)",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "İstek sınırı aşıldı; `Retry-After` kaç saniye sonra denenebileceğini söyler",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/analyses/{analysis_id}/feedback": {
+      "post": {
+        "tags": [
+          "Analiz"
+        ],
+        "summary": "Analize geri bildirim (1-5 yıldız + yorum)",
+        "description": "Analiz başına tek geri bildirim; tekrar gönderilirse öncekinin yerine geçer.",
+        "operationId": "give_feedback_api_v1_analyses__analysis_id__feedback_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "analysis_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Analysis Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FeedbackIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FeedbackOut"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Giriş gerekli",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Analiz bulunamadı",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Analiz henüz tamamlanmadı",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Puan 1-5 dışında veya yorum 1000 karakterden uzun",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "İstek sınırı aşıldı; `Retry-After` kaç saniye sonra denenebileceğini söyler",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/roles": {
+      "get": {
+        "tags": [
+          "Katalog"
+        ],
+        "summary": "Hedef pozisyonlar",
+        "description": "Aktif pozisyonlar, ada göre. `id`, `POST /analyses` ve `PATCH /users/me` için `target_role_id`'dir.",
+        "operationId": "list_roles_api_v1_roles_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/RoleOut"
+                  },
+                  "type": "array",
+                  "title": "Response List Roles Api V1 Roles Get"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "İstek sınırı aşıldı; `Retry-After` kaç saniye sonra denenebileceğini söyler",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/roles/{slug}/skills": {
+      "get": {
+        "tags": [
+          "Katalog"
+        ],
+        "summary": "Pozisyonun en çok istenen yetkinlikleri",
+        "description": "Son 6 ayın aktif ilanlarından, talep oranına göre. İlan yoksa liste boş, `total_postings` 0.",
+        "operationId": "role_skills_api_v1_roles__slug__skills_get",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Slug"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 20,
+              "title": "Limit"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RoleSkillsOut"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Pozisyon bulunamadı",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Geçersiz alanlar (`errors` listesinde)",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "İstek sınırı aşıldı; `Retry-After` kaç saniye sonra denenebileceğini söyler",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/skills/{slug}/resources": {
+      "get": {
+        "tags": [
+          "Katalog"
+        ],
+        "summary": "Yetkinlik için eğitim kaynakları",
+        "description": "Sadece erişilebilir (haftalık link kontrolünden geçen) kaynaklar; önce ücretsizler.",
+        "operationId": "skill_resources_api_v1_skills__slug__resources_get",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Slug"
+            }
+          },
+          {
+            "name": "language",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/LangCode"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Language"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SkillResourcesOut"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Yetkinlik bulunamadı",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Geçersiz alanlar (`errors` listesinde)",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "İstek sınırı aşıldı; `Retry-After` kaç saniye sonra denenebileceğini söyler",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
     "schemas": {
+      "AnalysisCreated": {
+        "properties": {
+          "analysis_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Analysis Id"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "queued",
+              "processing",
+              "done",
+              "failed"
+            ],
+            "title": "Status"
+          }
+        },
+        "type": "object",
+        "required": [
+          "analysis_id",
+          "status"
+        ],
+        "title": "AnalysisCreated",
+        "examples": [
+          {
+            "analysis_id": "3f6c2a9e-8d1b-4c7a-9e2f-1a2b3c4d5e6f",
+            "status": "queued"
+          }
+        ]
+      },
+      "AnalysisErrorCode": {
+        "type": "string",
+        "enum": [
+          "PDF_UNREADABLE",
+          "PDF_TOO_LARGE",
+          "NO_TEXT_FOUND",
+          "LLM_TIMEOUT",
+          "INTERNAL"
+        ],
+        "title": "AnalysisErrorCode"
+      },
+      "AnalysisErrorOut": {
+        "properties": {
+          "code": {
+            "$ref": "#/components/schemas/AnalysisErrorCode"
+          },
+          "message": {
+            "type": "string",
+            "title": "Message"
+          }
+        },
+        "type": "object",
+        "required": [
+          "code",
+          "message"
+        ],
+        "title": "AnalysisErrorOut"
+      },
+      "AnalysisListOut": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/AnalysisSummaryOut"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "total"
+        ],
+        "title": "AnalysisListOut"
+      },
+      "AnalysisModelOut": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "prompt_version": {
+            "type": "string",
+            "title": "Prompt Version"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "prompt_version"
+        ],
+        "title": "AnalysisModelOut"
+      },
+      "AnalysisOut": {
+        "properties": {
+          "analysis_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Analysis Id"
+          },
+          "status": {
+            "$ref": "#/components/schemas/AnalysisStatus"
+          },
+          "target_role": {
+            "$ref": "#/components/schemas/TargetRoleOut"
+          },
+          "postings_analyzed": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Postings Analyzed"
+          },
+          "match_score": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Match Score"
+          },
+          "present_skills": {
+            "items": {
+              "$ref": "#/components/schemas/PresentSkillOut"
+            },
+            "type": "array",
+            "title": "Present Skills",
+            "default": []
+          },
+          "missing_skills": {
+            "items": {
+              "$ref": "#/components/schemas/MissingSkillOut"
+            },
+            "type": "array",
+            "title": "Missing Skills",
+            "default": []
+          },
+          "model": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/AnalysisModelOut"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "error": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/AnalysisErrorOut"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "completed_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Completed At"
+          },
+          "feedback": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/FeedbackOut"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "analysis_id",
+          "status",
+          "target_role",
+          "created_at"
+        ],
+        "title": "AnalysisOut",
+        "description": "contracts/analysis_result.schema.json. `feedback` API'nin eki (sözleşmede yok): verildiyse yanıtta yer alır.",
+        "examples": [
+          {
+            "analysis_id": "3f6c2a9e-8d1b-4c7a-9e2f-1a2b3c4d5e6f",
+            "completed_at": "2026-11-20T10:01:12Z",
+            "created_at": "2026-11-20T10:00:00Z",
+            "match_score": 62.5,
+            "missing_skills": [
+              {
+                "demand_ratio": 0.75,
+                "priority": 1,
+                "resources": [
+                  {
+                    "duration_min": 90,
+                    "is_free": true,
+                    "language": "tr",
+                    "level": "beginner",
+                    "provider": "youtube",
+                    "reason": "İncelenen 150 Backend Developer ilanının %75'i Docker istiyor; CV'nde Docker bulunamadı.",
+                    "resource_id": 101,
+                    "title": "Örnek: Docker'a Giriş (Türkçe)",
+                    "url": "https://example.com/docker-giris"
+                  }
+                ],
+                "skill": "Docker"
+              },
+              {
+                "demand_ratio": 0.62,
+                "priority": 2,
+                "resources": [
+                  {
+                    "duration_min": 120,
+                    "is_free": true,
+                    "language": "en",
+                    "level": "beginner",
+                    "provider": "docs",
+                    "reason": "İlanların %62'si PostgreSQL istiyor; temel SQL bilgin bu konuya hızlı geçmeni sağlar.",
+                    "resource_id": 205,
+                    "title": "Örnek: PostgreSQL Temelleri",
+                    "url": "https://example.com/postgresql-temelleri"
+                  }
+                ],
+                "skill": "PostgreSQL"
+              }
+            ],
+            "model": {
+              "name": "llama3.1:8b",
+              "prompt_version": "v1"
+            },
+            "postings_analyzed": 150,
+            "present_skills": [
+              {
+                "confidence": 0.94,
+                "level": "advanced",
+                "skill": "Python",
+                "verified": true
+              },
+              {
+                "confidence": 0.81,
+                "level": "beginner",
+                "skill": "SQL",
+                "verified": true
+              },
+              {
+                "confidence": 0.88,
+                "level": "intermediate",
+                "skill": "Git",
+                "verified": true
+              }
+            ],
+            "status": "done",
+            "target_role": {
+              "name": "Backend Developer",
+              "slug": "backend-developer"
+            }
+          }
+        ]
+      },
       "AnalysisStatus": {
         "type": "string",
         "enum": [
@@ -678,6 +1845,141 @@
           "failed"
         ],
         "title": "AnalysisStatus"
+      },
+      "AnalysisSummaryOut": {
+        "properties": {
+          "analysis_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Analysis Id"
+          },
+          "status": {
+            "$ref": "#/components/schemas/AnalysisStatus"
+          },
+          "target_role": {
+            "$ref": "#/components/schemas/TargetRoleOut"
+          },
+          "match_score": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Match Score"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/AnalysisErrorOut"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "completed_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Completed At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "analysis_id",
+          "status",
+          "target_role",
+          "created_at"
+        ],
+        "title": "AnalysisSummaryOut",
+        "description": "Geçmiş listesindeki satır: yetkinlik listeleri yok, ayrıntı için GET /analyses/{id}."
+      },
+      "Body_create_analysis_api_v1_analyses_post": {
+        "properties": {
+          "file": {
+            "type": "string",
+            "contentMediaType": "application/octet-stream",
+            "title": "File",
+            "description": "CV (PDF, en fazla 5 MB ve 5 sayfa)"
+          },
+          "target_role_id": {
+            "type": "integer",
+            "minimum": 1.0,
+            "title": "Target Role Id",
+            "description": "Hedef pozisyon kimliği"
+          }
+        },
+        "type": "object",
+        "required": [
+          "file",
+          "target_role_id"
+        ],
+        "title": "Body_create_analysis_api_v1_analyses_post"
+      },
+      "CatalogResourceOut": {
+        "properties": {
+          "resource_id": {
+            "type": "integer",
+            "title": "Resource Id"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "url": {
+            "type": "string",
+            "title": "Url"
+          },
+          "provider": {
+            "$ref": "#/components/schemas/ResourceProvider"
+          },
+          "language": {
+            "$ref": "#/components/schemas/LangCode"
+          },
+          "level": {
+            "$ref": "#/components/schemas/ResourceLevel"
+          },
+          "duration_min": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Duration Min"
+          },
+          "is_free": {
+            "type": "boolean",
+            "title": "Is Free"
+          }
+        },
+        "type": "object",
+        "required": [
+          "resource_id",
+          "title",
+          "url",
+          "provider",
+          "language",
+          "level",
+          "is_free"
+        ],
+        "title": "CatalogResourceOut"
       },
       "ConsentIn": {
         "properties": {
@@ -760,7 +2062,17 @@
           "consents"
         ],
         "title": "ConsentsIn",
-        "description": "Metnin yeni sürümü onaylanınca gönderilir. Aynı sürüm daha önce onaylandıysa tekrar kaydedilmez."
+        "description": "Metnin yeni sürümü onaylanınca gönderilir. Aynı sürüm daha önce onaylandıysa tekrar kaydedilmez.",
+        "examples": [
+          {
+            "consents": [
+              {
+                "consent_type": "acik_riza",
+                "version": "2027-01"
+              }
+            ]
+          }
+        ]
       },
       "DeleteAccountIn": {
         "properties": {
@@ -776,7 +2088,12 @@
           "password"
         ],
         "title": "DeleteAccountIn",
-        "description": "Çalınmış bir oturumla hesap silinemesin diye şifre tekrar istenir."
+        "description": "Çalınmış bir oturumla hesap silinemesin diye şifre tekrar istenir.",
+        "examples": [
+          {
+            "password": "ornek-sifre-123"
+          }
+        ]
       },
       "DependencyStatus": {
         "properties": {
@@ -827,7 +2144,12 @@
         "required": [
           "email"
         ],
-        "title": "EmailIn"
+        "title": "EmailIn",
+        "examples": [
+          {
+            "email": "ogrenci@example.com"
+          }
+        ]
       },
       "ExportActivity": {
         "properties": {
@@ -1235,18 +2557,65 @@
         ],
         "title": "ExportSkill"
       },
-      "HTTPValidationError": {
+      "FeedbackIn": {
         "properties": {
-          "detail": {
-            "items": {
-              "$ref": "#/components/schemas/ValidationError"
-            },
-            "type": "array",
-            "title": "Detail"
+          "rating": {
+            "type": "integer",
+            "maximum": 5.0,
+            "minimum": 1.0,
+            "title": "Rating",
+            "description": "1-5 yıldız"
+          },
+          "comment": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 1000
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Comment",
+            "description": "İsteğe bağlı yorum"
           }
         },
         "type": "object",
-        "title": "HTTPValidationError"
+        "required": [
+          "rating"
+        ],
+        "title": "FeedbackIn",
+        "examples": [
+          {
+            "comment": "Önerilen kaynaklar işime yaradı.",
+            "rating": 4
+          }
+        ]
+      },
+      "FeedbackOut": {
+        "properties": {
+          "rating": {
+            "type": "integer",
+            "title": "Rating"
+          },
+          "comment": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Comment"
+          }
+        },
+        "type": "object",
+        "required": [
+          "rating",
+          "comment"
+        ],
+        "title": "FeedbackOut"
       },
       "HealthResponse": {
         "properties": {
@@ -1259,6 +2628,14 @@
         },
         "type": "object",
         "title": "HealthResponse"
+      },
+      "LangCode": {
+        "type": "string",
+        "enum": [
+          "tr",
+          "en"
+        ],
+        "title": "LangCode"
       },
       "LoginIn": {
         "properties": {
@@ -1279,7 +2656,71 @@
           "email",
           "password"
         ],
-        "title": "LoginIn"
+        "title": "LoginIn",
+        "examples": [
+          {
+            "email": "ogrenci@example.com",
+            "password": "ornek-sifre-123"
+          }
+        ]
+      },
+      "MissingSkillOut": {
+        "properties": {
+          "skill": {
+            "type": "string",
+            "title": "Skill"
+          },
+          "demand_ratio": {
+            "type": "number",
+            "title": "Demand Ratio"
+          },
+          "priority": {
+            "type": "integer",
+            "title": "Priority"
+          },
+          "resources": {
+            "items": {
+              "$ref": "#/components/schemas/ResourceOut"
+            },
+            "type": "array",
+            "title": "Resources"
+          }
+        },
+        "type": "object",
+        "required": [
+          "skill",
+          "demand_ratio",
+          "priority",
+          "resources"
+        ],
+        "title": "MissingSkillOut"
+      },
+      "PresentSkillOut": {
+        "properties": {
+          "skill": {
+            "type": "string",
+            "title": "Skill"
+          },
+          "level": {
+            "$ref": "#/components/schemas/SkillLevel"
+          },
+          "confidence": {
+            "type": "number",
+            "title": "Confidence"
+          },
+          "verified": {
+            "type": "boolean",
+            "title": "Verified"
+          }
+        },
+        "type": "object",
+        "required": [
+          "skill",
+          "level",
+          "confidence",
+          "verified"
+        ],
+        "title": "PresentSkillOut"
       },
       "ProfileOut": {
         "properties": {
@@ -1362,7 +2803,14 @@
         "additionalProperties": false,
         "type": "object",
         "title": "ProfileUpdateIn",
-        "description": "Sadece gönderilen alanlar değişir; `null` göndermek alanı temizler. Bilinmeyen alan 422 verir."
+        "description": "Sadece gönderilen alanlar değişir; `null` göndermek alanı temizler. Bilinmeyen alan 422 verir.",
+        "examples": [
+          {
+            "full_name": "Örnek Öğrenci",
+            "target_role_id": 1
+          },
+          {}
+        ]
       },
       "ReadinessResponse": {
         "properties": {
@@ -1403,7 +2851,12 @@
         "required": [
           "refresh_token"
         ],
-        "title": "RefreshIn"
+        "title": "RefreshIn",
+        "examples": [
+          {
+            "refresh_token": "kX3v9..."
+          }
+        ]
       },
       "RegisterIn": {
         "properties": {
@@ -1445,7 +2898,28 @@
           "password",
           "consents"
         ],
-        "title": "RegisterIn"
+        "title": "RegisterIn",
+        "examples": [
+          {
+            "consents": [
+              {
+                "consent_type": "kvkk_aydinlatma",
+                "version": "2026-12"
+              },
+              {
+                "consent_type": "acik_riza",
+                "version": "2026-12"
+              },
+              {
+                "consent_type": "kullanim_kosullari",
+                "version": "2026-12"
+              }
+            ],
+            "email": "ogrenci@example.com",
+            "full_name": "Örnek Öğrenci",
+            "password": "ornek-sifre-123"
+          }
+        ]
       },
       "RegisterOut": {
         "properties": {
@@ -1481,7 +2955,138 @@
           "token",
           "new_password"
         ],
-        "title": "ResetPasswordIn"
+        "title": "ResetPasswordIn",
+        "examples": [
+          {
+            "new_password": "yeni-ornek-sifre-456",
+            "token": "e-postadaki-bağlantıdaki-token"
+          }
+        ]
+      },
+      "ResourceLevel": {
+        "type": "string",
+        "enum": [
+          "beginner",
+          "intermediate",
+          "advanced"
+        ],
+        "title": "ResourceLevel"
+      },
+      "ResourceOut": {
+        "properties": {
+          "resource_id": {
+            "type": "integer",
+            "title": "Resource Id"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "url": {
+            "type": "string",
+            "title": "Url"
+          },
+          "provider": {
+            "$ref": "#/components/schemas/ResourceProvider"
+          },
+          "language": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/LangCode"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "level": {
+            "$ref": "#/components/schemas/ResourceLevel"
+          },
+          "duration_min": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Duration Min"
+          },
+          "is_free": {
+            "type": "boolean",
+            "title": "Is Free"
+          },
+          "reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason"
+          }
+        },
+        "type": "object",
+        "required": [
+          "resource_id",
+          "title",
+          "url",
+          "provider",
+          "level",
+          "is_free"
+        ],
+        "title": "ResourceOut",
+        "description": "Sadece veri tabanındaki kaynaklar (karar #10). Değeri olmayan isteğe bağlı alanlar yanıtta yer almaz."
+      },
+      "ResourceProvider": {
+        "type": "string",
+        "enum": [
+          "youtube",
+          "udemy",
+          "coursera",
+          "btk_akademi",
+          "docs",
+          "blog",
+          "other"
+        ],
+        "title": "ResourceProvider"
+      },
+      "RoleOut": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "slug": {
+            "type": "string",
+            "title": "Slug"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "slug",
+          "name"
+        ],
+        "title": "RoleOut"
       },
       "RoleRef": {
         "properties": {
@@ -1506,6 +3111,175 @@
         ],
         "title": "RoleRef"
       },
+      "RoleRefOut": {
+        "properties": {
+          "slug": {
+            "type": "string",
+            "title": "Slug"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          }
+        },
+        "type": "object",
+        "required": [
+          "slug",
+          "name"
+        ],
+        "title": "RoleRefOut"
+      },
+      "RoleSkillOut": {
+        "properties": {
+          "skill": {
+            "type": "string",
+            "title": "Skill"
+          },
+          "slug": {
+            "type": "string",
+            "title": "Slug"
+          },
+          "category": {
+            "$ref": "#/components/schemas/SkillCategory"
+          },
+          "demand_ratio": {
+            "type": "number",
+            "title": "Demand Ratio"
+          },
+          "posting_count": {
+            "type": "integer",
+            "title": "Posting Count"
+          }
+        },
+        "type": "object",
+        "required": [
+          "skill",
+          "slug",
+          "category",
+          "demand_ratio",
+          "posting_count"
+        ],
+        "title": "RoleSkillOut"
+      },
+      "RoleSkillsOut": {
+        "properties": {
+          "role": {
+            "$ref": "#/components/schemas/RoleRefOut"
+          },
+          "total_postings": {
+            "type": "integer",
+            "title": "Total Postings"
+          },
+          "computed_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Computed At"
+          },
+          "skills": {
+            "items": {
+              "$ref": "#/components/schemas/RoleSkillOut"
+            },
+            "type": "array",
+            "title": "Skills"
+          }
+        },
+        "type": "object",
+        "required": [
+          "role",
+          "total_postings",
+          "computed_at",
+          "skills"
+        ],
+        "title": "RoleSkillsOut",
+        "description": "Pozisyonun en çok istenen yetkinlikleri (role_skill_stats, son 6 ayın aktif ilanları, gece yenilenir)."
+      },
+      "SkillCategory": {
+        "type": "string",
+        "enum": [
+          "dil",
+          "framework",
+          "veritabani",
+          "bulut",
+          "devops",
+          "arac",
+          "metodoloji",
+          "soft"
+        ],
+        "title": "SkillCategory"
+      },
+      "SkillLevel": {
+        "type": "string",
+        "enum": [
+          "beginner",
+          "intermediate",
+          "advanced",
+          "unknown"
+        ],
+        "title": "SkillLevel"
+      },
+      "SkillRefOut": {
+        "properties": {
+          "slug": {
+            "type": "string",
+            "title": "Slug"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          }
+        },
+        "type": "object",
+        "required": [
+          "slug",
+          "name"
+        ],
+        "title": "SkillRefOut"
+      },
+      "SkillResourcesOut": {
+        "properties": {
+          "skill": {
+            "$ref": "#/components/schemas/SkillRefOut"
+          },
+          "resources": {
+            "items": {
+              "$ref": "#/components/schemas/CatalogResourceOut"
+            },
+            "type": "array",
+            "title": "Resources"
+          }
+        },
+        "type": "object",
+        "required": [
+          "skill",
+          "resources"
+        ],
+        "title": "SkillResourcesOut"
+      },
+      "TargetRoleOut": {
+        "properties": {
+          "slug": {
+            "type": "string",
+            "title": "Slug"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          }
+        },
+        "type": "object",
+        "required": [
+          "slug",
+          "name"
+        ],
+        "title": "TargetRoleOut"
+      },
       "TokenIn": {
         "properties": {
           "token": {
@@ -1519,7 +3293,12 @@
         "required": [
           "token"
         ],
-        "title": "TokenIn"
+        "title": "TokenIn",
+        "examples": [
+          {
+            "token": "e-postadaki-bağlantıdaki-token"
+          }
+        ]
       },
       "TokenOut": {
         "properties": {
@@ -1549,7 +3328,15 @@
           "refresh_token",
           "expires_in"
         ],
-        "title": "TokenOut"
+        "title": "TokenOut",
+        "examples": [
+          {
+            "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+            "expires_in": 900,
+            "refresh_token": "kX3v9...",
+            "token_type": "bearer"
+          }
+        ]
       },
       "UserRole": {
         "type": "string",
@@ -1559,45 +3346,77 @@
         ],
         "title": "UserRole"
       },
-      "ValidationError": {
+      "Problem": {
+        "title": "Problem",
+        "type": "object",
+        "description": "RFC 7807 hata biçimi. Tüm 4xx/5xx yanıtları bu şemadadır.",
+        "required": [
+          "type",
+          "title",
+          "status"
+        ],
         "properties": {
-          "loc": {
-            "items": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "integer"
-                }
-              ]
-            },
-            "type": "array",
-            "title": "Location"
-          },
-          "msg": {
-            "type": "string",
-            "title": "Message"
-          },
           "type": {
             "type": "string",
-            "title": "Error Type"
+            "example": "about:blank"
           },
-          "input": {
-            "title": "Input"
+          "title": {
+            "type": "string",
+            "description": "Durum koduna göre Türkçe başlık"
           },
-          "ctx": {
-            "type": "object",
-            "title": "Context"
+          "status": {
+            "type": "integer"
+          },
+          "detail": {
+            "type": "string",
+            "description": "Kullanıcıya gösterilebilecek Türkçe açıklama"
+          },
+          "instance": {
+            "type": "string",
+            "description": "İsteğin yolu"
+          },
+          "request_id": {
+            "type": "string",
+            "description": "Destek için; X-Request-ID başlığıyla aynı"
+          },
+          "code": {
+            "type": "string",
+            "description": "Bazı hatalarda makine okunur kod, ör. PDF_TOO_LARGE"
+          },
+          "errors": {
+            "type": "array",
+            "description": "Sadece 422: geçersiz alanlar",
+            "items": {
+              "type": "object",
+              "required": [
+                "field",
+                "message"
+              ],
+              "properties": {
+                "field": {
+                  "type": "string"
+                },
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
           }
         },
-        "type": "object",
-        "required": [
-          "loc",
-          "msg",
-          "type"
-        ],
-        "title": "ValidationError"
+        "example": {
+          "type": "about:blank",
+          "title": "Doğrulama hatası",
+          "status": 422,
+          "detail": "İstekteki bazı alanlar geçersiz.",
+          "instance": "/api/v1/auth/register",
+          "request_id": "7f9c2b1e4a5d4c3b8e6f0a1b2c3d4e5f",
+          "errors": [
+            {
+              "field": "email",
+              "message": "value is not a valid email address"
+            }
+          ]
+        }
       }
     },
     "securitySchemes": {
@@ -1607,5 +3426,27 @@
         "scheme": "bearer"
       }
     }
-  }
+  },
+  "tags": [
+    {
+      "name": "Sistem",
+      "description": "Canlılık ve hazırlık kontrolleri (izleme ve yük dengeleyici için)."
+    },
+    {
+      "name": "Kimlik doğrulama",
+      "description": "Kayıt, giriş, token yenileme, e-posta doğrulama, şifre sıfırlama."
+    },
+    {
+      "name": "Kullanıcı",
+      "description": "Profil ve KVKK hakları: onaylar, verilerimi indir, hesabımı sil."
+    },
+    {
+      "name": "Analiz",
+      "description": "CV yükleme, analiz durumu ve sonucu, geçmiş, silme, geri bildirim."
+    },
+    {
+      "name": "Katalog",
+      "description": "Hedef pozisyonlar, en çok istenen yetkinlikler, eğitim kaynakları. Giriş gerekmez."
+    }
+  ]
 }
