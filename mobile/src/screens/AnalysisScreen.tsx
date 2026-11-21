@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { ActivityIndicator, AppState, StyleSheet, Text, View } from "react-native";
 
 import { formatElapsed } from "../analysis/cvFile";
+import { ResultView } from "../analysis/ResultView";
 import { api, problemMessage, unwrap, type Problem } from "../api/client";
 import type { components } from "../api/schema";
 import type { ScreenProps } from "../navigation";
@@ -28,7 +29,7 @@ const ERROR_HINTS: Partial<Record<string, string>> = {
 
 /**
  * T-061: analiz bekleme ekranı (web/src/pages/AnalysisPage.tsx ile aynı). Bitmemiş analiz 3 sn'de bir yoklanır;
- * uygulama arka plandayken yoklama durur, öne gelince sürer. Sonuç panosu T-062'de; şimdilik özet gösterilir.
+ * uygulama arka plandayken yoklama durur, öne gelince sürer. Bitince sonuç panosu (ResultView, T-062).
  */
 export function AnalysisScreen({ navigation, route }: ScreenProps<"Analysis">) {
   const { id } = route.params;
@@ -80,6 +81,7 @@ export function AnalysisScreen({ navigation, route }: ScreenProps<"Analysis">) {
 
   const again = () => navigation.popTo("Upload");
 
+
   if (!analysis) {
     if (!loadError) return <Loading label="Analiz yükleniyor" />;
     return (
@@ -103,7 +105,17 @@ export function AnalysisScreen({ navigation, route }: ScreenProps<"Analysis">) {
     );
   }
 
-  if (analysis.status === "done") return <Done data={analysis} onAgain={again} />;
+  if (analysis.status === "done") {
+    return (
+      <Screen>
+        <ResultView
+          data={analysis}
+          onAgain={again}
+          onOpenResource={(resource, skill, demand) => navigation.navigate("Resource", { resource, skill, demand })}
+        />
+      </Screen>
+    );
+  }
   return <Waiting data={analysis} />;
 }
 
@@ -147,23 +159,6 @@ function Waiting({ data }: { data: Analysis }) {
           Analiz beklenenden uzun sürüyor. Beklemeye devam edebilir ya da daha sonra tekrar bakabilirsin.
         </Alert>
       )}
-    </Screen>
-  );
-}
-
-/** Sonuç panosu (eksikler, talep oranları, kaynaklar) T-062'de; şimdilik özet. */
-function Done({ data, onAgain }: { data: Analysis; onAgain: () => void }) {
-  const score = data.match_score;
-  return (
-    <Screen>
-      <Title>Analiz tamamlandı</Title>
-      <Body>Hedef pozisyon: {data.target_role.name}</Body>
-      {score !== null && score !== undefined && <Body>Uyum puanı: %{Math.round(score)}</Body>}
-      <Body>
-        CV'nde {data.present_skills.length} yetkinlik bulundu, {data.missing_skills.length} eksik yetkinlik var.
-      </Body>
-      <Alert tone="info">Ayrıntılı sonuç ve kaynak önerileri uygulamanın bir sonraki sürümünde bu ekranda olacak.</Alert>
-      <Button title="Yeni analiz başlat" onPress={onAgain} />
     </Screen>
   );
 }
