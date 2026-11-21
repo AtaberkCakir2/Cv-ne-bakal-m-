@@ -18,8 +18,11 @@ Prompt injection koruması (T-074):
 - CV metni `<cv>…</cv>` arasında veri olarak gönderilir; prompt (v2) içindeki talimatların yok sayılmasını ister.
   Metindeki etiket taklitleri ve sohbet şablonu belirteçleri (`<|...|>`) gönderilmeden önce silinir: metin veri
   bloğundan çıkamaz.
-- Yanıt Pydantic ile doğrulanır (`LlmResponse`). Bozuk/şemaya uymayan yanıtta bir kez daha sorulur (toplam 2 deneme);
-  ikisi de başarısızsa v1 sözlük sonucuna düşülür. Zaman aşımında tekrar denenmez (analiz süresi sınırlı).
+- Metindeki görünmez karakterler (sıfır genişlikli boşluk vb.) silinir: araya görünmez karakter konmuş taklitler de
+  yakalanır.
+- Yanıt Pydantic ile doğrulanır (`LlmResponse`). Bozuk/şemaya uymayan yanıtta bir kez daha, farklı seed ile sorulur
+  (aynı seed + aynı girdi Ollama'da aynı yanıtı verir); ikisi de başarısızsa v1 sözlük sonucuna düşülür. Zaman aşımında
+  tekrar denenmez. Toplam bekleme süresini çağıran sınırlar (pipeline/analyze.py: transport kalan süreye göre).
 - Model talimata uysa bile çıktı sınırlıdır: taksonomideki yetkinlik sadece v1'de de varsa, taksonomi dışı ad sadece
   metinde geçiyorsa kabul edilir (aşağıdaki birleştirme kuralları); CV'de olmayan yetkinlik eklenemez.
 
@@ -46,6 +49,7 @@ from prompts import ModelInfo, Prompt, get_prompt, model_info
 DEFAULT_URL = "http://127.0.0.1:11434"
 DEFAULT_MODEL = "llama3.1:8b"  # karar #26
 TEMPERATURE = 0.1
+SEED = 42  # tekrarlanabilirlik; ikinci denemede SEED + 1
 # Analiz işçisi kapanırken 200 sn bekliyor (docker-compose worker-analysis); tek çağrı bunun altında kalmalı.
 TIMEOUT_SECONDS = 150
 NUM_CTX = 8192
@@ -79,6 +83,8 @@ ATTEMPTS = 2  # bozuk yanıtta toplam deneme (T-074)
 _DATA_OPEN, _DATA_CLOSE = "<cv>", "</cv>"
 # Metnin veri bloğundan çıkmasını sağlayabilecek diziler: etiket taklidi ve sohbet şablonu belirteçleri.
 _BREAKOUT = re.compile(r"<\s*/?\s*cv\s*>|<\|[^|<>]{0,40}\|>", re.IGNORECASE)
+# Görünmez karakterler (NFKC bunları silmez): taklidin arasına konup filtreyi atlatmasın (#158 incelemesi).
+_INVISIBLE = re.compile("[\u00ad\u200b-\u200f\u2060-\u2064\ufeff]")
 _SPLIT = re.compile(r"\s*(?:/|&|,|\+| ve | and )\s*")
 
 LlmErrorCode = Literal["LLM_TIMEOUT", "INTERNAL"]
@@ -190,24 +196,24 @@ class LlmResponse(BaseModel):
 
 def as_data(text: str) -> str:
     """CV metnini veri bloğuna koyar; bloğu kapatabilecek etiket ve sohbet belirteçleri silinir (T-074)."""
-    return f"{_DATA_OPEN}\n{_BREAKOUT.sub(' ', text)}\n{_DATA_CLOSE}"
+    return f"{_DATA_OPEN}\n{_BREAKOUT.sub(' ', _INVISIBLE.sub('', text))}\n{_DATA_CLOSE}"
 
 
 def llm_skills(text: str, transport: Transport, *, model: str, prompt: Prompt) -> list[LlmSkill]:
     """Ollama'dan JSON şemasıyla yetkinlik listesi. Şemaya uymayan öğe atılır.
 
-    Yanıt hiç okunamazsa bir kez daha sorulur (`ATTEMPTS`); yine olmazsa `LlmError("INTERNAL")`. Zaman aşımı hemen
-    yükseltilir: ikinci deneme analiz süresini aşar.
+    Yanıt hiç okunamazsa bir kez daha, farklı seed ile sorulur (`ATTEMPTS`); yine olmazsa `LlmError("INTERNAL")`.
+    Zaman aşımı hemen yükseltilir: ikinci deneme analiz süresini aşar.
     """
     body: dict[str, Any] = {
         "model": model,
         "messages": [{"role": "system", "content": prompt.text}, {"role": "user", "content": as_data(text)}],
         "stream": False,
         "format": SCHEMA,
-        "options": {"temperature": TEMPERATURE, "seed": 42, "num_ctx": NUM_CTX},
+        "options": {"temperature": TEMPERATURE, "seed": SEED, "num_ctx": NUM_CTX},
     }
-    for _ in range(ATTEMPTS):
-        response = transport(body)
+    for attempt in range(ATTEMPTS):
+        response = transport({**body, "options": {**body["options"], "seed": SEED + attempt}})
         try:
             return LlmResponse.model_validate_json(response["message"]["content"]).items()
         except (KeyError, TypeError, ValueError):  # ValidationError da ValueError'dır
