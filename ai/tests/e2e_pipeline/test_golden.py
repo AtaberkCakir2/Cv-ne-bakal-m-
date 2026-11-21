@@ -40,11 +40,9 @@ SCHEMA = json.loads((REPO / "contracts" / "analysis_result.schema.json").read_te
 REAL_LLM = os.environ.get("CAREERAI_OLLAMA_TEST") == "1"
 UPDATE = os.environ.get("CAREERAI_GOLDEN_UPDATE") == "1"
 
-CVS = [
-    row
-    for row in csv.DictReader((DATASET / "manifest.csv").open(encoding="utf-8"))
-    if (DATASET / "synthetic" / f"{row['cv_id']}.pdf").is_file()
-]
+# T-019'un ilk 10 Türkçe CV'si; veri seti 50'ye çıksa da golden kümesi sabit kalır (yeni CV eklemek bilinçli bir karar).
+GOLDEN_IDS = {f"syn-{i:03d}" for i in range(4, 14)}
+CVS = [row for row in csv.DictReader((DATASET / "manifest.csv").open(encoding="utf-8")) if row["cv_id"] in GOLDEN_IDS]
 SLUGS = sorted(ROLES["roles"])
 
 pytestmark = pytest.mark.skipif(not DEFAULT_TAXONOMY.is_file(), reason="scraper/taxonomy/skills.csv yok")
