@@ -12,6 +12,8 @@
   },
   "devDependencies": {
     "@types/react": "~19.3.0",
+    "eslint": "^9.39.5",
+    "eslint-config-expo": "^58.0.4",
     "openapi-typescript": "^7.13.0",
     "typescript": "~5.9.3"
   },
@@ -21,7 +23,8 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "typecheck": "tsc --noEmit",
-    "gen:api": "openapi-typescript ../web/src/api/openapi.json -o src/api/schema.d.ts"
+    "gen:api": "openapi-typescript ../web/src/api/openapi.json -o src/api/schema.d.ts",
+    "lint": "expo lint"
   },
   "private": true
 }

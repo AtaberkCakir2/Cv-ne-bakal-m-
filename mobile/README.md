@@ -37,6 +37,7 @@ Expo hesabı ve `eas init` (proje kimliği `app.json`'a yazılır) ilk derlemede
 ## Kontroller
 
 ```bash
+npm run lint         # eslint (eslint-config-expo)
 npm run typecheck    # tsc --noEmit
 npm audit            # güvenlik raporu G-8: package-lock.json artık var
 ```
