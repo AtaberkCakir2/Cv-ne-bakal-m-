@@ -14,6 +14,15 @@ Birleştirme kuralları:
   (halüsinasyon filtresi: metinde olmayan ad atılır).
 - LLM çalışmazsa (zaman aşımı, bozuk yanıt) v1 sonucu döner; `llm_error` hata kodunu taşır.
 
+Prompt injection koruması (T-074):
+- CV metni `<cv>…</cv>` arasında veri olarak gönderilir; prompt (v2) içindeki talimatların yok sayılmasını ister.
+  Metindeki etiket taklitleri ve sohbet şablonu belirteçleri (`<|...|>`) gönderilmeden önce silinir: metin veri
+  bloğundan çıkamaz.
+- Yanıt Pydantic ile doğrulanır (`LlmResponse`). Bozuk/şemaya uymayan yanıtta bir kez daha sorulur (toplam 2 deneme);
+  ikisi de başarısızsa v1 sözlük sonucuna düşülür. Zaman aşımında tekrar denenmez (analiz süresi sınırlı).
+- Model talimata uysa bile çıktı sınırlıdır: taksonomideki yetkinlik sadece v1'de de varsa, taksonomi dışı ad sadece
+  metinde geçiyorsa kabul edilir (aşağıdaki birleştirme kuralları); CV'de olmayan yetkinlik eklenemez.
+
 Prompt ve modelin metni/çıktısı loglanmaz; sadece sayılar loglanabilir.
 """
 
@@ -26,7 +35,9 @@ import urllib.error
 import urllib.request
 from collections.abc import Callable
 from dataclasses import dataclass, field
-from typing import Any, Literal
+from typing import Annotated, Any, Literal
+
+from pydantic import BaseModel, BeforeValidator, ValidationError
 
 from extraction.extract import ExtractedSkill, Level, extract_skills
 from extraction.taxonomy import Lang, Matcher, Skill, default_matcher, fold
@@ -64,6 +75,10 @@ _MAX_CONFIDENCE = 0.99
 _UNVERIFIED_CONFIDENCE = 0.3
 _MAX_NAME_LEN = 60
 _MAX_YEARS = 50
+ATTEMPTS = 2  # bozuk yanıtta toplam deneme (T-074)
+_DATA_OPEN, _DATA_CLOSE = "<cv>", "</cv>"
+# Metnin veri bloğundan çıkmasını sağlayabilecek diziler: etiket taklidi ve sohbet şablonu belirteçleri.
+_BREAKOUT = re.compile(r"<\s*/?\s*cv\s*>|<\|[^|<>]{0,40}\|>", re.IGNORECASE)
 _SPLIT = re.compile(r"\s*(?:/|&|,|\+| ve | and )\s*")
 
 LlmErrorCode = Literal["LLM_TIMEOUT", "INTERNAL"]
@@ -135,41 +150,69 @@ def ollama_transport(url: str | None = None, timeout: float = TIMEOUT_SECONDS) -
     return send
 
 
+def _level(value: object) -> Level:
+    return value if isinstance(value, str) and value in LEVELS else "unknown"
+
+
+def _years(value: object) -> int | None:
+    ok = isinstance(value, int) and not isinstance(value, bool) and 0 < value <= _MAX_YEARS
+    return value if ok else None  # type: ignore[return-value]
+
+
+def _name(value: object) -> object:
+    return " ".join(value.split()) if isinstance(value, str) else value
+
+
+class LlmItem(BaseModel):
+    """Yanıttaki tek yetkinlik. Seviye/yıl bozuksa bilinmiyor sayılır; ad bozuksa öğe atılır."""
+
+    skill: Annotated[str, BeforeValidator(_name)]
+    level: Annotated[Level, BeforeValidator(_level)] = "unknown"
+    years: Annotated[int | None, BeforeValidator(_years)] = None
+
+
+class LlmResponse(BaseModel):
+    """Yanıtın kabı: `skills` liste olmalı. Öğeler tek tek doğrulanır (biri bozuksa diğerleri kalır)."""
+
+    skills: list[Any]
+
+    def items(self) -> list[LlmSkill]:
+        out: list[LlmSkill] = []
+        for raw in self.skills:
+            try:
+                item = LlmItem.model_validate(raw)
+            except ValidationError:
+                continue
+            if item.skill and len(item.skill) <= _MAX_NAME_LEN:
+                out.append(LlmSkill(item.skill, item.level, item.years))
+        return out
+
+
+def as_data(text: str) -> str:
+    """CV metnini veri bloğuna koyar; bloğu kapatabilecek etiket ve sohbet belirteçleri silinir (T-074)."""
+    return f"{_DATA_OPEN}\n{_BREAKOUT.sub(' ', text)}\n{_DATA_CLOSE}"
+
+
 def llm_skills(text: str, transport: Transport, *, model: str, prompt: Prompt) -> list[LlmSkill]:
-    """Ollama'dan JSON şemasıyla yetkinlik listesi. Şemaya uymayan öğe atılır; yanıt hiç okunamazsa `LlmError`."""
+    """Ollama'dan JSON şemasıyla yetkinlik listesi. Şemaya uymayan öğe atılır.
+
+    Yanıt hiç okunamazsa bir kez daha sorulur (`ATTEMPTS`); yine olmazsa `LlmError("INTERNAL")`. Zaman aşımı hemen
+    yükseltilir: ikinci deneme analiz süresini aşar.
+    """
     body: dict[str, Any] = {
         "model": model,
-        "messages": [{"role": "system", "content": prompt.text}, {"role": "user", "content": text}],
+        "messages": [{"role": "system", "content": prompt.text}, {"role": "user", "content": as_data(text)}],
         "stream": False,
         "format": SCHEMA,
         "options": {"temperature": TEMPERATURE, "seed": 42, "num_ctx": NUM_CTX},
     }
-    response = transport(body)
-    try:
-        items = json.loads(response["message"]["content"])["skills"]
-    except (KeyError, TypeError, ValueError):
-        raise LlmError("INTERNAL") from None
-    if not isinstance(items, list):
-        raise LlmError("INTERNAL")
-    out: list[LlmSkill] = []
-    for item in items:
-        if not isinstance(item, dict) or not isinstance(item.get("skill"), str):
+    for _ in range(ATTEMPTS):
+        response = transport(body)
+        try:
+            return LlmResponse.model_validate_json(response["message"]["content"]).items()
+        except (KeyError, TypeError, ValueError):  # ValidationError da ValueError'dır
             continue
-        name = " ".join(item["skill"].split())
-        if not name or len(name) > _MAX_NAME_LEN:
-            continue
-        level = item.get("level")
-        years = item.get("years")
-        out.append(
-            LlmSkill(
-                name=name,
-                level=level if level in LEVELS else "unknown",
-                years=years
-                if isinstance(years, int) and not isinstance(years, bool) and 0 < years <= _MAX_YEARS
-                else None,
-            )
-        )
-    return out
+    raise LlmError("INTERNAL")
 
 
 def merge(text: str, v1: list[ExtractedSkill], llm: list[LlmSkill], matcher: Matcher) -> tuple[list[MergedSkill], int]:

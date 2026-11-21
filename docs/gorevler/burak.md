@@ -215,12 +215,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-074 · Prompt injection koruması ve çıktı doğrulama
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 14.12.2026 – 20.12.2026 · **Öncelik:** P0 · **Efor:** 8 saat · **Alan:** AI / NLP
 - **Bağımlılık:** T-032
 - **Destek:** —
 - **Çıktı:** ai/guard modülü
 - **Kabul kriteri:** CV metni veri olarak işaretlenir (talimatlar yok sayılır); çıktı Pydantic ile doğrulanır; 2 başarısız denemede sözlük tabanlı sonuca düşülür.
+- **Not:** Ayrı `ai/guard` yerine koruma LLM çağrısının yanında, `ai/extraction/llm.py` içinde (tek LLM çağrı noktası). Prompt `skill_extraction:v2`: CV `<cv>…</cv>` arasında veri, içindeki talimatlar yok sayılır; metindeki `<cv>`/`</cv>` taklitleri ve `<|...|>` sohbet belirteçleri gönderilmeden silinir. Yanıt Pydantic (`LlmResponse`, öğe bazında tolerans) ile doğrulanır; bozuk yanıtta 1 kez daha sorulur, 2. başarısızlıkta v1 sözlük sonucu (`llm_error=INTERNAL`); zaman aşımında tekrar yok. Gerçek Ollama (llama3.1:8b) denemesi: model enjeksiyona kısmen uydu ve 7 uydurma yetkinlik önerdi, hepsi birleştirme kuralıyla atıldı (metinde/v1'de yok). Kalan risk: LLM, v1'de seviyesi bilinmeyen yetkinliklerin seviyesini doldurduğu için enjeksiyon seviyeyi şişirebilir; bu sadece CV sahibinin kendi analizini etkiler (CV'ye "ileri düzey" yazmakla aynı). `prompt_version` artık `skill_extraction:v2`.
 
 ### T-058 · Uçtan uca pipeline testleri (golden test)
 
