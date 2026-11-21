@@ -154,7 +154,7 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 - **Destek:** —
 - **Çıktı:** tests/ai
 - **Kabul kriteri:** pytest; parsing, PII, çıkarım, eşleştirme için birim testler; kapsama ≥ %70; CI'da zorunlu.
-- **Not:** 21.11.2026. Kapsama %96,6 (parsing, pii, extraction, matching, recommendation, embedding, prompts; 376 test). `ai/pyproject.toml`: pytest-cov, her `pytest` çalışmasında ölçüm ve `fail_under = 70`; CI'daki AI işi (`pytest -rs`) bunu kendiliğinden uygular. Ataberk'e: AI işini zorunlu kontrollere eklemek (branch koruması) ve CI'daki mypy satırına `prompts embedding matching recommendation` eklemek (`ai/README.md`'deki komutla aynı).
+- **Not:** 21.11.2026. Kapsama %96,6 (parsing, pii, extraction, matching, recommendation, embedding, prompts; 376 test). `ai/pyproject.toml`: pytest-cov ve `fail_under = 70`; eşik sadece `pytest --cov` ile devreye girer (tek dosya çalıştırma kırmızı olmasın, #157 incelemesi). Ataberk'e: CI'daki AI işinde komut `pytest -rs --cov` olmalı; AI işini zorunlu kontrollere eklemek (branch koruması); mypy kapsamı #159'da.
 
 ### T-055 · Model değerlendirme raporu
 

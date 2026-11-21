@@ -47,16 +47,18 @@ prompts = ["*/*.txt"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests", "eval/tests"]
-# Kapsama her pytest çalışmasında ölçülür; %70'in altı hata (T-054). CI'daki `pytest -rs` bunu kendiliğinden uygular.
-addopts = "--cov --cov-report=term-missing:skip-covered"
 
 [tool.coverage.run]
 source = ["parsing", "pii", "extraction", "matching", "recommendation", "embedding", "prompts", "pipeline"]
 # Komut satırı girişi: sadece veritabanına bağlanıp modülü çağırır (testi modülün kendisinde).
 omit = ["*/__main__.py"]
 
+# Kapsama sadece `--cov` verilince ölçülür (CI: `pytest -rs --cov`); %70'in altı hata (T-054). Tek dosya çalıştırırken
+# eşik devreye girmez.
 [tool.coverage.report]
 fail_under = 70
+show_missing = true
+skip_covered = true
 
 [tool.ruff]
 line-length = 120
