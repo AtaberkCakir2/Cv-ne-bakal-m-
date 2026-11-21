@@ -97,6 +97,12 @@ prod-admin:
 prod-slow-queries:
 	$(PC_PROD) exec -T postgres sh -c 'psql -U "$$POSTGRES_USER" -d "$$POSTGRES_DB"' < infra/pc/slow-queries.sql
 
+# Vektörü boş yetkinlik ve ilanlara embedding (T-057 gelene kadar; infra/pc/deploy.md "7. Vektörler"). Git Bash.
+#   make prod-embed            yeni ilanlar      make prod-embed HEPSI=1   model değişince hepsi
+.PHONY: prod-embed
+prod-embed:
+	HEPSI=$(HEPSI) bash infra/pc/embed.sh
+
 staging-ps:
 	$(PC_STAGING) ps
 
