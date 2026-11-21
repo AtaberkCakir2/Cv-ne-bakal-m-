@@ -33,6 +33,26 @@ Testler gerçek CV kullanmaz; PDF'ler test sırasında bellekte üretilir.
 | `eval/` | Etiketli değerlendirme seti ve araçları (T-019) | Devam ediyor |
 | `eval/benchmark/` | Yerel LLM benchmark'ı (T-018): Llama 3.1 8B seçildi, karar #26 | ✅ |
 
+### `pipeline` — analiz zinciri (T-057)
+
+```python
+from pipeline import AnalysisError, analyze_cv
+
+try:
+    out = analyze_cv(pdf_bytes, role_id=3, conn=psycopg_conn)  # embed=default_encoder().encode isteğe bağlı
+except AnalysisError as e:
+    e.code  # PDF_UNREADABLE | PDF_TOO_LARGE | NO_TEXT_FOUND | INTERNAL (sözleşmedeki error.code)
+out.result  # target_role, postings_analyzed, match_score, present_skills, missing_skills, model
+out.stats  # loglanabilir: sayfa, dil, maskelenen alan sayıları, adım süreleri, LLM hata kodları
+```
+
+- **Sıra:** PDF → metin (`parsing`) → dil tahmini → maskeleme (`pii`, NER kuruluysa BERTurk) → çıkarım v2 (`extraction.llm`) → eşleştirme (`matching`, `role_skill_stats`) → öneri (`recommendation`, `resources`). Backend'in `output_from_result` fonksiyonu `out.result`'ı doğrudan okur.
+- **Gizlilik:** PDF ve ham metin sadece fonksiyonun içinde bellekte; yazılmaz, loglanmaz, sonuçta yok. LLM'e maskelenmiş metin, öneri adımına sadece yetkinlik adları gider. Hata mesajları sadece kod taşır.
+- **Süre:** analiz işçisinin sınırı 180 sn; zincir 165 sn bütçeyle çalışır. Çıkarım en fazla 90 sn bekler (yavaş makinede öneriye de süre kalsın; #155 incelemesinde production PC'de çıkarım 145 sn sürüp zaman aşımına düşüyordu), LLM çağrılarının zaman aşımı kalan süreye göre kısalır; 20 sn'den az kaldıysa LLM atlanır. LLM düşerse çıkarım v1 sözlük sonucuyla, öneri kurallı sıralamayla devam eder; analiz yine tamamlanır (`stats` hata kodunu taşır).
+- **Taranmış PDF:** metin 200 karakterden azsa `NO_TEXT_FOUND`; OCR yedek akışı (T-029) gelince değişecek.
+- **`model.prompt_version`:** iki prompt tek alanda, `"skill_extraction:v1,recommendation:v1"` (karar önerisi #38).
+- **Deneme (21.11.2026):** 3 TR sentetik CV (`eval/dataset/cv_specs`, syn-005…007), gerçek Ollama (Llama 3.1 8B, bu bilgisayar), sahte veritabanı: CV başına 10–28 sn (çıkarım 7–16 sn, öneri 0–2,4 sn), LLM hatası yok; ad, e-posta, telefon maskelendi.
+
 ### `parsing` — PDF metin çıkarma
 
 ```python
