@@ -346,13 +346,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-087 · Felaket kurtarma tatbikatı
 
-- **Durum:** Devam Ediyor
+- **Durum:** Tamamlandı
 - **Tarih:** 28.12.2026 – 03.01.2027 · **Öncelik:** P0 · **Efor:** 6 saat · **Alan:** Operasyon / İzleme
 - **Bağımlılık:** T-068, T-075
 - **Destek:** —
 - **Çıktı:** DR tatbikat raporu
 - **Kabul kriteri:** Başka bir bilgisayara (ör. Burak'ın veya Anıl'ın) yedekten sıfırdan kurulum ve tünelin oraya taşınması. Hedef: RTO < 4 saat, RPO < 24 saat. Süre ölçülüp runbook'a yazıldı.
-- **Not:** 18.11.2026: Prosedür ve tatbikat kaydı hazır (`docs/runbook/felaket-kurtarma.md`); production PC'sinde gerçek veriyle geri yükleme testi geçti (1,97 MB, 12 sn, 11 tablo eşleşti). Kalan: Burak'ın veya Anıl'ın bilgisayarında tatbikat (geçici `dr-test` tüneliyle), süreleri tabloya yazmak; önce parola yöneticisindeki `.env.prod` kaydının eksiksiz olduğu kontrol edilmeli (prosedür 0. adım).
+- **Not:** 20.11.2026: Başka bilgisayarda tatbikat **iptal edildi (karar #37)**; görev prosedür ve production PC'sindeki geri yükleme testiyle kapatıldı. Kabul kriterindeki RTO ölçülmedi. 18.11.2026: Prosedür ve tatbikat kaydı hazır (`docs/runbook/felaket-kurtarma.md`); production PC'sinde gerçek veriyle geri yükleme testi geçti (1,97 MB, 12 sn, 11 tablo eşleşti). Kalan: Burak'ın veya Anıl'ın bilgisayarında tatbikat (geçici `dr-test` tüneliyle), süreleri tabloya yazmak; önce parola yöneticisindeki `.env.prod` kaydının eksiksiz olduğu kontrol edilmeli (prosedür 0. adım).
 
 ### T-088 · Operasyon runbook'u
 
@@ -372,6 +372,7 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 - **Destek:** Burak, Anıl
 - **Çıktı:** Prova notu
 - **Kabul kriteri:** PC'de prova projesinde (`careerai-staging`) production'ın birebir kopyasıyla deploy + rollback provası; checklist üzerinden kuru çalıştırma; sunum B planı (127.0.0.1'de yerel demo, telefondan internet paylaşımı) denendi.
+- **Not:** 21.11.2026: deploy + rollback provasının ilk turu yapıldı (go-live #49): production dökümüyle 146 sn, geri yükleme prosedüründeki yetki hatası düzeltildi (`docs/runbook/operasyon.md` 2. bölüm). `infra/pc/.env.staging` bu PC'de oluşturuldu. Ocak'ta v1.0.0 adayıyla tekrarlanacak; kalan: checklist kuru çalıştırma, sunum B planı.
 
 ---
 
