@@ -1,28 +1,4 @@
-# Trivy istisnaları: yedek imajı (T-064, 15.11.2026). security.yml bu dosyayı --ignorefile ile kullanır.
-# Hepsi restic 0.19.1 ikilisinin içindeki Go kütüphanelerinde; restic'in daha yeni sürümü yok, işletim sistemi
-# paketleri temiz (apk upgrade). Risk düşük: konteynerin dışarı açık portu yok, sadece Postgres'e ve B2'ye
-# (TLS) bağlanır; yedek restic tarafında şifreli ve MAC'li olduğu için araya giren biri okuyamaz/değiştiremez.
-# Çoğu DoS; ssh, gRPC/xDS, html/template restic'in kullandığı yollarda değil.
-# exp: tarihi geçince istisna düşer ve tarama yeniden kırmızı olur: restic yeni sürüm çıkarmış mı bakın,
-# Dockerfile'daki sürümü yükseltin, kalanları gözden geçirip tarihi uzatın.
-CVE-2026-111943 exp:2027-01-15
-CVE-2026-33818 exp:2027-01-15
-CVE-2026-39821 exp:2027-01-15
-CVE-2026-39822 exp:2027-01-15
-CVE-2026-46600 exp:2027-01-15
-CVE-2026-56851 exp:2027-01-15
-CVE-2026-56852 exp:2027-01-15
-CVE-2026-56853 exp:2027-01-15
-CVE-2026-56854 exp:2027-01-15
-CVE-2026-56858 exp:2027-01-15
-CVE-2026-56859 exp:2027-01-15
-CVE-2026-56860 exp:2027-01-15
-CVE-2026-56862 exp:2027-01-15
-CVE-2026-63209 exp:2027-01-15
-CVE-2026-78661 exp:2027-01-15
-CVE-2026-78667 exp:2027-01-15
-CVE-2026-78669 exp:2027-01-15
-CVE-2026-84304 exp:2027-01-15
-CVE-2026-84445 exp:2027-01-15
-CVE-2026-97031 exp:2027-01-15
-GHSA-hrxh-6v49-42gf exp:2027-01-15
+# Trivy istisnaları: yedek imajı (T-064). security.yml bu dosyayı --ignorefile ile kullanır.
+# 21.11.2026: restic 0.20.0 ile istisna kalmadı (yüksek/kritik açık 0); 0.19.1'in 21 Go kütüphanesi istisnası silindi.
+# Yeni istisna gerekirse: CVE kimliği + "exp:YYYY-AA-GG" (süre dolunca tarama yeniden kırmızı olur) ve gerekçe yorumu.
+# exp tarihi geçince: restic yeni sürüm çıkarmış mı bakın, Dockerfile'daki sürümü yükseltin, kalanları gözden geçirin.
