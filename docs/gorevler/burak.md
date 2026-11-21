@@ -96,7 +96,7 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 - **Destek:** —
 - **Çıktı:** Prompt kütüphanesi
 - **Kabul kriteri:** Prompt'lar /ai/prompts altında versiyonlu; her analizde model_name ve prompt_version kaydedilir (tekrarlanabilirlik).
-- **Devam notu (10.11.2026):** Yapılan: `ai/prompts/` (`get_prompt`, `model_info`, `skill_extraction/v1.txt`, #68); T-032 (#78) LLM çağrısında `get_prompt("skill_extraction")` kullanıyor ve `ExtractionResult.model` alanında `{"name", "prompt_version"}` döndürüyor. · Sıradaki adım: T-057'de işçi `result.model` değerini analiz sonucuna ve `analyses` tablosuna yazınca kriterin "her analizde kaydedilir" kısmı kapanır, görev o zaman Tamamlandı yapılır. · Açık sorular / engeller: T-043 ikinci prompt'u getirince sözleşmedeki tek `prompt_version` alanının nasıl kullanılacağı karar ister. · Branch: yok (kod main'de; kalan iş T-057'nin dalında)
+- **Devam notu (21.11.2026):** Yapılan: `ai/prompts/` (#68), LLM çağrısı `get_prompt` kullanıyor (#78); analiz zinciri (#155) her sonuçta `model: {name, prompt_version}` döndürüyor, golden test (T-058) bunu doğruluyor. · Sıradaki adım: Anıl'ın işçisi (`AiAnalyzer`) `result.model` değerini `analyses` tablosuna yazınca görev Tamamlandı yapılır. · Açık sorular / engeller: T-043 ikinci prompt'u getirince sözleşmedeki tek `prompt_version` alanının nasıl kullanılacağı karar ister. · Branch: yok (AI tarafı main'de)
 
 ---
 
