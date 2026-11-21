@@ -173,8 +173,8 @@ jobs:
       - run: pip install -e ".[dev]"
       - run: ruff check .
       - run: ruff format --check .
-      # Yollar ai/README.md'deki komutla aynı; orası değişirse burası da değişir.
-      - run: mypy parsing pii extraction tests eval/scripts
+      # Tüm ai kodu (yeni modüller kendiliğinden girer); eval/tests henüz strict değil. ai/README.md ile aynı tutun.
+      - run: mypy . --exclude '^eval/tests/'
       - run: pytest -rs
 
   web:
