@@ -14,7 +14,7 @@ python -m venv .venv
 pip install -e ".[dev]"
 pytest
 ruff check . && ruff format --check .
-mypy parsing pii extraction prompts embedding matching recommendation tests eval/scripts
+mypy . --exclude '^eval/tests/'   # CI ile aynı (.github/workflows/ci.yml); yeni modüller kendiliğinden girer
 ```
 
 Testler gerçek CV kullanmaz; PDF'ler test sırasında bellekte üretilir. `pytest` kapsamayı da ölçer ve %70'in altında hata verir (T-054, `pyproject.toml`); 21.11.2026'da %96,6 (torch ve veritabanı testleri dahil değil: `TEST_DATABASE_URL`, `CAREERAI_EMBEDDING_TEST`).
