@@ -92,7 +92,7 @@ from extraction.llm import extract_skills_v2
 
 result = extract_skills_v2(masked_text, "tr")  # OLLAMA_URL, OLLAMA_MODEL ortam değişkenleri; yoksa yerel llama3.1:8b
 result.present_skills()  # sözleşmedeki present_skills (verified dahil)
-result.model  # {"name": "llama3.1:8b", "prompt_version": "v1"}
+result.model  # {"name": "llama3.1:8b", "prompt_version": "v2"}
 result.llm_error  # None, "LLM_TIMEOUT" veya "INTERNAL"; hata olursa sonuç v1'dir
 ```
 
@@ -108,7 +108,7 @@ result.llm_error  # None, "LLM_TIMEOUT" veya "INTERNAL"; hata olursa sonuç v1'd
 from prompts import get_prompt, model_info
 
 prompt = get_prompt("skill_extraction")  # CURRENT'taki sürüm; ("skill_extraction", "v1") ile sabitlenebilir
-model = model_info("llama3.1:8b", prompt)  # {"name": "llama3.1:8b", "prompt_version": "v1"}
+model = model_info("llama3.1:8b", prompt)  # {"name": "llama3.1:8b", "prompt_version": "v2"}
 ```
 
 - Her prompt `prompts/<ad>/<sürüm>.txt` dosyasıdır. Yayımlanmış dosya değiştirilmez: yeni sürüm aç, `CURRENT`'ı güncelle, özetini `tests/prompts/test_library.py` içine ekle.
