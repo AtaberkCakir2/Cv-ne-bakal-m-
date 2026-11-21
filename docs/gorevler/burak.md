@@ -148,12 +148,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-054 · AI modülü birim testleri
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 30.11.2026 – 06.12.2026 · **Öncelik:** P1 · **Efor:** 8 saat · **Alan:** Test & QA
 - **Bağımlılık:** T-042
 - **Destek:** —
 - **Çıktı:** tests/ai
 - **Kabul kriteri:** pytest; parsing, PII, çıkarım, eşleştirme için birim testler; kapsama ≥ %70; CI'da zorunlu.
+- **Not:** 21.11.2026. Kapsama %96,6 (parsing, pii, extraction, matching, recommendation, embedding, prompts; 376 test). `ai/pyproject.toml`: pytest-cov, her `pytest` çalışmasında ölçüm ve `fail_under = 70`; CI'daki AI işi (`pytest -rs`) bunu kendiliğinden uygular. Ataberk'e: AI işini zorunlu kontrollere eklemek (branch koruması) ve CI'daki mypy satırına `prompts embedding matching recommendation` eklemek (`ai/README.md`'deki komutla aynı).
 
 ### T-055 · Model değerlendirme raporu
 
