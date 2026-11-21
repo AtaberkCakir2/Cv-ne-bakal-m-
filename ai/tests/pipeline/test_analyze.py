@@ -13,6 +13,7 @@ import pytest
 
 from extraction.llm import LlmError
 from pipeline import AnalysisError, analyze_cv, guess_lang, prompt_version
+from pipeline.analyze import BUDGET_SECONDS, EXTRACT_MAX_SECONDS
 from tests.parsing.conftest import make_pdf
 
 REPO = Path(__file__).resolve().parents[3]
@@ -183,6 +184,14 @@ def test_llm_timeouts_follow_the_remaining_budget() -> None:
     _, ollama, _ = run(budget_s=100)
     assert ollama.timeouts[0] <= 80  # 100 - MIN_LLM_SECONDS
     assert ollama.timeouts[1] < 100
+
+
+def test_extraction_wait_is_capped_so_recommendation_gets_time() -> None:
+    # #155 incelemesi: production PC'de çıkarım 145 sn bekleyip bütçeyi bitiriyordu, öneri LLM'i hiç çalışmıyordu.
+    _, ollama, _ = run()
+    assert ollama.timeouts[0] == EXTRACT_MAX_SECONDS == 90
+    # Çıkarım sınırın tamamını kullansa bile öneriye en az 60 sn kalır.
+    assert BUDGET_SECONDS - EXTRACT_MAX_SECONDS - 5 >= 60
 
 
 def test_no_llm_when_budget_is_spent() -> None:

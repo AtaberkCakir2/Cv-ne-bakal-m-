@@ -15,9 +15,10 @@ Gizlilik (CLAUDE.md kural 5, karar #9):
 - LLM'e (yerel Ollama) sadece maskelenmiş metin gider; öneri adımına sadece yetkinlik adları.
 - Log ve `stats` sadece sayı ve kod içerir.
 
-Süre: analiz işçisinin sınırı 180 sn. Zincir `budget_s` içinde kalmaya çalışır: her LLM çağrısının zaman aşımı kalan
-süreye göre kısalır; öneri için yeterli süre kalmadıysa LLM atlanır, kurallı öneri yapılır. LLM düşerse (zaman aşımı,
-Ollama kapalı) çıkarım v1 sözlük sonucuyla, öneri kurallı sıralamayla devam eder; analiz yine `done` olur.
+Süre: analiz işçisinin sınırı 180 sn. Zincir `budget_s` içinde kalmaya çalışır: çıkarım en fazla
+`EXTRACT_MAX_SECONDS` bekler (öneriye süre kalsın), her LLM çağrısının zaman aşımı kalan süreye göre kısalır; öneri
+için yeterli süre kalmadıysa LLM atlanır, kurallı öneri yapılır. LLM düşerse (zaman aşımı, Ollama kapalı)
+çıkarım v1 sözlük sonucuyla, öneri kurallı sıralamayla devam eder; analiz yine `done` olur.
 """
 
 from __future__ import annotations
@@ -44,6 +45,10 @@ Embed = Callable[[Sequence[str]], list[list[float]]]
 
 BUDGET_SECONDS = 165.0  # işçinin 180 sn sınırının altında; veritabanına yazma payı
 MIN_LLM_SECONDS = 20.0  # bundan az süre kaldıysa LLM çağrılmaz
+# Çıkarımın en fazla bekleyeceği süre: yavaş makinede (production PC, Ollama CPU'da) çıkarım bütçeyi tek başına
+# yiyordu ve öneri LLM'i hiç çalışamıyordu (#155 incelemesi: çıkarım 145 sn bekleyip zaman aşımına düşüyordu).
+# Böylece öneriye en az ~70 sn kalır; çıkarım bu sürede bitmezse v1 sözlük sonucu kullanılır.
+EXTRACT_MAX_SECONDS = 90.0
 _SAFETY_SECONDS = 5.0
 
 _TR_LETTERS = re.compile(r"[çğıöşüÇĞİÖŞÜ]")
@@ -146,7 +151,7 @@ def guess_lang(text: str) -> Lang:
 def prompt_version(extraction: ModelInfo, recommendation: ModelInfo) -> str:
     """Analizdeki iki prompt sürümü tek alanda: "skill_extraction:v1,recommendation:v1".
 
-    Sözleşmede tek `model.prompt_version` alanı var (`analyses.prompt_version` varchar(60)); karar önerisi #37.
+    Sözleşmede tek `model.prompt_version` alanı var (`analyses.prompt_version` varchar(60)); karar önerisi #38.
     """
     return f"skill_extraction:{extraction['prompt_version']},recommendation:{recommendation['prompt_version']}"
 
@@ -154,7 +159,9 @@ def prompt_version(extraction: ModelInfo, recommendation: ModelInfo) -> str:
 def _extract(text: str, lang: Lang, factory: Callable[[float], Transport], left: float) -> ExtractionResult:
     if left < MIN_LLM_SECONDS:
         return extract_skills_v2(text, lang, transport=_timeout_transport)
-    return extract_skills_v2(text, lang, transport=factory(min(TIMEOUT_SECONDS, left - MIN_LLM_SECONDS)))
+    return extract_skills_v2(
+        text, lang, transport=factory(min(TIMEOUT_SECONDS, EXTRACT_MAX_SECONDS, left - MIN_LLM_SECONDS))
+    )
 
 
 def _recommend(
