@@ -175,12 +175,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-060 · React Native (Expo) proje kurulumu
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 30.11.2026 – 06.12.2026 · **Öncelik:** P0 · **Efor:** 6 saat · **Alan:** Mobil
 - **Bağımlılık:** T-040 (Anıl)
 - **Destek:** Anıl
 - **Çıktı:** mobile/ iskeleti
 - **Kabul kriteri:** Expo + TypeScript; web ile ortak API istemcisi ve tipler; expo-secure-store ile token saklama; EAS Build yapılandırması.
+- **Not:** 21.11.2026. `mobile/`: Expo SDK 58 + TypeScript (5.9, web ile aynı ana sürüm; openapi-typescript TS 6'yı desteklemiyor). Tipler web'in `openapi.json`'ından `npm run gen:api` ile üretilir, istemci web'deki gibi `openapi-fetch` + aynı yenileme kuralları (`src/auth/session.ts`). Refresh token `expo-secure-store`'da (bu cihaza özel), access token bellekte. `eas.json`: `preview` (APK) ve `production` (AAB), API `https://api.cvnebakalim.com`; ilk EAS derlemesi için Expo hesabı ve `eas init` gerekir. `npm run typecheck` temiz, `expo export --platform android` paketliyor. `package-lock.json` eklendi (güvenlik raporu G-8); `npm audit`: 3 orta seviye, Expo'nun derleme aracındaki minimatch (uygulamaya girmiyor, düzeltme Expo güncellemesiyle). Ekran şimdilik backend sağlığı; giriş ve CV yükleme T-061.
 
 ### T-061 · Mobil ekranlar — giriş, KVKK onayı, CV yükleme
 
