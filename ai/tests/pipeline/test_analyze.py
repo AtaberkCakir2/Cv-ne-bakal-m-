@@ -158,7 +158,7 @@ def test_result_follows_contract() -> None:
             assert set(item["properties"]["resources"]["items"]["required"]) <= r.keys()
     docker = missing[0]["resources"]
     assert docker[0]["resource_id"] == 11 and docker[0]["reason"].startswith("İncelenen 150 Backend Developer")
-    assert out.result["model"]["prompt_version"] == "skill_extraction:v1,recommendation:v1"
+    assert out.result["model"]["prompt_version"] == "skill_extraction:v2,recommendation:v1"
 
 
 def test_personal_data_never_leaves_the_function() -> None:
