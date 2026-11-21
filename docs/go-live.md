@@ -121,6 +121,7 @@ Canlıya çıkıştan iki ay önce, sorumlusu Ataberk olan ve production'da bug�
 | 24 Loglarda kişisel veri yok | Uygun (örneklem) | Son 1 saatin api ve worker-data loglarında e-posta adresi biçiminde metin yok |
 | 34 Gece toplaması 7 gün hatasız | **Değil** | 12 çalışmanın 12'si başarılı, ama sadece 15.11 ve 18.11 günleri: PC kapalı kaldığı için 7 günlük kesintisiz seri yok |
 | 35 Ölü link < %2 | **Uygun** | 20.11.2026, deploy sonrası işçi açılışında telafi edilen ilk kontrol: 526 link, **4 ölü = %0,8**, geri gelen 0 (`python -m collector resources-report`, worker-data içinde). YouTube videoları yüklendikten sonra 4/1.565 = %0,3 (yeni videolar yüklenirken API'den doğrulanır). Haftalık kontrol pazar 07:00; PC kapalıysa açılışta telafi edilir |
+| 49 ★ Rollback 15 dk içinde | **Uygun** | 21.11.2026, prova ortamında production dökümüyle: yeni sürüm deploy + veri bozulması → önceki imaj + deploy öncesi dökümden yükleme + yetkiler = **146 sn**; satır sayıları ve API uçları doğru (`docs/runbook/operasyon.md` 2. bölüm "Prova"). Provada geri yükleme prosedüründeki yetki hatası bulunup düzeltildi |
 
 ### Ön kontrol (18.11.2026, Anıl)
 
