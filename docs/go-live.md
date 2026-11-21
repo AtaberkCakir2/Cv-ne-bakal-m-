@@ -43,7 +43,7 @@
 ### Yedekleme
 
 - [ ] **19.** ★ Günlük otomatik yedek çalışıyor ve PC dışında şifreli duruyor — _Doğrulama:_ restic snapshots listesi — _Sorumlu:_ Ataberk
-- [ ] **20.** ★ Yedekten başka bir bilgisayara geri yükleme test edildi (RTO < 4 saat) — _Doğrulama:_ DR tatbikat raporu — _Sorumlu:_ Ataberk
+- [ ] ~~**20.** ★ Yedekten başka bir bilgisayara geri yükleme test edildi (RTO < 4 saat) — _Doğrulama:_ DR tatbikat raporu — _Sorumlu:_ Ataberk~~ — **İptal (karar #37):** başka bilgisayarda tatbikat yapılmayacak; prosedür (`docs/runbook/felaket-kurtarma.md`) ve production PC'sindeki geri yükleme testi yeterli sayıldı
 
 ### İzleme
 
@@ -116,7 +116,7 @@ Canlıya çıkıştan iki ay önce, sorumlusu Ataberk olan ve production'da bug�
 | 17 En az yetkili DB kullanıcısı | Uygun | `careerai_app`: süper kullanıcı değil, hiçbir tablonun sahibi değil, `TRUNCATE` yok; `careerai_monitor` salt okunur (T-075) |
 | 18 Yavaş sorgu yok | Ölçüm hazır | HNSW indeksleri var. `pg_stat_statements` açıldı (18.11.2026: `compose.yml` + `deploy.sh setup_stats`); bir sonraki deploy'dan sonra birkaç gün kullanımın ardından `make prod-slow-queries` ile ölçülecek (≈p95 = ortalama + 1,645σ; kesin p95 Loki'deki istek süresinden) |
 | 19 ★ Günlük yedek, PC dışında şifreli | Uygun | restic → B2, son yedek 18.11.2026 00:33; haftalık depo kontrolü 15.11.2026 |
-| 20 ★ Başka bilgisayara geri yükleme | Hazırlık | Prosedür: `docs/runbook/felaket-kurtarma.md`. Production PC'sinde geri yükleme testi geçti (12 sn, 11 tablo eşleşti); başka bilgisayarda tatbikat yapılmadı (T-087) |
+| 20 ★ Başka bilgisayara geri yükleme | **İptal (karar #37)** | Prosedür: `docs/runbook/felaket-kurtarma.md`. Production PC'sinde geri yükleme testi geçti (12 sn, 11 tablo eşleşti); başka bilgisayarda tatbikat yapılmadı (T-087) |
 | 21 ★ Grafana, 12 kural, dış prob | Uygun | 12 uyarı kuralı yüklü, dış prob `api.cvnebakalim.com` `up`. Tünel durdurma testi yapılmadı |
 | 24 Loglarda kişisel veri yok | Uygun (örneklem) | Son 1 saatin api ve worker-data loglarında e-posta adresi biçiminde metin yok |
 | 34 Gece toplaması 7 gün hatasız | **Değil** | 12 çalışmanın 12'si başarılı, ama sadece 15.11 ve 18.11 günleri: PC kapalı kaldığı için 7 günlük kesintisiz seri yok |
