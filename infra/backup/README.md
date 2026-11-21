@@ -6,7 +6,7 @@ Windows'ta systemd/cron olmadığı için yedek, production compose'unda (`infra
 
 | Dosya | Ne yapar |
 |---|---|
-| `Dockerfile` | restic 0.19.1 + Postgres 16 istemcisi; `deploy.sh` yerelde derler (`careerai/backup:local`) |
+| `Dockerfile` | restic 0.20.0 + Postgres 16 istemcisi; `deploy.sh` yerelde derler (`careerai/backup:local`) |
 | `scheduler.sh` | Konteynerin ana süreci: 10 dakikada bir son başarılı yedeğe bakar, 02:00'den sonra yedek yoksa `backup.sh`'ı çalıştırır; başarısızsa 30 dk sonra yeniden dener |
 | `backup.sh` | Döküm diske yazılmadan restic'e akar; eski yedekleri siler; başarıda `/state/last-success`, haftalık kontrolde `/state/last-check` yazar |
 | `restore-test.sh [ortam] [snapshot]` | PC'de (Git Bash) yedeği geçici bir Postgres kapsayıcısına yükler, satır sayılarını canlıyla karşılaştırır. Canlı veritabanına yazmaz |
@@ -78,11 +78,13 @@ Son yedeği geçici bir Postgres'e yükler (yedek `backup` imajıyla tek seferli
 ```bash
 C="docker compose -p careerai-prod --env-file infra/pc/.env.prod -f infra/pc/compose.yml"
 $C stop api worker-data
-$C exec -T postgres sh -c 'dropdb -U "$POSTGRES_USER" "$POSTGRES_DB" && createdb -U "$POSTGRES_USER" "$POSTGRES_DB"'
+$C exec -T postgres sh -c 'dropdb -U "$POSTGRES_USER" --force "$POSTGRES_DB" && createdb -U "$POSTGRES_USER" "$POSTGRES_DB"'
 $C exec -T backup sh -c 'restic dump --tag "$BACKUP_TAG" latest "/careerai-$BACKUP_TAG.dump"' \
-  | $C exec -T postgres sh -c 'pg_restore -U "$POSTGRES_USER" -d "$POSTGRES_DB" --no-owner --exit-on-error'
-$C up -d
+  | $C exec -T postgres sh -c 'pg_restore -U "$POSTGRES_USER" -d "$POSTGRES_DB" --no-owner --no-privileges --exit-on-error'
+bash infra/pc/deploy.sh <çalışan sürüm>    # rolleri ve yetkileri yeniden verir, servisleri açar
 ```
+
+Yetkiler dökümden alınmaz (`--no-privileges`), `deploy.sh` verir. Dökümle gelseydi: rolü olmayan ortamda (`careerai_monitor` sadece izleme profiliyle kurulur; prova ortamı, yeni bilgisayar) ilk `GRANT` hatasında yükleme durur, uygulama rolünün yetkileri gelmez, API 500 döner ama `/health/ready` 200 der (rollback provası, 21.11.2026). `dropdb --force`: izleme servisleri veri tabanına bağlıyken de çalışır. Deploy öncesi yerel döküm için `restic dump … |` yerine `< ~/careerai-yedek/deploy-….dump` kullanılır (`docs/runbook/operasyon.md` 2. bölüm).
 
 `dropdb` geri alınamaz: önce `restore-test.sh` ile yedeğin açıldığını görün. Deploy öncesi alınan yerel dökümler de `~/careerai-yedek` altındadır (`infra/pc/deploy.sh`).
 
