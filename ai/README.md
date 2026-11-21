@@ -53,6 +53,19 @@ out.stats  # loglanabilir: sayfa, dil, maskelenen alan sayıları, adım sürele
 - **`model.prompt_version`:** iki prompt tek alanda, `"skill_extraction:v1,recommendation:v1"` (karar önerisi #38).
 - **Deneme (21.11.2026):** 3 TR sentetik CV (`eval/dataset/cv_specs`, syn-005…007), gerçek Ollama (Llama 3.1 8B, bu bilgisayar), sahte veritabanı: CV başına 10–28 sn (çıkarım 7–16 sn, öneri 0–2,4 sn), LLM hatası yok; ad, e-posta, telefon maskelendi.
 
+#### Golden test (T-058)
+
+`tests/e2e_pipeline/`: 10 sentetik CV (`eval/dataset/synthetic/syn-004..013.pdf`) zincirden geçer, sonuç
+`golden/<cv_id>.json` ile birebir karşılaştırılır ve `contracts/analysis_result.schema.json` ile doğrulanır; CV
+başlığındaki uydurma ad/e-posta/telefon sonuçta geçmemeli. Pozisyon talebi ve kaynaklar sabit sahte veri
+(`roles.json`), veritabanı gerekmez. CI'da LLM yok sayılır (v1 + kurallı öneri, belirleyici); ad tespiti sadece
+kurallarla. Taranmış iki CV (syn-009, syn-012) OCR (T-029) gelene kadar `NO_TEXT_FOUND` bekler.
+
+```bash
+CAREERAI_OLLAMA_TEST=1 pytest tests/e2e_pipeline     # gerçek model: golden yetkinlikler kaybolmamalı (~1,5 dk)
+CAREERAI_GOLDEN_UPDATE=1 pytest tests/e2e_pipeline   # bilerek yapılan değişiklikten sonra golden'ı yenile, farkı incele
+```
+
 ### `parsing` — PDF metin çıkarma
 
 ```python
