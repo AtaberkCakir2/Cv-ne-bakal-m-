@@ -1,0 +1,12 @@
+{
+  "cv_id": "syn-036", "language": "en", "layout": "single_column", "scanned": false,
+  "target_role": "devops-engineer", "experience": "new_grad", "double": false,
+  "header": {"name": "Sena Yalçın", "title": "Junior Cloud / DevOps Engineer", "contact": ["sena.yalcin@example.org", "0548 000 72 83", "Ankara"]},
+  "main": [
+    {"title": "Summary", "text": ["Recent graduate with AWS and Azure certifications and a 6-month DevOps internship. Interested in infrastructure as code, CI/CD and observability."]},
+    {"title": "Experience", "items": [{"heading": "DevOps Intern — Example Software House", "meta": "Jan 2026 – Jun 2026 · 6 months", "bullets": ["Wrote Terraform modules for VPC, ECS and RDS resources on AWS.", "Migrated Jenkins pipelines to GitLab CI with reusable templates.", "Added CloudWatch alarms and on-call runbooks for two services.", "Containerised a legacy Java application with Docker."]}]},
+    {"title": "Certifications", "list": ["AWS Certified Cloud Practitioner (2025)", "Microsoft Azure Fundamentals AZ-900 (2025)"]},
+    {"title": "Education", "items": [{"heading": "B.Sc. Information Systems Engineering — Sample University", "meta": "2022 – 2026"}]},
+    {"title": "Skills", "list": ["AWS (EC2, ECS, RDS, IAM, CloudWatch), Azure basics", "Terraform, GitLab CI, Jenkins", "Docker, basic Kubernetes", "Python, Bash, YAML", "English: C1"]}
+  ]
+}

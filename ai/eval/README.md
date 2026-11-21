@@ -20,7 +20,7 @@ Plan: #30'da Ataberk'le kararlaştırıldı (29.10.2026). Görev durumu: `docs/g
 |---|---|---|
 | CV tanım dosyaları (kaynak) | `dataset/cv_specs/<cv_id>.json` | Evet |
 | Sentetik CV PDF'leri | `dataset/synthetic/<cv_id>.pdf` (`generate_cvs.py` üretir; elle düzenlenmez) | Evet |
-| İlk 3 örnek CV (sadece metin, PDF'i yok) | `dataset/synthetic/syn-001..003.md` | Evet |
+| İlk 3 örnek CV (sadece metin, PDF'i yok; veri setine sayılmaz) | `examples/synthetic/syn-001..003.md` | Evet |
 | Şablon girdisi (pozisyon × yetkinlik × eş anlamlı) | `dataset/template_input.json` (Ataberk, `scraper/`'dan) | Evet |
 | CV listesi (kimlik içermez) | `dataset/manifest.csv` | Evet |
 | Etiketler | `dataset/labels/<cv_id>/<etiketleyici>.json` | Evet |

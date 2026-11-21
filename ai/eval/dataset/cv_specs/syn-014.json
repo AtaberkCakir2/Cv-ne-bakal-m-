@@ -1,0 +1,15 @@
+{
+  "cv_id": "syn-014", "language": "tr", "layout": "single_column", "scanned": false,
+  "target_role": "backend-developer", "experience": "intern", "double": true,
+  "header": {"name": "Selin Arıkan", "title": "Bilgisayar Mühendisliği 3. sınıf · Backend stajı arıyorum", "contact": ["selin.arikan@example.com", "0541 000 12 34", "Eskişehir"]},
+  "main": [
+    {"title": "Hakkımda", "text": ["Sunucu tarafı geliştirmeye ilgi duyan, yaz stajı arayan bir öğrenciyim. Okul projelerinde Java ve Spring Boot ile REST servisleri yazdım. Bu yıl Go dilini öğrenmek istiyorum."]},
+    {"title": "Eğitim", "items": [{"heading": "Bilgisayar Mühendisliği, Lisans — Örnek Üniversitesi", "meta": "2023 – 2027 (beklenen) · GNO 3,12", "text": ["İlgili dersler: Veri Yapıları, Veritabanı Sistemleri, Bilgisayar Ağları, Yazılım Mühendisliği."]}]},
+    {"title": "Projeler", "items": [
+      {"heading": "Yurt Yemekhane Rezervasyon Servisi", "meta": "Dönem projesi · 3 kişilik ekip", "bullets": ["Spring Boot ile rezervasyon ve menü uç noktalarını yazdım; veritabanı MySQL.", "JUnit ile servis katmanı için birim testleri ekledim.", "API dokümantasyonunu Swagger ile hazırladım."]},
+      {"heading": "Kişisel Not Uygulaması (API)", "meta": "Kişisel proje", "bullets": ["Python ve Flask ile JWT tabanlı giriş yapan küçük bir API.", "Uygulamayı Docker ile paketleyip arkadaşlarımın kullanımına açtım."]}
+    ]},
+    {"title": "Deneyim", "items": [{"heading": "Gönüllü Web Sorumlusu — Örnek Kulübü", "meta": "Ekim 2024 – halen", "bullets": ["Kulübün etkinlik sitesinin içerik güncellemelerini yapıyorum (WordPress)."]}]},
+    {"title": "Yetenekler", "list": ["Java (orta), Python (orta), SQL (temel)", "Spring Boot, Flask, MySQL", "Git, GitHub, Linux komut satırı", "İngilizce: B1"]}
+  ]
+}

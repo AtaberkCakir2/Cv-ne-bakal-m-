@@ -1,0 +1,18 @@
+{
+  "cv_id": "syn-027", "language": "en", "layout": "multi_column", "scanned": false,
+  "target_role": "mobile-developer", "experience": "experienced", "double": true,
+  "header": {"name": "Gizem Erdem", "title": "Senior iOS Developer · 6 years", "contact": ["gizem.erdem@example.com", "0532 000 61 72", "Istanbul / remote"]},
+  "sidebar": [
+    {"title": "Skills", "list": ["Swift — expert", "SwiftUI", "UIKit", "Combine", "Objective-C (legacy)", "Core Data", "XCTest", "Fastlane"]},
+    {"title": "Other", "list": ["Kotlin (basic)", "Firebase", "App Store releases"]},
+    {"title": "Languages", "list": ["English — fluent", "Turkish — native"]}
+  ],
+  "main": [
+    {"title": "Summary", "text": ["iOS developer with 6 years of experience shipping consumer apps with millions of users. I lead architecture decisions (MVVM, modularisation), mentor juniors and care deeply about app performance and accessibility."]},
+    {"title": "Experience", "items": [
+      {"heading": "Senior iOS Developer — Example Food Delivery", "meta": "Apr 2022 – present", "bullets": ["Rebuilt checkout flow in SwiftUI; crash-free sessions rose to 99.8%.", "Split the monolithic app into 12 Swift Package modules, cutting build time by 35%.", "Set up CI/CD with Fastlane and GitHub Actions for weekly App Store releases.", "Mentored 3 developers; led iOS interviews."]},
+      {"heading": "iOS Developer — Sample Bank (sample)", "meta": "Jun 2019 – Mar 2022", "bullets": ["Maintained an Objective-C and Swift codebase for retail banking.", "Implemented Face ID login and secure keychain storage.", "Wrote UI tests with XCTest."]}
+    ]},
+    {"title": "Education", "items": [{"heading": "B.Sc. Computer Engineering", "meta": "2015 – 2019"}]}
+  ]
+}

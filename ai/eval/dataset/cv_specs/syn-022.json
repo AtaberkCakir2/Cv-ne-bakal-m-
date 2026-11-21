@@ -1,0 +1,19 @@
+{
+  "cv_id": "syn-022", "language": "tr", "layout": "multi_column", "scanned": false,
+  "target_role": "full-stack-developer", "experience": "intern", "double": true,
+  "header": {"name": "Onur Demirtaş", "title": "Bilgisayar Mühendisliği öğrencisi · Full-stack stajyer adayı", "contact": ["onur.demirtas@example.com", "0507 000 64 25", "Kocaeli"]},
+  "sidebar": [
+    {"title": "Yetkinlikler", "list": ["JS / TS ★★★☆☆", "React ★★★☆☆", "Node.js ★★☆☆☆", "Express ★★☆☆☆", "MongoDB ★★☆☆☆", "Python ★★★☆☆"]},
+    {"title": "Araçlar", "list": ["Git", "Postman", "Docker (öğreniyorum)"]},
+    {"title": "Dil", "list": ["İngilizce — B2"]}
+  ],
+  "main": [
+    {"title": "Hakkımda", "text": ["Hem arayüz hem sunucu tarafında çalışmayı seven 3. sınıf öğrencisiyim. Hackathon'larda hızlı prototip çıkarma deneyimim var. Staj süresince test yazma ve bulut dağıtımı konusunda kendimi geliştirmek istiyorum."]},
+    {"title": "Projeler", "items": [
+      {"heading": "Kampüs Pazar Yeri", "meta": "Hackathon 2. si · 48 saat", "bullets": ["React ön yüz, Node.js + Express arka uç, veriler MongoDB Atlas'ta.", "Ürün fotoğrafları için basit bir dosya yükleme servisi yazdım."]},
+      {"heading": "Ders Notu Paylaşım Sitesi", "meta": "Dönem projesi", "bullets": ["Django ile kullanıcı girişi ve dosya paylaşımı; şablonlarda Bootstrap."]}
+    ]},
+    {"title": "Eğitim", "items": [{"heading": "Bilgisayar Mühendisliği — Örnek Teknik Üniversitesi", "meta": "2023 – 2027 (beklenen)", "text": ["Dersler: Web Programlama, Veritabanı Yönetimi, Yazılım Test Teknikleri."]}]},
+    {"title": "Etkinlikler", "list": ["Örnek Üniversitesi Yazılım Kulübü — eğitim koordinatörü"]}
+  ]
+}

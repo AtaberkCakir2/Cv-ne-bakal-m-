@@ -1,0 +1,16 @@
+{
+  "cv_id": "syn-035", "language": "en", "layout": "multi_column", "scanned": false,
+  "target_role": "devops-engineer", "experience": "intern", "double": false,
+  "header": {"name": "Kerem Uysal", "title": "DevOps Intern Candidate", "contact": ["kerem.uysal@example.com", "0537 000 51 62", "Izmir"]},
+  "sidebar": [
+    {"title": "Skills", "list": ["Linux — intermediate", "Bash — intermediate", "Docker — basic", "Git — intermediate", "Python — basic", "Networking basics (CCNA course)"]},
+    {"title": "Goals", "list": ["Learn Kubernetes", "AWS Cloud Practitioner exam"]},
+    {"title": "Languages", "list": ["English — B2", "Turkish — native"]}
+  ],
+  "main": [
+    {"title": "Profile", "text": ["Third-year computer engineering student interested in infrastructure and automation. I manage the servers of our student club and want to learn how production systems are run."]},
+    {"title": "Experience", "items": [{"heading": "System Admin (volunteer) — Student Club", "meta": "Sep 2024 – present", "bullets": ["Maintain an Ubuntu VPS running the club website and a Discord bot.", "Moved the services into Docker containers with docker-compose.", "Wrote shell scripts for nightly backups."]}]},
+    {"title": "Projects", "items": [{"heading": "Raspberry Pi Monitoring", "meta": "Personal", "bullets": ["Collected temperature and uptime metrics with a Python script and visualised them in Grafana."]}]},
+    {"title": "Education", "items": [{"heading": "B.Sc. Computer Engineering — Sample University", "meta": "2023 – 2027 (expected)"}]}
+  ]
+}

@@ -130,6 +130,19 @@ def test_skill_text_is_not_masked(text: str) -> None:
     assert result.text == text, (result.text, result.counts)
 
 
+@pytest.mark.parametrize("name", ["İrem Bulut", "Ayşe Bulut", "Elif Kaya Bulut"])
+def test_header_name_with_taxonomy_surname_is_masked(name: str) -> None:
+    # T-019 syn-038: "Bulut" soyadı taksonomide ("bulut bilişim") olduğu için başlıktaki ad maskelenmiyordu.
+    masked = mask(f"{name}\nYeni Mezun · Test Otomasyon Mühendisi\nYetenekler: Bulut Bilişim, Python").text
+    assert masked.startswith("[AD SOYAD]\n")
+    assert "Bulut Bilişim, Python" in masked  # yetkinlik yerinde kalır
+
+
+@pytest.mark.parametrize("line", ["Selin Python Developer", "Ece Backend Developer", "Python Django Developer"])
+def test_header_title_line_starting_with_first_name_is_not_a_name(line: str) -> None:
+    assert mask(f"{line}\nYetenekler: Python").text.startswith(line)
+
+
 def test_name_does_not_swallow_next_line() -> None:
     # PDF'ten çıkan metinde ad ve unvan ayrı satırlarda; unvan ada katılmamalı.
     masked = mask("Can Yıldırım\nVeri Bilimci · 3 yıl").text
@@ -163,7 +176,7 @@ def test_synthetic_cv_has_no_personal_data_after_masking(spec: dict[str, object]
             assert item not in masked, f"iletişim kaldı: {item}"
     assert not re.search(r"[\w.+-]+@[\w-]+\.", masked)
     # Yetkinlik bölümü yerinde kalmalı
-    assert "Python" in masked or "Java" in masked or "React" in masked or "C#" in masked or "Linux" in masked
+    assert any(skill in masked for skill in ("Python", "Java", "React", "C#", "Linux", "Swift", "Kotlin"))
 
 
 # --- PR #37 incelemesi (Ataberk): yetkinlikler ad veya adres sanılmamalı ------------------------------------------

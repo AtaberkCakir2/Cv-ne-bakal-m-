@@ -1,0 +1,18 @@
+{
+  "cv_id": "syn-051", "language": "tr", "layout": "multi_column", "scanned": false,
+  "target_role": "game-developer", "experience": "experienced", "double": false,
+  "header": {"name": "Gökhan Uçar", "title": "Kıdemli Oyun Programcısı · 8 yıl", "contact": ["gokhan.ucar@example.org", "0533 000 62 73", "İstanbul"]},
+  "sidebar": [
+    {"title": "Teknik", "list": ["C++ — uzman", "Unreal Engine 5", "C#", "Unity", "HLSL shader", "Çok oyunculu ağ kodu", "Perforce"]},
+    {"title": "Diğer", "list": ["Ekip liderliği", "Mentorluk", "Teknik mülakat"]},
+    {"title": "Diller", "list": ["İngilizce — C1"]}
+  ],
+  "main": [
+    {"title": "Özet", "text": ["Konsol ve PC oyunlarında 8 yıllık deneyime sahip oyun programcısıyım. Oynanış sistemleri, çok oyunculu altyapı ve render performansı konularında çalıştım; şu anda 6 kişilik oynanış ekibini yönetiyorum."]},
+    {"title": "Deneyim", "items": [
+      {"heading": "Kıdemli Oynanış Programcısı — Örnek Interactive", "meta": "Mayıs 2022 – halen", "bullets": ["Unreal Engine 5 ve C++ ile yakın dövüş sistemini tasarladım.", "Sunucu otoriteli çok oyunculu yapıda gecikme telafisi uyguladım.", "Unreal Insights ile CPU darboğazlarını bulup kare süresini %20 iyileştirdim.", "Genç programcılara mentorluk yapıyorum."]},
+      {"heading": "Oyun Programcısı — Ornek Games", "meta": "Ocak 2018 – Nisan 2022", "bullets": ["Unity ve C# ile 4 mobil oyunun yapay zeka ve görev sistemlerini yazdım.", "Basit HLSL shader'larla görsel efektler hazırladım."]}
+    ]},
+    {"title": "Eğitim", "items": [{"heading": "Bilgisayar Mühendisliği, Lisans", "meta": "2013 – 2017"}]}
+  ]
+}

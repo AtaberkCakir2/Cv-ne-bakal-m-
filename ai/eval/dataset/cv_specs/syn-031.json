@@ -1,0 +1,19 @@
+{
+  "cv_id": "syn-031", "language": "tr", "layout": "multi_column", "scanned": false,
+  "target_role": "data-scientist", "experience": "new_grad", "double": false,
+  "header": {"name": "Mert Karaca", "title": "Yeni Mezun Veri Bilimci", "contact": ["mert.karaca@example.org", "0539 000 83 14", "Ankara"]},
+  "sidebar": [
+    {"title": "Beceriler", "list": ["Python — ileri", "SQL — orta", "pandas / NumPy", "sklearn", "XGBoost", "TensorFlow — temel", "Power BI"]},
+    {"title": "Sertifika", "list": ["Örnek Akademi — Uygulamalı Makine Öğrenmesi (2025)"]},
+    {"title": "Diller", "list": ["İngilizce — C1"]}
+  ],
+  "main": [
+    {"title": "Özet", "text": ["Endüstri mühendisliğinden mezun oldum; makine öğrenmesi ve istatistiksel modelleme ile iş problemlerini çözmeye odaklanıyorum. Bitirme projemde müşteri kaybı tahmini üzerine çalıştım."]},
+    {"title": "Deneyim", "items": [{"heading": "Veri Analitiği Stajyeri — Örnek Perakende", "meta": "Haziran 2025 – Ağustos 2025", "bullets": ["SQL ile mağaza satış verilerinden haftalık raporlar hazırladım.", "Power BI panosunda stok devir hızı göstergelerini ekledim."]}]},
+    {"title": "Projeler", "items": [
+      {"heading": "Müşteri Kaybı Tahmini (bitirme)", "meta": "2025 – 2026", "bullets": ["XGBoost ve lojistik regresyon modellerini karşılaştırdım; AUC 0,87.", "SHAP değerleriyle modelin kararlarını açıkladım.", "Modeli FastAPI ile küçük bir servis olarak sundum."]},
+      {"heading": "Duygu Analizi", "meta": "Kişisel", "bullets": ["Türkçe ürün yorumlarında TensorFlow ile basit bir LSTM modeli denedim."]}
+    ]},
+    {"title": "Eğitim", "items": [{"heading": "Endüstri Mühendisliği, Lisans", "meta": "2022 – 2026"}]}
+  ]
+}

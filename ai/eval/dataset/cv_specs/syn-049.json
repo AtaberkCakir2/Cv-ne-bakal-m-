@@ -1,0 +1,18 @@
+{
+  "cv_id": "syn-049", "language": "en", "layout": "multi_column", "scanned": true,
+  "target_role": "security-engineer", "experience": "intern", "double": false,
+  "header": {"name": "Can Duman", "title": "Cybersecurity Student", "contact": ["can.duman@example.com", "0550 000 40 51", "Istanbul"]},
+  "sidebar": [
+    {"title": "Skills", "list": ["Linux", "Python", "Networking (TCP/IP)", "Nmap", "Wireshark", "Cryptography basics"]},
+    {"title": "Platforms", "list": ["TryHackMe (top 5%)", "PicoCTF"]},
+    {"title": "Languages", "list": ["English — B2"]}
+  ],
+  "main": [
+    {"title": "About", "text": ["Second-year information security student. I spend my free time on CTF challenges and want an internship in a blue team or penetration testing team."]},
+    {"title": "Projects", "items": [
+      {"heading": "Port Scanner in Python", "meta": "Personal", "bullets": ["Multithreaded TCP port scanner with banner grabbing; compared results with Nmap."]},
+      {"heading": "Home Network Monitoring", "meta": "Personal", "bullets": ["Set up Pi-hole and Suricata on a Raspberry Pi to monitor home network traffic."]}
+    ]},
+    {"title": "Education", "items": [{"heading": "B.Sc. Information Security — Sample University", "meta": "2024 – 2028 (expected)", "text": ["Courses: Network Security, Applied Cryptography, Secure Programming."]}]}
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "cv_id": "syn-024", "language": "en", "layout": "single_column", "scanned": false,
+  "target_role": "full-stack-developer", "experience": "intern", "double": true,
+  "header": {"name": "Ayşe Güler", "title": "Software Engineering Student", "contact": ["ayse.guler@example.com", "0546 000 70 70", "Konya"]},
+  "main": [
+    {"title": "Objective", "text": ["Second-year software engineering student seeking a full-stack internship for summer 2026. I have built small web apps with Python and JavaScript and want to gain experience with cloud platforms such as AWS."]},
+    {"title": "Education", "items": [{"heading": "B.Sc. Software Engineering — Sample University", "meta": "2024 – 2028 (expected)", "text": ["Relevant coursework: Programming Fundamentals, Data Structures, Introduction to Databases, Discrete Mathematics."]}]},
+    {"title": "Projects", "items": [
+      {"heading": "Study Timer", "meta": "Personal project", "bullets": ["Pomodoro timer web app with Flask back end and vanilla JavaScript front end.", "Stored session statistics in SQLite and showed weekly charts with Chart.js."]},
+      {"heading": "Student Club Website", "meta": "Volunteer", "bullets": ["Static site in HTML and CSS, hosted on GitHub Pages; added an events page with a Google Form."]}
+    ]},
+    {"title": "Skills", "list": ["Python (intermediate), JavaScript (beginner), HTML/CSS", "Flask, SQLite, Chart.js", "Git, GitHub", "Teamwork and communication: club event coordinator for 1 year", "English: B2 · Turkish: native"]}
+  ]
+}

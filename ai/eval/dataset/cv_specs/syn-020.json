@@ -1,0 +1,19 @@
+{
+  "cv_id": "syn-020", "language": "en", "layout": "multi_column", "scanned": false,
+  "target_role": "frontend-developer", "experience": "new_grad", "double": true,
+  "header": {"name": "Arda Polat", "title": "Junior Frontend Developer", "contact": ["arda.polat@example.com", "0536 000 45 67", "Ankara"]},
+  "sidebar": [
+    {"title": "Skills", "list": ["JavaScript — advanced", "React — intermediate", "TypeScript — basic", "CSS / Sass", "HTML", "Angular (course only)"]},
+    {"title": "Tools", "list": ["Git & GitHub", "VS Code", "Figma", "npm"]},
+    {"title": "Languages", "list": ["Turkish — native", "English — C1 (IELTS 7.5)"]}
+  ],
+  "main": [
+    {"title": "About", "text": ["Recent computer science graduate focused on frontend development. I care about responsive design and accessibility, and I am eager to learn testing and state management in a professional team."]},
+    {"title": "Projects", "items": [
+      {"heading": "Recipe Finder (graduation project)", "meta": "2025 – 2026", "bullets": ["Single-page app in React that consumes a public recipes REST API.", "Implemented infinite scroll, client-side caching and a dark theme.", "Deployed on Netlify with a GitHub-based workflow."]},
+      {"heading": "Accessible Form Library", "meta": "Open-source side project", "bullets": ["Small set of form components with ARIA labels and keyboard navigation, written in TS."]}
+    ]},
+    {"title": "Experience", "items": [{"heading": "Teaching Assistant — Web Programming course", "meta": "Fall 2025", "bullets": ["Helped 60 students with HTML, CSS and JavaScript lab assignments."]}]},
+    {"title": "Education", "items": [{"heading": "B.Sc. Computer Science — Sample University", "meta": "2022 – 2026"}]}
+  ]
+}

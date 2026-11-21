@@ -1,0 +1,14 @@
+{
+  "cv_id": "syn-039", "language": "tr", "layout": "single_column", "scanned": false,
+  "target_role": "qa-engineer", "experience": "experienced", "double": false,
+  "header": {"name": "Serkan Öztürk", "title": "Kıdemli QA Mühendisi · 6 yıl", "contact": ["serkan.ozturk@example.net", "0534 000 80 91", "Ankara"]},
+  "main": [
+    {"title": "Özet", "text": ["Bankacılık ve telekom projelerinde 6 yıllık test deneyimine sahibim. Test stratejisi oluşturma, otomasyon çerçevesi kurma ve CI/CD hattına test entegrasyonu konularında uzmanım. Çevik ekiplerde kalite sorumlusu olarak çalışıyorum."]},
+    {"title": "İş Deneyimi", "items": [
+      {"heading": "Kıdemli QA Mühendisi — Örnek Dijital Bankacılık", "meta": "Nisan 2023 – halen", "bullets": ["Playwright ve TypeScript ile web otomasyon çerçevesini sıfırdan kurdum; 600+ test her PR'da çalışıyor.", "k6 ile yük testleri tasarladım; ödeme servisinde darboğazları raporladım.", "REST Assured ile API sözleşme testleri yazdım.", "Scrum ekibinde kabul kriterlerinin netleştirilmesine liderlik ettim."]},
+      {"heading": "Test Mühendisi — Ornek Telekom", "meta": "Eylül 2020 – Mart 2023", "bullets": ["Appium ile mobil uygulama testleri otomatikleştirdim.", "Selenium Grid altyapısını Docker üzerinde kurdum.", "Oracle veritabanında SQL ile test verisi hazırladım."]}
+    ]},
+    {"title": "Yetenekler", "list": ["Playwright, Selenium, Appium, Cypress", "Java, TypeScript, Python", "REST Assured, Postman, k6, JMeter", "Jenkins, GitHub Actions, Docker", "Jira, TestRail, Scrum"]},
+    {"title": "Eğitim", "items": [{"heading": "Bilgisayar Mühendisliği, Lisans", "meta": "2016 – 2020"}]}
+  ]
+}

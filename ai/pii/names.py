@@ -149,6 +149,12 @@ def _is_skipped(word: str, skip: frozenset[str]) -> bool:
     return tr_lower(word) in skip or word.lower() in skip
 
 
+def _first_name_header(words: list[str]) -> bool:
+    """Başlıkta bilinen ilk adla başlayan 2–3 kelimelik satır addır; soyadı taksonomi kelimesi olsa bile ("İrem Bulut":
+    "bulut" → Bulut Bilişim). Unvan kelimesi varsa ("Selin Python Developer") ad sayılmaz."""
+    return 2 <= len(words) <= 3 and words[0] in FIRST_NAMES and not any(tr_lower(w) in TITLE_WORDS for w in words[1:])
+
+
 def _header_name(text: str, skip: frozenset[str]) -> list[Span]:
     offset = 0
     seen = 0
@@ -161,7 +167,7 @@ def _header_name(text: str, skip: frozenset[str]) -> list[Span]:
             if (
                 not NOT_A_NAME.match(content)
                 and HEADER_LINE.match(content)
-                and not any(_is_skipped(w, skip) for w in content.split())
+                and (not any(_is_skipped(w, skip) for w in content.split()) or _first_name_header(content.split()))
             ):
                 start = offset + line.index(content)
                 return [Span(start, start + len(content), Kind.NAME)]

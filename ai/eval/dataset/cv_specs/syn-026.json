@@ -1,0 +1,14 @@
+{
+  "cv_id": "syn-026", "language": "tr", "layout": "single_column", "scanned": false,
+  "target_role": "mobile-developer", "experience": "intern", "double": false,
+  "header": {"name": "Berk Özkan", "title": "Mobil Uygulama Geliştirme Stajı Arıyorum", "contact": ["berk.ozkan@example.com", "0549 000 15 15", "Samsun"]},
+  "main": [
+    {"title": "Hakkımda", "text": ["Android uygulama geliştirmeye lise yıllarında başladım. Şu anda Kotlin ve Jetpack Compose ile kişisel projeler geliştiriyorum. Staj döneminde iOS tarafını da tanımak ve Swift öğrenmek istiyorum."]},
+    {"title": "Eğitim", "items": [{"heading": "Bilgisayar Programcılığı, Ön Lisans — Örnek Meslek Yüksekokulu", "meta": "2024 – 2026 (beklenen)", "text": ["Dersler: Mobil Programlama, Nesne Tabanlı Programlama, Veritabanı."]}]},
+    {"title": "Projeler", "items": [
+      {"heading": "Otobüs Saatleri (Google Play'de, 1.000+ indirme)", "meta": "Kişisel proje", "bullets": ["Kotlin ve Jetpack Compose ile şehir içi otobüs saatlerini gösteren uygulama.", "Veriler Room ile cihazda saklanıyor, çevrimdışı çalışıyor.", "Firebase Crashlytics ile hata takibi yapıyorum."]},
+      {"heading": "Harcama Takip", "meta": "Okul projesi", "bullets": ["Java ile yazılmış klasik XML arayüzlü Android uygulaması; SQLite veritabanı."]}
+    ]},
+    {"title": "Yetenekler", "list": ["Kotlin (orta düzey), Java (orta)", "Android SDK, Jetpack Compose, Room, Retrofit", "Firebase, Git", "İngilizce: B1"]}
+  ]
+}

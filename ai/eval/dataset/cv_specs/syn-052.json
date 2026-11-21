@@ -1,0 +1,15 @@
+{
+  "cv_id": "syn-052", "language": "en", "layout": "single_column", "scanned": false,
+  "target_role": "game-developer", "experience": "new_grad", "double": true,
+  "header": {"name": "Ilgın Er", "title": "Junior Game Developer", "contact": ["ilgin.er@example.com", "0549 000 73 84", "Ankara", "ilginer.example.com"]},
+  "main": [
+    {"title": "Profile", "text": ["Recent software engineering graduate who builds games in Godot and Unity. I like gameplay programming, tools for designers and polishing game feel. Eager to join a small studio."]},
+    {"title": "Projects", "items": [
+      {"heading": "Tiny Farm (itch.io, 5k downloads)", "meta": "2025", "bullets": ["Cozy farming game made in Godot 4 with GDScript; save system and day/night cycle.", "Ran a public playtest and iterated on feedback."]},
+      {"heading": "Graduation project: VR Chemistry Lab", "meta": "2025 – 2026", "bullets": ["Unity + C# virtual lab for Meta Quest; interaction system with the XR Interaction Toolkit."]}
+    ]},
+    {"title": "Experience", "items": [{"heading": "Game Dev Intern — Sample Mobile Games (sample)", "meta": "Summer 2025", "bullets": ["Implemented level editor tools in Unity for designers."]}]},
+    {"title": "Education", "items": [{"heading": "B.Sc. Software Engineering — Example University", "meta": "2022 – 2026"}]},
+    {"title": "Skills", "list": ["C#, GDScript, Python (scripting)", "Unity, Godot, basic Unreal Blueprints", "Game design, prototyping, playtesting", "Git, Trello", "English: C1"]}
+  ]
+}

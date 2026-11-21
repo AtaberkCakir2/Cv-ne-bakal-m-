@@ -1,0 +1,15 @@
+{
+  "cv_id": "syn-050", "language": "tr", "layout": "single_column", "scanned": false,
+  "target_role": "game-developer", "experience": "new_grad", "double": true,
+  "header": {"name": "Ozan Tekin", "title": "Yeni Mezun Oyun Geliştirici", "contact": ["ozan.tekin@example.com", "0538 000 51 62", "İzmir", "ozantekin.example.com"]},
+  "main": [
+    {"title": "Hakkımda", "text": ["Dijital Oyun Tasarımı bölümünden mezun oldum. Unity ile 3 oyunu yayınladım; oynanış mekaniği ve performans optimizasyonu üzerine çalışmayı seviyorum. Unreal Engine ve C++ tarafında kendimi geliştirmek istiyorum."]},
+    {"title": "Projeler", "items": [
+      {"heading": "Gölge Labirent (Steam'de, 2026)", "meta": "Bitirme projesi · 4 kişilik ekip", "bullets": ["Unity ve C# ile bulmaca-platform oyunu; karakter kontrolcüsü ve seviye sistemi bana ait.", "Profiler ile mobil sürümde kare hızını 30'dan 60 FPS'e çıkardık.", "Sürüm takibini Git ve GitHub ile yaptık."]},
+      {"heading": "Game Jam Oyunları", "meta": "2023 – 2025", "bullets": ["Global Game Jam'de 48 saatte iki prototip; birinde yerel ödül aldık."]}
+    ]},
+    {"title": "Deneyim", "items": [{"heading": "Oyun Geliştirme Stajyeri — Örnek Oyun Stüdyosu", "meta": "Temmuz 2025 – Eylül 2025", "bullets": ["Hiper-casual bir mobil oyunda kullanıcı arayüzü ve reklam entegrasyonu yaptım."]}]},
+    {"title": "Eğitim", "items": [{"heading": "Dijital Oyun Tasarımı, Lisans — Örnek Üniversitesi", "meta": "2022 – 2026"}]},
+    {"title": "Yetenekler", "list": ["C# (ileri), C++ (temel)", "Unity (3 yıl), Unreal Engine (başlangıç)", "Blender (temel modelleme), Git", "Oyun tasarımı, seviye tasarımı", "İngilizce: B2"]}
+  ]
+}

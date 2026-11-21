@@ -1,0 +1,19 @@
+{
+  "cv_id": "syn-017", "language": "en", "layout": "multi_column", "scanned": false,
+  "target_role": "backend-developer", "experience": "intern", "double": false,
+  "header": {"name": "Ece Tunç", "title": "Computer Engineering Student · Backend Intern", "contact": ["ece.tunc@example.net", "0544 000 56 78", "Istanbul"]},
+  "sidebar": [
+    {"title": "Skills", "list": ["C# ★★★☆☆", ".NET Core ★★★☆☆", "SQL Server ★★☆☆☆", "Python ★★☆☆☆", "Git ★★★☆☆", "Docker ★☆☆☆☆"]},
+    {"title": "Languages", "list": ["Turkish — native", "English — B2"]},
+    {"title": "Interests", "list": ["Chess", "Open-source"]}
+  ],
+  "main": [
+    {"title": "Profile", "text": ["Third-year computer engineering student looking for a backend internship. I enjoy designing databases and building small web APIs. I would like to learn Kubernetes and cloud deployment."]},
+    {"title": "Experience", "items": [{"heading": "Summer Intern — Sample Bank Technology (sample)", "meta": "Jul 2025 – Aug 2025 · 6 weeks", "bullets": ["Wrote unit tests for an internal ASP.NET Core Web API using xUnit.", "Prepared stored procedures on SQL Server for a reporting screen.", "Joined daily stand-ups and sprint reviews of a Scrum team."]}]},
+    {"title": "Projects", "items": [
+      {"heading": "Campus Lost & Found API", "meta": "Course project", "bullets": ["ASP.NET Core + Entity Framework, JWT authentication, deployed on a free Azure tier."]},
+      {"heading": "Telegram Weather Bot", "meta": "Personal", "bullets": ["Small Python bot that calls a public weather API."]}
+    ]},
+    {"title": "Education", "items": [{"heading": "B.Sc. Computer Engineering — Example Technical University", "meta": "2023 – 2027 (expected)", "text": ["Courses: Object-Oriented Programming, Database Management Systems, Operating Systems."]}]}
+  ]
+}

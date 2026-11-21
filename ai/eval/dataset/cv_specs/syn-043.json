@@ -1,0 +1,14 @@
+{
+  "cv_id": "syn-043", "language": "en", "layout": "single_column", "scanned": false,
+  "target_role": "ml-engineer", "experience": "intern", "double": true,
+  "header": {"name": "Pelin Koç", "title": "AI Engineering Student · ML Intern Candidate", "contact": ["pelin.koc@example.net", "0539 000 64 75", "Ankara"]},
+  "main": [
+    {"title": "About", "text": ["Third-year artificial intelligence engineering student. I have trained small neural networks in coursework and want to learn how models are deployed and monitored in production. Planning to learn Kubernetes and Kubeflow next."]},
+    {"title": "Education", "items": [{"heading": "B.Sc. Artificial Intelligence Engineering — Sample University", "meta": "2023 – 2027 (expected) · GPA 3.6/4", "text": ["Coursework: Machine Learning, Deep Learning, Computer Vision, Linear Algebra, Probability."]}]},
+    {"title": "Projects", "items": [
+      {"heading": "Traffic Sign Recognition", "meta": "Course project", "bullets": ["Trained a CNN with TensorFlow/Keras on a public dataset; 96% test accuracy.", "Added data augmentation and early stopping."]},
+      {"heading": "Lecture Notes Summariser", "meta": "Hackathon", "bullets": ["Used a pretrained transformer from Hugging Face to summarise lecture transcripts; simple Gradio UI."]}
+    ]},
+    {"title": "Skills", "list": ["Python (2 years), C (basic)", "TensorFlow, Keras, NumPy, OpenCV", "Hugging Face Transformers, Gradio", "Git, Google Colab", "English: C1"]}
+  ]
+}

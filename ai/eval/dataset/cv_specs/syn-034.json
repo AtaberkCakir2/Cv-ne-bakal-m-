@@ -1,0 +1,15 @@
+{
+  "cv_id": "syn-034", "language": "tr", "layout": "single_column", "scanned": false,
+  "target_role": "devops-engineer", "experience": "new_grad", "double": true,
+  "header": {"name": "Tolga Er", "title": "Yeni Mezun · DevOps / Bulut Mühendisliği", "contact": ["tolga.er@example.com", "0552 000 24 68", "İstanbul"]},
+  "main": [
+    {"title": "Hakkımda", "text": ["Bilgisayar mühendisliğinden 2026'da mezun oldum. Linux sistemler, konteynerler ve otomasyon üzerine çalışmayı seviyorum. Evde kurduğum küçük sunucu ortamında Kubernetes ve izleme araçlarını deniyorum."]},
+    {"title": "Deneyim", "items": [{"heading": "Sistem Stajyeri — Örnek Barındırma Hizmetleri", "meta": "Temmuz 2025 – Ekim 2025 (4 ay)", "bullets": ["Ansible playbook'larıyla 40 sunucunun yapılandırmasını otomatikleştirdim.", "Bash betikleriyle günlük yedekleme kontrollerini yazdım.", "Nginx ters vekil sunucu ayarlarında ekibe destek oldum."]}]},
+    {"title": "Projeler", "items": [
+      {"heading": "Ev Laboratuvarı", "meta": "Kişisel", "bullets": ["3 düğümlü k3s kümesi; Helm ile uygulama kurulumları.", "Prometheus + Grafana ile kaynak izleme, Loki ile log toplama.", "Terraform ile bulut sağlayıcıda deneme ortamı açıp kapatıyorum."]},
+      {"heading": "Bitirme Projesi: CI/CD Hattı", "meta": "2025 – 2026", "bullets": ["GitHub Actions ile test, Docker imajı oluşturma ve sunucuya dağıtım adımları."]}
+    ]},
+    {"title": "Eğitim", "items": [{"heading": "Bilgisayar Mühendisliği, Lisans — Örnek Üniversitesi", "meta": "2022 – 2026", "text": ["Dersler: İşletim Sistemleri, Bilgisayar Ağları, Dağıtık Sistemler."]}]},
+    {"title": "Yetenekler", "list": ["Linux (Ubuntu, Debian), Bash, Python (temel)", "Docker, Kubernetes (k3s), Helm", "Ansible, Terraform", "Prometheus, Grafana, Loki", "İngilizce: B2"]}
+  ]
+}

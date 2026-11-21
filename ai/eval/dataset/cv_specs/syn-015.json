@@ -1,0 +1,18 @@
+{
+  "cv_id": "syn-015", "language": "tr", "layout": "multi_column", "scanned": false,
+  "target_role": "backend-developer", "experience": "experienced", "double": false,
+  "header": {"name": "Kaan Yıldırım", "title": "Kıdemli Backend Geliştirici · 6 yıl", "contact": ["kaan.yildirim@example.org", "0532 000 98 76", "Ankara", "kaanyildirim.example.com"]},
+  "sidebar": [
+    {"title": "Beceriler", "list": ["Go — ileri", "Java — ileri", "Kotlin — orta", "Postgres", "Redis", "Kafka", "gRPC", "k8s", "Terraform (temel)"]},
+    {"title": "Diller", "list": ["İngilizce — C1", "Almanca — A2"]},
+    {"title": "Sertifikalar", "list": ["AWS Certified Developer – Associate (2023)"]}
+  ],
+  "main": [
+    {"title": "Özet", "text": ["Yüksek trafikli ödeme sistemlerinde 6 yıllık deneyime sahip backend geliştiriciyim. Dağıtık sistemler, gözlemlenebilirlik ve performans iyileştirme konularında çalışıyorum; ekipte kod incelemesi ve mentorluk sorumluluğu üstleniyorum."]},
+    {"title": "İş Deneyimi", "items": [
+      {"heading": "Kıdemli Backend Geliştirici — Örnek Ödeme A.Ş.", "meta": "Ocak 2022 – halen", "bullets": ["Go ile saniyede 3.000 isteği karşılayan ödeme yetkilendirme servisini yeniden yazdım.", "Kafka tabanlı olay akışına geçişte mesaj sözleşmelerini tasarladım.", "Prometheus ve Grafana panolarıyla servislerin gecikme takibini kurdum.", "İki yeni geliştiricinin işe alışma sürecinde mentorluk yaptım."]},
+      {"heading": "Yazılım Geliştirici — Ornek Lojistik", "meta": "Temmuz 2019 – Aralık 2021", "bullets": ["Java 11 ve Spring Boot ile sipariş takip mikroservisleri geliştirdim.", "PostgreSQL sorgularında indeks düzenlemesiyle rapor süresini %60 kısalttım.", "Jenkins hattından GitLab CI'a geçişi yürüttüm."]}
+    ]},
+    {"title": "Eğitim", "items": [{"heading": "Bilgisayar Mühendisliği, Lisans", "meta": "2015 – 2019"}]}
+  ]
+}

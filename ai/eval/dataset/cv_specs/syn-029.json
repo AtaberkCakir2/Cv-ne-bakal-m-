@@ -1,0 +1,14 @@
+{
+  "cv_id": "syn-029", "language": "en", "layout": "single_column", "scanned": false,
+  "target_role": "mobile-developer", "experience": "experienced", "double": false,
+  "header": {"name": "Hakan Bozkurt", "title": "Android Developer · 4 years", "contact": ["hakan.bozkurt@example.com", "0554 000 92 03", "Ankara"]},
+  "main": [
+    {"title": "Summary", "text": ["Android developer with 4 years of experience in e-commerce and telecom apps. Strong in Kotlin, Jetpack Compose and clean architecture; experienced with modular builds and automated testing."]},
+    {"title": "Experience", "items": [
+      {"heading": "Android Developer — Example Telecom", "meta": "Mar 2024 – present", "bullets": ["Migrated 30+ screens from XML layouts to Jetpack Compose.", "Implemented offline-first sync with Room, WorkManager and Kotlin Coroutines/Flow.", "Introduced Hilt for dependency injection and raised unit test coverage to 70%.", "Reviewed pull requests and wrote internal documentation for new team members."]},
+      {"heading": "Mobile Developer — Sample Retail (sample)", "meta": "Jan 2022 – Feb 2024", "bullets": ["Developed shopping app features in Kotlin with MVVM and Retrofit.", "Integrated push notifications via Firebase Cloud Messaging.", "Supported iOS colleagues by building shared API contracts in OpenAPI."]}
+    ]},
+    {"title": "Skills", "list": ["Kotlin, Java", "Android SDK, Jetpack Compose, Room, WorkManager, Hilt", "Coroutines, Flow, Retrofit, OkHttp", "JUnit, Espresso, MockK", "Gradle, GitLab CI"]},
+    {"title": "Education", "items": [{"heading": "B.Sc. Computer Engineering — Sample University", "meta": "2017 – 2021"}]}
+  ]
+}

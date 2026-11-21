@@ -1,0 +1,12 @@
+{
+  "cv_id": "syn-040", "language": "en", "layout": "single_column", "scanned": true,
+  "target_role": "qa-engineer", "experience": "new_grad", "double": true,
+  "header": {"name": "Nazlı Akın", "title": "Junior QA Engineer", "contact": ["nazli.akin@example.com", "0547 000 13 57", "Istanbul"]},
+  "main": [
+    {"title": "Profile", "text": ["Detail-oriented graduate with a passion for software quality. Completed a QA internship and a test automation bootcamp. Comfortable with manual testing, writing clear bug reports and automating web tests."]},
+    {"title": "Experience", "items": [{"heading": "QA Intern — Sample Travel (sample)", "meta": "Jul 2025 – Sep 2025", "bullets": ["Executed regression and smoke tests for the booking website.", "Reported 70+ bugs in Jira with clear reproduction steps.", "Automated login and search scenarios with Cypress and JavaScript."]}]},
+    {"title": "Training", "items": [{"heading": "Test Automation Bootcamp — Example Academy", "meta": "2026 · 12 weeks", "text": ["Selenium with Python, pytest, API testing with Postman, basics of CI with GitHub Actions."]}]},
+    {"title": "Education", "items": [{"heading": "B.Sc. Management Information Systems — Example University", "meta": "2022 – 2026"}]},
+    {"title": "Skills", "list": ["Manual testing, test case design, exploratory testing", "Cypress, Selenium, pytest", "Postman, SQL (basic)", "Jira, Agile", "English: C1"]}
+  ]
+}

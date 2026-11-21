@@ -1,0 +1,19 @@
+{
+  "cv_id": "syn-019", "language": "tr", "layout": "multi_column", "scanned": false,
+  "target_role": "frontend-developer", "experience": "experienced", "double": false,
+  "header": {"name": "Burcu Aydemir", "title": "Frontend Ekip Lideri · 7 yıl", "contact": ["burcu.aydemir@example.com", "0505 000 77 88", "İstanbul"]},
+  "sidebar": [
+    {"title": "Teknik", "list": ["React (7 yıl)", "TypeScript", "Vue 3", "Vite / Webpack", "Storybook", "Playwright", "GraphQL (Apollo)", "Web performansı"]},
+    {"title": "Yönetim", "list": ["5 kişilik ekip", "Teknik mülakat", "Sprint planlama"]},
+    {"title": "Diller", "list": ["İngilizce — ileri", "İspanyolca — başlangıç"]}
+  ],
+  "main": [
+    {"title": "Özet", "text": ["E-ticaret ve medya sektörlerinde 7 yıllık deneyime sahip frontend geliştiriciyim; son iki yıldır 5 kişilik ekibi yönetiyorum. Tasarım sistemleri, mikro ön yüzler ve Core Web Vitals iyileştirmeleri uzmanlık alanlarım."]},
+    {"title": "Deneyim", "items": [
+      {"heading": "Frontend Ekip Lideri — Örnek Pazaryeri", "meta": "Mart 2024 – halen", "bullets": ["Şirketin React tabanlı tasarım sistemini Storybook ile kurdum; 4 ürün ekibi kullanıyor.", "Module Federation ile ödeme sayfasını ayrı bir mikro ön yüze taşıdık.", "LCP süresini 3,8 sn'den 1,9 sn'ye düşüren performans çalışmasını yönettim.", "Ekibin kod inceleme ve sürüm süreçlerini düzenledim."]},
+      {"heading": "Kıdemli Frontend Geliştirici — Ornek Medya", "meta": "Ocak 2020 – Şubat 2024", "bullets": ["Haber sitesinin Vue 2'den Vue 3'e geçişini planladım.", "Playwright ile uçtan uca test altyapısını kurdum.", "SEO için sunucu taraflı render (Nuxt) uyguladım."]},
+      {"heading": "Web Geliştirici — Örnek Yazılım Evi", "meta": "Haziran 2018 – Aralık 2019", "bullets": ["jQuery ve Bootstrap ile kurumsal siteler geliştirdim."]}
+    ]},
+    {"title": "Eğitim", "items": [{"heading": "Matematik-Bilgisayar, Lisans", "meta": "2014 – 2018"}]}
+  ]
+}

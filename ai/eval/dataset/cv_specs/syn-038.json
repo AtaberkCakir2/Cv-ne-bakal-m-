@@ -1,0 +1,16 @@
+{
+  "cv_id": "syn-038", "language": "tr", "layout": "multi_column", "scanned": false,
+  "target_role": "qa-engineer", "experience": "new_grad", "double": true,
+  "header": {"name": "İrem Bulut", "title": "Yeni Mezun · Test Otomasyon Mühendisi", "contact": ["irem.bulut@example.com", "0551 000 58 69", "Bursa"]},
+  "sidebar": [
+    {"title": "Beceriler", "list": ["Selenium WebDriver", "Java — orta", "TestNG", "Postman", "SQL — temel", "Jira", "Cucumber (BDD)"]},
+    {"title": "Sertifika", "list": ["ISTQB Foundation Level (2026)"]},
+    {"title": "Dil", "list": ["İngilizce — B2"]}
+  ],
+  "main": [
+    {"title": "Hakkımda", "text": ["Yazılım kalitesine ve detaylara önem veren yeni mezun bir test mühendisiyim. Stajımda manuel ve otomasyon testlerinde çalıştım. Playwright ve performans testi araçlarını öğrenmek istiyorum."]},
+    {"title": "Deneyim", "items": [{"heading": "QA Stajyeri — Örnek Sigorta Teknoloji", "meta": "Şubat 2026 – Mayıs 2026 (4 ay)", "bullets": ["Poliçe ekranları için 120 manuel test senaryosu yazıp Jira'da takip ettim.", "Selenium ve Java ile 35 regresyon testini otomatikleştirdim.", "Postman koleksiyonlarıyla REST servislerinin API testlerini yaptım."]}]},
+    {"title": "Projeler", "items": [{"heading": "Bitirme: BDD ile E-ticaret Test Çerçevesi", "meta": "2025 – 2026", "bullets": ["Cucumber + Selenium ile Page Object Model yapısında test çerçevesi kurdum; testler Jenkins'te gece çalışıyor."]}]},
+    {"title": "Eğitim", "items": [{"heading": "Bilgisayar Mühendisliği, Lisans", "meta": "2022 – 2026"}]}
+  ]
+}

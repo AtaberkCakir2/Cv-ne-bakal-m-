@@ -1,0 +1,14 @@
+{
+  "cv_id": "syn-021", "language": "en", "layout": "single_column", "scanned": true,
+  "target_role": "frontend-developer", "experience": "experienced", "double": false,
+  "header": {"name": "Melis Sarı", "title": "Senior Frontend Engineer · 5 years", "contact": ["melis.sari@example.org", "0542 000 89 01", "Izmir"]},
+  "main": [
+    {"title": "Summary", "text": ["Frontend engineer with 5 years of experience in fintech and B2B dashboards. Specialised in React, TypeScript and data visualisation; strong focus on accessibility (WCAG 2.1 AA) and component testing."]},
+    {"title": "Experience", "items": [
+      {"heading": "Senior Frontend Engineer — Example Fintech", "meta": "May 2023 – present", "bullets": ["Built a trading dashboard in React 18 + TypeScript with real-time updates over WebSockets.", "Created chart components with D3.js used across three products.", "Led the migration from Create React App to Vite, halving build times.", "Mentored two junior developers and ran weekly frontend guild meetings."]},
+      {"heading": "Frontend Developer — Sample SaaS", "meta": "Sep 2021 – Apr 2023", "bullets": ["Developed admin panels with Angular and RxJS.", "Wrote end-to-end tests with Cypress and unit tests with Jest.", "Worked closely with UX designers on a shared design system."]}
+    ]},
+    {"title": "Skills", "list": ["React, TypeScript, JavaScript, Angular, RxJS", "HTML, CSS, styled-components, responsive design", "D3.js, WebSockets, REST APIs", "Jest, Cypress, Storybook", "CI/CD with GitLab"]},
+    {"title": "Education", "items": [{"heading": "B.Sc. Electrical and Electronics Engineering", "meta": "2016 – 2021"}]}
+  ]
+}

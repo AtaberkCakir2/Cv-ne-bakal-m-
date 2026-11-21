@@ -1,0 +1,15 @@
+{
+  "cv_id": "syn-016", "language": "en", "layout": "single_column", "scanned": false,
+  "target_role": "backend-developer", "experience": "experienced", "double": true,
+  "header": {"name": "Deniz Korkmaz", "title": "Backend Engineer · 4 years", "contact": ["deniz.korkmaz@example.com", "0535 000 21 43", "Izmir, Turkey (open to remote)", "github.example.com/dkorkmaz"]},
+  "main": [
+    {"title": "Summary", "text": ["Backend engineer with 4 years of experience building APIs for SaaS products. Comfortable with Python and Node.js, cloud deployments on AWS and writing maintainable, well-tested code. Currently learning Rust in my spare time."]},
+    {"title": "Experience", "items": [
+      {"heading": "Backend Engineer — Sample Analytics Ltd.", "meta": "Feb 2023 – present", "bullets": ["Designed and maintained REST and GraphQL APIs in Python (FastAPI) serving 40k daily users.", "Moved background jobs from cron scripts to Celery with RabbitMQ; cut failed jobs by 80%.", "Introduced contract tests with pytest and improved test coverage from 45% to 85%.", "Deployed services on AWS ECS with Docker; infrastructure described in CloudFormation."]},
+      {"heading": "Software Developer — Example Commerce", "meta": "Jul 2021 – Jan 2023", "bullets": ["Built order and inventory endpoints with Node.js (Express) and MongoDB.", "Wrote SQL reports for the finance team on a PostgreSQL read replica.", "Participated in weekly code reviews and on-call rotation."]}
+    ]},
+    {"title": "Education", "items": [{"heading": "B.Sc. in Software Engineering — Sample University", "meta": "2017 – 2021"}]},
+    {"title": "Skills", "list": ["Languages: Python (4 yrs), JavaScript/Node.js (2 yrs), SQL", "Frameworks: FastAPI, Django, Express", "Data: PostgreSQL, MongoDB, Redis", "Infra: Docker, AWS (ECS, S3, RDS), GitHub Actions", "Practices: TDD, code review, Agile/Scrum"]},
+    {"title": "Languages", "list": ["Turkish (native), English (C1)"]}
+  ]
+}

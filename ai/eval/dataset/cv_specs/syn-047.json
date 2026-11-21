@@ -1,0 +1,19 @@
+{
+  "cv_id": "syn-047", "language": "en", "layout": "multi_column", "scanned": false,
+  "target_role": "security-engineer", "experience": "experienced", "double": true,
+  "header": {"name": "Selim Kaya", "title": "Application Security Engineer · 7 years", "contact": ["selim.kaya@example.com", "0532 000 28 39", "Istanbul"]},
+  "sidebar": [
+    {"title": "Expertise", "list": ["AppSec / SDLC", "Threat modeling", "SAST / DAST", "Penetration testing", "Cloud security (AWS)", "IAM"]},
+    {"title": "Tools", "list": ["Burp Suite Pro", "Semgrep", "OWASP ZAP", "Trivy", "Vault"]},
+    {"title": "Certs", "list": ["OSCP", "AWS Security Specialty"]},
+    {"title": "Languages", "list": ["English — C1"]}
+  ],
+  "main": [
+    {"title": "Summary", "text": ["Security engineer with 7 years of experience in application security and cloud security for fintech companies. I embed security into the development lifecycle and work closely with developers rather than gatekeeping."]},
+    {"title": "Experience", "items": [
+      {"heading": "Senior AppSec Engineer — Example Payments", "meta": "Feb 2022 – present", "bullets": ["Built a security champions program across 12 teams.", "Integrated Semgrep and Trivy into CI pipelines; critical findings fixed before release.", "Led threat modeling sessions for new payment flows (STRIDE).", "Coordinated the bug bounty program and triaged reports."]},
+      {"heading": "Penetration Tester — Sample Security Consulting", "meta": "Sep 2018 – Jan 2022", "bullets": ["Performed web, mobile and network penetration tests for 40+ clients.", "Wrote reports and remediation guidance; scripted tooling in Python."]}
+    ]},
+    {"title": "Education", "items": [{"heading": "B.Sc. Computer Engineering", "meta": "2014 – 2018"}]}
+  ]
+}

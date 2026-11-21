@@ -1,0 +1,16 @@
+{
+  "cv_id": "syn-044", "language": "en", "layout": "multi_column", "scanned": false,
+  "target_role": "ml-engineer", "experience": "new_grad", "double": false,
+  "header": {"name": "Alp Güneş", "title": "Machine Learning Engineer (junior)", "contact": ["alp.gunes@example.com", "0544 000 85 96", "Istanbul"]},
+  "sidebar": [
+    {"title": "Core", "list": ["Python", "PyTorch", "scikit-learn", "SQL", "Docker"]},
+    {"title": "MLOps", "list": ["MLflow", "DVC", "Airflow (basic)", "GitHub Actions", "AWS SageMaker (course)"]},
+    {"title": "Languages", "list": ["English — fluent"]}
+  ],
+  "main": [
+    {"title": "Summary", "text": ["2026 graduate who has built and deployed recommendation and forecasting models during a year-long part-time role. I care about reproducible pipelines and monitoring model drift."]},
+    {"title": "Experience", "items": [{"heading": "Part-time ML Engineer — Example E-grocery", "meta": "Jun 2025 – Jun 2026 · 1 year, part-time", "bullets": ["Built a demand forecasting model with LightGBM; reduced stock-outs by 9%.", "Versioned data with DVC and tracked experiments in MLflow.", "Scheduled retraining with Airflow and served predictions via a FastAPI service in Docker.", "Added simple drift checks and alerts."]}]},
+    {"title": "Projects", "items": [{"heading": "Product Recommender", "meta": "Graduation project", "bullets": ["Two-tower retrieval model in PyTorch with embeddings stored in a vector database."]}]},
+    {"title": "Education", "items": [{"heading": "B.Sc. Computer Engineering — Sample University", "meta": "2022 – 2026"}]}
+  ]
+}

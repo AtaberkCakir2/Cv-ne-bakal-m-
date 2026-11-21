@@ -1,0 +1,15 @@
+{
+  "cv_id": "syn-023", "language": "en", "layout": "single_column", "scanned": false,
+  "target_role": "full-stack-developer", "experience": "new_grad", "double": false,
+  "header": {"name": "Cem Aksoy", "title": "Full-Stack Developer (new graduate)", "contact": ["cem.aksoy@example.net", "0538 000 11 90", "Antalya", "cemaksoy.example.com"]},
+  "main": [
+    {"title": "Profile", "text": ["Computer engineering graduate with a strong interest in building complete web products. I have shipped two side projects end-to-end, from database design to deployment. Looking for a junior full-stack role."]},
+    {"title": "Projects", "items": [
+      {"heading": "SplitBill — expense sharing app", "meta": "2026 · live at splitbill.example.com", "bullets": ["Next.js front end with TypeScript; API routes backed by PostgreSQL via Prisma.", "Authentication with OAuth (Google sign-in) and email magic links.", "Deployed on Vercel; database on a managed Postgres service."]},
+      {"heading": "Graduation project: Clinic Appointment System", "meta": "2025 – 2026", "bullets": ["Spring Boot REST API and a React client; role-based access for doctors and patients.", "Containerised with Docker Compose for the jury demo."]}
+    ]},
+    {"title": "Internship", "items": [{"heading": "Software Intern — Sample Logistics (sample)", "meta": "Summer 2025 · 2 months", "bullets": ["Added filtering and export-to-Excel features to an internal Vue.js dashboard.", "Fixed bugs in a Laravel (PHP) backend."]}]},
+    {"title": "Education", "items": [{"heading": "B.Sc. Computer Engineering — Example University", "meta": "2022 – 2026 · GPA 3.34/4"}]},
+    {"title": "Skills", "list": ["TypeScript, JavaScript, Java, PHP (basic), SQL", "React, Next.js, Vue.js, Spring Boot, Laravel", "PostgreSQL, Prisma, Docker", "English: C1"]}
+  ]
+}

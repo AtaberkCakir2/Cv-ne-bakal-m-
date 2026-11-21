@@ -1,0 +1,14 @@
+{
+  "cv_id": "syn-030", "language": "tr", "layout": "single_column", "scanned": true,
+  "target_role": "data-scientist", "experience": "intern", "double": true,
+  "header": {"name": "Elif Doğru", "title": "İstatistik 3. sınıf öğrencisi · Veri bilimi stajı", "contact": ["elif.dogru@example.com", "0506 000 47 58", "İzmir"]},
+  "main": [
+    {"title": "Hakkımda", "text": ["İstatistik bölümünde okuyorum; veriden anlam çıkarmayı ve sonuçları görselleştirmeyi seviyorum. Python ve R ile ders projeleri yaptım. Derin öğrenme alanında kendimi geliştirmek, PyTorch öğrenmek istiyorum."]},
+    {"title": "Eğitim", "items": [{"heading": "İstatistik, Lisans — Örnek Üniversitesi", "meta": "2023 – 2027 (beklenen) · GNO 3,45", "text": ["Dersler: Olasılık, Regresyon Analizi, Zaman Serileri, Makine Öğrenmesine Giriş."]}]},
+    {"title": "Projeler", "items": [
+      {"heading": "Konut Fiyat Tahmini", "meta": "Ders projesi", "bullets": ["Pandas ile veri temizliği, scikit-learn ile doğrusal regresyon ve rastgele orman modelleri.", "Sonuçları Matplotlib ve Seaborn grafikleriyle raporladım."]},
+      {"heading": "Kafe Satış Analizi", "meta": "Gönüllü proje", "bullets": ["Bir öğrenci kafesinin satış verilerini Excel ve R ile analiz edip menü önerileri sundum."]}
+    ]},
+    {"title": "Yetenekler", "list": ["Python (orta): Pandas, NumPy, scikit-learn, Matplotlib", "R (orta), SQL (temel), Excel (ileri)", "Jupyter Notebook, Git", "İngilizce: B2"]}
+  ]
+}

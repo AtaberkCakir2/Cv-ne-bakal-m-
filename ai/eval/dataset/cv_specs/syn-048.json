@@ -1,0 +1,14 @@
+{
+  "cv_id": "syn-048", "language": "en", "layout": "single_column", "scanned": false,
+  "target_role": "security-engineer", "experience": "experienced", "double": false,
+  "header": {"name": "Derya Yurt", "title": "SOC Analyst / Security Engineer · 5 years", "contact": ["derya.yurt@example.net", "0543 000 39 40", "Ankara"]},
+  "main": [
+    {"title": "Summary", "text": ["Security engineer with 5 years in security operations and incident response. Experienced with SIEM tuning, detection engineering and automating responses. Interested in moving towards cloud security and Kubernetes security."]},
+    {"title": "Experience", "items": [
+      {"heading": "Security Engineer — Example Energy", "meta": "Jan 2024 – present", "bullets": ["Wrote detection rules in Splunk and Sigma; false positives reduced by 35%.", "Automated phishing triage with Python and the SOAR platform.", "Led incident response for two ransomware attempts; prepared post-incident reports."]},
+      {"heading": "SOC Analyst — Sample MSSP (sample)", "meta": "Jun 2021 – Dec 2023", "bullets": ["Monitored alerts in a 24/7 SOC for 30 customers.", "Analysed network traffic with Wireshark and Zeek.", "Hardened Windows and Linux servers following CIS benchmarks."]}
+    ]},
+    {"title": "Skills", "list": ["SIEM: Splunk, Elastic Security", "Detection engineering, Sigma, MITRE ATT&CK", "Python, PowerShell, Bash", "Incident response, digital forensics (basic)", "Networking, firewalls, IDS/IPS"]},
+    {"title": "Education", "items": [{"heading": "B.Sc. Computer Technology and Information Systems", "meta": "2017 – 2021"}]}
+  ]
+}

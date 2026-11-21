@@ -1,0 +1,17 @@
+{
+  "cv_id": "syn-018", "language": "tr", "layout": "single_column", "scanned": false,
+  "target_role": "frontend-developer", "experience": "new_grad", "double": true,
+  "header": {"name": "Zeynep Kaplan", "title": "Yeni Mezun Frontend Geliştirici", "contact": ["zeynep.kaplan@example.com", "0553 000 33 21", "Bursa", "zeynepkaplan.example.com"]},
+  "main": [
+    {"title": "Hakkımda", "text": ["Haziran 2026'da Yazılım Mühendisliği bölümünden mezun oldum. Kullanıcı deneyimine önem veren, erişilebilir ve duyarlı arayüzler geliştirmeyi seven bir frontend geliştiriciyim. Figma tasarımlarını birebir koda dökmekten keyif alıyorum."]},
+    {"title": "Deneyim", "items": [
+      {"heading": "Frontend Stajyeri — Örnek Dijital Ajans", "meta": "Temmuz 2025 – Eylül 2025 (3 ay)", "bullets": ["React ve TS ile müşteri kampanya sayfalarının bileşenlerini geliştirdim.", "Tailwind CSS ile mobil uyumlu sayfa şablonları hazırladım.", "Lighthouse ölçümleriyle erişilebilirlik puanını 72'den 95'e çıkardık."]}
+    ]},
+    {"title": "Projeler", "items": [
+      {"heading": "Bitirme Projesi: Etkinlik Takvimi", "meta": "2025 – 2026", "bullets": ["Next.js ile sunucu taraflı render edilen, takvim ve bilet satın alma ekranları olan bir web uygulaması.", "Durum yönetiminde Redux Toolkit, testlerde Jest ve React Testing Library kullandım."]},
+      {"heading": "Portföy Sitesi", "meta": "Kişisel", "bullets": ["Saf HTML, CSS ve JavaScript ile hazırlanmış, karanlık mod destekli kişisel site."]}
+    ]},
+    {"title": "Eğitim", "items": [{"heading": "Yazılım Mühendisliği, Lisans — Örnek Üniversitesi", "meta": "2022 – 2026", "text": ["Bitirme projesi bölüm birincisi seçildi."]}]},
+    {"title": "Yetenekler", "list": ["JavaScript (ES6+), TypeScript, HTML5, CSS3/SASS", "React, Next.js, Redux Toolkit", "Tailwind CSS, Figma", "Jest, React Testing Library", "İngilizce: B2"]}
+  ]
+}

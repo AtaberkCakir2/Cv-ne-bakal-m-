@@ -1,0 +1,14 @@
+{
+  "cv_id": "syn-046", "language": "tr", "layout": "single_column", "scanned": false,
+  "target_role": "security-engineer", "experience": "intern", "double": true,
+  "header": {"name": "Ahmet Sezer", "title": "Siber Güvenlik Stajı Arıyorum", "contact": ["ahmet.sezer@example.com", "0546 000 17 28", "Ankara"]},
+  "main": [
+    {"title": "Hakkımda", "text": ["Bilgisayar mühendisliği 3. sınıf öğrencisiyim. CTF yarışmalarına katılıyor, web uygulama güvenliği ve ağ güvenliği üzerine çalışıyorum. Staj döneminde sızma testi süreçlerini yakından görmek istiyorum."]},
+    {"title": "Eğitim", "items": [{"heading": "Bilgisayar Mühendisliği — Örnek Üniversitesi", "meta": "2023 – 2027 (beklenen)", "text": ["Dersler: Bilgisayar Ağları, İşletim Sistemleri, Kriptografiye Giriş."]}]},
+    {"title": "Deneyim ve Etkinlikler", "items": [
+      {"heading": "CTF Takımı Üyesi — Örnek Üniversitesi Siber Güvenlik Kulübü", "meta": "2024 – halen", "bullets": ["Ulusal bir CTF'te takımımız 18. oldu; web ve tersine mühendislik sorularını çözdüm.", "Kulüpte Burp Suite ve OWASP Top 10 üzerine iki atölye verdim."]},
+      {"heading": "Ev Laboratuvarı", "meta": "Kişisel", "bullets": ["Kali Linux ile zafiyetli makineler (TryHackMe, HackTheBox) üzerinde pratik yapıyorum.", "Wireshark ile ağ trafiği analizi, Nmap ile port taraması."]}
+    ]},
+    {"title": "Yetenekler", "list": ["Linux (orta), Bash, Python (betik yazma)", "Burp Suite, Nmap, Wireshark, Metasploit (temel)", "OWASP Top 10, SQL enjeksiyonu, XSS", "İngilizce: B2"]}
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "cv_id": "syn-025", "language": "en", "layout": "multi_column", "scanned": false,
+  "target_role": "full-stack-developer", "experience": "new_grad", "double": true,
+  "header": {"name": "Barış Kurt", "title": "Junior Full-Stack Developer", "contact": ["baris.kurt@example.org", "0531 000 26 84", "Istanbul"]},
+  "sidebar": [
+    {"title": "Stack", "list": ["Node.js", "NestJS", "React", "TS", "GraphQL", "Postgres", "Redis", "Docker"]},
+    {"title": "Also", "list": ["Python scripting", "Linux", "Basic AWS (EC2, S3)"]},
+    {"title": "Languages", "list": ["English — C1", "Turkish — native"]}
+  ],
+  "main": [
+    {"title": "Summary", "text": ["Graduated in 2026 and completed a 6-month part-time position while studying. I like owning features end-to-end and writing clean, typed code on both client and server."]},
+    {"title": "Experience", "items": [{"heading": "Part-time Developer — Example Startup (sample)", "meta": "Jan 2026 – Jun 2026 · 6 months", "bullets": ["Built GraphQL resolvers in NestJS for a booking product.", "Implemented React screens for reservation management using Apollo Client.", "Added Redis caching to the most frequently used queries.", "Wrote integration tests with Jest and Supertest."]}]},
+    {"title": "Projects", "items": [{"heading": "Realtime Quiz Game", "meta": "Graduation project", "bullets": ["Socket.IO based multiplayer quiz with a React front end and a Node.js server, deployed with Docker on a single EC2 instance."]}]},
+    {"title": "Education", "items": [{"heading": "B.Sc. Computer Engineering — Sample Technical University", "meta": "2022 – 2026"}]}
+  ]
+}

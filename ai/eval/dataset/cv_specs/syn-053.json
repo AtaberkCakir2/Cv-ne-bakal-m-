@@ -1,0 +1,18 @@
+{
+  "cv_id": "syn-053", "language": "en", "layout": "multi_column", "scanned": false,
+  "target_role": "game-developer", "experience": "experienced", "double": true,
+  "header": {"name": "Emre Yavuz", "title": "Unity Developer · 5 years", "contact": ["emre.yavuz@example.net", "0541 000 84 95", "Istanbul"]},
+  "sidebar": [
+    {"title": "Skills", "list": ["Unity ★★★★★", "C# ★★★★★", "Addressables", "DOTS / ECS", "Photon", "PlayFab", "Shader Graph"]},
+    {"title": "Also", "list": ["Firebase Analytics", "A/B testing", "Jenkins builds"]},
+    {"title": "Languages", "list": ["English — C1", "Turkish — native"]}
+  ],
+  "main": [
+    {"title": "Summary", "text": ["Unity developer with 5 years of experience on live-ops mobile games. Shipped 3 titles with over 10M combined downloads. Strong in performance optimisation, multiplayer and backend integration."]},
+    {"title": "Experience", "items": [
+      {"heading": "Senior Unity Developer — Example Games", "meta": "Mar 2023 – present", "bullets": ["Built real-time PvP mode with Photon Fusion; matchmaking via PlayFab.", "Reduced memory usage by 30% with Addressables and texture atlases.", "Set up automated builds for iOS and Android on Jenkins.", "Worked with designers on live events and A/B tests."]},
+      {"heading": "Unity Developer — Sample Studio (sample)", "meta": "Jan 2021 – Feb 2023", "bullets": ["Developed core gameplay and UI for two puzzle games.", "Integrated Firebase Analytics and in-app purchases."]}
+    ]},
+    {"title": "Education", "items": [{"heading": "B.Sc. Computer Engineering", "meta": "2016 – 2020"}]}
+  ]
+}

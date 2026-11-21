@@ -1,0 +1,14 @@
+{
+  "cv_id": "syn-037", "language": "en", "layout": "single_column", "scanned": false,
+  "target_role": "devops-engineer", "experience": "experienced", "double": true,
+  "header": {"name": "Okan Şimşek", "title": "Site Reliability Engineer · 8 years", "contact": ["okan.simsek@example.com", "0530 000 36 47", "Istanbul"]},
+  "main": [
+    {"title": "Summary", "text": ["SRE with 8 years of experience running large Kubernetes platforms on GCP and AWS. I focus on reliability, cost and developer experience. Experienced in incident management, SLO design and building internal platforms."]},
+    {"title": "Experience", "items": [
+      {"heading": "Lead SRE — Example Streaming", "meta": "Jan 2022 – present", "bullets": ["Run 14 GKE clusters serving 2M daily users; availability 99.95% over the last year.", "Designed SLOs and error budgets with product teams; on-call load reduced by 40%.", "Built a GitOps platform with Argo CD and Helm used by 25 teams.", "Cut cloud costs by 28% through autoscaling and spot instances."]},
+      {"heading": "DevOps Engineer — Sample Telecom", "meta": "Mar 2018 – Dec 2021", "bullets": ["Automated provisioning with Terraform and Ansible.", "Introduced Prometheus, Alertmanager and the ELK stack for monitoring and logging.", "Wrote Go tools for deployment automation."]}
+    ]},
+    {"title": "Skills", "list": ["Kubernetes, Helm, Argo CD, Istio", "GCP, AWS, Terraform, Ansible", "Prometheus, Grafana, ELK, OpenTelemetry", "Go, Python, Bash", "Incident management, postmortems, mentoring"]},
+    {"title": "Education", "items": [{"heading": "B.Sc. Computer Engineering", "meta": "2014 – 2018"}]}
+  ]
+}

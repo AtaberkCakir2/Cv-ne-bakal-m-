@@ -1,0 +1,19 @@
+{
+  "cv_id": "syn-033", "language": "en", "layout": "multi_column", "scanned": false,
+  "target_role": "data-scientist", "experience": "intern", "double": false,
+  "header": {"name": "Yusuf Taş", "title": "Data Science Intern Candidate", "contact": ["yusuf.tas@example.net", "0533 000 67 29", "Eskisehir"]},
+  "sidebar": [
+    {"title": "Skills", "list": ["Python ★★★☆☆", "SQL ★★☆☆☆", "Pandas ★★★☆☆", "Tableau ★★☆☆☆", "Excel ★★★★☆"]},
+    {"title": "Learning", "list": ["Deep learning (Coursera)", "Google Cloud basics"]},
+    {"title": "Languages", "list": ["English — B2"]}
+  ],
+  "main": [
+    {"title": "About", "text": ["Second-year economics student with a minor in computer science. I like exploring public datasets and building dashboards. Looking for an internship in data science or analytics."]},
+    {"title": "Projects", "items": [
+      {"heading": "Air Quality Explorer", "meta": "2025", "bullets": ["Collected city air quality data from an open API, cleaned it with Pandas and visualised trends in Tableau."]},
+      {"heading": "Football Stats Clustering", "meta": "2026", "bullets": ["Grouped players by playing style with k-means in scikit-learn; wrote a short blog post about the results."]}
+    ]},
+    {"title": "Education", "items": [{"heading": "B.A. Economics, minor in Computer Science — Example University", "meta": "2024 – 2028 (expected)", "text": ["Courses: Econometrics, Introduction to Programming (Python), Database Systems."]}]},
+    {"title": "Activities", "items": [{"heading": "Datathon participant", "meta": "Sample Datathon 2025", "text": ["Team of 4; our churn model finished in the top 10."]}]}
+  ]
+}

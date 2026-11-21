@@ -1,0 +1,15 @@
+{
+  "cv_id": "syn-032", "language": "en", "layout": "single_column", "scanned": false,
+  "target_role": "data-scientist", "experience": "new_grad", "double": true,
+  "header": {"name": "Ceren Ateş", "title": "Junior Data Scientist", "contact": ["ceren.ates@example.com", "0545 000 19 36", "Istanbul", "kaggle.example.com/cerenates"]},
+  "main": [
+    {"title": "Profile", "text": ["Mathematics graduate (2026) with hands-on experience in machine learning and NLP. Kaggle Expert. I enjoy turning messy data into reliable models and clear stories for stakeholders."]},
+    {"title": "Experience", "items": [{"heading": "Data Science Intern — Example Insurance", "meta": "Jul 2025 – Sep 2025", "bullets": ["Built a claim fraud classifier with LightGBM; precision at top 5% improved by 18%.", "Wrote feature pipelines in PySpark on Databricks.", "Presented results to the actuarial team."]}]},
+    {"title": "Projects", "items": [
+      {"heading": "Turkish News Classification", "meta": "Graduation project", "bullets": ["Fine-tuned a BERT model with Hugging Face Transformers and PyTorch; macro F1 0.91.", "Compared with a TF-IDF + logistic regression baseline."]},
+      {"heading": "A/B Test Simulator", "meta": "Personal", "bullets": ["Streamlit app explaining statistical power and sample size with interactive charts."]}
+    ]},
+    {"title": "Education", "items": [{"heading": "B.Sc. Mathematics — Sample University", "meta": "2022 – 2026", "text": ["Courses: Probability Theory, Statistical Inference, Linear Algebra, Numerical Methods."]}]},
+    {"title": "Skills", "list": ["Python, SQL, R (basic)", "pandas, NumPy, scikit-learn, LightGBM, PyTorch, Hugging Face", "PySpark, Databricks, Streamlit", "Statistics: hypothesis testing, A/B testing, Bayesian methods", "English: C1"]}
+  ]
+}

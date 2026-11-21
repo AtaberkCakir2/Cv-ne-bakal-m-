@@ -1,0 +1,14 @@
+{
+  "cv_id": "syn-042", "language": "tr", "layout": "single_column", "scanned": false,
+  "target_role": "ml-engineer", "experience": "new_grad", "double": false,
+  "header": {"name": "Furkan Aydın", "title": "Yeni Mezun · Makine Öğrenmesi Mühendisi", "contact": ["furkan.aydin@example.com", "0555 000 25 36", "İstanbul", "furkanaydin.example.com"]},
+  "main": [
+    {"title": "Özet", "text": ["Bilgisayar mühendisliğinden mezun oldum; modelleri canlı ortama taşımak (MLOps) ve büyük dil modelleriyle uygulama geliştirmek ilgi alanım. Bitirme projemde yerel bir LLM ile soru-cevap sistemi (RAG) geliştirdim."]},
+    {"title": "Deneyim", "items": [{"heading": "Yapay Zeka Stajyeri — Örnek Yazılım", "meta": "Haziran 2025 – Eylül 2025", "bullets": ["PyTorch ile görüntü sınıflandırma modelini eğitip ONNX'e dönüştürdüm.", "Modeli FastAPI servisi olarak Docker imajına paketledim.", "MLflow ile deney takibini kurdum."]}]},
+    {"title": "Projeler", "items": [
+      {"heading": "Belge Asistanı (bitirme)", "meta": "2025 – 2026", "bullets": ["LangChain, sentence-transformers ve pgvector ile şirket içi belgelerde arama yapan RAG sistemi.", "Ollama üzerinde çalışan açık kaynak modelle yanıt üretimi; değerlendirme için 200 soruluk test seti."]}
+    ]},
+    {"title": "Eğitim", "items": [{"heading": "Bilgisayar Mühendisliği, Lisans — Örnek Teknik Üniversitesi", "meta": "2022 – 2026", "text": ["Dersler: Yapay Sinir Ağları, Doğal Dil İşleme, Bulut Bilişim."]}]},
+    {"title": "Yetenekler", "list": ["Python (ileri düzey), SQL", "PyTorch, scikit-learn, Hugging Face, LangChain", "FastAPI, Docker, MLflow, ONNX", "PostgreSQL + pgvector", "İngilizce: C1"]}
+  ]
+}

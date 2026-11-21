@@ -1,0 +1,18 @@
+{
+  "cv_id": "syn-041", "language": "en", "layout": "multi_column", "scanned": false,
+  "target_role": "qa-engineer", "experience": "experienced", "double": false,
+  "header": {"name": "Volkan Aslan", "title": "QA Automation Lead · 9 years", "contact": ["volkan.aslan@example.org", "0540 000 46 80", "Izmir / remote"]},
+  "sidebar": [
+    {"title": "Skills", "list": ["Test strategy", "Playwright", "Selenium", "Java", "Python", "Gatling", "Pact", "Kafka testing", "Azure DevOps"]},
+    {"title": "Certificates", "list": ["ISTQB Advanced Test Manager", "Certified ScrumMaster"]},
+    {"title": "Languages", "list": ["English — C1", "German — B1"]}
+  ],
+  "main": [
+    {"title": "Summary", "text": ["QA lead with 9 years in e-commerce and logistics. I build quality cultures: shift-left testing, contract testing between microservices and reliable automation that teams trust."]},
+    {"title": "Experience", "items": [
+      {"heading": "QA Automation Lead — Example Logistics", "meta": "Jun 2021 – present", "bullets": ["Lead a team of 6 QA engineers across 4 product squads.", "Introduced consumer-driven contract tests with Pact for 20 microservices.", "Built performance test suites with Gatling for peak season.", "Reduced flaky tests from 12% to under 1%."]},
+      {"heading": "Senior QA Engineer — Sample E-commerce", "meta": "Jan 2017 – May 2021", "bullets": ["Created a Selenium + Java framework and integrated it into Azure DevOps pipelines.", "Tested Kafka-based order events and database consistency."]}
+    ]},
+    {"title": "Education", "items": [{"heading": "B.Sc. Mathematical Engineering", "meta": "2012 – 2016"}]}
+  ]
+}

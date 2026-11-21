@@ -1,0 +1,14 @@
+{
+  "cv_id": "syn-028", "language": "en", "layout": "single_column", "scanned": false,
+  "target_role": "mobile-developer", "experience": "intern", "double": false,
+  "header": {"name": "Emir Çelik", "title": "Computer Science Student · Mobile Intern", "contact": ["emir.celik@example.net", "0543 000 38 49", "Trabzon"]},
+  "main": [
+    {"title": "About me", "text": ["Third-year CS student who loves cross-platform development. I build apps with Flutter and React Native and I am looking for a summer internship where I can work on a production mobile app."]},
+    {"title": "Projects", "items": [
+      {"heading": "Campus Map (Flutter)", "meta": "2025", "bullets": ["Indoor map of the faculty buildings written in Dart with Flutter.", "Used Google Maps SDK and a small REST API built with Firebase Functions."]},
+      {"heading": "Habit Tracker (React Native, Expo)", "meta": "2026", "bullets": ["Daily habit tracking app with local notifications and charts.", "State management with Zustand; data stored in AsyncStorage."]}
+    ]},
+    {"title": "Education", "items": [{"heading": "B.Sc. Computer Science — Example University", "meta": "2023 – 2027 (expected)", "text": ["Courses: Mobile Application Development, Human-Computer Interaction, Software Engineering."]}]},
+    {"title": "Skills", "list": ["Dart, Flutter (2 years)", "JavaScript, React Native, Expo (1 year)", "Firebase (Auth, Firestore), REST APIs", "Git, Figma", "English: B2"]}
+  ]
+}

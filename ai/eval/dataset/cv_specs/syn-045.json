@@ -1,0 +1,14 @@
+{
+  "cv_id": "syn-045", "language": "en", "layout": "single_column", "scanned": false,
+  "target_role": "ml-engineer", "experience": "intern", "double": false,
+  "header": {"name": "Kaan Ersoy", "title": "Computer Engineering Student", "contact": ["kaan.ersoy@example.org", "0531 000 96 07", "Izmir"]},
+  "main": [
+    {"title": "Objective", "text": ["Second-year student interested in machine learning engineering. Looking for a summer internship to work on data pipelines and model serving."]},
+    {"title": "Projects", "items": [
+      {"heading": "Spam Classifier API", "meta": "Personal project", "bullets": ["Naive Bayes model with scikit-learn exposed through a Flask endpoint.", "Packaged in a Docker container and deployed on a free cloud tier."]},
+      {"heading": "Movie Rating Predictor", "meta": "Course project", "bullets": ["Feature engineering with pandas; compared linear regression and gradient boosting."]}
+    ]},
+    {"title": "Education", "items": [{"heading": "B.Sc. Computer Engineering — Example University", "meta": "2024 – 2028 (expected)", "text": ["Courses: Programming in Python, Data Structures, Calculus, Introduction to Machine Learning (next semester)."]}]},
+    {"title": "Skills", "list": ["Python (intermediate), Java (basic)", "pandas, scikit-learn, Flask", "Docker (basic), Git", "Volunteer tutor for first-year programming", "English: B2"]}
+  ]
+}
