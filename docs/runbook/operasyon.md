@@ -69,7 +69,17 @@ Sürüm alma tek komuttur; betik imajları indirir, migration öncesi döküm al
    unset U P D
    ```
    Not: `api` o anda hangi imajdaysa onun migration'larını bilir; downgrade'i **yeni** sürüm çalışırken (2. adımdan önce) yapın, sonra 2. adımla eski imaja dönün. Gerçek veriyle prova: `make backup-migration-test` (18.11.2026: 0004 → 0003 → 0004, 7 sn, satır sayıları aynı).
-4. **Veri bozulduysa:** deploy öncesi döküm `~/careerai-yedek/deploy-<tarih>-<sha>.dump` (son 5 tutulur). Yükleme adımları `infra/backup/README.md` "Gerçek geri yükleme" (o dosyada restic yerine bu döküm kullanılır). Dökümden sonra kaydolan kullanıcılar ve analizler kaybolur: aralığı not edin.
+4. **Veri bozulduysa:** deploy öncesi döküm `~/careerai-yedek/deploy-<tarih>-<sha>.dump` (son 5 tutulur; hatalı deploy'un adındaki sha'lı olan). 2. adımdan sonra:
+   ```bash
+   D=~/careerai-yedek/deploy-<tarih>-<sha>.dump
+   $C stop api worker-data
+   $C exec -T postgres sh -c 'dropdb -U "$POSTGRES_USER" --force "$POSTGRES_DB" && createdb -U "$POSTGRES_USER" "$POSTGRES_DB"'
+   $C exec -T postgres sh -c 'pg_restore -U "$POSTGRES_USER" -d "$POSTGRES_DB" --no-owner --no-privileges --exit-on-error' < "$D"
+   bash infra/pc/deploy.sh v0.9.0          # 2. adımdaki önceki sürüm: rolleri ve yetkileri yeniden verir
+   ```
+   `--no-privileges` şart: yetkiler dökümden gelirse rolü eksik ortamda yükleme ilk `GRANT`'te durur, uygulama rolü tablolara erişemez; API 500 döner ama `/health/ready` 200 der. Bu yüzden kontrolü `/health/ready` ile değil bir veri ucuyla yapın: `curl -s -o /dev/null -w '%{http_code}\n' https://api.cvnebakalim.com/api/v1/roles` → 200. Dökümden sonra kaydolan kullanıcılar ve analizler kaybolur: aralığı not edin. Yedekten (restic) yükleme: `infra/backup/README.md` "Gerçek geri yükleme".
+
+**Prova (go-live #49, 21.11.2026):** prova ortamında (`careerai-staging`) production dökümüyle (2.389 ilan, 1.569 kaynak): önceki sürüm `e05fa18` → yeni `838b3c5` deploy, ardından veri bozuldu (yetkinlik bağlarının yarısı silindi). Geri dönüş: imaj (2. adım) 73 sn + dökümden yükleme 13 sn + yetkiler (deploy tekrar) 60 sn = **146 sn** (hedef 15 dk). Sonra satır sayıları dökümle aynı (bağ 13.184 → 26.448), `alembic_version` 0004, `/roles` ve `/skills/…/resources` 200. İki sürüm arasında migration yoktu; migration'lı dönüş `make backup-migration-test` ile ayrıca denendi (3. adım). Bulunan hata: eski prosedürde `pg_restore` yetkileri dökümden alıyordu, `careerai_monitor` rolü olmayan prova ortamında yükleme yarıda kesildi ve API 500 verdi; `--no-privileges` + deploy tekrar ile düzeltildi, `infra/backup/README.md` ve `felaket-kurtarma.md` de güncellendi. Prova ortamında deploy öncesi döküm alınmıyor (`backup_db` sadece production), provada production dökümü kullanıldı.
 5. **Sonrası:** hatalı commit'i geri alan PR (revert) veya düzeltme PR'ı; main'e girmeden tekrar deploy yok.
 
 ## 3. Ollama yanıt vermiyor
