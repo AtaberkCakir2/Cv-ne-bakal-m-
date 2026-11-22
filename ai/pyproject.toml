@@ -30,6 +30,8 @@ embedding = [
 ]
 dev = [
     "pytest>=8.3",
+    # Kapsama (T-054): backend ile aynı sürüm.
+    "pytest-cov==7.1.0",
     # Sürümler backend ve scraper ile aynı sabit (infra/ci.md).
     "ruff==0.17.5",
     "mypy==2.4.1",
@@ -47,6 +49,18 @@ prompts = ["*/*.txt"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests", "eval/tests"]
+
+[tool.coverage.run]
+source = ["parsing", "pii", "extraction", "matching", "recommendation", "embedding", "prompts", "pipeline"]
+# Komut satırı girişi: sadece veritabanına bağlanıp modülü çağırır (testi modülün kendisinde).
+omit = ["*/__main__.py"]
+
+# Kapsama sadece `--cov` verilince ölçülür (CI: `pytest -rs --cov`); %70'in altı hata (T-054). Tek dosya çalıştırırken
+# eşik devreye girmez.
+[tool.coverage.report]
+fail_under = 70
+show_missing = true
+skip_covered = true
 
 [tool.ruff]
 line-length = 120
