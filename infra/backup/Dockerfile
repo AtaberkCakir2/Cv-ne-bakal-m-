@@ -1,6 +1,6 @@
 # Yedek konteyneri (T-068, karar #30): restic + Postgres 16 istemcisi. infra/pc/compose.yml'deki `backup` servisi.
 # Windows'ta systemd/cron olmadığı için zamanlayıcı da bu konteynerin içindedir (scheduler.sh).
-FROM restic/restic:0.19.1
+FROM restic/restic:0.20.0
 
 # pg_dump sunucuyla aynı ana sürüm olmalı (pgvector/pgvector:pg16).
 # apk upgrade: taban imajdaki OpenSSL/musl yamaları (T-064 Trivy taraması).

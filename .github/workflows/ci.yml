@@ -2,6 +2,8 @@
 # Her modülde, sahibinin README'sinde yazan komutlar birebir çalıştırılır: CI'da geçen, yerelde de geçer.
 # Henüz kurulmamış modüller (web, mobile, ai worker imajı) dosyaları eklendiği anda otomatik devreye girer.
 # "Kırmızı CI ile merge yok" kuralı GitHub'daki branch protection ile zorunlu kılınır (infra/ci.md).
+# PR'da sadece değişen modüllerin işleri çalışır (Actions dakikası, infra/ci.md "Hangi iş ne zaman"). Atlanan
+# zorunlu iş GitHub'da başarılı sayılır. main'e push'ta her şey çalışır: birleşmiş hâl her zaman tam denetlenir.
 name: CI
 
 on:
@@ -22,28 +24,53 @@ jobs:
     runs-on: ubuntu-24.04
     outputs:
       db: ${{ steps.find.outputs.db }}
+      backend: ${{ steps.find.outputs.backend }}
       scraper: ${{ steps.find.outputs.scraper }}
       ai: ${{ steps.find.outputs.ai }}
       ai_docker: ${{ steps.find.outputs.ai_docker }}
       web: ${{ steps.find.outputs.web }}
       mobile: ${{ steps.find.outputs.mobile }}
+      docker: ${{ steps.find.outputs.docker }}
+      pc: ${{ steps.find.outputs.pc }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
+        with:
+          # PR'da HEAD, PR'ın main ile birleşmiş hâlidir; HEAD^1 main'in ucu. Fark = PR'ın değiştirdikleri.
+          fetch-depth: 2
       - id: find
         run: |
-          has() { if [ -e "$1" ]; then echo true; else echo false; fi; }
+          var() { if [ -e "$1" ]; then echo true; else echo false; fi; }
+          if [ "$GITHUB_EVENT_NAME" = pull_request ]; then
+            git diff --name-only HEAD^1 HEAD > "$RUNNER_TEMP/degisen"
+            echo "Değişen dosyalar:"; sed 's/^/  /' "$RUNNER_TEMP/degisen"
+          else
+            : > "$RUNNER_TEMP/degisen"; HEPSI=1
+          fi
+          # Sözleşmeler veya bu dosya değişirse her şey çalışır.
+          if grep -qE '^(contracts/|\.github/workflows/ci\.yml$)' "$RUNNER_TEMP/degisen"; then HEPSI=1; fi
+          # $1: değişince işi çalıştıran yollar (regex); $2 (varsa): modülün kurulu olduğunu gösteren dosya.
+          calis() {
+            if [ -n "${2:-}" ] && [ ! -e "$2" ]; then echo false; return; fi
+            if [ -n "${HEPSI:-}" ] || grep -qE "$1" "$RUNNER_TEMP/degisen"; then echo true; else echo false; fi
+          }
           {
-            echo "db=$(has backend/app/db/alembic.ini)"
-            echo "scraper=$(has scraper/pyproject.toml)"
-            echo "ai=$(has ai/pyproject.toml)"
-            echo "ai_docker=$(has ai/Dockerfile)"
-            echo "web=$(has web/package.json)"
-            echo "mobile=$(has mobile/package.json)"
+            echo "db=$(var backend/app/db/alembic.ini)"
+            echo "backend=$(calis '^backend/')"
+            # Scraper, backend'in modellerini/migration'larını ve ai'nin pii paketini kurar.
+            echo "scraper=$(calis '^(scraper|backend|ai)/' scraper/pyproject.toml)"
+            echo "ai=$(calis '^ai/' ai/pyproject.toml)"
+            echo "ai_docker=$(var ai/Dockerfile)"
+            echo "web=$(calis '^web/' web/package.json)"
+            echo "mobile=$(calis '^mobile/' mobile/package.json)"
+            echo "docker=$(calis '^((backend|scraper|ai)/|docker-compose[^/]*\.ya?ml$|\.env\.example$)')"
+            # Production compose'u ve başvurduğu yapılandırmalar (yedek, izleme).
+            echo "pc=$(calis '^infra/(pc|backup|monitoring)/')"
           } | tee -a "$GITHUB_OUTPUT"
 
   backend:
     name: Backend (ruff, mypy, pytest + migration)
     needs: detect
+    if: needs.detect.outputs.backend == 'true'
     runs-on: ubuntu-24.04
     defaults:
       run:
@@ -66,8 +93,8 @@ jobs:
       # tests/db bu adres verilince çalışır: upgrade → downgrade → upgrade ve `alembic check` (T-012).
       TEST_DATABASE_URL: postgresql+psycopg://postgres:ci@127.0.0.1:5432/careerai_test
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
           cache: pip
@@ -112,8 +139,8 @@ jobs:
       # tests/test_store.py şemayı backend'in Alembic migration'larıyla kurar.
       TEST_DATABASE_URL: postgresql+psycopg://postgres:ci@127.0.0.1:5432/careerai_test
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
           cache: pip
@@ -137,8 +164,8 @@ jobs:
       run:
         working-directory: ai
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
           cache: pip
@@ -159,8 +186,8 @@ jobs:
       run:
         working-directory: web
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: "20"
           cache: npm
@@ -179,8 +206,8 @@ jobs:
       run:
         working-directory: mobile
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: "20"
           cache: npm
@@ -192,9 +219,10 @@ jobs:
   docker:
     name: Docker (compose + imaj build)
     needs: detect
+    if: needs.detect.outputs.docker == 'true'
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: docker-compose.yml geçerli mi
         run: cp .env.example .env && docker compose --profile api --profile worker --profile data config --quiet
       - name: API imajı
@@ -216,3 +244,24 @@ jobs:
       - name: AI worker imajı
         if: needs.detect.outputs.ai_docker == 'true'
         run: docker build -t careerai/worker:ci ai
+
+  # Production'ın compose dosyası (infra/pc/compose.yml) ancak deploy'da açılıyordu; yazım hatası, eksik zorunlu
+  # değişken veya profil hatası burada yakalanır. Örnek env'deki boş değerler (şifreler) sahte değerle doldurulur.
+  pc-compose:
+    name: Production compose (infra/pc)
+    needs: detect
+    if: needs.detect.outputs.pc == 'true'
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+      - name: compose.yml bütün profillerle geçerli mi
+        working-directory: infra/pc
+        run: |
+          sed -E 's/^([A-Z0-9_]+)=$/\1=ci-sahte-deger/' .env.example > "$RUNNER_TEMP/ci.env"
+          for ortam in production staging; do
+            sed -i -E "s/^APP_ENVIRONMENT=.*/APP_ENVIRONMENT=$ortam/" "$RUNNER_TEMP/ci.env"
+            COMPOSE_PROFILES=tunnel,backup,monitoring docker compose -p ci --env-file "$RUNNER_TEMP/ci.env" -f compose.yml config --quiet
+            # Sunum B planı (make prod-local) ile birlikte
+            docker compose -p ci --env-file "$RUNNER_TEMP/ci.env" -f compose.yml -f compose.local.yml config --quiet
+          done
+          echo "compose.yml geçerli"

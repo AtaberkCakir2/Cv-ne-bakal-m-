@@ -6,10 +6,11 @@ Windows'ta systemd/cron olmadığı için yedek, production compose'unda (`infra
 
 | Dosya | Ne yapar |
 |---|---|
-| `Dockerfile` | restic 0.19.1 + Postgres 16 istemcisi; `deploy.sh` yerelde derler (`careerai/backup:local`) |
+| `Dockerfile` | restic 0.20.0 + Postgres 16 istemcisi; `deploy.sh` yerelde derler (`careerai/backup:local`) |
 | `scheduler.sh` | Konteynerin ana süreci: 10 dakikada bir son başarılı yedeğe bakar, 02:00'den sonra yedek yoksa `backup.sh`'ı çalıştırır; başarısızsa 30 dk sonra yeniden dener |
 | `backup.sh` | Döküm diske yazılmadan restic'e akar; eski yedekleri siler; başarıda `/state/last-success`, haftalık kontrolde `/state/last-check` yazar |
 | `restore-test.sh [ortam] [snapshot]` | PC'de (Git Bash) yedeği geçici bir Postgres kapsayıcısına yükler, satır sayılarını canlıyla karşılaştırır. Canlı veritabanına yazmaz |
+| `migration-test.sh [ortam] [snapshot]` | Yedeğin kopyasında migration geri alma testi: bir adım geri + ileri (satır sayıları korunmalı), sonra base'e kadar tek tek geri ve head'e. Production konteynerlerine dokunmaz (`make backup-migration-test`) |
 
 **Yedekte ne var, ne yok:** Sadece Postgres (kullanıcılar, rızalar, analiz sonuçları, ilanlar, kaynaklar). CV dosyası ve ham metni veritabanında olmadığı için yedekte de yoktur. Redis (geçici kuyruk) ve Ollama modelleri yedeklenmez, yeniden kurulur. `infra/pc/.env.prod` ve restic parolası yedeğe girmez, ekibin parola yöneticisinde durur: onlar olmadan yedek açılamaz.
 
@@ -62,6 +63,14 @@ bash infra/backup/restore-test.sh production
 
 Yükleme süresini ve tablo sayılarını DR tatbikatı notuna yazın (T-087). Canlı sayılar yedekten sonra biraz değişmiş olabilir; temel tablolar boşsa test başarısızdır. 06.11.2026'da prova ortamında dev verisiyle denendi: 6,5 MB yedek ~3 sn, geri yükleme 11 sn, 11 tablonun sayıları eşleşti.
 
+## Migration geri alma testi (yeni migration'dan önce ve go-live öncesi)
+
+```bash
+make backup-migration-test          # = PY=python bash infra/backup/migration-test.sh production
+```
+
+Son yedeği geçici bir Postgres'e yükler (yedek `backup` imajıyla tek seferlik okunur; production kapalıyken de çalışır) ve o kopyada: 1) `downgrade -1` + `upgrade head` (rollback provası; temel tabloların satır sayıları değişmemeli), 2) her migration tek tek base'e kadar geri alınır, sonra head'e çıkılır. Alembic yerel Python'la çalışır: venv açık değilse `PY=/c/venv/careerai/Scripts/python`. 18.11.2026, production yedeği (0004, 1.783 ilan, 530 kaynak): yükleme 10 sn, rollback provası 7 sn (sayılar aynı), tam geri alma ve geri dönüş 26 sn; toplam 48 sn.
+
 ## Gerçek geri yükleme (veri kaybında)
 
 Önce `docs/go-live.md` "Veri tabanı bozulması" adımları: uygulamayı durdurun, kayıp aralığını not edin. Sonra Git Bash'te:
@@ -69,11 +78,13 @@ Yükleme süresini ve tablo sayılarını DR tatbikatı notuna yazın (T-087). C
 ```bash
 C="docker compose -p careerai-prod --env-file infra/pc/.env.prod -f infra/pc/compose.yml"
 $C stop api worker-data
-$C exec -T postgres sh -c 'dropdb -U "$POSTGRES_USER" "$POSTGRES_DB" && createdb -U "$POSTGRES_USER" "$POSTGRES_DB"'
+$C exec -T postgres sh -c 'dropdb -U "$POSTGRES_USER" --force "$POSTGRES_DB" && createdb -U "$POSTGRES_USER" "$POSTGRES_DB"'
 $C exec -T backup sh -c 'restic dump --tag "$BACKUP_TAG" latest "/careerai-$BACKUP_TAG.dump"' \
-  | $C exec -T postgres sh -c 'pg_restore -U "$POSTGRES_USER" -d "$POSTGRES_DB" --no-owner --exit-on-error'
-$C up -d
+  | $C exec -T postgres sh -c 'pg_restore -U "$POSTGRES_USER" -d "$POSTGRES_DB" --no-owner --no-privileges --exit-on-error'
+bash infra/pc/deploy.sh <çalışan sürüm>    # rolleri ve yetkileri yeniden verir, servisleri açar
 ```
+
+Yetkiler dökümden alınmaz (`--no-privileges`), `deploy.sh` verir. Dökümle gelseydi: rolü olmayan ortamda (`careerai_monitor` sadece izleme profiliyle kurulur; prova ortamı, yeni bilgisayar) ilk `GRANT` hatasında yükleme durur, uygulama rolünün yetkileri gelmez, API 500 döner ama `/health/ready` 200 der (rollback provası, 21.11.2026). `dropdb --force`: izleme servisleri veri tabanına bağlıyken de çalışır. Deploy öncesi yerel döküm için `restic dump … |` yerine `< ~/careerai-yedek/deploy-….dump` kullanılır (`docs/runbook/operasyon.md` 2. bölüm).
 
 `dropdb` geri alınamaz: önce `restore-test.sh` ile yedeğin açıldığını görün. Deploy öncesi alınan yerel dökümler de `~/careerai-yedek` altındadır (`infra/pc/deploy.sh`).
 

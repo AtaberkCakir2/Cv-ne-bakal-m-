@@ -13,7 +13,7 @@ from zoneinfo import ZoneInfo
 
 from app.core.config import get_settings
 from app.core.logging import configure_logging
-from app.db.models import ScrapeRun
+from app.db.models import Resource, ScrapeRun
 from app.db.session import get_sessionmaker
 from celery import Celery
 from celery.schedules import crontab
@@ -40,6 +40,8 @@ TZ = ZoneInfo("Europe/Istanbul")
 NIGHTLY_HOUR = 3
 # Saatin hemen ardından açılan işçide beat zaten tetikler; telafi ikinci kez kuyruğa koymasın.
 CATCH_UP_GRACE = timedelta(minutes=10)
+# Link kontrolü haftalık (pazar 07:00). PC o saatte kapalıysa kaçar; son kontrol bundan eskiyse açılışta yapılır.
+CHECK_EVERY = timedelta(days=7)
 
 app = Celery("careerai-data", broker=get_settings().redis_url)
 app.conf.update(
@@ -88,29 +90,44 @@ def missed_nightly(last_started: datetime | None, now: datetime) -> bool:
 
     Son 03:00'ten sonra hiç toplama başlamadıysa kaçmıştır. Hiç toplama yoksa da (yeni kurulum) kaçmış sayılır.
     """
+    slot = nightly_slot(now)
+    if now - slot < CATCH_UP_GRACE:
+        return False
+    return not ran_since(last_started, slot)
+
+
+def nightly_slot(now: datetime) -> datetime:
+    """`now`'dan önceki son planlı gece toplaması zamanı (03:00, İstanbul)."""
     local = now.astimezone(TZ)
     slot = local.replace(hour=NIGHTLY_HOUR, minute=0, second=0, microsecond=0)
-    if local < slot:
-        slot -= timedelta(days=1)
-    if local - slot < CATCH_UP_GRACE:
-        return False
+    return slot if local >= slot else slot - timedelta(days=1)
+
+
+def ran_since(last_started: datetime | None, slot: datetime) -> bool:
+    """`slot`'tan sonra toplama başlamış mı. Veritabanından saat dilimsiz gelirse UTC sayılır."""
     if last_started is None:
-        return True
+        return False
     if last_started.tzinfo is None:
         last_started = last_started.replace(tzinfo=UTC)
-    return last_started < slot
+    return last_started >= slot
+
+
+def _last_nightly_start() -> datetime | None:
+    with get_sessionmaker()() as session:
+        last: datetime | None = session.scalar(select(func.max(ScrapeRun.started_at)))
+    return last
 
 
 @worker_ready.connect
 def _catch_up_missed_nightly(**_: Any) -> None:
     """İşçi açılınca kaçan gece toplamasını hemen kuyruğa koyar (T-075, R-18).
 
-    Celery beat kaçan zamanı telafi etmez: PC 03:00'te kapalıysa o gece toplama hiç olmazdı. Kilit (LOCK_KEY)
-    sayesinde beat ile üst üste binmez. Veritabanına ulaşılamazsa işçi yine açılır, sadece uyarı yazılır.
+    Beat'e güvenilmez: zamanlama dosyası yoksa veya bozulduysa kaçan zamanı hiç tetiklemez. Dosya sağlamsa beat
+    açılışta kaçan 03:00'ü kendisi de tetikler (22.11.2026, production): aynı gece iki görev kuyruğa girer. İkincisi
+    `nightly()` içindeki dilim kontrolüyle atlanır. Veritabanına ulaşılamazsa işçi yine açılır, sadece uyarı yazılır.
     """
     try:
-        with get_sessionmaker()() as session:
-            last = session.scalar(select(func.max(ScrapeRun.started_at)))
+        last = _last_nightly_start()
     except Exception:
         log.exception("Kaçan gece toplaması kontrol edilemedi")
         return
@@ -119,14 +136,52 @@ def _catch_up_missed_nightly(**_: Any) -> None:
         nightly.apply_async(expires=6 * 3600)
 
 
+def missed_link_check(last_checked: datetime | None, now: datetime) -> bool:
+    """Haftalık link kontrolü kaçtı mı: son kontrol 7 günden eski veya hiç yapılmamış (go-live #35).
+
+    Pazar 07:00 beat'i PC kapalıyken hiç çalışmaz; production'da kontrol bu yüzden hiç yapılmamıştı.
+    """
+    if last_checked is None:
+        return True
+    if last_checked.tzinfo is None:
+        last_checked = last_checked.replace(tzinfo=UTC)
+    return now - last_checked > CHECK_EVERY + CATCH_UP_GRACE
+
+
+@worker_ready.connect
+def _catch_up_missed_link_check(**_: Any) -> None:
+    """İşçi açılınca kaçan haftalık link kontrolünü kuyruğa koyar.
+
+    Kuyruk tek eşzamanlı: aynı açılışta kaçan gece toplaması da varsa ondan sonra çalışır.
+    """
+    try:
+        with get_sessionmaker()() as session:
+            last = session.scalar(select(func.max(Resource.last_checked_at)))
+    except Exception:
+        log.exception("Kaçan link kontrolü kontrol edilemedi")
+        return
+    if missed_link_check(last, datetime.now(UTC)):
+        log.warning("Haftalık link kontrolü kaçmış (son kontrol: %s), kuyruğa kondu", last)
+        resources_check.apply_async(expires=12 * 3600)
+
+
 @app.task(name=NIGHTLY_TASK, soft_time_limit=SOFT_LIMIT_S, time_limit=SOFT_LIMIT_S + 600)
-def nightly() -> dict[str, Any]:
+def nightly(force: bool = False) -> dict[str, Any]:
+    """Gece zinciri. Son 03:00'ten sonra zaten toplama yapıldıysa atlanır (beat + açılış telafisi aynı geceyi iki kez
+    kuyruğa koyabilir; işçi tek eşzamanlı olduğu için kilit ikincisini durdurmaz). Elle yeniden toplamak için
+    `force=True`: `celery -A collector.tasks call collector.nightly --queue data --kwargs '{"force": true}'`.
+    """
     # Elle tetikleme ile beat aynı anda düşerse iki toplama üst üste binmesin.
     lock = Redis.from_url(get_settings().redis_url).lock(LOCK_KEY, timeout=SOFT_LIMIT_S + 600, blocking=False)
     if not lock.acquire():
         log.warning("Gece toplaması zaten çalışıyor, atlandı")
         return {"skipped": True}
     try:
+        if not force:
+            last = _last_nightly_start()
+            if ran_since(last, nightly_slot(datetime.now(UTC))):
+                log.info("Bu geceki toplama zaten yapıldı (son başlangıç: %s), atlandı", last)
+                return {"skipped": True}
         report = run_nightly(get_sessionmaker())
     finally:
         lock.release()
@@ -161,5 +216,13 @@ def resources_check() -> dict[str, Any]:
             PoliteClient(delay_s=resources.YOUTUBE_DELAY_S, max_retries=0),
             key,
         )
-    log.info("Link kontrolü: %d link, %d ölü, %d geri geldi", r.checked, r.dead, r.revived)
-    return {"checked": r.checked, "dead": r.dead, "revived": r.revived}
+        rep = resources.report(session)
+    log.info(
+        "Link kontrolü: %d link, %d ölü, %d geri geldi; ölü oranı %%%.1f (hedef < %%%d)",
+        r.checked,
+        r.dead,
+        r.revived,
+        rep["dead_ratio"] * 100,
+        resources.MAX_DEAD_RATIO_PCT,
+    )
+    return {"checked": r.checked, "dead": r.dead, "revived": r.revived, "dead_ratio": rep["dead_ratio"]}

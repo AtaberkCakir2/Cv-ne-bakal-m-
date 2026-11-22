@@ -1,0 +1,178 @@
+{
+  "target_role": {
+    "slug": "ml-engineer",
+    "name": "ML Engineer"
+  },
+  "postings_analyzed": 200,
+  "match_score": 78.6,
+  "present_skills": [
+    {
+      "skill": "Makine Öğrenmesi",
+      "level": "unknown",
+      "confidence": 0.7,
+      "verified": true
+    },
+    {
+      "skill": "Python",
+      "level": "unknown",
+      "confidence": 0.85,
+      "verified": true
+    },
+    {
+      "skill": "PyTorch",
+      "level": "unknown",
+      "confidence": 0.85,
+      "verified": true
+    },
+    {
+      "skill": "TensorFlow",
+      "level": "unknown",
+      "confidence": 0.75,
+      "verified": true
+    },
+    {
+      "skill": "Keras",
+      "level": "unknown",
+      "confidence": 0.75,
+      "verified": true
+    },
+    {
+      "skill": "Hugging Face Transformers",
+      "level": "unknown",
+      "confidence": 0.75,
+      "verified": true
+    },
+    {
+      "skill": "MLflow",
+      "level": "unknown",
+      "confidence": 0.85,
+      "verified": true
+    },
+    {
+      "skill": "Docker",
+      "level": "unknown",
+      "confidence": 0.85,
+      "verified": true
+    },
+    {
+      "skill": "Kubernetes",
+      "level": "beginner",
+      "confidence": 0.95,
+      "verified": true
+    },
+    {
+      "skill": "FastAPI",
+      "level": "unknown",
+      "confidence": 0.85,
+      "verified": true
+    },
+    {
+      "skill": "AWS SageMaker",
+      "level": "unknown",
+      "confidence": 0.75,
+      "verified": true
+    },
+    {
+      "skill": "Linux",
+      "level": "unknown",
+      "confidence": 0.75,
+      "verified": true
+    },
+    {
+      "skill": "Doğal Dil İşleme",
+      "level": "unknown",
+      "confidence": 0.7,
+      "verified": true
+    },
+    {
+      "skill": "Bilgisayarlı Görü",
+      "level": "unknown",
+      "confidence": 0.6,
+      "verified": true
+    },
+    {
+      "skill": "Üretken Yapay Zeka",
+      "level": "unknown",
+      "confidence": 0.6,
+      "verified": true
+    },
+    {
+      "skill": "İngilizce",
+      "level": "advanced",
+      "confidence": 0.85,
+      "verified": true
+    },
+    {
+      "skill": "Gözlemlenebilirlik",
+      "level": "unknown",
+      "confidence": 0.6,
+      "verified": true
+    },
+    {
+      "skill": "OpenCV",
+      "level": "unknown",
+      "confidence": 0.6,
+      "verified": true
+    }
+  ],
+  "missing_skills": [
+    {
+      "skill": "scikit-learn",
+      "demand_ratio": 0.4,
+      "priority": 1,
+      "resources": [
+        {
+          "resource_id": 1420,
+          "title": "scikit-learn temelleri",
+          "url": "https://example.com/1420",
+          "provider": "docs",
+          "language": "tr",
+          "level": "beginner",
+          "is_free": true,
+          "reason": "İncelenen 200 ML Engineer ilanının %40'ı scikit-learn istiyor. Türkçe, başlangıç seviyesinde, ücretsiz ve yaklaşık 1 saat süren bir kaynak; scikit-learn için iyi bir başlangıç.",
+          "duration_min": 60
+        },
+        {
+          "resource_id": 1421,
+          "title": "scikit-learn ileri",
+          "url": "https://example.com/1421",
+          "provider": "youtube",
+          "language": "en",
+          "level": "intermediate",
+          "is_free": true,
+          "reason": "İncelenen 200 ML Engineer ilanının %40'ı scikit-learn istiyor. İngilizce, orta seviyede, ücretsiz ve yaklaşık 2 saat süren bir kaynak; scikit-learn için iyi bir başlangıç.",
+          "duration_min": 120
+        }
+      ]
+    },
+    {
+      "skill": "AWS",
+      "demand_ratio": 0.3,
+      "priority": 2,
+      "resources": [
+        {
+          "resource_id": 1000,
+          "title": "AWS temelleri",
+          "url": "https://example.com/1000",
+          "provider": "docs",
+          "language": "tr",
+          "level": "beginner",
+          "is_free": true,
+          "reason": "İncelenen 200 ML Engineer ilanının %30'u AWS istiyor. Türkçe, başlangıç seviyesinde, ücretsiz ve yaklaşık 1 saat süren bir kaynak; AWS için iyi bir başlangıç.",
+          "duration_min": 60
+        },
+        {
+          "resource_id": 1001,
+          "title": "AWS ileri",
+          "url": "https://example.com/1001",
+          "provider": "youtube",
+          "language": "en",
+          "level": "intermediate",
+          "is_free": true,
+          "reason": "İncelenen 200 ML Engineer ilanının %30'u AWS istiyor. İngilizce, orta seviyede, ücretsiz ve yaklaşık 2 saat süren bir kaynak; AWS için iyi bir başlangıç.",
+          "duration_min": 120
+        }
+      ]
+    }
+  ]
+}

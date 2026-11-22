@@ -7,7 +7,16 @@ from redis.exceptions import ConnectionError as RedisConnectionError
 
 from app.core.config import Settings
 from app.services.analysis_queue import CeleryAnalysisQueue, QueueUnavailable, build_analysis_queue
-from app.services.analyzer import AnalysisFailed, ExampleAnalyzer, UnavailableAnalyzer, build_analyzer
+from app.services.analyzer import (
+    AnalysisFailed,
+    ExampleAnalyzer,
+    MissingSkill,
+    PresentSkill,
+    SuggestedResource,
+    UnavailableAnalyzer,
+    build_analyzer,
+    output_from_result,
+)
 
 
 class Store:
@@ -120,3 +129,25 @@ def test_example_result_only_in_dev() -> None:
     assert isinstance(analyzer, UnavailableAnalyzer)
     with pytest.raises(AnalysisFailed):
         analyzer.analyze(b"x", 1)
+
+
+def test_example_result_carries_skills_and_resources() -> None:
+    output = ExampleAnalyzer().analyze(b"%PDF", 1)
+    assert [p.skill for p in output.present_skills] == ["Python", "SQL", "Git"]
+    assert output.present_skills[0] == PresentSkill("Python", "advanced", 0.94, True)
+    assert [(m.skill, m.priority) for m in output.missing_skills] == [("Docker", 1), ("PostgreSQL", 2)]
+    assert output.missing_skills[0].resources[0].resource_id == 101
+
+
+def test_result_parsing_tolerates_optional_fields() -> None:
+    output = output_from_result(
+        {
+            "match_score": 40,
+            "postings_analyzed": 12,
+            "model": {"name": "m", "prompt_version": "skill_extraction:v1,recommendation:v1"},
+            "present_skills": [{"skill": "Express", "verified": False}],
+            "missing_skills": [{"skill": "Docker", "demand_ratio": 0.5, "resources": [{"resource_id": 3}]}],
+        }
+    )
+    assert output.present_skills == (PresentSkill("Express", "unknown", None, False),)
+    assert output.missing_skills == (MissingSkill("Docker", 0.5, None, (SuggestedResource(3, None),)),)

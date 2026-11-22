@@ -50,14 +50,16 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     # Redis istemcisi lifespan'de açılır (event loop'a bağlı); o zamana kadar sayaçlar bellekte.
     limiter = RateLimiter(MemoryCounterStore(), settings) if settings.rate_limit_enabled else None
 
+    # Swagger arayüzü ve şema production'da kapalı (güvenlik raporu G-6); staging ve local'de açık.
+    docs_enabled = not settings.is_production
     app = FastAPI(
         lifespan=redis_lifespan(limiter, settings.redis_url) if limiter else None,
         title=settings.app_name,
         version="0.1.0",
         description=API_DESCRIPTION,
         openapi_tags=OPENAPI_TAGS,
-        openapi_url=f"{settings.api_prefix}/openapi.json",
-        docs_url="/docs",
+        openapi_url=f"{settings.api_prefix}/openapi.json" if docs_enabled else None,
+        docs_url="/docs" if docs_enabled else None,
         redoc_url=None,
     )
     register_exception_handlers(app)

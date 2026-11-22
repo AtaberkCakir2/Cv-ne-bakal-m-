@@ -21,7 +21,9 @@ dependencies = [
     "pgvector>=0.3.6",
     # Kimlik doğrulama (T-037)
     "argon2-cffi>=23.1",
-    "pyjwt>=2.9",
+    # [crypto]: RS256 için cryptography. Panelin Cloudflare Access doğrulaması (#132, app/admin/access.py) bunu
+    # gerektirir; şimdiye kadar sadece pypdf[crypto] üzerinden dolaylı geliyordu (greenlet olayındaki gibi kırılgan).
+    "pyjwt[crypto]>=2.9",
     "email-validator>=2.2",
     # Yönetim paneli (T-063 — Ataberk, app/admin/). itsdangerous: panel oturum çerezi (Starlette SessionMiddleware).
     "sqladmin==0.32.0",
@@ -34,11 +36,11 @@ dev = [
     "pytest>=8.3",
     # Sabit sürüm: CI ve herkesin bilgisayarı aynı kuralları uygulasın (infra/ci.md, "yerelde geçiyor CI'da düşüyor").
     # Güncellerken: sürümü burada artır, `ruff format .` + `mypy app tests` çalıştır, aynı PR'da gönder.
-    "ruff==0.17.2",
-    "mypy==2.4.0",
+    "ruff==0.17.5",
+    "mypy==2.4.1",
     # T-069: kapsam ölçümü ve TEST_DATABASE_URL / TEST_REDIS_URL verilmediğinde geçici PostgreSQL ve Redis (Docker).
     "pytest-cov==7.1.0",
-    "testcontainers[postgres,redis]==4.9.0",
+    "testcontainers[postgres,redis]==4.15.0",
 ]
 
 [build-system]
