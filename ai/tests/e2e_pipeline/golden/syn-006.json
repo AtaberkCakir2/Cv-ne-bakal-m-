@@ -1,0 +1,197 @@
+{
+  "target_role": {
+    "slug": "full-stack-developer",
+    "name": "Full-Stack Developer"
+  },
+  "postings_analyzed": 200,
+  "match_score": 100.0,
+  "present_skills": [
+    {
+      "skill": "Node.js",
+      "level": "unknown",
+      "confidence": 0.85,
+      "verified": true
+    },
+    {
+      "skill": "React",
+      "level": "unknown",
+      "confidence": 0.85,
+      "verified": true
+    },
+    {
+      "skill": "Mikroservis Mimarisi",
+      "level": "unknown",
+      "confidence": 0.6,
+      "verified": true
+    },
+    {
+      "skill": "CI/CD",
+      "level": "unknown",
+      "confidence": 0.6,
+      "verified": true
+    },
+    {
+      "skill": "NestJS",
+      "level": "unknown",
+      "confidence": 0.85,
+      "verified": true
+    },
+    {
+      "skill": "TypeScript",
+      "level": "unknown",
+      "confidence": 0.95,
+      "verified": true
+    },
+    {
+      "skill": "RabbitMQ",
+      "level": "unknown",
+      "confidence": 0.6,
+      "verified": true
+    },
+    {
+      "skill": "Next.js",
+      "level": "unknown",
+      "confidence": 0.85,
+      "verified": true
+    },
+    {
+      "skill": "GitHub Actions",
+      "level": "unknown",
+      "confidence": 0.85,
+      "verified": true
+    },
+    {
+      "skill": "Kubernetes",
+      "level": "unknown",
+      "confidence": 0.85,
+      "verified": true
+    },
+    {
+      "skill": "Helm",
+      "level": "unknown",
+      "confidence": 0.6,
+      "verified": true
+    },
+    {
+      "skill": "MongoDB",
+      "level": "unknown",
+      "confidence": 0.85,
+      "verified": true
+    },
+    {
+      "skill": "PostgreSQL",
+      "level": "unknown",
+      "confidence": 0.85,
+      "verified": true
+    },
+    {
+      "skill": "Express.js",
+      "level": "unknown",
+      "confidence": 0.6,
+      "verified": true
+    },
+    {
+      "skill": "REST API",
+      "level": "unknown",
+      "confidence": 0.6,
+      "verified": true
+    },
+    {
+      "skill": "GraphQL",
+      "level": "unknown",
+      "confidence": 0.85,
+      "verified": true
+    },
+    {
+      "skill": "Vue.js",
+      "level": "unknown",
+      "confidence": 0.85,
+      "verified": true
+    },
+    {
+      "skill": "Jest",
+      "level": "unknown",
+      "confidence": 0.85,
+      "verified": true
+    },
+    {
+      "skill": "Cypress",
+      "level": "unknown",
+      "confidence": 0.85,
+      "verified": true
+    },
+    {
+      "skill": "AWS",
+      "level": "unknown",
+      "confidence": 0.85,
+      "verified": true
+    },
+    {
+      "skill": "Amazon EC2",
+      "level": "unknown",
+      "confidence": 0.6,
+      "verified": true
+    },
+    {
+      "skill": "Amazon S3",
+      "level": "unknown",
+      "confidence": 0.6,
+      "verified": true
+    },
+    {
+      "skill": "Amazon RDS",
+      "level": "unknown",
+      "confidence": 0.6,
+      "verified": true
+    },
+    {
+      "skill": "JavaScript",
+      "level": "unknown",
+      "confidence": 0.85,
+      "verified": true
+    },
+    {
+      "skill": "Python",
+      "level": "beginner",
+      "confidence": 0.85,
+      "verified": true
+    },
+    {
+      "skill": "SQL",
+      "level": "unknown",
+      "confidence": 0.75,
+      "verified": true
+    },
+    {
+      "skill": "Redux",
+      "level": "unknown",
+      "confidence": 0.75,
+      "verified": true
+    },
+    {
+      "skill": "Redis",
+      "level": "unknown",
+      "confidence": 0.75,
+      "verified": true
+    },
+    {
+      "skill": "Docker",
+      "level": "unknown",
+      "confidence": 0.75,
+      "verified": true
+    },
+    {
+      "skill": "Test Driven Development",
+      "level": "unknown",
+      "confidence": 0.75,
+      "verified": true
+    },
+    {
+      "skill": "İngilizce",
+      "level": "advanced",
+      "confidence": 0.85,
+      "verified": true
+    }
+  ],
+  "missing_skills": []
+}

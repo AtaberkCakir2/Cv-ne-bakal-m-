@@ -279,13 +279,15 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-070 · Tanıtım (landing) sayfası
 
-- **Durum:** Yapılacak
+- **Durum:** Devam Ediyor
 - **Tarih:** 07.12.2026 – 13.12.2026 · **Öncelik:** P2 · **Efor:** 6 saat · **Alan:** Web / Masaüstü
 - **Bağımlılık:** T-022 (Anıl)
 - **Destek:** Anıl
 - **Çıktı:** Landing sayfası
 - **Kabul kriteri:** Ürün tanıtımı, ekran görüntüleri, indirme linkleri (Windows/macOS/Android), gizlilik politikası ve KVKK linkleri, iletişim.
 - **Not:** 13.11.2026: T-010'dan devralındı: sayfa Cloudflare Pages'te yayınlanır ve kök alan adı `cvnebakalim.com` Pages projesine bağlanır (Anıl'ın yasal sayfaları #71 ile aynı Pages projesi olabilir).
+- **Not (21.11.2026):** Sayfa `infra/landing/` (saf HTML/CSS, uygulamanın tasarım değerleri, açık/koyu tema, 375 px'te taşma yok): tanıtım, nasıl çalışır, gizlilik güvenceleri, ekran görüntüleri (sahte CV, E2E ortamından `ekran-goruntuleri.mjs`), indirme (web, Windows/macOS → karar #36 sürüm reposu, Android "yakında"), SSS, yasal bağlantılar, iletişim, ESCO atfı. Yasal sitenin (#71) Pages projesine kök sayfa olarak eklenir (`build.sh`). Kalan: #71 birleşince Cloudflare Pages projesini kurmak ve kök alan adını bağlamak (`infra/landing/README.md`), canlı adreste kontrol.
+- **Devam notu (21.11.2026):** Yapılan: sayfa, ekran görüntüleri ve `build.sh` PR #152'de (inceleme bekliyor). · Sıradaki adım: #152 ve Anıl'ın #71'i birleşince Cloudflare → Workers & Pages → Create → Pages → Connect to Git; ayarlar `infra/landing/README.md` tablosunda (build komutu, çıktı `web/yasal-site/dist`, `NODE_VERSION=22`, `APP_URL`); Custom domains: `cvnebakalim.com` + `www`. Sonra canlıda kontrol: kök sayfa, `/gizlilik/`, `/hesap-silme/`, `_headers` (CSP), telefonda görünüm. · Açık sorular / engeller: #71 (Anıl) birleşmedi; web arayüzünün adresi (`app.cvnebakalim.com` Pages mi tünel mi) Anıl'la kesinleşmedi; Android bağlantısı T-095'te eklenecek. · Branch: `ataberk/tanitim-sayfasi`
 
 ---
 
@@ -373,7 +375,8 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 - **Destek:** Burak, Anıl
 - **Çıktı:** Prova notu
 - **Kabul kriteri:** PC'de prova projesinde (`careerai-staging`) production'ın birebir kopyasıyla deploy + rollback provası; checklist üzerinden kuru çalıştırma; sunum B planı (127.0.0.1'de yerel demo, telefondan internet paylaşımı) denendi.
-- **Not:** 21.11.2026: deploy + rollback provasının ilk turu yapıldı (go-live #49): production dökümüyle 146 sn, geri yükleme prosedüründeki yetki hatası düzeltildi (`docs/runbook/operasyon.md` 2. bölüm). `infra/pc/.env.staging` bu PC'de oluşturuldu. Ocak'ta v1.0.0 adayıyla tekrarlanacak; kalan: checklist kuru çalıştırma, sunum B planı.
+- **Not:** 21.11.2026: deploy + rollback provasının ilk turu yapıldı (go-live #49): production dökümüyle 146 sn, geri yükleme prosedüründeki yetki hatası düzeltildi (`docs/runbook/operasyon.md` 2. bölüm). `infra/pc/.env.staging` bu PC'de oluşturuldu. Ocak'ta v1.0.0 adayıyla tekrarlanacak; kalan: checklist kuru çalıştırma.
+- **Not (21.11.2026, B planı):** `make prod-local` + yeni `make prod-local-web` / `prod-local-down` ile yerel demo ~1 dk'da hazır, production verisiyle tarayıcıda denendi (`infra/pc/deploy.md` §6). Düzeltilen: B planında CORS kapalıydı, yerel web derleme komutu yoktu. Kalan: telefondan internet paylaşımıyla tünel denemesi (Ataberk, elle), analiz akışı T-057'den sonra.
 
 ---
 

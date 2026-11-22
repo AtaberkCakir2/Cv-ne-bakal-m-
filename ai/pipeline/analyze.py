@@ -16,7 +16,8 @@ Gizlilik (CLAUDE.md kural 5, karar #9):
 - Log ve `stats` sadece sayı ve kod içerir.
 
 Süre: analiz işçisinin sınırı 180 sn. Zincir `budget_s` içinde kalmaya çalışır: çıkarım en fazla
-`EXTRACT_MAX_SECONDS` bekler (öneriye süre kalsın), her LLM çağrısının zaman aşımı kalan süreye göre kısalır; öneri
+`EXTRACT_MAX_SECONDS` bekler (öneriye süre kalsın; bozuk yanıttaki ikinci deneme de bu sınırın içindedir), her LLM
+çağrısının zaman aşımı kalan süreye göre kısalır; öneri
 için yeterli süre kalmadıysa LLM atlanır, kurallı öneri yapılır. LLM düşerse (zaman aşımı, Ollama kapalı)
 çıkarım v1 sözlük sonucuyla, öneri kurallı sıralamayla devam eder; analiz yine `done` olur.
 """
@@ -50,6 +51,7 @@ MIN_LLM_SECONDS = 20.0  # bundan az süre kaldıysa LLM çağrılmaz
 # Böylece öneriye en az ~70 sn kalır; çıkarım bu sürede bitmezse v1 sözlük sonucu kullanılır.
 EXTRACT_MAX_SECONDS = 90.0
 _SAFETY_SECONDS = 5.0
+MIN_CALL_SECONDS = 10.0  # çıkarımda bundan az süre kaldıysa (ör. ikinci deneme) LLM çağrılmaz
 
 _TR_LETTERS = re.compile(r"[çğıöşüÇĞİÖŞÜ]")
 _TR_WORDS = frozenset({"ve", "ile", "için", "bir", "bu", "olarak", "deneyim", "eğitim", "üniversitesi", "yıl"})
@@ -112,7 +114,7 @@ def analyze_cv(
 
     # 3. Yetkinlik çıkarımı (v1 + LLM; LLM düşerse v1)
     t = clock()
-    extraction = _extract(masked.text, lang, factory, remaining())
+    extraction = _extract(masked.text, lang, factory, remaining(), clock)
     del masked
     stats.update(extract_s=round(clock() - t, 1), extraction_llm_error=extraction.llm_error)
 
@@ -156,12 +158,21 @@ def prompt_version(extraction: ModelInfo, recommendation: ModelInfo) -> str:
     return f"skill_extraction:{extraction['prompt_version']},recommendation:{recommendation['prompt_version']}"
 
 
-def _extract(text: str, lang: Lang, factory: Callable[[float], Transport], left: float) -> ExtractionResult:
+def _extract(
+    text: str, lang: Lang, factory: Callable[[float], Transport], left: float, clock: Callable[[], float]
+) -> ExtractionResult:
     if left < MIN_LLM_SECONDS:
         return extract_skills_v2(text, lang, transport=_timeout_transport)
-    return extract_skills_v2(
-        text, lang, transport=factory(min(TIMEOUT_SECONDS, EXTRACT_MAX_SECONDS, left - MIN_LLM_SECONDS))
-    )
+    end = clock() + min(TIMEOUT_SECONDS, EXTRACT_MAX_SECONDS, left - MIN_LLM_SECONDS)
+
+    def send(body: dict[str, Any]) -> dict[str, Any]:
+        # Her çağrı (bozuk yanıttaki ikinci deneme dahil) sadece çıkarımın bitiş zamanına kalan süreyi bekler (#158).
+        timeout = end - clock()
+        if timeout < MIN_CALL_SECONDS:
+            return _timeout_transport(body)
+        return factory(timeout)(body)
+
+    return extract_skills_v2(text, lang, transport=send)
 
 
 def _recommend(
