@@ -8,6 +8,8 @@ dependencies = [
     # AGPL lisanslı; proje açık kaynak/akademik olduğu sürece uygun. Ticari kullanımda lisans gözden geçirilmeli.
     # Sürüm sabit: yeni sürüm tip bilgisini değiştirince mypy (CI) kırılıyor, PDF davranışı da değişebilir.
     "pymupdf==2.1",
+    # LLM yanıtlarının doğrulanması (extraction/llm.py, T-074).
+    "pydantic>=2.7",
 ]
 
 [project.optional-dependencies]
