@@ -14,10 +14,10 @@ python -m venv .venv
 pip install -e ".[dev]"
 pytest
 ruff check . && ruff format --check .
-mypy parsing pii extraction prompts embedding matching tests eval/scripts
+mypy . --exclude '^eval/tests/'   # CI ile aynı (.github/workflows/ci.yml); yeni modüller kendiliğinden girer
 ```
 
-Testler gerçek CV kullanmaz; PDF'ler test sırasında bellekte üretilir.
+Testler gerçek CV kullanmaz; PDF'ler test sırasında bellekte üretilir. `pytest --cov` kapsamayı ölçer ve %70'in altında hata verir (T-054, `pyproject.toml`; CI bu komutla çalışır, düz `pytest` ve tek dosya çalıştırma eşiğe takılmaz); 21.11.2026'da %96,6 (torch ve veritabanı testleri dahil değil: `TEST_DATABASE_URL`, `CAREERAI_EMBEDDING_TEST`).
 
 ## Modüller
 
@@ -125,7 +125,7 @@ from extraction.llm import extract_skills_v2
 
 result = extract_skills_v2(masked_text, "tr")  # OLLAMA_URL, OLLAMA_MODEL ortam değişkenleri; yoksa yerel llama3.1:8b
 result.present_skills()  # sözleşmedeki present_skills (verified dahil)
-result.model  # {"name": "llama3.1:8b", "prompt_version": "v1"}
+result.model  # {"name": "llama3.1:8b", "prompt_version": "v2"}
 result.llm_error  # None, "LLM_TIMEOUT" veya "INTERNAL"; hata olursa sonuç v1'dir
 ```
 
@@ -141,7 +141,7 @@ result.llm_error  # None, "LLM_TIMEOUT" veya "INTERNAL"; hata olursa sonuç v1'd
 from prompts import get_prompt, model_info
 
 prompt = get_prompt("skill_extraction")  # CURRENT'taki sürüm; ("skill_extraction", "v1") ile sabitlenebilir
-model = model_info("llama3.1:8b", prompt)  # {"name": "llama3.1:8b", "prompt_version": "v1"}
+model = model_info("llama3.1:8b", prompt)  # {"name": "llama3.1:8b", "prompt_version": "v2"}
 ```
 
 - Her prompt `prompts/<ad>/<sürüm>.txt` dosyasıdır. Yayımlanmış dosya değiştirilmez: yeni sürüm aç, `CURRENT`'ı güncelle, özetini `tests/prompts/test_library.py` içine ekle.
