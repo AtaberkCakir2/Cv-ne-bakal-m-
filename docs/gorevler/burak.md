@@ -96,7 +96,7 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 - **Destek:** —
 - **Çıktı:** Prompt kütüphanesi
 - **Kabul kriteri:** Prompt'lar /ai/prompts altında versiyonlu; her analizde model_name ve prompt_version kaydedilir (tekrarlanabilirlik).
-- **Devam notu (10.11.2026):** Yapılan: `ai/prompts/` (`get_prompt`, `model_info`, `skill_extraction/v1.txt`, #68); T-032 (#78) LLM çağrısında `get_prompt("skill_extraction")` kullanıyor ve `ExtractionResult.model` alanında `{"name", "prompt_version"}` döndürüyor. · Sıradaki adım: T-057'de işçi `result.model` değerini analiz sonucuna ve `analyses` tablosuna yazınca kriterin "her analizde kaydedilir" kısmı kapanır, görev o zaman Tamamlandı yapılır. · Açık sorular / engeller: T-043 ikinci prompt'u getirince sözleşmedeki tek `prompt_version` alanının nasıl kullanılacağı karar ister. · Branch: yok (kod main'de; kalan iş T-057'nin dalında)
+- **Devam notu (21.11.2026):** Yapılan: `ai/prompts/` (#68), LLM çağrısı `get_prompt` kullanıyor (#78); analiz zinciri (#155) her sonuçta `model: {name, prompt_version}` döndürüyor, golden test (T-058) bunu doğruluyor. · Sıradaki adım: Anıl'ın işçisi (`AiAnalyzer`) `result.model` değerini `analyses` tablosuna yazınca görev Tamamlandı yapılır. · Açık sorular / engeller: T-043 ikinci prompt'u getirince sözleşmedeki tek `prompt_version` alanının nasıl kullanılacağı karar ister. · Branch: yok (AI tarafı main'de)
 
 ---
 
@@ -148,12 +148,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-054 · AI modülü birim testleri
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 30.11.2026 – 06.12.2026 · **Öncelik:** P1 · **Efor:** 8 saat · **Alan:** Test & QA
 - **Bağımlılık:** T-042
 - **Destek:** —
 - **Çıktı:** tests/ai
 - **Kabul kriteri:** pytest; parsing, PII, çıkarım, eşleştirme için birim testler; kapsama ≥ %70; CI'da zorunlu.
+- **Not:** 21.11.2026. Kapsama %96,6 (parsing, pii, extraction, matching, recommendation, embedding, prompts; 376 test). `ai/pyproject.toml`: pytest-cov ve `fail_under = 70`; eşik sadece `pytest --cov` ile devreye girer (tek dosya çalıştırma kırmızı olmasın, #157 incelemesi). Ataberk'e: CI'daki AI işinde komut `pytest -rs --cov` olmalı; AI işini zorunlu kontrollere eklemek (branch koruması); mypy kapsamı #159'da.
 
 ### T-055 · Model değerlendirme raporu
 
@@ -217,21 +218,23 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-074 · Prompt injection koruması ve çıktı doğrulama
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 14.12.2026 – 20.12.2026 · **Öncelik:** P0 · **Efor:** 8 saat · **Alan:** AI / NLP
 - **Bağımlılık:** T-032
 - **Destek:** —
 - **Çıktı:** ai/guard modülü
 - **Kabul kriteri:** CV metni veri olarak işaretlenir (talimatlar yok sayılır); çıktı Pydantic ile doğrulanır; 2 başarısız denemede sözlük tabanlı sonuca düşülür.
+- **Not:** Ayrı `ai/guard` yerine koruma LLM çağrısının yanında, `ai/extraction/llm.py` içinde (tek LLM çağrı noktası). Prompt `skill_extraction:v2`: CV `<cv>…</cv>` arasında veri, içindeki talimatlar yok sayılır; metindeki `<cv>`/`</cv>` taklitleri ve `<|...|>` sohbet belirteçleri gönderilmeden silinir. Yanıt Pydantic (`LlmResponse`, öğe bazında tolerans) ile doğrulanır; görünmez karakterler (U+200B vb.) de silinir; bozuk yanıtta 1 kez daha, farklı seed ile sorulur (çıkarımın 90 sn sınırı içinde kalırsa, #158 incelemesi), 2. başarısızlıkta v1 sözlük sonucu (`llm_error=INTERNAL`); zaman aşımında tekrar yok. Gerçek Ollama (llama3.1:8b) denemesi: model enjeksiyona kısmen uydu ve 7 uydurma yetkinlik önerdi, hepsi birleştirme kuralıyla atıldı (metinde/v1'de yok). Kalan risk: LLM, v1'de seviyesi bilinmeyen yetkinliklerin seviyesini doldurduğu için enjeksiyon seviyeyi şişirebilir; bu sadece CV sahibinin kendi analizini etkiler (CV'ye "ileri düzey" yazmakla aynı). `prompt_version` artık `skill_extraction:v2`.
 
 ### T-058 · Uçtan uca pipeline testleri (golden test)
 
-- **Durum:** Yapılacak
+- **Durum:** Tamamlandı
 - **Tarih:** 21.12.2026 – 27.12.2026 · **Öncelik:** P1 · **Efor:** 6 saat · **Alan:** Test & QA
 - **Bağımlılık:** T-057
 - **Destek:** —
 - **Çıktı:** tests/e2e_pipeline
 - **Kabul kriteri:** 10 örnek CV: PDF → sonuç JSON; beklenen yetkinlikler sabit; şema doğrulaması. Prompt/model değişikliğinde regresyon yakalar.
+- **Not:** `ai/tests/e2e_pipeline/` (21.11.2026): `eval/dataset/synthetic` içindeki 10 sentetik PDF (8 metin, 2 taranmış) `analyze_cv` ile çalıştırılır; sonuçlar `golden/<cv_id>.json` ile birebir karşılaştırılır (prompt sürümü hariç), `jsonschema` ile sözleşmeye göre doğrulanır, CV başlığındaki uydurma kişisel bilgilerin sonuçta olmadığı denetlenir. CI'da LLM yok sayılır (belirleyici); `CAREERAI_OLLAMA_TEST=1` ile gerçek modelde golden yetkinliklerin kaybolmadığı denetlenir (llama3.1:8b, 8 CV, 92 sn, geçti). Pozisyon talebi `roles.json`'da sabit sahte veri. Taranmış CV'ler OCR (T-029) gelince golden yenilenmeli. PR, T-057 (#155) birleştikten sonra açılır (onun dalına kurulu).
 
 ### T-073 · Temel sızma testi
 

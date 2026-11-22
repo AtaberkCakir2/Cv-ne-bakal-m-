@@ -1,6 +1,10 @@
 # Sunum B planı (go-live olay prosedürü "Sunum sırasında dış erişim yok"): api'yi sadece bu PC'ye açar.
-# 127.0.0.1'e bağlı olduğu için ağdaki başka cihazlar erişemez. Kullanım: make prod-local (infra/pc/deploy.md).
+# 127.0.0.1'e bağlı olduğu için ağdaki başka cihazlar erişemez. Kullanım: make prod-local (infra/pc/deploy.md §6).
 services:
   api:
     ports:
       - "127.0.0.1:${LOCAL_API_PORT:-8100}:8000"
+    environment:
+      # Yerel web arayüzü (make prod-local-web, 127.0.0.1:5173) API'yi tarayıcıdan çağırabilsin. Production'ın kendi
+      # kökenleri de kalır (tünel aynı api konteynerine bağlı). Normal düzene dönüş: make prod-local-down.
+      CORS_ORIGINS: ${LOCAL_CORS_ORIGINS:-["http://127.0.0.1:5173", "app://careerai"]}
