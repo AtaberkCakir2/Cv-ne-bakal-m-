@@ -166,12 +166,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-057 · AI worker'ının kuyruğa entegrasyonu
 
-- **Durum:** Yapılacak
+- **Durum:** Devam Ediyor
 - **Tarih:** 30.11.2026 – 06.12.2026 · **Öncelik:** P0 · **Efor:** 8 saat · **Alan:** AI / NLP
 - **Bağımlılık:** T-039 (Anıl), T-043
 - **Destek:** Anıl
 - **Çıktı:** worker servisi
 - **Kabul kriteri:** Celery worker eşzamanlılık = 1 (RAM koruması), görev zaman aşımı, başarısız işler için hata kaydı ve kullanıcıya anlamlı mesaj; LLM düşerse v1 sözlük sonucuyla devam.
+- **Devam notu (21.11.2026):** Yapılan: AI tarafı `ai/pipeline` (`analyze_cv(pdf, role_id=, conn=)`): PDF → maskeleme → çıkarım v2 → eşleştirme → öneri; sözleşme hata kodları (`AnalysisError`), 165 sn bütçe, LLM düşerse v1 + kurallı öneri; karar önerisi #38 (`prompt_version` biçimi). Eşzamanlılık 1, 180 sn sınır ve hata kaydı Anıl'ın işçisinde (T-039, #123) hazır. · Sıradaki adım: Anıl `backend/app/services/analyzer.py`'de `AiAnalyzer` ile `analyze_cv` sonucunu `output_from_result`'a bağlar (`AnalysisError.code` → `AnalysisFailed`); analiz işçisinin imajına `ai` paketi ve modeller (Ataberk/Anıl); sonra gerçek veritabanı ve Ollama ile uçtan uca deneme, görev Tamamlandı. · Açık sorular / engeller: karar #38 onayı; production kaynak havuzu küçük (yetkinlik başına 2, Ataberk büyütüyor). · Branch: burak/ai-pipeline
 
 ### T-060 · React Native (Expo) proje kurulumu
 
