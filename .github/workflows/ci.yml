@@ -58,7 +58,8 @@ jobs:
             echo "backend=$(calis '^backend/')"
             # Scraper, backend'in modellerini/migration'larını ve ai'nin pii paketini kurar.
             echo "scraper=$(calis '^(scraper|backend|ai)/' scraper/pyproject.toml)"
-            echo "ai=$(calis '^ai/' ai/pyproject.toml)"
+            # ai testleri (golden dahil) taksonomiyi scraper/taxonomy/skills.csv'den okur (#160).
+            echo "ai=$(calis '^(ai/|scraper/taxonomy/)' ai/pyproject.toml)"
             echo "ai_docker=$(var ai/Dockerfile)"
             echo "web=$(calis '^web/' web/package.json)"
             echo "mobile=$(calis '^mobile/' mobile/package.json)"
