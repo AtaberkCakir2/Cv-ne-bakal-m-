@@ -1,3 +1,5 @@
+import { File, Paths } from "expo-file-system";
+
 /**
  * Yüklemeden önce istemci tarafı kontrol (web/src/analysis/cvFile.ts ile aynı sınırlar). Asıl kontrol backend'de
  * (sayfa sayısı, şifre, bozuk dosya, "%PDF-" imzası); burada amaç kullanıcıyı boşuna beklememek.
@@ -10,6 +12,22 @@ export interface PickedFile {
   name: string;
   size?: number;
   mimeType?: string;
+}
+
+/**
+ * Seçilen PDF'in uygulama önbelleğindeki kopyasını siler (PR #161 incelemesi, CLAUDE.md kural 5: CV dosyası saklanmaz).
+ * expo-document-picker Android'de content:// adresini okuyabilmek için dosyayı önbelleğe kopyalar; kopya yükleme
+ * bitince, başka dosya seçilince ve ekrandan çıkınca silinir. Sadece önbellekteki dosyalara dokunur (kullanıcının asıl
+ * dosyası silinmez); silinemezse hata yutulur, işletim sistemi önbelleği zaten temizler.
+ */
+export function discardCvCopy(file: PickedFile | undefined): void {
+  if (!file || !file.uri.startsWith(Paths.cache.uri)) return;
+  try {
+    const copy = new File(file.uri);
+    if (copy.exists) copy.delete();
+  } catch {
+    // silinemedi; önbellek dosyası, OS temizler
+  }
 }
 
 /** Dosya uygunsa undefined, değilse kullanıcıya gösterilecek mesaj. */
