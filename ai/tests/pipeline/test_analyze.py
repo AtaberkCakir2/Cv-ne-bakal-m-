@@ -13,7 +13,7 @@ import pytest
 
 from extraction.llm import LlmError
 from pipeline import AnalysisError, analyze_cv, guess_lang, prompt_version
-from pipeline.analyze import BUDGET_SECONDS, EXTRACT_MAX_SECONDS
+from pipeline.analyze import BUDGET_SECONDS, EXTRACT_MAX_SECONDS, MIN_CALL_SECONDS
 from tests.parsing.conftest import make_pdf
 
 REPO = Path(__file__).resolve().parents[3]
@@ -158,7 +158,7 @@ def test_result_follows_contract() -> None:
             assert set(item["properties"]["resources"]["items"]["required"]) <= r.keys()
     docker = missing[0]["resources"]
     assert docker[0]["resource_id"] == 11 and docker[0]["reason"].startswith("İncelenen 150 Backend Developer")
-    assert out.result["model"]["prompt_version"] == "skill_extraction:v1,recommendation:v1"
+    assert out.result["model"]["prompt_version"] == "skill_extraction:v2,recommendation:v1"
 
 
 def test_personal_data_never_leaves_the_function() -> None:
@@ -189,9 +189,48 @@ def test_llm_timeouts_follow_the_remaining_budget() -> None:
 def test_extraction_wait_is_capped_so_recommendation_gets_time() -> None:
     # #155 incelemesi: production PC'de çıkarım 145 sn bekleyip bütçeyi bitiriyordu, öneri LLM'i hiç çalışmıyordu.
     _, ollama, _ = run()
-    assert ollama.timeouts[0] == EXTRACT_MAX_SECONDS == 90
+    assert ollama.timeouts[0] == pytest.approx(EXTRACT_MAX_SECONDS, abs=1) and EXTRACT_MAX_SECONDS == 90
     # Çıkarım sınırın tamamını kullansa bile öneriye en az 60 sn kalır.
     assert BUDGET_SECONDS - EXTRACT_MAX_SECONDS - 5 >= 60
+
+
+def _late_factory(now: list[float], timeouts: list[float], answers: list[str], seconds: float) -> Any:
+    """Çıkarım çağrısı `seconds` sürer ve sıradaki yanıtı döndürür; öneri çağrısı boş seçim."""
+
+    def factory(timeout: float) -> Any:
+        timeouts.append(timeout)
+
+        def send(body: dict[str, Any]) -> dict[str, Any]:
+            if "skills" in body["format"]["required"]:
+                now[0] += seconds
+                return {"message": {"content": answers.pop(0)}}
+            return {"message": {"content": json.dumps({"picks": []})}}
+
+        return send
+
+    return factory
+
+
+def test_retry_after_late_broken_answer_stays_within_extraction_cap() -> None:
+    # #158 incelemesi: ilk yanıt 85. saniyede bozuk gelirse ikinci deneme 90 sn daha beklememeli.
+    now, answers = [0.0], ["{bozuk", json.dumps({"skills": []})]
+    timeouts: list[float] = []
+    factory = _late_factory(now, timeouts, answers, 85.0)
+    out = analyze_cv(cv_pdf(), role_id=3, conn=FakeConn(), transport_factory=factory, clock=lambda: now[0])
+    assert len(answers) == 1  # 90 - 85 = 5 sn < MIN_CALL_SECONDS: ikinci deneme yapılmadı
+    assert out.stats["extraction_llm_error"] == "LLM_TIMEOUT"
+    assert out.stats["extract_s"] <= EXTRACT_MAX_SECONDS
+    assert timeouts[1] >= 60  # öneriye süre kaldı
+
+
+def test_retry_gets_only_the_time_left_until_extraction_cap() -> None:
+    now, answers = [0.0], ["{bozuk", json.dumps({"skills": []})]
+    timeouts: list[float] = []
+    factory = _late_factory(now, timeouts, answers, 40.0)
+    out = analyze_cv(cv_pdf(), role_id=3, conn=FakeConn(), transport_factory=factory, clock=lambda: now[0])
+    assert timeouts[:2] == [EXTRACT_MAX_SECONDS, EXTRACT_MAX_SECONDS - 40]
+    assert timeouts[1] >= MIN_CALL_SECONDS
+    assert out.stats["extraction_llm_error"] is None
 
 
 def test_no_llm_when_budget_is_spent() -> None:
