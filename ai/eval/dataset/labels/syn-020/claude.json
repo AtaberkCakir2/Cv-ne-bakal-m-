@@ -1,0 +1,97 @@
+{
+  "cv_id": "syn-020",
+  "annotator": "claude",
+  "skills": [
+    {
+      "skill": "JavaScript",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "React",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "TypeScript",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "CSS",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Sass",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "HTML",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Angular",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Git",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "GitHub",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Visual Studio Code",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Figma",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "npm",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "REST API",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Netlify",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Duyarlı Tasarım",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Erişilebilirlik",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Türkçe",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "İngilizce",
+      "level": "advanced",
+      "years": null
+    }
+  ],
+  "notes": "Angular sadece derste ('course only') → temel. Test ve durum yönetimi istek cümlesi."
+}

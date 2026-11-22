@@ -1,0 +1,62 @@
+{
+  "cv_id": "syn-052",
+  "annotator": "claude",
+  "skills": [
+    {
+      "skill": "C#",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "?GDScript",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Python",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Unity",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Godot",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Unreal Engine",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Oyun Tasarımı",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "?XR Interaction Toolkit",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Git",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Trello",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "İngilizce",
+      "level": "advanced",
+      "years": null
+    }
+  ],
+  "notes": ""
+}

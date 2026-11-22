@@ -5,7 +5,8 @@ Yetkinlik çıkarımının doğruluğunu ölçmek için elle etiketlenmiş "alt�
 ## Hedef (kabul kriteri)
 
 - **50 sentetik CV:** 25 TR + 25 EN · 10 pozisyon × 5 · tek ve çok sütunlu · en az **5 taranmış** (görüntü) PDF · yeni mezun / stajyer / deneyimli dengeli.
-- **Etiketleme:** her CV en az **1 kişi**; **20 CV** ikinci bir kişi tarafından da bağımsız etiketlenir. İkili etiketlerdeki anlaşmazlıkları **3. kişi** çözer → `gold/` dosyası.
+- **Etiketleme (karar #39, 22.11.2026):** 50 CV'nin hepsini **Claude** etiketler (`labels/<cv_id>/claude.json`); gold başlangıçta bu etikettir. Ekipten her kişi kendi atamasından **3–4 CV'yi kontrol eder** ve düzeltilmiş hâlini gold'a kendi adıyla yazar (aşağıda "Kontrol"). Raporlarda (T-055, T-081) etiketlerin yapay zekayla üretildiği ve kaç CV'nin kontrol edildiği yazılır.
+- ~~Her CV en az 1 kişi; 20 CV ikinci kişi tarafından da bağımsız etiketlenir; anlaşmazlıkları 3. kişi çözer.~~ Karar #39 ile kaldırıldı. Aşağıdaki çift etiket maddeleri ve atama tablosu, kontrol edilecek CV'leri seçmek için duruyor.
 - **Çift etiketlenen 20 CV dengeli seçilir:** en az 8 TR + 8 EN, en az 6 çok sütunlu, en az 2 taranmış, üç deneyim düzeyinden de.
 - Çift etiketli alt kümede etiketleyiciler arası **F1 ≥ 0,85**.
 - İlk **10 Türkçe CV** önceliklidir (T-018 benchmark'ı).
@@ -34,10 +35,19 @@ Plan: #30'da Ataberk'le kararlaştırıldı (29.10.2026). Görev durumu: `docs/g
 1. **CV üret.** Her CV için `dataset/cv_specs/<cv_id>.json` tanımı yazılır (iskelet `template_input.json`'daki pozisyon × yetkinlik listesinden; proje ve deneyim metinlerini insan yazar). Yetkinlikler metinde açık liste olarak, proje açıklaması içinde ve kısaltma/yazım farklılıklarıyla ("JS", "k8s", "Postgres", yazım hatası, TR-EN karışık) geçer. PDF ve manifest satırı `generate_cvs.py` ile üretilir (aşağıda); `scanned: true` olan CV görüntüye çevrilip yeniden PDF yapılır.
    - **Şablonun yetkinlik listesi cevap anahtarı değildir.** Etiketler metinde gerçekten geçene göre, sıfırdan ve elle verilir; bir eşleyicinin (ör. `scraper/etl/skills.py`) çıktısı ön etiket olarak kullanılmaz. Aksi halde TÜBİTAK İP3'teki yöntem karşılaştırması geçersizleşir.
 2. **Manifest'e satır ekle** (`dataset/manifest.csv`). Sütunlar aşağıda.
-3. **Etiketle.** Her CV'yi bir kişi [etiketleme-kilavuzu.md](etiketleme-kilavuzu.md)'ye göre etiketler. Çift etiket için seçilen 20 CV'yi ikinci kişi de, birinci kişinin etiketine bakmadan etiketler; her biri kendi dosyasını yazar.
+3. **Etiketle.** *(Karar #39'dan beri etiketleri Claude veriyor; bu adım kontrol edilecek CV'ler ve ileride eklenecek insan etiketleri için.)* Her CV'yi bir kişi [etiketleme-kilavuzu.md](etiketleme-kilavuzu.md)'ye göre etiketler. Çift etiket için seçilen 20 CV'yi ikinci kişi de, birinci kişinin etiketine bakmadan etiketler; her biri kendi dosyasını yazar.
 4. **Uyumu ölç:** `python ai/eval/scripts/agreement.py` → çift etiketli CV'lerde anlaşmazlık listesi ve genel uyum skoru.
 5. **Gold'u yaz:** `agreement.py --write-gold` çift etiketli CV'ler için anlaşılan kısımlarla bir taslak üretir; üçüncü kişi sadece `"_karar_bekleyen"` listesini çözer. Tek etiketli CV'lerde etiket olduğu gibi gold'a kopyalanır.
 6. **Kontrol:** `python ai/eval/scripts/check_labels.py` hata vermemeli.
+
+### Kontrol (karar #39)
+
+Claude etiketinin kalitesini görmek için her kişi kendi atamasındaki (aşağıdaki tablo, 1. etiketleyici sütunu) **3–4 CV**'yi kontrol eder; tercihen biri Türkçe, biri İngilizce, biri çok sütunlu veya taranmış olsun.
+
+1. CV'yi `dataset/synthetic/<cv_id>.pdf`'ten oku, [etiketleme-kilavuzu.md](etiketleme-kilavuzu.md)'yi aç.
+2. `dataset/gold/<cv_id>.json`'da eksik yetkinliği ekle, yanlış olanı sil, seviyeyi/yılı düzelt.
+3. `"adjudicator"` alanına kendi adını yaz, `"notes"`'a kaç ekleme/silme/seviye düzeltmesi yaptığını yaz (ör. `"kontrol: +2 −1 seviye 3"`). `labels/<cv_id>/claude.json`'a dokunma: kontrolde ne düzeltildiği bu ikisinin farkından ölçülür.
+4. `python ai/eval/scripts/check_labels.py` hata vermemeli.
 
 ### Etiketleyici atama
 

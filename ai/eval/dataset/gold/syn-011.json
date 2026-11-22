@@ -1,0 +1,102 @@
+{
+  "cv_id": "syn-011",
+  "adjudicator": "claude",
+  "skills": [
+    {
+      "skill": "Python",
+      "level": "advanced",
+      "years": 5
+    },
+    {
+      "skill": "PyTorch",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "TensorFlow",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Keras",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Hugging Face Transformers",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "MLOps",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "MLflow",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "?DVC",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "Docker",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "Kubernetes",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "FastAPI",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "AWS SageMaker",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Linux",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Doğal Dil İşleme",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "Bilgisayarlı Görü",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "?LoRA",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "?vLLM",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "OpenCV",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "İngilizce",
+      "level": "advanced",
+      "years": null
+    }
+  ],
+  "notes": "tek etiketleyici"
+}

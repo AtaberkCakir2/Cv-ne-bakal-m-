@@ -1,0 +1,62 @@
+{
+  "cv_id": "syn-050",
+  "adjudicator": "claude",
+  "skills": [
+    {
+      "skill": "C#",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "C++",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Unity",
+      "level": "beginner",
+      "years": 3
+    },
+    {
+      "skill": "Unreal Engine",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Blender",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Git",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "GitHub",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Oyun Tasarımı",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "?Seviye Tasarımı",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Performans Optimizasyonu",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "İngilizce",
+      "level": "intermediate",
+      "years": null
+    }
+  ],
+  "notes": "tek etiketleyici"
+}

@@ -1,0 +1,122 @@
+{
+  "cv_id": "syn-009",
+  "annotator": "claude",
+  "skills": [
+    {
+      "skill": "Terraform",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "Infrastructure as Code",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "Microsoft Azure",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "Kubernetes",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "Azure Kubernetes Service",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "Helm",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "Argo CD",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "Prometheus",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "Grafana",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "GitLab CI",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "?Trivy",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "Linux",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "Windows Server",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "Ansible",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "Bash",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "Python",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "Nginx",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "HAProxy",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "Docker",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Jenkins",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "ELK Stack",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "AWS",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "DevOps",
+      "level": "intermediate",
+      "years": 2
+    }
+  ],
+  "notes": "Taranmış CV. Sistem yöneticiliği 5 yıl → Ansible, Bash, Nginx, HAProxy, Windows Server ileri."
+}

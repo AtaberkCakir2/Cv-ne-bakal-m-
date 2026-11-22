@@ -1,0 +1,122 @@
+{
+  "cv_id": "syn-039",
+  "annotator": "claude",
+  "skills": [
+    {
+      "skill": "Playwright",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "TypeScript",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "k6",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "?REST Assured",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "Scrum",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "?Appium",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "Selenium",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "Docker",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "Oracle Database",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "SQL",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "Cypress",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Java",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Python",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Postman",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Apache JMeter",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Jenkins",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "GitHub Actions",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Jira",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "?TestRail",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Agile",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Test Otomasyonu",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "CI/CD",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "Yazılım Testi",
+      "level": "advanced",
+      "years": 6
+    }
+  ],
+  "notes": ""
+}

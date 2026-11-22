@@ -45,6 +45,17 @@ Sadece CV'de **açıkça** yazıyorsa ("3 yıl Java", "2021–2024 arası Python
 - `notes` alanına CV'den **alıntı, isim, şirket adı veya kişiyi tanıtabilecek bilgi yazmayın**. Bu dosyalar repoya girer.
 - Taranmış CV'yi okuyamıyorsanız tahmin etmeyin; `notes`'a "okunamadı" yazın.
 
+## Claude etiketini kontrol eden için (karar #39)
+
+`labels/<cv_id>/claude.json` Claude'un bu kılavuza göre verdiği etikettir; kontrol edilmemiş CV'nin gold'u da odur. Kontrolde CV'yi baştan okuyun, gold dosyasını bu kılavuza göre düzeltin ve `adjudicator`'a kendi adınızı yazın (ayrıntı: `README.md` → Kontrol). Claude'un tutarlı uyguladığı yorumlar (kontrolde aynı ölçüyle bakın):
+
+- Süreye göre seviye sadece **iş, staj veya gönüllü iş** için kullanılır. "Unity (3 yıl)" gibi süre kişisel/okul projesindeyse seviye `beginner`, `years` yazılan sayı.
+- Kısmi zamanlı veya 6 aya kadar iş → `beginner`; 1 yıllık yarı zamanlı iş → `intermediate`.
+- Yeni mezun/öğrencide yetenek listesinde seviyesiz geçen ama projede kullanılan araç → `beginner`; sadece listede geçen → `unknown`.
+- "X öğreniyorum", "Goals/Learning" bölümleri, "X'e geçmeyi düşünüyorum" → etiketlenmez.
+- Yumuşak beceriler (takım çalışması, mentorluk, liderlik, kod inceleme) CV'de açıkça yazıyorsa etiketlenir. Belirli bir işte/gönüllü görevde yapıldıysa seviye o işin süresinden; sadece özette veya listede geçiyorsa `unknown`.
+- "Siber Güvenlik", "Sızma Testi" gibi alan adları, kişi o alanda iş/proje/CTF yaptığını yazıyorsa etiketlenir.
+
 ## Hakem (3. kişi) için
 
 `agreement.py --write-gold` anlaşılan yetkinlikleri `gold/` taslağına yazar ve anlaşmazlıkları `"_karar_bekleyen"` listesine koyar. Her anlaşmazlık için CV'ye bakıp bu kılavuza göre karar verin, kabul ettiklerinizi `skills`'e taşıyın ve `"_karar_bekleyen"`'i silin. Kılavuz bir durumu kapsamıyorsa kuralı buraya ekleyin.

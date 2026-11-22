@@ -1,0 +1,112 @@
+{
+  "cv_id": "syn-019",
+  "annotator": "claude",
+  "skills": [
+    {
+      "skill": "React",
+      "level": "advanced",
+      "years": 7
+    },
+    {
+      "skill": "TypeScript",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Vue.js",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "Vite",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Webpack",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Storybook",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "Playwright",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "GraphQL",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Apollo GraphQL",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Performans Optimizasyonu",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "Liderlik",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "Kod İnceleme",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "Nuxt",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "SEO",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "jQuery",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "Bootstrap",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "?Module Federation",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "?Micro Frontends",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "Uçtan Uca Test",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "İngilizce",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "?İspanyolca",
+      "level": "beginner",
+      "years": null
+    }
+  ],
+  "notes": ""
+}

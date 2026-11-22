@@ -1,0 +1,117 @@
+{
+  "cv_id": "syn-008",
+  "adjudicator": "claude",
+  "skills": [
+    {
+      "skill": "Python",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "SQL",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "R",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "Pandas",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "NumPy",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "scikit-learn",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "XGBoost",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "LightGBM",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "PyTorch",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "Apache Spark",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Tableau",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Power BI",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "İstatistik",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "A/B Testi",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "?Zaman Serisi Analizi",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Makine Öğrenmesi",
+      "level": "advanced",
+      "years": 3
+    },
+    {
+      "skill": "Apache Airflow",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "MLflow",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "Google BigQuery",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "?SHAP",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Türkçe",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "İngilizce",
+      "level": "advanced",
+      "years": null
+    }
+  ],
+  "notes": "tek etiketleyici"
+}

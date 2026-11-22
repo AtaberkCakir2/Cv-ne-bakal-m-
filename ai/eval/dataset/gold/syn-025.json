@@ -1,0 +1,107 @@
+{
+  "cv_id": "syn-025",
+  "adjudicator": "claude",
+  "skills": [
+    {
+      "skill": "Node.js",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "NestJS",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "React",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "TypeScript",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "GraphQL",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Apollo GraphQL",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "PostgreSQL",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Redis",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Docker",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Python",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Linux",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "AWS",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Amazon EC2",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Amazon S3",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Jest",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "?Supertest",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Entegrasyon Testi",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Socket.IO",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "İngilizce",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "Türkçe",
+      "level": "advanced",
+      "years": null
+    }
+  ],
+  "notes": "tek etiketleyici"
+}

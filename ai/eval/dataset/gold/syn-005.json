@@ -1,0 +1,122 @@
+{
+  "cv_id": "syn-005",
+  "adjudicator": "claude",
+  "skills": [
+    {
+      "skill": "HTML",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "CSS",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "JavaScript",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "TypeScript",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "React",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "Vue.js",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Tailwind CSS",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "Figma",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "Git",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "GitHub",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Visual Studio Code",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Jest",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "npm",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Vite",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Storybook",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "TanStack Query",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "REST API",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Erişilebilirlik",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Firebase",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Duyarlı Tasarım",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Türkçe",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "İngilizce",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "Almanca",
+      "level": "beginner",
+      "years": null
+    }
+  ],
+  "notes": "tek etiketleyici"
+}

@@ -1,0 +1,107 @@
+{
+  "cv_id": "syn-029",
+  "adjudicator": "claude",
+  "skills": [
+    {
+      "skill": "Kotlin",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "Java",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Android SDK",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Jetpack Compose",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "?Room",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "?WorkManager",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "?Kotlin Coroutines",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "?Hilt",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "Unit Testing",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "Kod İnceleme",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "?MVVM",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "?Retrofit",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "Firebase",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "OpenAPI",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "?OkHttp",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "JUnit",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "?Espresso",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "?MockK",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Gradle",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "GitLab CI",
+      "level": "unknown",
+      "years": null
+    }
+  ],
+  "notes": "tek etiketleyici"
+}

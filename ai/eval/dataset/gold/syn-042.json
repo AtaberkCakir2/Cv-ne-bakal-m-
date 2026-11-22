@@ -1,0 +1,87 @@
+{
+  "cv_id": "syn-042",
+  "adjudicator": "claude",
+  "skills": [
+    {
+      "skill": "Python",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "SQL",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "PyTorch",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "scikit-learn",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Hugging Face Transformers",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "LangChain",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "FastAPI",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Docker",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "MLflow",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "?ONNX",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "PostgreSQL",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "pgvector",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Ollama",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "RAG",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "?sentence-transformers",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "İngilizce",
+      "level": "advanced",
+      "years": null
+    }
+  ],
+  "notes": "tek etiketleyici"
+}

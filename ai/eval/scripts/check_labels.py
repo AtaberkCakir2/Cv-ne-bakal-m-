@@ -15,6 +15,7 @@ from pathlib import Path
 from typing import Any
 
 from _common import (
+    AI_ANNOTATOR,
     DEFAULT_DATASET,
     DEFAULT_SKILLS,
     EXPERIENCE,
@@ -62,14 +63,15 @@ def main(argv: list[str] | None = None) -> int:
             continue
         (first, second), _ = assignment(cv_id)
         expected = {first, second} if row["double"] == "true" else {first}
-        unexpected = set(by_annotator) - expected
+        humans = set(by_annotator) - {AI_ANNOTATOR}  # Claude etiketi atamadan bağımsız (karar #39)
+        unexpected = humans - expected
         if unexpected:
             report.warn(
                 f"{cv_id}: atama tablosuna göre etiketleyici(ler) {', '.join(sorted(expected))}; "
                 f"fazladan: {', '.join(sorted(unexpected))}"
             )
-        if row["double"] == "false" and len(by_annotator) > 1:
-            report.warn(f"{cv_id}: çift etiket için seçilmemiş ama {len(by_annotator)} etiketi var")
+        if row["double"] == "false" and len(humans) > 1:
+            report.warn(f"{cv_id}: çift etiket için seçilmemiş ama {len(humans)} insan etiketi var")
 
     unknown = Counter(
         item["skill"]
@@ -101,7 +103,11 @@ def print_progress(
     layouts = Counter(r["layout"] for r in rows)
     experience = Counter(r["experience"] for r in rows)
     scanned = sum(r["scanned"] == "true" for r in rows)
-    labeled = sum(len(labels.get(cv_id, {})) >= 1 for cv_id in manifest)
+    def humans(cv_id: str) -> int:
+        return len(set(labels.get(cv_id, {})) - {AI_ANNOTATOR})
+
+    labeled = sum(humans(cv_id) >= 1 for cv_id in manifest)
+    ai_labeled = sum(AI_ANNOTATOR in labels.get(cv_id, {}) for cv_id in manifest)
     gold_count = sum(cv_id in gold for cv_id in manifest)
 
     double = [r for r in rows if r["double"] == "true"]
@@ -109,7 +115,7 @@ def print_progress(
     double_multi = sum(r["layout"] == "multi_column" for r in double)
     double_scanned = sum(r["scanned"] == "true" for r in double)
     double_exp = {r["experience"] for r in double}
-    double_done = sum(len(labels.get(r["cv_id"], {})) >= 2 for r in double)
+    double_done = sum(humans(r["cv_id"]) >= 2 for r in double)
 
     def mark(ok: bool) -> str:
         return "✓" if ok else "✗"
@@ -128,7 +134,8 @@ def print_progress(
     print(f"  {mark(layouts['multi_column'] > 0 and layouts['single_column'] > 0)} Düzen: " + _fmt(layouts))
     print(f"  {mark(scanned >= TARGET_SCANNED)} Taranmış: {scanned}/{TARGET_SCANNED}")
     print(f"  {mark(all(experience[e] > 0 for e in EXPERIENCE))} Deneyim: " + _fmt(experience))
-    print(f"  {mark(total > 0 and labeled == total)} En az 1 kişi etiketledi: {labeled}/{total}")
+    print(f"  {mark(total > 0 and ai_labeled == total)} Claude etiketledi (karar #39): {ai_labeled}/{total}")
+    print(f"  · En az 1 kişi etiketledi: {labeled}/{total}")
     print(
         f"  {mark(len(double) >= TARGET_DOUBLE)} Çift etiket için seçilen: {len(double)}/{TARGET_DOUBLE} "
         f"(TR {double_langs['tr']}, EN {double_langs['en']}, çok sütun {double_multi}, taranmış {double_scanned})"
@@ -144,7 +151,7 @@ def print_progress(
         f"{DOUBLE_MIN_PER_LANGUAGE} EN, ≥ {DOUBLE_MIN_MULTI_COLUMN} çok sütun, ≥ {DOUBLE_MIN_SCANNED} taranmış, "
         "3 deneyim düzeyi"
     )
-    print(f"  {mark(len(double) > 0 and double_done == len(double))} 2 kişi etiketledi: {double_done}/{len(double)}")
+    print(f"  · 2 kişi etiketledi (karar #39'dan önceki kriter): {double_done}/{len(double)}")
     print(f"  {mark(total > 0 and gold_count == total)} Gold (anlaşmazlık çözülmüş): {gold_count}/{total}")
     print("  · Etiketleyiciler arası F1 ≥ 0,85: agreement.py ile ölçülür.")
 

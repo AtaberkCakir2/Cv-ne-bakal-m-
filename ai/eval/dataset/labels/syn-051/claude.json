@@ -1,0 +1,72 @@
+{
+  "cv_id": "syn-051",
+  "annotator": "claude",
+  "skills": [
+    {
+      "skill": "C++",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "Unreal Engine",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "C#",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "Unity",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "?HLSL",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "?Multiplayer Networking",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "?Perforce",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Liderlik",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "Mentorluk",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "?Teknik Mülakat",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Performans Optimizasyonu",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "?Unreal Insights",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "İngilizce",
+      "level": "advanced",
+      "years": null
+    }
+  ],
+  "notes": ""
+}

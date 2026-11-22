@@ -1,0 +1,107 @@
+{
+  "cv_id": "syn-004",
+  "annotator": "claude",
+  "skills": [
+    {
+      "skill": "Python",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "Java",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "SQL",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Django",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "PostgreSQL",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "REST API",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Spring Boot",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Docker",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Jenkins",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "CI/CD",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "JUnit",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Unit Testing",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "FastAPI",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "SQLAlchemy",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "JWT",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Redis",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "C",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Git",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Linux",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "İngilizce",
+      "level": "intermediate",
+      "years": null
+    }
+  ],
+  "notes": "Go ve Kafka istek cümlesi, etiketlenmedi. Staj 3 ay → temel."
+}

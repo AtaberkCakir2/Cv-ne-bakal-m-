@@ -1,0 +1,107 @@
+{
+  "cv_id": "syn-037",
+  "annotator": "claude",
+  "skills": [
+    {
+      "skill": "Kubernetes",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "Google Kubernetes Engine",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "Helm",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "Argo CD",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "Istio",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Google Cloud",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "AWS",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Terraform",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "Ansible",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "Prometheus",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "?Alertmanager",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "Grafana",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "ELK Stack",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "OpenTelemetry",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Go",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "Python",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Bash",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Site Reliability Engineering",
+      "level": "advanced",
+      "years": 8
+    },
+    {
+      "skill": "?Incident Management",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "Mentorluk",
+      "level": "unknown",
+      "years": null
+    }
+  ],
+  "notes": ""
+}

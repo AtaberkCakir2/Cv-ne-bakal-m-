@@ -1,0 +1,62 @@
+{
+  "cv_id": "syn-043",
+  "adjudicator": "claude",
+  "skills": [
+    {
+      "skill": "Python",
+      "level": "beginner",
+      "years": 2
+    },
+    {
+      "skill": "C",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "TensorFlow",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Keras",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "NumPy",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "OpenCV",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Hugging Face Transformers",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "?Gradio",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Git",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "?Google Colab",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "İngilizce",
+      "level": "advanced",
+      "years": null
+    }
+  ],
+  "notes": "tek etiketleyici"
+}

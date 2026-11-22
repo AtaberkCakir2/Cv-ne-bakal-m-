@@ -1,0 +1,122 @@
+{
+  "cv_id": "syn-021",
+  "adjudicator": "claude",
+  "skills": [
+    {
+      "skill": "React",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "TypeScript",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "JavaScript",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Angular",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "RxJS",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "HTML",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "CSS",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "?styled-components",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Duyarlı Tasarım",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "?D3.js",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "WebSocket",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "REST API",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Jest",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "Cypress",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "Uçtan Uca Test",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "Unit Testing",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "Storybook",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "CI/CD",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "GitLab CI",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Vite",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "Erişilebilirlik",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Mentorluk",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "Veri Görselleştirme",
+      "level": "unknown",
+      "years": null
+    }
+  ],
+  "notes": "tek etiketleyici"
+}

@@ -1,0 +1,97 @@
+{
+  "cv_id": "syn-012",
+  "adjudicator": "claude",
+  "skills": [
+    {
+      "skill": "Linux",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Kali Linux",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Ağ Temelleri",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Wireshark",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Nmap",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Burp Suite",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Metasploit",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Python",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Bash",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "OWASP",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "?OWASP ZAP",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Splunk",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Siber Güvenlik",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Sızma Testi",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Kriptografi",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Windows Server",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "?VirtualBox",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "İngilizce",
+      "level": "intermediate",
+      "years": null
+    }
+  ],
+  "notes": "tek etiketleyici"
+}

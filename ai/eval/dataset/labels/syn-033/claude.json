@@ -1,0 +1,42 @@
+{
+  "cv_id": "syn-033",
+  "annotator": "claude",
+  "skills": [
+    {
+      "skill": "Python",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "SQL",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Pandas",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "Tableau",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Microsoft Excel",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "scikit-learn",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "İngilizce",
+      "level": "intermediate",
+      "years": null
+    }
+  ],
+  "notes": "'Learning' bölümündekiler (derin öğrenme, Google Cloud) etiketlenmedi."
+}

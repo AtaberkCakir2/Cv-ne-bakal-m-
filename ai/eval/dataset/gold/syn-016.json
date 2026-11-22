@@ -1,0 +1,147 @@
+{
+  "cv_id": "syn-016",
+  "adjudicator": "claude",
+  "skills": [
+    {
+      "skill": "Python",
+      "level": "advanced",
+      "years": 4
+    },
+    {
+      "skill": "JavaScript",
+      "level": "intermediate",
+      "years": 2
+    },
+    {
+      "skill": "Node.js",
+      "level": "intermediate",
+      "years": 2
+    },
+    {
+      "skill": "SQL",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "FastAPI",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "Django",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Express.js",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "REST API",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "GraphQL",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "Celery",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "RabbitMQ",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "pytest",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "Docker",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "AWS",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "Amazon ECS",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "AWS CloudFormation",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "Amazon S3",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Amazon RDS",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "MongoDB",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "PostgreSQL",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "Redis",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "GitHub Actions",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Test Driven Development",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Kod İnceleme",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "Agile",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Scrum",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Türkçe",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "İngilizce",
+      "level": "advanced",
+      "years": null
+    }
+  ],
+  "notes": "tek etiketleyici"
+}

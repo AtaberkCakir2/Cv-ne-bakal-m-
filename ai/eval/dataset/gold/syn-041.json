@@ -1,0 +1,77 @@
+{
+  "cv_id": "syn-041",
+  "adjudicator": "claude",
+  "skills": [
+    {
+      "skill": "Playwright",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Selenium",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "Java",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "Python",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "?Gatling",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "?Pact",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "Apache Kafka",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "Azure DevOps",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "Liderlik",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "Scrum",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Test Otomasyonu",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "Yazılım Testi",
+      "level": "advanced",
+      "years": 9
+    },
+    {
+      "skill": "İngilizce",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "Almanca",
+      "level": "intermediate",
+      "years": null
+    }
+  ],
+  "notes": "tek etiketleyici"
+}

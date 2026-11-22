@@ -1,0 +1,72 @@
+{
+  "cv_id": "syn-030",
+  "adjudicator": "claude",
+  "skills": [
+    {
+      "skill": "Python",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "R",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "SQL",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Microsoft Excel",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "Jupyter",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Git",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Pandas",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "NumPy",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "scikit-learn",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Matplotlib",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Seaborn",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Veri Analizi",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "İngilizce",
+      "level": "intermediate",
+      "years": null
+    }
+  ],
+  "notes": "tek etiketleyici"
+}

@@ -1,0 +1,102 @@
+{
+  "cv_id": "syn-027",
+  "adjudicator": "claude",
+  "skills": [
+    {
+      "skill": "Swift",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "SwiftUI",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "UIKit",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "?Combine",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Objective-C",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "?Core Data",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "?XCTest",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "?Fastlane",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "CI/CD",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "GitHub Actions",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "?Swift Package Manager",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "Kotlin",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Firebase",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "?MVVM",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Mentorluk",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "Performans Optimizasyonu",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Erişilebilirlik",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "İngilizce",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "Türkçe",
+      "level": "advanced",
+      "years": null
+    }
+  ],
+  "notes": "tek etiketleyici"
+}

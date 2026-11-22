@@ -1,0 +1,87 @@
+{
+  "cv_id": "syn-048",
+  "annotator": "claude",
+  "skills": [
+    {
+      "skill": "Splunk",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "?Sigma",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "Python",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "?SOAR",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "?Incident Response",
+      "level": "advanced",
+      "years": 5
+    },
+    {
+      "skill": "?SIEM",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "Wireshark",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "?Zeek",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "Linux",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "?Elastic Security",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "?MITRE ATT&CK",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "PowerShell",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Bash",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Ağ Temelleri",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "?Digital Forensics",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Siber Güvenlik",
+      "level": "advanced",
+      "years": 5
+    }
+  ],
+  "notes": "Bulut ve Kubernetes güvenliği istek cümlesi."
+}

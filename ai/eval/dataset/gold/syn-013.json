@@ -1,0 +1,72 @@
+{
+  "cv_id": "syn-013",
+  "adjudicator": "claude",
+  "skills": [
+    {
+      "skill": "Unity",
+      "level": "beginner",
+      "years": 2
+    },
+    {
+      "skill": "C#",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "C++",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "?SFML",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "?Shader Graph",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Firebase",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Performans Optimizasyonu",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Blender",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Git",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "?Plastic SCM",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Oyun Tasarımı",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Takım Çalışması",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "İngilizce",
+      "level": "intermediate",
+      "years": null
+    }
+  ],
+  "notes": "tek etiketleyici"
+}

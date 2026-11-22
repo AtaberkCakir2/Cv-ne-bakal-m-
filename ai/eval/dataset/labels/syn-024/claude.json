@@ -1,0 +1,72 @@
+{
+  "cv_id": "syn-024",
+  "annotator": "claude",
+  "skills": [
+    {
+      "skill": "Python",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "JavaScript",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "HTML",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "CSS",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Flask",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "SQLite",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "?Chart.js",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Git",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "GitHub",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Takım Çalışması",
+      "level": "intermediate",
+      "years": 1
+    },
+    {
+      "skill": "İletişim",
+      "level": "intermediate",
+      "years": 1
+    },
+    {
+      "skill": "İngilizce",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "Türkçe",
+      "level": "advanced",
+      "years": null
+    }
+  ],
+  "notes": "AWS istek cümlesi. Dersler tek başına etiketlenmedi."
+}

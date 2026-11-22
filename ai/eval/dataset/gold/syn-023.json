@@ -1,0 +1,92 @@
+{
+  "cv_id": "syn-023",
+  "adjudicator": "claude",
+  "skills": [
+    {
+      "skill": "TypeScript",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "JavaScript",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Java",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "PHP",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "SQL",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "React",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Next.js",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Vue.js",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Spring Boot",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Laravel",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "PostgreSQL",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Prisma",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Docker",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "OAuth",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Vercel",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "REST API",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "İngilizce",
+      "level": "advanced",
+      "years": null
+    }
+  ],
+  "notes": "tek etiketleyici"
+}

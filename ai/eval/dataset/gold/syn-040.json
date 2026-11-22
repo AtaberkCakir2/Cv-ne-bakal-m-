@@ -1,0 +1,77 @@
+{
+  "cv_id": "syn-040",
+  "adjudicator": "claude",
+  "skills": [
+    {
+      "skill": "Cypress",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "JavaScript",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Jira",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Selenium",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Python",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "pytest",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Postman",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "GitHub Actions",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "CI/CD",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "SQL",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Agile",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Yazılım Testi",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Test Otomasyonu",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "İngilizce",
+      "level": "advanced",
+      "years": null
+    }
+  ],
+  "notes": "tek etiketleyici"
+}

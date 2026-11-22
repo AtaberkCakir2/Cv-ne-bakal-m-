@@ -1,0 +1,122 @@
+{
+  "cv_id": "syn-015",
+  "adjudicator": "claude",
+  "skills": [
+    {
+      "skill": "Go",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "Java",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "Kotlin",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "PostgreSQL",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "Redis",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Apache Kafka",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "gRPC",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Kubernetes",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Terraform",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "AWS",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Spring Boot",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "Mikroservis Mimarisi",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "Prometheus",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "Grafana",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "Jenkins",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "GitLab CI",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "Dağıtık Sistemler",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Gözlemlenebilirlik",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Performans Optimizasyonu",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Kod İnceleme",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Mentorluk",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "İngilizce",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "Almanca",
+      "level": "beginner",
+      "years": null
+    }
+  ],
+  "notes": "tek etiketleyici"
+}

@@ -1,0 +1,82 @@
+{
+  "cv_id": "syn-034",
+  "adjudicator": "claude",
+  "skills": [
+    {
+      "skill": "Ansible",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Bash",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Nginx",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Linux",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Python",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Docker",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Kubernetes",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Helm",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Prometheus",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Grafana",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "?Loki",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Terraform",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "CI/CD",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "GitHub Actions",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "İngilizce",
+      "level": "intermediate",
+      "years": null
+    }
+  ],
+  "notes": "tek etiketleyici"
+}

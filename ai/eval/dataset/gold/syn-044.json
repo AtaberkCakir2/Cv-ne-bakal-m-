@@ -1,0 +1,82 @@
+{
+  "cv_id": "syn-044",
+  "adjudicator": "claude",
+  "skills": [
+    {
+      "skill": "Python",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "PyTorch",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "scikit-learn",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "SQL",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Docker",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "MLflow",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "?DVC",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "Apache Airflow",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "GitHub Actions",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "AWS SageMaker",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "LightGBM",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "FastAPI",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "MLOps",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Vektör Veritabanı",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "İngilizce",
+      "level": "advanced",
+      "years": null
+    }
+  ],
+  "notes": "tek etiketleyici"
+}

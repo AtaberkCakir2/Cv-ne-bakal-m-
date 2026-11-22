@@ -1,0 +1,72 @@
+{
+  "cv_id": "syn-053",
+  "adjudicator": "claude",
+  "skills": [
+    {
+      "skill": "Unity",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "C#",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "?Addressables",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "?DOTS",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "?Photon",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "?PlayFab",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "?Shader Graph",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Firebase",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "A/B Testi",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "Jenkins",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "Performans Optimizasyonu",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "İngilizce",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "Türkçe",
+      "level": "advanced",
+      "years": null
+    }
+  ],
+  "notes": "tek etiketleyici"
+}

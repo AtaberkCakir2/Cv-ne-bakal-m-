@@ -1,0 +1,82 @@
+{
+  "cv_id": "syn-047",
+  "adjudicator": "claude",
+  "skills": [
+    {
+      "skill": "Siber Güvenlik",
+      "level": "advanced",
+      "years": 7
+    },
+    {
+      "skill": "?Threat Modeling",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "?SAST",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "?DAST",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Sızma Testi",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "AWS",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "AWS IAM",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Burp Suite",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "?Semgrep",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "?OWASP ZAP",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "?Trivy",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "HashiCorp Vault",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "CI/CD",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "Python",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "İngilizce",
+      "level": "advanced",
+      "years": null
+    }
+  ],
+  "notes": "tek etiketleyici"
+}

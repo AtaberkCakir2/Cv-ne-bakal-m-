@@ -1,0 +1,82 @@
+{
+  "cv_id": "syn-017",
+  "annotator": "claude",
+  "skills": [
+    {
+      "skill": "C#",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": ".NET",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "Microsoft SQL Server",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Python",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Git",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "Docker",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "?xUnit",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Unit Testing",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Scrum",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Entity Framework",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "JWT",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Microsoft Azure",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "REST API",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Türkçe",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "İngilizce",
+      "level": "intermediate",
+      "years": null
+    }
+  ],
+  "notes": "Kubernetes ve bulut dağıtımı istek cümlesi."
+}

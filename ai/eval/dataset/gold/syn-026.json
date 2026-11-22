@@ -1,0 +1,57 @@
+{
+  "cv_id": "syn-026",
+  "adjudicator": "claude",
+  "skills": [
+    {
+      "skill": "Kotlin",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "Java",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "Jetpack Compose",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "?Room",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Firebase",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "SQLite",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Android SDK",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "?Retrofit",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Git",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "İngilizce",
+      "level": "intermediate",
+      "years": null
+    }
+  ],
+  "notes": "tek etiketleyici"
+}

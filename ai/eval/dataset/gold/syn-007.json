@@ -1,0 +1,92 @@
+{
+  "cv_id": "syn-007",
+  "adjudicator": "claude",
+  "skills": [
+    {
+      "skill": "Kotlin",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "Java",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "Dart",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "Flutter",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "Android SDK",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Jetpack Compose",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "?Room",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "?MVVM",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Firebase",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "REST API",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Android Studio",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Git",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Figma",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Liderlik",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "Sunum Becerisi",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "İletişim",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "İngilizce",
+      "level": "intermediate",
+      "years": null
+    }
+  ],
+  "notes": "tek etiketleyici"
+}

@@ -1,0 +1,67 @@
+{
+  "cv_id": "syn-022",
+  "adjudicator": "claude",
+  "skills": [
+    {
+      "skill": "JavaScript",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "TypeScript",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "React",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "Node.js",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Express.js",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "MongoDB",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Python",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "Git",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Postman",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Django",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Bootstrap",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "İngilizce",
+      "level": "intermediate",
+      "years": null
+    }
+  ],
+  "notes": "tek etiketleyici"
+}

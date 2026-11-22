@@ -1,0 +1,77 @@
+{
+  "cv_id": "syn-046",
+  "adjudicator": "claude",
+  "skills": [
+    {
+      "skill": "Linux",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "Bash",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Python",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Burp Suite",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Nmap",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Wireshark",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Metasploit",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "OWASP",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "?SQL Injection",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "?XSS",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Kali Linux",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Siber Güvenlik",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "?Tersine Mühendislik",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "İngilizce",
+      "level": "intermediate",
+      "years": null
+    }
+  ],
+  "notes": "tek etiketleyici"
+}

@@ -1,0 +1,82 @@
+{
+  "cv_id": "syn-018",
+  "annotator": "claude",
+  "skills": [
+    {
+      "skill": "React",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "TypeScript",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "JavaScript",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "HTML",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "CSS",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Sass",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Tailwind CSS",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Next.js",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Redux",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Jest",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "?React Testing Library",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Figma",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Erişilebilirlik",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Duyarlı Tasarım",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "İngilizce",
+      "level": "intermediate",
+      "years": null
+    }
+  ],
+  "notes": ""
+}

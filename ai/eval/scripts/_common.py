@@ -16,6 +16,9 @@ DEFAULT_DATASET = EVAL_DIR / "dataset"
 DEFAULT_SKILLS = EVAL_DIR.parents[1] / "scraper" / "taxonomy" / "skills.csv"
 
 TEAM = ("ataberk", "burak", "anil")
+# Karar #39: etiketleri Claude da verir (`claude.json`); ekip bir kısmını kontrol edip gold'a kendi adıyla yazar.
+AI_ANNOTATOR = "claude"
+ANNOTATORS = (*TEAM, AI_ANNOTATOR)
 LEVELS = ("beginner", "intermediate", "advanced", "unknown")
 SOURCES = ("synthetic",)  # karar #20: gerçek kişilere ait CV toplanmaz
 LANGUAGES = ("tr", "en")
@@ -190,8 +193,8 @@ def load_labels(dataset: Path, skill_names: Skills, report: Report) -> dict[str,
                 report.error(f"{path}: cv_id '{data.get('cv_id')}' klasör adıyla ({cv_dir.name}) aynı değil")
             if data.get("annotator") != path.stem:
                 report.error(f"{path}: annotator '{data.get('annotator')}' dosya adıyla ({path.stem}) aynı değil")
-            if path.stem not in TEAM:
-                report.error(f"{path}: etiketleyici '{path.stem}' ekipte yok ({', '.join(TEAM)})")
+            if path.stem not in ANNOTATORS:
+                report.error(f"{path}: etiketleyici '{path.stem}' tanımlı değil ({', '.join(ANNOTATORS)})")
             labels.setdefault(cv_dir.name, {})[path.stem] = validate_skills(
                 path, data.get("skills"), skill_names, report
             )
@@ -211,7 +214,7 @@ def load_gold(dataset: Path, skill_names: Skills, report: Report) -> dict[str, l
             report.error(f"{path}: cv_id '{data.get('cv_id')}' dosya adıyla aynı değil")
         if data.get(PENDING_KEY):
             report.error(f"{path}: '{PENDING_KEY}' listesinde çözülmemiş {len(data[PENDING_KEY])} yetkinlik var")
-        if data.get("adjudicator") not in TEAM:
-            report.error(f"{path}: adjudicator '{data.get('adjudicator')}' ekipte yok")
+        if data.get("adjudicator") not in ANNOTATORS:
+            report.error(f"{path}: adjudicator '{data.get('adjudicator')}' tanımlı değil")
         gold[path.stem] = validate_skills(path, data.get("skills"), skill_names, report)
     return gold

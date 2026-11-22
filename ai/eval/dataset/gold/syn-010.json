@@ -1,0 +1,117 @@
+{
+  "cv_id": "syn-010",
+  "adjudicator": "claude",
+  "skills": [
+    {
+      "skill": "Yazılım Testi",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Test Otomasyonu",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Selenium",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Java",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "JavaScript",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "SQL",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Jira",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Postman",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "?Newman",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "REST API",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "CI/CD",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Agile",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Scrum",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Cypress",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Uçtan Uca Test",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "GitHub Actions",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "?Page Object Model",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Apache JMeter",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Confluence",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Git",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Problem Çözme",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "İngilizce",
+      "level": "intermediate",
+      "years": null
+    }
+  ],
+  "notes": "tek etiketleyici"
+}

@@ -1,0 +1,172 @@
+{
+  "cv_id": "syn-006",
+  "annotator": "claude",
+  "skills": [
+    {
+      "skill": "TypeScript",
+      "level": "advanced",
+      "years": 4
+    },
+    {
+      "skill": "JavaScript",
+      "level": "advanced",
+      "years": 4
+    },
+    {
+      "skill": "Python",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "SQL",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Node.js",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "NestJS",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "Express.js",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "GraphQL",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "REST API",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "React",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "Next.js",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "Vue.js",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "Redux",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "PostgreSQL",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "MongoDB",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "Redis",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "RabbitMQ",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "Mikroservis Mimarisi",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "GitHub Actions",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "CI/CD",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "Kubernetes",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "Helm",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "Docker",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "AWS",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "Amazon EC2",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "Amazon S3",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "Amazon RDS",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "Jest",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "Cypress",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "Test Driven Development",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Kod İnceleme",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Takım Çalışması",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "İngilizce",
+      "level": "advanced",
+      "years": null
+    }
+  ],
+  "notes": "Node.js özette 4 yıllık deneyimle birlikte geçiyor → ileri."
+}

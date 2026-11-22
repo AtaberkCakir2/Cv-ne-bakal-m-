@@ -1,0 +1,92 @@
+{
+  "cv_id": "syn-036",
+  "adjudicator": "claude",
+  "skills": [
+    {
+      "skill": "Terraform",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "AWS",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Amazon EC2",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Amazon ECS",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Amazon RDS",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "AWS IAM",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Amazon CloudWatch",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Microsoft Azure",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "GitLab CI",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Jenkins",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "CI/CD",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Docker",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Kubernetes",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Python",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Bash",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "?YAML",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "İngilizce",
+      "level": "advanced",
+      "years": null
+    }
+  ],
+  "notes": "tek etiketleyici"
+}

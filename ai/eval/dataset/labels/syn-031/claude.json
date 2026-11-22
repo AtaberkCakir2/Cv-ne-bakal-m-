@@ -1,0 +1,72 @@
+{
+  "cv_id": "syn-031",
+  "annotator": "claude",
+  "skills": [
+    {
+      "skill": "Python",
+      "level": "advanced",
+      "years": null
+    },
+    {
+      "skill": "SQL",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "Pandas",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "NumPy",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "scikit-learn",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "XGBoost",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "TensorFlow",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Power BI",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Makine Öğrenmesi",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "İstatistik",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "?SHAP",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "FastAPI",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "İngilizce",
+      "level": "advanced",
+      "years": null
+    }
+  ],
+  "notes": ""
+}

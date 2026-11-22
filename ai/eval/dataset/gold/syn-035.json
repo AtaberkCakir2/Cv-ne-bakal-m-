@@ -1,0 +1,52 @@
+{
+  "cv_id": "syn-035",
+  "adjudicator": "claude",
+  "skills": [
+    {
+      "skill": "Linux",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "Bash",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "Docker",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Git",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "Python",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Ağ Temelleri",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Grafana",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "İngilizce",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "Türkçe",
+      "level": "advanced",
+      "years": null
+    }
+  ],
+  "notes": "tek etiketleyici"
+}

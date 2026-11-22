@@ -1,0 +1,92 @@
+{
+  "cv_id": "syn-032",
+  "adjudicator": "claude",
+  "skills": [
+    {
+      "skill": "Python",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "SQL",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "R",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Pandas",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "NumPy",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "scikit-learn",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "LightGBM",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "PyTorch",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Hugging Face Transformers",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Apache Spark",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Databricks",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Streamlit",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "İstatistik",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "A/B Testi",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Makine Öğrenmesi",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Doğal Dil İşleme",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "İngilizce",
+      "level": "advanced",
+      "years": null
+    }
+  ],
+  "notes": "tek etiketleyici"
+}

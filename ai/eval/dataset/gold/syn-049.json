@@ -1,0 +1,57 @@
+{
+  "cv_id": "syn-049",
+  "adjudicator": "claude",
+  "skills": [
+    {
+      "skill": "Linux",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Python",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Ağ Temelleri",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Nmap",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Wireshark",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Kriptografi",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "?Suricata",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "?Pi-hole",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Siber Güvenlik",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "İngilizce",
+      "level": "intermediate",
+      "years": null
+    }
+  ],
+  "notes": "tek etiketleyici"
+}

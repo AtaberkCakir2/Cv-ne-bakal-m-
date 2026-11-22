@@ -14,7 +14,7 @@ pytestmark = pytest.mark.skipif(not DEFAULT_TAXONOMY.is_file(), reason="scraper/
 
 ROOT = Path(__file__).resolve().parents[3]
 SCHEMA = ROOT / "contracts" / "analysis_result.schema.json"
-SYN_001 = Path(__file__).resolve().parents[2] / "eval" / "dataset" / "synthetic" / "syn-001.md"
+SYN_001 = Path(__file__).resolve().parents[2] / "eval" / "examples" / "synthetic" / "syn-001.md"
 
 
 def _by_name(text: str, lang: str = "tr") -> dict[str, ExtractedSkill]:

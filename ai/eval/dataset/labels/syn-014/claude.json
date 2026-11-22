@@ -1,0 +1,92 @@
+{
+  "cv_id": "syn-014",
+  "annotator": "claude",
+  "skills": [
+    {
+      "skill": "Java",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "Python",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "SQL",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Spring Boot",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "REST API",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "MySQL",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "JUnit",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Unit Testing",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Swagger UI",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Flask",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "JWT",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Docker",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "WordPress",
+      "level": "intermediate",
+      "years": null
+    },
+    {
+      "skill": "Git",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "GitHub",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Linux",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "İngilizce",
+      "level": "intermediate",
+      "years": null
+    }
+  ],
+  "notes": "Go istek cümlesi. WordPress 2 yıllık gönüllü iş → orta."
+}

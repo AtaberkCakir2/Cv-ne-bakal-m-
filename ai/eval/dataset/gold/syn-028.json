@@ -1,0 +1,67 @@
+{
+  "cv_id": "syn-028",
+  "adjudicator": "claude",
+  "skills": [
+    {
+      "skill": "Dart",
+      "level": "beginner",
+      "years": 2
+    },
+    {
+      "skill": "Flutter",
+      "level": "beginner",
+      "years": 2
+    },
+    {
+      "skill": "JavaScript",
+      "level": "beginner",
+      "years": 1
+    },
+    {
+      "skill": "React Native",
+      "level": "beginner",
+      "years": 1
+    },
+    {
+      "skill": "?Expo",
+      "level": "beginner",
+      "years": 1
+    },
+    {
+      "skill": "Firebase",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "REST API",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Zustand",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "?Google Maps SDK",
+      "level": "beginner",
+      "years": null
+    },
+    {
+      "skill": "Git",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "Figma",
+      "level": "unknown",
+      "years": null
+    },
+    {
+      "skill": "İngilizce",
+      "level": "intermediate",
+      "years": null
+    }
+  ],
+  "notes": "tek etiketleyici"
+}
