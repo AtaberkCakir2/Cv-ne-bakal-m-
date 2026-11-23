@@ -1,54 +1,56 @@
+import { DarkTheme, DefaultTheme, NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { StatusBar } from "expo-status-bar";
-import { useCallback, useEffect, useState } from "react";
-import { ActivityIndicator, Pressable, StyleSheet, Text, View } from "react-native";
+import { useColorScheme } from "react-native";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
-import { api, problemMessage, unwrap } from "./src/api/client";
-import { API_URL } from "./src/config";
+import { logout, useSignedIn } from "./src/auth/useSession";
+import type { RootStack } from "./src/navigation";
+import { AnalysisScreen } from "./src/screens/AnalysisScreen";
+import { LoginScreen } from "./src/screens/LoginScreen";
+import { RegisterScreen } from "./src/screens/RegisterScreen";
+import { UploadScreen } from "./src/screens/UploadScreen";
+import { Button, Loading } from "./src/ui";
 
-type Health = { state: "loading" } | { state: "ok" } | { state: "error"; message: string };
+const Stack = createNativeStackNavigator<RootStack>();
 
 /**
- * T-060 iskeleti: tipli istemciyle backend sağlığını gösterir (web'deki /durum sayfasının karşılığı).
- * Giriş, KVKK onayı ve CV yükleme ekranları T-061'de.
+ * T-061: oturum yokken giriş/kayıt, varken CV yükleme ve analiz ekranları. Oturum kapanınca (çıkış veya yenilenemeyen
+ * refresh token, src/auth/session.ts) ekran kendiliğinden girişe döner.
  */
 export default function App() {
-  const [health, setHealth] = useState<Health>({ state: "loading" });
-
-  const check = useCallback(async () => {
-    setHealth({ state: "loading" });
-    try {
-      unwrap(await api.GET("/api/v1/health"));
-      setHealth({ state: "ok" });
-    } catch (error) {
-      setHealth({ state: "error", message: problemMessage(error) });
-    }
-  }, []);
-
-  useEffect(() => {
-    void check();
-  }, [check]);
+  const signedIn = useSignedIn();
+  const dark = useColorScheme() === "dark";
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Cv'ne Bakalım!</Text>
-      <Text style={styles.muted}>{API_URL}</Text>
-      {health.state === "loading" && <ActivityIndicator accessibilityLabel="Sunucu kontrol ediliyor" />}
-      {health.state === "ok" && <Text style={styles.ok}>Sunucu çalışıyor</Text>}
-      {health.state === "error" && <Text style={styles.error}>{health.message}</Text>}
-      <Pressable accessibilityRole="button" onPress={() => void check()} style={styles.button}>
-        <Text style={styles.buttonText}>Tekrar dene</Text>
-      </Pressable>
+    <SafeAreaProvider>
+      <NavigationContainer theme={dark ? DarkTheme : DefaultTheme}>
+        {signedIn === undefined ? (
+          <Loading label="Açılıyor" />
+        ) : (
+          <Stack.Navigator>
+            {signedIn ? (
+              <>
+                <Stack.Screen
+                  name="Upload"
+                  component={UploadScreen}
+                  options={{
+                    title: "Cv'ne Bakalım!",
+                    headerRight: () => <Button variant="link" title="Çıkış" onPress={() => void logout()} />,
+                  }}
+                />
+                <Stack.Screen name="Analysis" component={AnalysisScreen} options={{ title: "Analiz" }} />
+              </>
+            ) : (
+              <>
+                <Stack.Screen name="Login" component={LoginScreen} options={{ title: "Giriş yap" }} />
+                <Stack.Screen name="Register" component={RegisterScreen} options={{ title: "Kayıt ol" }} />
+              </>
+            )}
+          </Stack.Navigator>
+        )}
+      </NavigationContainer>
       <StatusBar style="auto" />
-    </View>
+    </SafeAreaProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#fff", alignItems: "center", justifyContent: "center", gap: 12, padding: 24 },
-  title: { fontSize: 24, fontWeight: "700" },
-  muted: { color: "#555" },
-  ok: { color: "#126b2f" },
-  error: { color: "#a11a1a", textAlign: "center" },
-  button: { paddingHorizontal: 16, paddingVertical: 10, borderRadius: 8, backgroundColor: "#1d4ed8" },
-  buttonText: { color: "#fff", fontWeight: "600" },
-});

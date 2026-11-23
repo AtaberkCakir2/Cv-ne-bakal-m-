@@ -19,11 +19,16 @@ export async function readRefresh(): Promise<string | null> {
   }
 }
 
+/**
+ * Yeni refresh token yazılamazsa depodaki eski token silinir: tek kullanımlık olduğu için uygulama yeniden açılınca
+ * gönderilseydi backend bunu tekrar kullanım sayıp kullanıcının tüm oturumlarını kapatırdı (#156 incelemesi). Oturum o
+ * zaman sadece uygulama açıkken (bellekte) sürer; sonraki açılışta yeniden giriş istenir.
+ */
 export async function writeRefresh(token: string | null): Promise<void> {
   try {
     if (token) await SecureStore.setItemAsync(KEY, token, options);
     else await SecureStore.deleteItemAsync(KEY, options);
   } catch {
-    // Saklanamazsa oturum sadece uygulama açıkken sürer.
+    if (token) await SecureStore.deleteItemAsync(KEY, options).catch(() => undefined);
   }
 }

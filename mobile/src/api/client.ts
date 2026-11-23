@@ -39,3 +39,9 @@ export function problemMessage(error: unknown): string {
   const text = p?.detail ?? p?.title ?? "Beklenmeyen bir hata oluştu.";
   return p?.request_id ? `${text} (Hata kodu: ${p.request_id.slice(0, 8)})` : text;
 }
+
+/** 422 yanıtındaki alan hataları → { alan: mesaj } (web/src/api/client.ts ile aynı). */
+export function fieldErrors(error: unknown): Record<string, string> {
+  const list = (error as Partial<Problem> | undefined)?.errors ?? [];
+  return Object.fromEntries(list.map((e) => [e.field.split(".")[0], "Bu alan geçersiz, kontrol edin."]));
+}
