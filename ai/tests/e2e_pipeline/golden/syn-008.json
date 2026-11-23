@@ -1,0 +1,161 @@
+{
+  "target_role": {
+    "slug": "data-scientist",
+    "name": "Data Scientist"
+  },
+  "postings_analyzed": 200,
+  "match_score": 92.0,
+  "present_skills": [
+    {
+      "skill": "Python",
+      "level": "advanced",
+      "confidence": 0.85,
+      "verified": true
+    },
+    {
+      "skill": "SQL",
+      "level": "advanced",
+      "confidence": 0.95,
+      "verified": true
+    },
+    {
+      "skill": "R",
+      "level": "intermediate",
+      "confidence": 0.85,
+      "verified": true
+    },
+    {
+      "skill": "Pandas",
+      "level": "unknown",
+      "confidence": 0.75,
+      "verified": true
+    },
+    {
+      "skill": "NumPy",
+      "level": "unknown",
+      "confidence": 0.75,
+      "verified": true
+    },
+    {
+      "skill": "scikit-learn",
+      "level": "unknown",
+      "confidence": 0.75,
+      "verified": true
+    },
+    {
+      "skill": "XGBoost",
+      "level": "unknown",
+      "confidence": 0.85,
+      "verified": true
+    },
+    {
+      "skill": "LightGBM",
+      "level": "unknown",
+      "confidence": 0.85,
+      "verified": true
+    },
+    {
+      "skill": "PyTorch",
+      "level": "intermediate",
+      "confidence": 0.85,
+      "verified": true
+    },
+    {
+      "skill": "Apache Spark",
+      "level": "unknown",
+      "confidence": 0.85,
+      "verified": true
+    },
+    {
+      "skill": "Tableau",
+      "level": "unknown",
+      "confidence": 0.75,
+      "verified": true
+    },
+    {
+      "skill": "Power BI",
+      "level": "unknown",
+      "confidence": 0.75,
+      "verified": true
+    },
+    {
+      "skill": "İstatistik",
+      "level": "unknown",
+      "confidence": 0.85,
+      "verified": true
+    },
+    {
+      "skill": "A/B Testi",
+      "level": "unknown",
+      "confidence": 0.85,
+      "verified": true
+    },
+    {
+      "skill": "İngilizce",
+      "level": "advanced",
+      "confidence": 0.85,
+      "verified": true
+    },
+    {
+      "skill": "Türkçe",
+      "level": "advanced",
+      "confidence": 0.85,
+      "verified": true
+    },
+    {
+      "skill": "Makine Öğrenmesi",
+      "level": "unknown",
+      "confidence": 0.7,
+      "verified": true
+    },
+    {
+      "skill": "Apache Airflow",
+      "level": "unknown",
+      "confidence": 0.6,
+      "verified": true
+    },
+    {
+      "skill": "MLflow",
+      "level": "unknown",
+      "confidence": 0.6,
+      "verified": true
+    },
+    {
+      "skill": "Google BigQuery",
+      "level": "unknown",
+      "confidence": 0.6,
+      "verified": true
+    }
+  ],
+  "missing_skills": [
+    {
+      "skill": "TensorFlow",
+      "demand_ratio": 0.3,
+      "priority": 1,
+      "resources": [
+        {
+          "resource_id": 1360,
+          "title": "TensorFlow temelleri",
+          "url": "https://example.com/1360",
+          "provider": "docs",
+          "language": "tr",
+          "level": "beginner",
+          "is_free": true,
+          "reason": "İncelenen 200 Data Scientist ilanının %30'u TensorFlow istiyor. Türkçe, başlangıç seviyesinde, ücretsiz ve yaklaşık 1 saat süren bir kaynak; TensorFlow için iyi bir başlangıç.",
+          "duration_min": 60
+        },
+        {
+          "resource_id": 1361,
+          "title": "TensorFlow ileri",
+          "url": "https://example.com/1361",
+          "provider": "youtube",
+          "language": "en",
+          "level": "intermediate",
+          "is_free": true,
+          "reason": "İncelenen 200 Data Scientist ilanının %30'u TensorFlow istiyor. İngilizce, orta seviyede, ücretsiz ve yaklaşık 2 saat süren bir kaynak; TensorFlow için iyi bir başlangıç.",
+          "duration_min": 120
+        }
+      ]
+    }
+  ]
+}

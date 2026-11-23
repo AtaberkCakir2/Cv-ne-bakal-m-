@@ -14,10 +14,10 @@ python -m venv .venv
 pip install -e ".[dev]"
 pytest
 ruff check . && ruff format --check .
-mypy parsing pii extraction prompts embedding matching tests eval/scripts
+mypy . --exclude '^eval/tests/'   # CI ile aynı (.github/workflows/ci.yml); yeni modüller kendiliğinden girer
 ```
 
-Testler gerçek CV kullanmaz; PDF'ler test sırasında bellekte üretilir.
+Testler gerçek CV kullanmaz; PDF'ler test sırasında bellekte üretilir. `pytest --cov` kapsamayı ölçer ve %70'in altında hata verir (T-054, `pyproject.toml`; CI bu komutla çalışır, düz `pytest` ve tek dosya çalıştırma eşiğe takılmaz); 21.11.2026'da %96,6 (torch ve veritabanı testleri dahil değil: `TEST_DATABASE_URL`, `CAREERAI_EMBEDDING_TEST`).
 
 ## Modüller
 
@@ -32,6 +32,39 @@ Testler gerçek CV kullanmaz; PDF'ler test sırasında bellekte üretilir.
 | `matching/` | Uyum skoru ve eksik yetkinlikler (T-042) | ✅ |
 | `eval/` | Etiketli değerlendirme seti ve araçları (T-019) | Devam ediyor |
 | `eval/benchmark/` | Yerel LLM benchmark'ı (T-018): Llama 3.1 8B seçildi, karar #26 | ✅ |
+
+### `pipeline` — analiz zinciri (T-057)
+
+```python
+from pipeline import AnalysisError, analyze_cv
+
+try:
+    out = analyze_cv(pdf_bytes, role_id=3, conn=psycopg_conn)  # embed=default_encoder().encode isteğe bağlı
+except AnalysisError as e:
+    e.code  # PDF_UNREADABLE | PDF_TOO_LARGE | NO_TEXT_FOUND | INTERNAL (sözleşmedeki error.code)
+out.result  # target_role, postings_analyzed, match_score, present_skills, missing_skills, model
+out.stats  # loglanabilir: sayfa, dil, maskelenen alan sayıları, adım süreleri, LLM hata kodları
+```
+
+- **Sıra:** PDF → metin (`parsing`) → dil tahmini → maskeleme (`pii`, NER kuruluysa BERTurk) → çıkarım v2 (`extraction.llm`) → eşleştirme (`matching`, `role_skill_stats`) → öneri (`recommendation`, `resources`). Backend'in `output_from_result` fonksiyonu `out.result`'ı doğrudan okur.
+- **Gizlilik:** PDF ve ham metin sadece fonksiyonun içinde bellekte; yazılmaz, loglanmaz, sonuçta yok. LLM'e maskelenmiş metin, öneri adımına sadece yetkinlik adları gider. Hata mesajları sadece kod taşır.
+- **Süre:** analiz işçisinin sınırı 180 sn; zincir 165 sn bütçeyle çalışır. Çıkarım en fazla 90 sn bekler (yavaş makinede öneriye de süre kalsın; #155 incelemesinde production PC'de çıkarım 145 sn sürüp zaman aşımına düşüyordu), LLM çağrılarının zaman aşımı kalan süreye göre kısalır; 20 sn'den az kaldıysa LLM atlanır. LLM düşerse çıkarım v1 sözlük sonucuyla, öneri kurallı sıralamayla devam eder; analiz yine tamamlanır (`stats` hata kodunu taşır).
+- **Taranmış PDF:** metin 200 karakterden azsa `NO_TEXT_FOUND`; OCR yedek akışı (T-029) gelince değişecek.
+- **`model.prompt_version`:** iki prompt tek alanda, `"skill_extraction:v1,recommendation:v1"` (karar önerisi #38).
+- **Deneme (21.11.2026):** 3 TR sentetik CV (`eval/dataset/cv_specs`, syn-005…007), gerçek Ollama (Llama 3.1 8B, bu bilgisayar), sahte veritabanı: CV başına 10–28 sn (çıkarım 7–16 sn, öneri 0–2,4 sn), LLM hatası yok; ad, e-posta, telefon maskelendi.
+
+#### Golden test (T-058)
+
+`tests/e2e_pipeline/`: 10 sentetik CV (`eval/dataset/synthetic/syn-004..013.pdf`) zincirden geçer, sonuç
+`golden/<cv_id>.json` ile birebir karşılaştırılır ve `contracts/analysis_result.schema.json` ile doğrulanır; CV
+başlığındaki uydurma ad/e-posta/telefon sonuçta geçmemeli. Pozisyon talebi ve kaynaklar sabit sahte veri
+(`roles.json`), veritabanı gerekmez. CI'da LLM yok sayılır (v1 + kurallı öneri, belirleyici); ad tespiti sadece
+kurallarla. Taranmış iki CV (syn-009, syn-012) OCR (T-029) gelene kadar `NO_TEXT_FOUND` bekler.
+
+```bash
+CAREERAI_OLLAMA_TEST=1 pytest tests/e2e_pipeline     # gerçek model: golden yetkinlikler kaybolmamalı (~1,5 dk)
+CAREERAI_GOLDEN_UPDATE=1 pytest tests/e2e_pipeline   # bilerek yapılan değişiklikten sonra golden'ı yenile, farkı incele
+```
 
 ### `parsing` — PDF metin çıkarma
 
@@ -92,7 +125,7 @@ from extraction.llm import extract_skills_v2
 
 result = extract_skills_v2(masked_text, "tr")  # OLLAMA_URL, OLLAMA_MODEL ortam değişkenleri; yoksa yerel llama3.1:8b
 result.present_skills()  # sözleşmedeki present_skills (verified dahil)
-result.model  # {"name": "llama3.1:8b", "prompt_version": "v1"}
+result.model  # {"name": "llama3.1:8b", "prompt_version": "v2"}
 result.llm_error  # None, "LLM_TIMEOUT" veya "INTERNAL"; hata olursa sonuç v1'dir
 ```
 
@@ -108,7 +141,7 @@ result.llm_error  # None, "LLM_TIMEOUT" veya "INTERNAL"; hata olursa sonuç v1'd
 from prompts import get_prompt, model_info
 
 prompt = get_prompt("skill_extraction")  # CURRENT'taki sürüm; ("skill_extraction", "v1") ile sabitlenebilir
-model = model_info("llama3.1:8b", prompt)  # {"name": "llama3.1:8b", "prompt_version": "v1"}
+model = model_info("llama3.1:8b", prompt)  # {"name": "llama3.1:8b", "prompt_version": "v2"}
 ```
 
 - Her prompt `prompts/<ad>/<sürüm>.txt` dosyasıdır. Yayımlanmış dosya değiştirilmez: yeni sürüm aç, `CURRENT`'ı güncelle, özetini `tests/prompts/test_library.py` içine ekle.

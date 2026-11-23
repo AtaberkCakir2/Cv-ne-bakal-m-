@@ -1,0 +1,71 @@
+{
+  "target_role": {
+    "slug": "game-developer",
+    "name": "Game Developer"
+  },
+  "postings_analyzed": 200,
+  "match_score": 100.0,
+  "present_skills": [
+    {
+      "skill": "Unity",
+      "level": "unknown",
+      "confidence": 0.95,
+      "verified": true
+    },
+    {
+      "skill": "C#",
+      "level": "advanced",
+      "confidence": 0.95,
+      "verified": true
+    },
+    {
+      "skill": "Unreal Engine",
+      "level": "unknown",
+      "confidence": 0.6,
+      "verified": true
+    },
+    {
+      "skill": "Firebase",
+      "level": "unknown",
+      "confidence": 0.6,
+      "verified": true
+    },
+    {
+      "skill": "C++",
+      "level": "beginner",
+      "confidence": 0.95,
+      "verified": true
+    },
+    {
+      "skill": "Blender",
+      "level": "beginner",
+      "confidence": 0.95,
+      "verified": true
+    },
+    {
+      "skill": "Git",
+      "level": "unknown",
+      "confidence": 0.75,
+      "verified": true
+    },
+    {
+      "skill": "Oyun Tasarımı",
+      "level": "unknown",
+      "confidence": 0.85,
+      "verified": true
+    },
+    {
+      "skill": "İngilizce",
+      "level": "intermediate",
+      "confidence": 0.85,
+      "verified": true
+    },
+    {
+      "skill": "Takım Çalışması",
+      "level": "unknown",
+      "confidence": 0.75,
+      "verified": true
+    }
+  ],
+  "missing_skills": []
+}

@@ -18,7 +18,7 @@ _ROOT = Path(__file__).resolve().parent
 _NAME = re.compile(r"[a-z][a-z0-9_]*")
 _VERSION = re.compile(r"v[1-9]\d*")
 
-CURRENT = {"skill_extraction": "v1", "recommendation": "v1"}
+CURRENT = {"skill_extraction": "v2", "recommendation": "v1"}
 
 
 @dataclass(frozen=True)

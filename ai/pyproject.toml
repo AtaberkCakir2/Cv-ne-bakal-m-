@@ -8,6 +8,8 @@ dependencies = [
     # AGPL lisanslı; proje açık kaynak/akademik olduğu sürece uygun. Ticari kullanımda lisans gözden geçirilmeli.
     # Sürüm sabit: yeni sürüm tip bilgisini değiştirince mypy (CI) kırılıyor, PDF davranışı da değişebilir.
     "pymupdf==2.1",
+    # LLM yanıtlarının doğrulanması (extraction/llm.py, T-074).
+    "pydantic>=2.7",
 ]
 
 [project.optional-dependencies]
@@ -28,9 +30,14 @@ embedding = [
 ]
 dev = [
     "pytest>=8.3",
+    # Kapsama (T-054): backend ile aynı sürüm.
+    "pytest-cov==7.1.0",
     # Sürümler backend ve scraper ile aynı sabit (infra/ci.md).
     "ruff==0.17.5",
     "mypy==2.4.1",
+    # Golden testte sonucun contracts/analysis_result.schema.json ile doğrulanması (T-058).
+    "jsonschema>=4.23",
+    "types-jsonschema",
 ]
 
 [build-system]
@@ -38,13 +45,25 @@ requires = ["setuptools>=75"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]
-include = ["parsing*", "pii*", "extraction*", "prompts*", "embedding*", "matching*", "recommendation*"]
+include = ["parsing*", "pii*", "extraction*", "prompts*", "embedding*", "matching*", "recommendation*", "pipeline*"]
 
 [tool.setuptools.package-data]
 prompts = ["*/*.txt"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests", "eval/tests"]
+
+[tool.coverage.run]
+source = ["parsing", "pii", "extraction", "matching", "recommendation", "embedding", "prompts", "pipeline"]
+# Komut satırı girişi: sadece veritabanına bağlanıp modülü çağırır (testi modülün kendisinde).
+omit = ["*/__main__.py"]
+
+# Kapsama sadece `--cov` verilince ölçülür (CI: `pytest -rs --cov`); %70'in altı hata (T-054). Tek dosya çalıştırırken
+# eşik devreye girmez.
+[tool.coverage.report]
+fail_under = 70
+show_missing = true
+skip_covered = true
 
 [tool.ruff]
 line-length = 120

@@ -70,13 +70,15 @@ bash infra/backup/restore-test.sh production
 # 3.3 Gerçek geri yükleme: boş veritabanını son yedekle değiştir
 C="docker compose -p careerai-prod --env-file infra/pc/.env.prod -f infra/pc/compose.yml"
 $C stop api worker-data
-$C exec -T postgres sh -c 'dropdb -U "$POSTGRES_USER" "$POSTGRES_DB" && createdb -U "$POSTGRES_USER" "$POSTGRES_DB"'
+$C exec -T postgres sh -c 'dropdb -U "$POSTGRES_USER" --force "$POSTGRES_DB" && createdb -U "$POSTGRES_USER" "$POSTGRES_DB"'
 $C exec -T backup sh -c 'restic dump --tag "$BACKUP_TAG" latest "/careerai-$BACKUP_TAG.dump"' \
-  | $C exec -T postgres sh -c 'pg_restore -U "$POSTGRES_USER" -d "$POSTGRES_DB" --no-owner --exit-on-error'
+  | $C exec -T postgres sh -c 'pg_restore -U "$POSTGRES_USER" -d "$POSTGRES_DB" --no-owner --no-privileges --exit-on-error'
 
 # 3.4 Rolleri ve yetkileri yeniden ver, servisleri aç (deploy tekrar çalıştırılabilir)
 bash infra/pc/deploy.sh vX.Y.Z production
 ```
+
+3.3'te yetkiler dökümden alınmaz (`--no-privileges`): dökümdeki `GRANT … TO careerai_monitor` satırı bu rol henüz yoksa `--exit-on-error` ile yüklemeyi yarıda keser ve kalan yetkiler (uygulama rolününkiler dahil) yüklenmez; API 500 döner, `/health/ready` ise yine 200 der (rollback provası, 21.11.2026). Yetkileri 3.4'teki deploy verir. `--force`: Grafana/postgres-exporter veri tabanına bağlıysa `dropdb` onları keser.
 
 `deploy.sh` 3.4'te boş olmayan veritabanının dökümünü de alır; bu beklenen bir şeydir. 3.1'deki ilk deploy olmadan 3.3 yapılamaz: `backup` konteyneri ve veritabanı rolleri deploy ile gelir.
 
