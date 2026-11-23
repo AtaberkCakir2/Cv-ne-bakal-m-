@@ -15,7 +15,7 @@ dependencies = [
 dev = [
     "pytest>=8.3",
     # Sürümler backend ile aynı sabit (infra/ci.md, "yerelde geçiyor CI'da düşüyor").
-    "ruff==0.17.5",
+    "ruff==0.17.6",
     "mypy==2.4.1",
 ]
 browser = ["playwright>=1.64,<2"]  # HTML kaynaklar (T-016); Chromium ayrıca kurulur

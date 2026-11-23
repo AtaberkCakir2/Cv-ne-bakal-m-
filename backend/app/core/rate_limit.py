@@ -37,6 +37,7 @@ from app.core.errors import problem
 log = logging.getLogger(__name__)
 
 _RETRY_REDIS_AFTER_S = 10.0
+_UNDO_LUA = "if (tonumber(redis.call('GET', KEYS[1]) or '0') > 0) then return redis.call('DECR', KEYS[1]) end return 0"
 
 
 @dataclass(frozen=True)
@@ -49,6 +50,10 @@ class Limit:
 class CounterStore(Protocol):
     async def hit(self, key: str, window_s: int) -> tuple[int, int]:
         """Sayacı bir artırır; (pencerede şimdiye kadarki istek sayısı, pencerenin bitmesine kalan sn) döner."""
+        ...
+
+    async def undo(self, key: str) -> None:
+        """Son artırmayı geri alır (sayılmaması gereken istek). Pencere bitmişse bir şey yapmaz."""
         ...
 
 
@@ -69,6 +74,10 @@ class RedisCounterStore:
             count, _, ttl = await pipe.execute()
         return int(count), int(ttl) if ttl and ttl > 0 else window_s
 
+    async def undo(self, key: str) -> None:
+        # Anahtar yoksa (pencere bitti) DECR süresiz bir -1 anahtarı açardı; sadece varsa ve 0'dan büyükse azalt.
+        await self._redis.eval(_UNDO_LUA, 1, key)
+
 
 class MemoryCounterStore:
     """Testler ve Redis'siz tek süreçli geliştirme için. Süresi dolan anahtarları silmez: production'da kullanmayın."""
@@ -84,6 +93,11 @@ class MemoryCounterStore:
         self._counters[key] = (count + 1, reset_at)
         return count + 1, max(1, int(reset_at - now + 0.999))
 
+    async def undo(self, key: str) -> None:
+        count, reset_at = self._counters.get(key, (0, 0.0))
+        if count > 0 and reset_at > time.monotonic():
+            self._counters[key] = (count - 1, reset_at)
+
 
 class RateLimiter:
     def __init__(self, store: CounterStore, settings: Settings) -> None:
@@ -93,19 +107,32 @@ class RateLimiter:
 
     async def retry_after(self, limit: Limit, subject: str) -> int | None:
         """Sınır aşıldıysa kaç saniye sonra tekrar denenebileceğini, aşılmadıysa None döner."""
+        return (await self.check(limit, subject))[0]
+
+    async def check(self, limit: Limit, subject: str) -> tuple[int | None, bool]:
+        """(retry_after, sayaç bu istekte gerçekten artırıldı mı). İade sadece artırılan isteğe yapılır."""
         if time.monotonic() < self._skip_until:
-            return None
+            return None, False
         try:
             count, ttl = await self.store.hit(f"rl:{limit.name}:{subject}", limit.window_s)
         except (RedisConnectionError, OSError):
             # Bağlantı yok: bir süre deneme. (Zaman aşımı da buraya düşer ama sadece bağlantı kurulamazsa.)
             self._skip_until = time.monotonic() + _RETRY_REDIS_AFTER_S
             log.warning("rate_limit_store_unavailable", exc_info=True)
-            return None
+            return None, False
         except Exception:  # noqa: BLE001 — tek seferlik hata (ör. yavaş yanıt): sadece bu istek sınırsız geçer
             log.warning("rate_limit_check_failed", exc_info=True)
-            return None
-        return ttl if count > limit.max_requests else None
+            return None, False
+        return (ttl if count > limit.max_requests else None), True
+
+    async def release(self, limit: Limit, subject: str) -> None:
+        """Sayılmaması gereken isteği sayaçtan düşer (ör. reddedilen CV yüklemesi). Hata olursa sessizce geçer."""
+        if time.monotonic() < self._skip_until:
+            return
+        try:
+            await self.store.undo(f"rl:{limit.name}:{subject}")
+        except Exception:  # noqa: BLE001 — iade yapılamazsa en kötü ihtimalle bir hak eksik kalır
+            log.warning("rate_limit_release_failed", exc_info=True)
 
     def ip_subject(self, ip: str | None) -> str:
         return security.hash_ip(ip, self.settings) or "unknown"
