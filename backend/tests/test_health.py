@@ -63,3 +63,28 @@ def test_ready_with_real_checks_and_no_services_returns_503(client: TestClient) 
     response = client.get("/api/v1/health/ready")
     assert response.status_code == 503
     assert not any(c["ok"] for c in response.json()["checks"].values())
+
+
+def test_db_check_reads_a_table_so_missing_grants_fail(monkeypatch: pytest.MonkeyPatch) -> None:
+    # Bağlantı açılıyor ama uygulama rolünün tablo yetkisi yoksa (eksik GRANT) kontrol başarısız olmalı;
+    # yalnızca "SELECT 1" bunu yakalamıyordu (#150).
+    executed: list[str] = []
+
+    class Conn:
+        def __enter__(self) -> "Conn":
+            return self
+
+        def __exit__(self, *_: object) -> None:
+            return None
+
+        def execute(self, sql: str) -> None:
+            executed.append(sql)
+            raise psycopg.errors.InsufficientPrivilege("permission denied for table roles")
+
+    monkeypatch.setattr(psycopg, "connect", lambda *_a, **_k: Conn())
+    monkeypatch.setattr(health_service, "CHECKS", {"db": health_service.check_db})
+    settings = Settings(_env_file=None, database_url="postgresql+psycopg://x:x@127.0.0.1:1/x")
+    result = asyncio.run(health_service.readiness(settings))
+    assert executed == [health_service.DB_READY_SQL]
+    assert result.status == "not_ready"
+    assert result.checks["db"].error == "InsufficientPrivilege"

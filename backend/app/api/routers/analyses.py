@@ -3,11 +3,12 @@ from collections import defaultdict
 from datetime import timedelta
 from typing import Annotated, Any
 
+import anyio
 from fastapi import APIRouter, Depends, File, Form, HTTPException, Query, Request, Response, UploadFile
 from fastapi.responses import JSONResponse
 
 from app.api.deps import AppSettings, CurrentUser, DbSession
-from app.api.rate_limits import AnalysesRateLimit
+from app.api.rate_limits import AnalysesRateLimit, release_analysis
 from app.core.errors import problem
 from app.db.enums import SkillKind
 from app.db.models import Analysis, AnalysisRecommendation, Resource
@@ -206,8 +207,10 @@ def create_analysis(
     try:
         analysis_id = service.create(user.id, content, file.content_type, target_role_id)
     except CvRejected as exc:
+        _release(request, user.id)
         return problem(exc.status, exc.detail, request, code=exc.code)
     except ConsentWithdrawn:
+        _release(request, user.id)
         return problem(
             403,
             "CV analizi için açık rızan geri alınmış. Profil → Verilerim bölümünden yeniden verebilirsin.",
@@ -215,14 +218,21 @@ def create_analysis(
             code="CONSENT_WITHDRAWN",
         )
     except UnknownRole:
+        _release(request, user.id)
         return problem(422, "Pozisyon bulunamadı.", request)
     except QueueUnavailable:
+        _release(request, user.id)
         response = problem(503, "Analiz şu anda başlatılamıyor. Lütfen biraz sonra tekrar deneyin.", request)
         response.headers["Retry-After"] = str(_RETRY_AFTER_S)
         return response
     finally:
         del content
     return AnalysisCreated(analysis_id=analysis_id, status="queued")
+
+
+def _release(request: Request, user_id: uuid.UUID) -> None:
+    """Başlamayan analiz saatlik hakkı harcamaz (sadece kuyruğa giren analiz sayılır)."""
+    anyio.from_thread.run(release_analysis, request, user_id)
 
 
 @router.get(
