@@ -82,6 +82,8 @@ Durum ve loglar: `make prod-ps`, `make prod-logs`.
 
 Yönetim paneline admin vermek (kişi önce uygulamadan kayıt olur): `make prod-admin EMAIL=ad@ornek.com`.
 
+Yavaş sorgu raporu (go-live #18): `make prod-slow-queries`. Uygulama rolünün (`careerai_app`) en az 5 kez çalışmış sorgularını ortalama, yaklaşık p95 (ortalama + 1,645 × standart sapma) ve en yüksek süreyle listeler; hedef 50 ms üstü sorgu 0. Kaynak `pg_stat_statements`: `compose.yml`'de postgres'e yüklenir, eklentiyi `deploy.sh` (`setup_stats`) kurar. Sorgu metinleri normalleştirilmiştir (değerler `$1`), kişisel veri görünmez. Yeni ölçüm dönemi başlatmak (sayaçları sıfırlar): Git Bash'te `docker compose -p careerai-prod --env-file infra/pc/.env.prod -f infra/pc/compose.yml exec -T postgres sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c "SELECT pg_stat_statements_reset()"'`.
+
 **Kaçan gece toplaması (R-18):** PC 03:00'te kapalıysa veri işçisi açılışta son toplamanın zamanına bakar, kaçmışsa hemen başlatır (`scraper/collector/tasks.py`, `missed_nightly`). Logda `Gece toplaması kaçmış (…), şimdi başlatılıyor` görünür; elle bir şey yapmak gerekmez.
 
 ## 5. Prova ortamı
@@ -96,7 +98,29 @@ Go-live provası (T-091) ve aylık yedekten geri yükleme testi burada yapılır
 
 ## 6. Sunum B planı
 
-Alan adı açılmazsa api'yi sadece bu PC'ye açın: `make prod-local` → `http://127.0.0.1:8100`. Ağdaki başka cihazlar erişemez. Olay adımları: `docs/go-live.md`.
+Alan adı açılmazsa sunum aynı PC'de, aynı veriyle yerelden sürer. Ağdaki başka cihazlar erişemez (her şey 127.0.0.1). Git Bash'te, repo kökünde:
+
+```bash
+make prod-local          # api ayrıca 127.0.0.1:8100'de; yerel web'in kökenine CORS izni (tünel çalışmaya devam eder)
+make prod-local-web      # web arayüzü bu api'ye bağlı derlenir: http://127.0.0.1:5173 (Ctrl+C ile durur)
+# sunum bittikten sonra:
+make prod-local-down     # api normal ayarlarına döner, 8100 kapanır
+```
+
+Tarayıcıda `http://127.0.0.1:5173` → Durum sayfasında db/redis/ollama ✓ olmalı. Olay adımları: `docs/go-live.md` "Sunum sırasında dış erişim yok"; telefondan internet paylaşımıyla tünel de geri gelebilir (PC'yi telefonun ağına bağlayın, `cloudflared` kendiliğinden yeniden bağlanır).
+
+**Prova (21.11.2026, T-091 / go-live #51):** `make prod-local` 11 sn, `make prod-local-web` 35 sn (ilk `npm ci` dahil) → yaklaşık 1 dk'da yerel arayüz hazır. Gerçek tarayıcıda yerel arayüz production verisini okudu (12 pozisyon, kaynaklar, Durum sayfası), konsol hatası yok; tünel bu sırada da 200 verdi. `make prod-local-down` 9 sn; sonra 8100 kapalı, CORS eski hâlinde. Eskiden `compose.local.yml` sadece portu açıyordu: production'da `CORS_ORIGINS=[]` olduğu için tarayıcıdaki arayüz api'yi çağıramazdı; yerel web için derleme komutu da yoktu. Telefondan internet paylaşımı ve analiz akışı (analiz işçisi production'da yok, T-057) bu provada denenmedi.
+
+## 7. Vektörler (T-057 gelene kadar elle)
+
+Eşleştirme `skills.embedding` ve `job_postings.embedding` sütunlarını kullanır (pgvector, karar #35). AI işçisi production'a girene kadar bunları üreten servis yok; gece toplamasının eklediği yeni ilanların vektörü boş kalır. Gece toplamasından sonra (veya Grafana'da yeni ilan görünce) Git Bash'te, repo kökünde:
+
+```bash
+make prod-embed            # önce yedek alır, sadece vektörü boş satırlar
+make prod-embed HEPSI=1    # model değiştiyse hepsi baştan
+```
+
+Betik `infra/pc/embed.sh`: yedek (`backup.sh`) → geçici imajı derler (`infra/pc/embedding/Dockerfile`, ~3,3 GB, model içinde; ilk seferde ~5 dk, sonra önbellekten) → `python -m embedding` → kalan boş vektör sayısını yazar (pasif ilanlar vektör almaz, sayılmaz). İmaj PC'de kalır; kaldırmak: `docker rmi careerai/embedding-gecici:local`. Her parti ayrı kaydedilir (yarıda kesilirse kaldığı yerden sürer). Uygulama rolüyle (`careerai_app`) bağlanır; parola komut satırında görünmez. İlk çalışma 20.11.2026: 374 yetkinlik 3 sn, 2.213 ilan 4 dk (CPU). T-057 (Burak) analiz işçisini production'a alınca bu adım ve imaj kaldırılır.
 
 ## Henüz eksik
 

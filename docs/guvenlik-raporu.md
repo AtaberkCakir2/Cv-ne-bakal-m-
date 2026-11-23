@@ -9,7 +9,7 @@ Taramalar artık her PR'da, `main`'e her push'ta ve her pazartesi otomatik çal�
 | # | Bulgu | Seviye | Durum | Sahibi |
 |---|---|---|---|---|
 | G-1 | Yedek imajında 5 kritik + 98 yüksek açık (restic 0.18.0, Alpine 3.21, OpenSSL/musl) | Kritik | **Düzeltildi** (restic 0.19.1 + `apk upgrade`; 0 kritik, 0 işletim sistemi açığı) | Ataberk |
-| G-2 | Yedek imajında restic ikilisinin Go kütüphanelerinde 23 yüksek açık kaldı | Yüksek | **Kabul edildi, 15.01.2027'ye kadar** (`infra/backup/.trivyignore`, gerekçe dosyada) | Ataberk |
+| G-2 | Yedek imajında restic ikilisinin Go kütüphanelerinde 23 yüksek açık kaldı | Yüksek | **Düzeltildi** (21.11.2026: restic 0.20.0 ile Trivy yüksek/kritik 0; `infra/backup/.trivyignore` boşaltıldı. Önce 15.01.2027'ye kadar kabul edilmişti) | Ataberk |
 | G-3 | Web: `react-router-dom` (→ `@remix-run/router`) 3 yüksek açık: açık yönlendirme / XSS | Yüksek | Açık: `npm audit fix` ile yamalı sürüm var | Anıl |
 | G-4 | API ve veri işçisi imajında `zlib1g` 2 yüksek açık (Debian taban imajı) | Yüksek | Açık: imajlar yeniden derlenince kapanır (`--pull`); sonraki deploy | Ataberk |
 | G-5 | API güvenlik başlıkları göndermiyor (HSTS, CSP, X-Content-Type-Options, X-Frame-Options) | Orta | **Düzeltildi** (Cloudflare kuralları; securityheaders.com **A+**) | Ataberk |

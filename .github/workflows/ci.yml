@@ -31,8 +31,9 @@ jobs:
       web: ${{ steps.find.outputs.web }}
       mobile: ${{ steps.find.outputs.mobile }}
       docker: ${{ steps.find.outputs.docker }}
+      pc: ${{ steps.find.outputs.pc }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           # PR'da HEAD, PR'ın main ile birleşmiş hâlidir; HEAD^1 main'in ucu. Fark = PR'ın değiştirdikleri.
           fetch-depth: 2
@@ -57,11 +58,14 @@ jobs:
             echo "backend=$(calis '^backend/')"
             # Scraper, backend'in modellerini/migration'larını ve ai'nin pii paketini kurar.
             echo "scraper=$(calis '^(scraper|backend|ai)/' scraper/pyproject.toml)"
-            echo "ai=$(calis '^ai/' ai/pyproject.toml)"
+            # ai testleri (golden dahil) taksonomiyi scraper/taxonomy/skills.csv'den okur (#160).
+            echo "ai=$(calis '^(ai/|scraper/taxonomy/)' ai/pyproject.toml)"
             echo "ai_docker=$(var ai/Dockerfile)"
             echo "web=$(calis '^web/' web/package.json)"
             echo "mobile=$(calis '^mobile/' mobile/package.json)"
             echo "docker=$(calis '^((backend|scraper|ai)/|docker-compose[^/]*\.ya?ml$|\.env\.example$)')"
+            # Production compose'u ve başvurduğu yapılandırmalar (yedek, izleme).
+            echo "pc=$(calis '^infra/(pc|backup|monitoring)/')"
           } | tee -a "$GITHUB_OUTPUT"
 
   backend:
@@ -90,8 +94,8 @@ jobs:
       # tests/db bu adres verilince çalışır: upgrade → downgrade → upgrade ve `alembic check` (T-012).
       TEST_DATABASE_URL: postgresql+psycopg://postgres:ci@127.0.0.1:5432/careerai_test
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
           cache: pip
@@ -136,8 +140,8 @@ jobs:
       # tests/test_store.py şemayı backend'in Alembic migration'larıyla kurar.
       TEST_DATABASE_URL: postgresql+psycopg://postgres:ci@127.0.0.1:5432/careerai_test
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
           cache: pip
@@ -161,8 +165,8 @@ jobs:
       run:
         working-directory: ai
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
           cache: pip
@@ -170,8 +174,8 @@ jobs:
       - run: pip install -e ".[dev]"
       - run: ruff check .
       - run: ruff format --check .
-      # Yollar ai/README.md'deki komutla aynı; orası değişirse burası da değişir.
-      - run: mypy parsing pii extraction tests eval/scripts
+      # Tüm ai kodu (yeni modüller kendiliğinden girer); eval/tests henüz strict değil. ai/README.md ile aynı tutun.
+      - run: mypy . --exclude '^eval/tests/'
       - run: pytest -rs
 
   web:
@@ -183,8 +187,8 @@ jobs:
       run:
         working-directory: web
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: "20"
           cache: npm
@@ -203,10 +207,10 @@ jobs:
       run:
         working-directory: mobile
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
-          node-version: "20"
+          node-version: "22"  # Expo SDK 58: Node >= 22.13
           cache: npm
           cache-dependency-path: mobile/package-lock.json
       - run: npm ci
@@ -219,7 +223,7 @@ jobs:
     if: needs.detect.outputs.docker == 'true'
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: docker-compose.yml geçerli mi
         run: cp .env.example .env && docker compose --profile api --profile worker --profile data config --quiet
       - name: API imajı
@@ -241,3 +245,24 @@ jobs:
       - name: AI worker imajı
         if: needs.detect.outputs.ai_docker == 'true'
         run: docker build -t careerai/worker:ci ai
+
+  # Production'ın compose dosyası (infra/pc/compose.yml) ancak deploy'da açılıyordu; yazım hatası, eksik zorunlu
+  # değişken veya profil hatası burada yakalanır. Örnek env'deki boş değerler (şifreler) sahte değerle doldurulur.
+  pc-compose:
+    name: Production compose (infra/pc)
+    needs: detect
+    if: needs.detect.outputs.pc == 'true'
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+      - name: compose.yml bütün profillerle geçerli mi
+        working-directory: infra/pc
+        run: |
+          sed -E 's/^([A-Z0-9_]+)=$/\1=ci-sahte-deger/' .env.example > "$RUNNER_TEMP/ci.env"
+          for ortam in production staging; do
+            sed -i -E "s/^APP_ENVIRONMENT=.*/APP_ENVIRONMENT=$ortam/" "$RUNNER_TEMP/ci.env"
+            COMPOSE_PROFILES=tunnel,backup,monitoring docker compose -p ci --env-file "$RUNNER_TEMP/ci.env" -f compose.yml config --quiet
+            # Sunum B planı (make prod-local) ile birlikte
+            docker compose -p ci --env-file "$RUNNER_TEMP/ci.env" -f compose.yml -f compose.local.yml config --quiet
+          done
+          echo "compose.yml geçerli"

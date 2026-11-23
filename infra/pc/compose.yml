@@ -90,7 +90,11 @@ services:
     image: pgvector/pgvector:pg16
     # Hata loglarına değer yazılmasın (T-067): terse → "Key (email)=(…)" gibi DETAIL satırları yok;
     # log_min_error_statement=panic → hatalı sorgunun metni loglanmaz.
-    command: ["postgres", "-c", "log_error_verbosity=terse", "-c", "log_min_error_statement=panic"]
+    # pg_stat_statements: yavaş sorgu ölçümü (go-live #18, `make prod-slow-queries`); sorgu metinleri normalleştirilir
+    # (sabitler $1 olur), değer saklanmaz. Ayar değişince postgres yeniden oluşturulur (deploy sırasında).
+    command: ["postgres", "-c", "log_error_verbosity=terse", "-c", "log_min_error_statement=panic",
+              "-c", "shared_preload_libraries=pg_stat_statements", "-c", "pg_stat_statements.track=top",
+              "-c", "pg_stat_statements.track_utility=off"]
     environment:
       POSTGRES_USER: ${POSTGRES_USER:?env dosyasında POSTGRES_USER yok}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?env dosyasında POSTGRES_PASSWORD yok}
