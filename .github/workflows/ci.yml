@@ -176,7 +176,8 @@ jobs:
       - run: ruff format --check .
       # Tüm ai kodu (yeni modüller kendiliğinden girer); eval/tests henüz strict değil. ai/README.md ile aynı tutun.
       - run: mypy . --exclude '^eval/tests/'
-      - run: pytest -rs
+      # Kapsam %70'in altına düşerse kırmızı (T-054, ai/pyproject.toml fail_under; ai/README.md ile aynı komut).
+      - run: pytest -rs --cov
 
   web:
     name: Web (eslint, tsc)
