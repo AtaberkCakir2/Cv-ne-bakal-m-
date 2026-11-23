@@ -33,7 +33,7 @@ dev = [
     # Kapsama (T-054): backend ile aynı sürüm.
     "pytest-cov==7.1.0",
     # Sürümler backend ve scraper ile aynı sabit (infra/ci.md).
-    "ruff==0.17.5",
+    "ruff==0.17.6",
     "mypy==2.4.1",
     # Golden testte sonucun contracts/analysis_result.schema.json ile doğrulanması (T-058).
     "jsonschema>=4.23",
