@@ -286,7 +286,8 @@ def report(session: Session) -> dict[str, Any]:
         "checked": checked,
         "dead": dead,
         "dead_ratio": dead / checked if checked else 0.0,
-        "last_checked": last_checked,
+        # Postgres değeri oturumun saat dilimiyle döner (production'da +03:00); rapor UTC yazar.
+        "last_checked": last_checked.astimezone(UTC) if last_checked else None,
         "total": sum(counts.values()),
         "skills": len(slugs),
         "short": sorted(s for s in slugs if counts[s] < MIN_PER_SKILL),

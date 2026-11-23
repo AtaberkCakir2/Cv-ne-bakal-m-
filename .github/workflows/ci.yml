@@ -31,6 +31,7 @@ jobs:
       web: ${{ steps.find.outputs.web }}
       mobile: ${{ steps.find.outputs.mobile }}
       docker: ${{ steps.find.outputs.docker }}
+      pc: ${{ steps.find.outputs.pc }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -57,11 +58,14 @@ jobs:
             echo "backend=$(calis '^backend/')"
             # Scraper, backend'in modellerini/migration'larını ve ai'nin pii paketini kurar.
             echo "scraper=$(calis '^(scraper|backend|ai)/' scraper/pyproject.toml)"
-            echo "ai=$(calis '^ai/' ai/pyproject.toml)"
+            # ai testleri (golden dahil) taksonomiyi scraper/taxonomy/skills.csv'den okur (#160).
+            echo "ai=$(calis '^(ai/|scraper/taxonomy/)' ai/pyproject.toml)"
             echo "ai_docker=$(var ai/Dockerfile)"
             echo "web=$(calis '^web/' web/package.json)"
             echo "mobile=$(calis '^mobile/' mobile/package.json)"
             echo "docker=$(calis '^((backend|scraper|ai)/|docker-compose[^/]*\.ya?ml$|\.env\.example$)')"
+            # Production compose'u ve başvurduğu yapılandırmalar (yedek, izleme).
+            echo "pc=$(calis '^infra/(pc|backup|monitoring)/')"
           } | tee -a "$GITHUB_OUTPUT"
 
   backend:
@@ -170,9 +174,10 @@ jobs:
       - run: pip install -e ".[dev]"
       - run: ruff check .
       - run: ruff format --check .
-      # Yollar ai/README.md'deki komutla aynı; orası değişirse burası da değişir.
-      - run: mypy parsing pii extraction tests eval/scripts
-      - run: pytest -rs
+      # Tüm ai kodu (yeni modüller kendiliğinden girer); eval/tests henüz strict değil. ai/README.md ile aynı tutun.
+      - run: mypy . --exclude '^eval/tests/'
+      # Kapsam %70'in altına düşerse kırmızı (T-054, ai/pyproject.toml fail_under; ai/README.md ile aynı komut).
+      - run: pytest -rs --cov
 
   web:
     name: Web (eslint, tsc)
@@ -206,7 +211,7 @@ jobs:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
         with:
-          node-version: "20"
+          node-version: "22"  # Expo SDK 58: Node >= 22.13
           cache: npm
           cache-dependency-path: mobile/package-lock.json
       - run: npm ci
@@ -241,3 +246,24 @@ jobs:
       - name: AI worker imajı
         if: needs.detect.outputs.ai_docker == 'true'
         run: docker build -t careerai/worker:ci ai
+
+  # Production'ın compose dosyası (infra/pc/compose.yml) ancak deploy'da açılıyordu; yazım hatası, eksik zorunlu
+  # değişken veya profil hatası burada yakalanır. Örnek env'deki boş değerler (şifreler) sahte değerle doldurulur.
+  pc-compose:
+    name: Production compose (infra/pc)
+    needs: detect
+    if: needs.detect.outputs.pc == 'true'
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+      - name: compose.yml bütün profillerle geçerli mi
+        working-directory: infra/pc
+        run: |
+          sed -E 's/^([A-Z0-9_]+)=$/\1=ci-sahte-deger/' .env.example > "$RUNNER_TEMP/ci.env"
+          for ortam in production staging; do
+            sed -i -E "s/^APP_ENVIRONMENT=.*/APP_ENVIRONMENT=$ortam/" "$RUNNER_TEMP/ci.env"
+            COMPOSE_PROFILES=tunnel,backup,monitoring docker compose -p ci --env-file "$RUNNER_TEMP/ci.env" -f compose.yml config --quiet
+            # Sunum B planı (make prod-local) ile birlikte
+            docker compose -p ci --env-file "$RUNNER_TEMP/ci.env" -f compose.yml -f compose.local.yml config --quiet
+          done
+          echo "compose.yml geçerli"

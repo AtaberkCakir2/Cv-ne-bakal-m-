@@ -115,7 +115,7 @@ docker compose --profile data up -d worker-data          # repo kökünde; imaj 
 celery -A collector.tasks worker -B -Q data --concurrency 1 --loglevel INFO
 ```
 
-Windows'ta `-B` çalışmaz; işçi ve beat ayrı başlatılır: `celery -A collector.tasks worker -Q data --pool solo` ve `celery -A collector.tasks beat`. Elle tetikleme: `celery -A collector.tasks call collector.nightly --queue data`.
+Windows'ta `-B` çalışmaz; işçi ve beat ayrı başlatılır: `celery -A collector.tasks worker -Q data --pool solo` ve `celery -A collector.tasks beat`. Elle tetikleme: `celery -A collector.tasks call collector.nightly --queue data`. Son 03:00'ten sonra zaten toplama yapıldıysa görev atlanır (beat ve açılış telafisi aynı geceyi iki kez kuyruğa koyabilir); yine de toplamak için `--kwargs '{"force": true}'`.
 
 `make up` worker-data'yı **başlatmaz**: üç geliştiricinin bilgisayarı her gece aynı kaynaklara gitmesin. Sunucuda (staging/production, T-035) `--profile data` ile açılır.
 
