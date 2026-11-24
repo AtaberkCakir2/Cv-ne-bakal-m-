@@ -376,6 +376,7 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 - **Çıktı:** Prova notu
 - **Kabul kriteri:** PC'de prova projesinde (`careerai-staging`) production'ın birebir kopyasıyla deploy + rollback provası; checklist üzerinden kuru çalıştırma; sunum B planı (127.0.0.1'de yerel demo, telefondan internet paylaşımı) denendi.
 - **Not:** 21.11.2026: deploy + rollback provasının ilk turu yapıldı (go-live #49): production dökümüyle 146 sn, geri yükleme prosedüründeki yetki hatası düzeltildi (`docs/runbook/operasyon.md` 2. bölüm). `infra/pc/.env.staging` bu PC'de oluşturuldu. Ocak'ta v1.0.0 adayıyla tekrarlanacak; kalan: checklist kuru çalıştırma.
+- **Not (24.11.2026, kuru çalıştırma):** Listenin tamamı production'a karşı yürütüldü (`docs/go-live.md` "Kuru çalıştırma"): 50 maddeden Uygun 15, Kısmen 21, Değil 8, ölçülemedi/zamanı değil 6. Kritik açıklar: #25 ve #30 (analiz işçisi production'da yok, T-057), #36 (yasal sayfalar, #71), #41 (Play testi 21.12'de). Ocak'ta v1.0.0 adayıyla bu tablo yeniden doldurulur.
 - **Not (21.11.2026, B planı):** `make prod-local` + yeni `make prod-local-web` / `prod-local-down` ile yerel demo ~1 dk'da hazır, production verisiyle tarayıcıda denendi (`infra/pc/deploy.md` §6). Düzeltilen: B planında CORS kapalıydı, yerel web derleme komutu yoktu. Kalan: telefondan internet paylaşımıyla tünel denemesi (Ataberk, elle), analiz akışı T-057'den sonra.
 
 ---
@@ -389,7 +390,7 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 - **Bağımlılık:** T-093 (Anıl)
 - **Destek:** Burak, Anıl
 - **Çıktı:** Canlı sistem
-- **Kabul kriteri:** v1.0.0 etiketi; PC'de `make deploy TAG=v1.0.0`; migration; smoke test alan adı üzerinden; DNS/tünel/SSL kontrolü; başarısızlıkta 15 dk içinde rollback.
+- **Kabul kriteri:** v1.0.0 etiketi; PC'de `bash infra/pc/deploy.sh v1.0.0` (`infra/pc/deploy.md` §4; migration betiğin içinde); smoke test alan adı üzerinden; DNS/tünel/SSL kontrolü; başarısızlıkta 15 dk içinde rollback.
 
 ### T-097 · Hypercare (2 hafta yakın izleme)
 
