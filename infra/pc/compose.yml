@@ -170,6 +170,9 @@ services:
       timeout: 5s
       retries: 10
     mem_limit: 8g
+    # GTX 1650 (4 GB, karar #30): model sığmaz, katmanların bir kısmı GPU'da. Prompt işleme ~5,5 kat hızlı
+    # (infra/pc/deploy.md §8). NVIDIA sürücüsü ≥ 550 gerekir; yoksa konteyner açılmaz veya Ollama CPU'ya düşer.
+    gpus: all
     logging: *logging
     restart: unless-stopped
 
