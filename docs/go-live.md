@@ -69,7 +69,7 @@
 
 ### Veri
 
-- [ ] **34.** Gece toplama işi son 7 günde hatasız çalıştı — _Doğrulama:_ scrape_runs tablosu — _Sorumlu:_ Ataberk
+- [ ] **34.** Gece toplama işi PC'nin açık olduğu son 7 takvim gününde hatasız çalıştı; PC'nin kapalı kaldığı gecelerin toplaması açılışta telafi edildi (karar #39) — _Doğrulama:_ scrape_runs tablosu — _Sorumlu:_ Ataberk
 - [ ] **35.** Ölü kaynak linki oranı < %2 — _Doğrulama:_ Link kontrol raporu — _Sorumlu:_ Ataberk
 
 ### KVKK / Hukuki
@@ -142,7 +142,7 @@ Sorumlusu Anıl olan maddeler, Ataberk'in tablosuyla aynı amaçla. Kutular işa
 
 Listenin tamamı production'a karşı bir kez yürütüldü. Sorumlusu Ataberk olan maddeler ölçüldü; diğerlerinde repodaki ve production'daki kanıt kontrol edildi, sahibinin ön kontrolü varsa ona atıf yapıldı. Kutular **işaretlenmedi**. ★ = kritik.
 
-**Özet:** 50 madde (#20 ve #22 iptal, listede yok). **Uygun 15 · Kısmen 21 · Değil 8 · Ölçülemedi / henüz zamanı değil 6.** Kritik maddelerden 4'ü **Değil**: #25, #30, #36 ve #41. #25 ve #30 analiz işçisinin production'da olmamasından kaynaklanıyor (T-057). #36 yasal sayfaların yayında olmamasından (#71). #41 için Play kapalı testi 21.12'de başlayacak.
+**Özet:** 50 madde (#20 ve #22 iptal, listede yok). **Uygun 16 · Kısmen 20 · Değil 8 · Ölçülemedi / henüz zamanı değil 6.** Kritik maddelerden 4'ü **Değil**: #25, #30, #36 ve #41. #25 ve #30 analiz işçisinin production'da olmamasından kaynaklanıyor (T-057). #36 yasal sayfaların yayında olmamasından (#71). #41 için Play kapalı testi 21.12'de başlayacak.
 
 | Madde | Sorumlu | Durum | Kanıt / eksik (24.11.2026) |
 |---|---|---|---|
@@ -179,7 +179,7 @@ Listenin tamamı production'a karşı bir kez yürütüldü. Sorumlusu Ataberk o
 | 31 ★ Uydurma link yok | Burak | Kısmen | Golden testler birleşti (#160); production'da 100 analiz örneklemi analiz olmadığı için yapılamaz |
 | 32 Analiz p95 < 120 sn | Burak | Ölçülemedi | Ollama GPU ile (#168): prompt 82, üretim 4,8 token/sn (CPU'da 14,8 ve 3,1). Gerçek analiz süresi T-057 sonrası yük testiyle (T-072) |
 | 33 Model ve prompt sürümü sabit | Burak | Değil | Model seçimi benchmark sonrası kesinleşecek; production'da şu an `llama3.1:8b` |
-| 34 Gece toplaması 7 gün hatasız | Ataberk | Kısmen | 18–24.11 arası 6 günde 42 çalışma, **0 hata**; 19.11'de PC kapalı kaldığı için toplama yok. PC her gün açılmadıkça 7 günlük seri oluşmaz; madde "PC'nin açık olduğu günlerde hatasız" diye yeniden yazılabilir (karar gerekir) |
+| 34 Gece toplaması hatasız (karar #39) | Ataberk | Uygun | 18–24.11 arası PC'nin açık olduğu 6 günde 42 çalışma, **0 hata**; 19.11'de PC kapalıydı. 22.11 ve 23.11'de kaçan geceler açılışta telafi edildi, ikinci kez toplanmadı (#162) |
 | 35 Ölü link < %2 | Ataberk | Uygun | 4 / 1.699 = **%0,24**, son kontrol 24.11 15:09 |
 | 36 ★ Yasal metinler yayında | Burak | **Değil** | Metinler #71'de (taslak); yayın yeri (Pages, kök alan adı) henüz açılmadı. Mobil ve web bu adreslere bağlantı veriyor |
 | 37 ★ CV saklanmıyor | Burak | Kısmen | Mobil önbellek kopyası silme #161'de eklendi; disk/yedek taraması production'da analiz başlayınca yapılmalı |
