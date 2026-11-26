@@ -122,6 +122,19 @@ make prod-embed HEPSI=1    # model değiştiyse hepsi baştan
 
 Betik `infra/pc/embed.sh`: yedek (`backup.sh`) → geçici imajı derler (`infra/pc/embedding/Dockerfile`, ~3,3 GB, model içinde; ilk seferde ~5 dk, sonra önbellekten) → `python -m embedding` → kalan boş vektör sayısını yazar (pasif ilanlar vektör almaz, sayılmaz). İmaj PC'de kalır; kaldırmak: `docker rmi careerai/embedding-gecici:local`. Her parti ayrı kaydedilir (yarıda kesilirse kaldığı yerden sürer). Uygulama rolüyle (`careerai_app`) bağlanır; parola komut satırında görünmez. İlk çalışma 20.11.2026: 374 yetkinlik 3 sn, 2.213 ilan 4 dk (CPU). T-057 (Burak) analiz işçisini production'a alınca bu adım ve imaj kaldırılır.
 
+## 8. Ollama GPU (GTX 1650)
+
+`compose.yml`'de `ollama` servisi `gpus: all` ile açılır. Şartlar: Windows'ta NVIDIA sürücüsü **550 veya üstü** (Ollama 0.40 CUDA 13 ister) ve Docker Desktop WSL2 altyapısı. Sürücü güncellendikten sonra PC yeniden başlatılmadıysa WSL eski sürücü dosyalarını tutar ve GPU'lu konteyner açılırken çöker (`nvidia-container-runtime-hook … SIGSEGV`): Docker Desktop'ı kapatıp PowerShell'de `wsl --shutdown`, sonra Docker Desktop'ı açın.
+
+Kontrol: `docker compose -p careerai-prod --env-file infra/pc/.env.prod -f infra/pc/compose.yml exec ollama ollama ps` → `PROCESSOR` sütununda GPU payı görünmeli. Loglarda `msg="inference compute" … library=CUDA` olmalı; `NVIDIA driver too old` görünüyorsa sürücü eski, Ollama CPU'da çalışıyordur.
+
+Ölçüm (24.11.2026, `llama3.1:8b`, ~750 token prompt, sürücü 621.24): model 4 GB'a sığmadığı için katmanların bir kısmı GPU'da (13/33).
+
+| | Sadece CPU | GPU ile |
+|---|---|---|
+| Prompt işleme | 14,8 token/sn (~50 sn) | 82 token/sn (~9 sn) |
+| Üretim | 3,1 token/sn | 4,8 token/sn |
+
 ## Henüz eksik
 
 - `worker-ai` / analiz işçisi ve CV Redis'i: `ai/Dockerfile` (Burak) ve #58/#60 main'e girince eklenecek; o zamana kadar analizler çalışmaz.
