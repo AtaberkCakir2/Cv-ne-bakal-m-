@@ -400,4 +400,4 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 - **Bağımlılık:** T-094
 - **Destek:** Burak, Anıl
 - **Çıktı:** Hypercare raporu
-- **Kabul kriteri:** Günlük: hata oranı, analiz süresi, kuyruk, disk, yedek kontrolü; PC açık saatleri (09:00–23:00) duyuruldu; nöbet çizelgesi (her gün 1 kişi); kritik hatalara 4 saat içinde müdahale.
+- **Kabul kriteri:** Günlük: hata oranı, analiz süresi, kuyruk, disk, yedek kontrolü; PC açık saatleri (09:00–23:00) duyuruldu; günlük kontrolü Ataberk yapar, bakamayacağı gün Burak'a veya Anıl'a önceden haber verir (nöbet çizelgesi yok, karar #41); kritik hatalara 4 saat içinde müdahale.
