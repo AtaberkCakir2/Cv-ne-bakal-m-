@@ -157,7 +157,7 @@ def main(argv: list[str] | None = None) -> int:
         if pair is None:
             if args.write_gold and len(by_annotator) == 1:
                 double = manifest.get(cv_id, {}).get("double")
-                # Karar #39: sadece Claude etiketi varsa CV çift etiketli olsa da gold'a kopyalanır.
+                # Karar #40: sadece Claude etiketi varsa CV çift etiketli olsa da gold'a kopyalanır.
                 if double == "false" or (double == "true" and set(by_annotator) == {AI_ANNOTATOR}):
                     write_single_gold(args.dataset, cv_id, by_annotator)
                 elif double == "true":

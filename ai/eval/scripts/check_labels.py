@@ -63,7 +63,7 @@ def main(argv: list[str] | None = None) -> int:
             continue
         (first, second), _ = assignment(cv_id)
         expected = {first, second} if row["double"] == "true" else {first}
-        humans = set(by_annotator) - {AI_ANNOTATOR}  # Claude etiketi atamadan bağımsız (karar #39)
+        humans = set(by_annotator) - {AI_ANNOTATOR}  # Claude etiketi atamadan bağımsız (karar #40)
         unexpected = humans - expected
         if unexpected:
             report.warn(
@@ -134,7 +134,7 @@ def print_progress(
     print(f"  {mark(layouts['multi_column'] > 0 and layouts['single_column'] > 0)} Düzen: " + _fmt(layouts))
     print(f"  {mark(scanned >= TARGET_SCANNED)} Taranmış: {scanned}/{TARGET_SCANNED}")
     print(f"  {mark(all(experience[e] > 0 for e in EXPERIENCE))} Deneyim: " + _fmt(experience))
-    print(f"  {mark(total > 0 and ai_labeled == total)} Claude etiketledi (karar #39): {ai_labeled}/{total}")
+    print(f"  {mark(total > 0 and ai_labeled == total)} Claude etiketledi (karar #40): {ai_labeled}/{total}")
     print(f"  · En az 1 kişi etiketledi: {labeled}/{total}")
     print(
         f"  {mark(len(double) >= TARGET_DOUBLE)} Çift etiket için seçilen: {len(double)}/{TARGET_DOUBLE} "
@@ -151,7 +151,7 @@ def print_progress(
         f"{DOUBLE_MIN_PER_LANGUAGE} EN, ≥ {DOUBLE_MIN_MULTI_COLUMN} çok sütun, ≥ {DOUBLE_MIN_SCANNED} taranmış, "
         "3 deneyim düzeyi"
     )
-    print(f"  · 2 kişi etiketledi (karar #39'dan önceki kriter): {double_done}/{len(double)}")
+    print(f"  · 2 kişi etiketledi (karar #40'tan önceki kriter): {double_done}/{len(double)}")
     print(f"  {mark(total > 0 and gold_count == total)} Gold (anlaşmazlık çözülmüş): {gold_count}/{total}")
     print("  · Etiketleyiciler arası F1 ≥ 0,85: agreement.py ile ölçülür.")
 
