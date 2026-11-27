@@ -178,7 +178,7 @@ Listenin tamamı production'a karşı bir kez yürütüldü. Sorumlusu Ataberk o
 | 30 ★ F1 ≥ 0,80, öneri puanı ≥ 4,0 | Burak | **Değil** | `ai/eval/report.md` yok; ölçüm raporu bekleniyor |
 | 31 ★ Uydurma link yok | Burak | Kısmen | Golden testler birleşti (#160); production'da 100 analiz örneklemi analiz olmadığı için yapılamaz |
 | 32 Analiz p95 < 120 sn | Burak | Ölçülemedi | Ollama GPU ile (#168): prompt 82, üretim 4,8 token/sn (CPU'da 14,8 ve 3,1). Gerçek analiz süresi T-057 sonrası yük testiyle (T-072) |
-| 33 Model ve prompt sürümü sabit | Burak | Değil | Model seçimi benchmark sonrası kesinleşecek; production'da şu an `llama3.1:8b` |
+| 33 Model ve prompt sürümü sabit | Burak | Değil | Model karar #26 ile seçildi (`llama3.1:8b`, `ai/extraction/llm.py` `DEFAULT_MODEL`); sürüm sabitlenmedi: production'daki etiket digest'le bağlı değil (şu an `46e0c10c039e`), v1.0.0 ile birlikte sabitlenecek |
 | 34 Gece toplaması hatasız (karar #39) | Ataberk | Uygun | 18–24.11 arası PC'nin açık olduğu 6 günde 42 çalışma, **0 hata**; 19.11'de PC kapalıydı. 22.11 ve 23.11'de kaçan geceler açılışta telafi edildi, ikinci kez toplanmadı (#162) |
 | 35 Ölü link < %2 | Ataberk | Uygun | 4 / 1.699 = **%0,24**, son kontrol 24.11 15:09 |
 | 36 ★ Yasal metinler yayında | Burak | **Değil** | Metinler #71'de (taslak); yayın yeri (Pages, kök alan adı) henüz açılmadı. Mobil ve web bu adreslere bağlantı veriyor |
