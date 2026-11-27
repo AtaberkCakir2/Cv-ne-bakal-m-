@@ -137,11 +137,15 @@ function ConsentsSection() {
   const [pending, setPending] = useState(false);
 
   useEffect(() => {
+    let active = true;
     api
       .GET("/api/v1/users/me/consents")
       .then(unwrap)
-      .then(setConsents)
-      .catch((e) => setError(problemMessage(e)));
+      .then((data) => active && setConsents(data))
+      .catch((e) => active && setError(problemMessage(e)));
+    return () => {
+      active = false;
+    };
   }, []);
 
   // Her tür için en son kayıt yürürlüktedir; eski sürüm satırları silinmez (backend sürümlü tutar).

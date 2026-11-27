@@ -81,7 +81,6 @@ export function AnalysisScreen({ navigation, route }: ScreenProps<"Analysis">) {
 
   const again = () => navigation.popTo("Upload");
 
-
   if (!analysis) {
     if (!loadError) return <Loading label="Analiz yükleniyor" />;
     return (

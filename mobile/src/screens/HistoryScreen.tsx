@@ -84,7 +84,15 @@ export function HistoryScreen({ navigation }: ScreenProps<"History">) {
     }
   }
 
-  if (!items) return error ? <Alert tone="error">{error}</Alert> : <Loading label="Geçmiş yükleniyor" />;
+  if (!items) {
+    if (!error) return <Loading label="Geçmiş yükleniyor" />;
+    return (
+      <View style={styles.failed}>
+        <Alert tone="error">{error}</Alert>
+        <Button title="Tekrar dene" onPress={() => void refresh()} />
+      </View>
+    );
+  }
 
   return (
     <FlatList
@@ -152,6 +160,7 @@ export function HistoryScreen({ navigation }: ScreenProps<"History">) {
 }
 
 const styles = StyleSheet.create({
+  failed: { padding: 20, gap: 12 },
   list: { padding: 20, gap: 10, flexGrow: 1 },
   row: { flexDirection: "row", alignItems: "center", borderWidth: 1, borderRadius: 10 },
   open: { flex: 1, padding: 14, gap: 2, minHeight: 56 },
