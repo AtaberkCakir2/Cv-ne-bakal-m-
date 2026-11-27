@@ -171,13 +171,14 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-028 · TÜBİTAK 2209-A başvuru dosyası
 
-- **Durum:** Engellendi
+- **Durum:** Tamamlandı
 - **Tarih:** 27.10.2026 – 11.11.2026 · **Öncelik:** P0 · **Efor:** 16 saat · **Alan:** Kongre / TÜBİTAK
 - **Bağımlılık:** T-000 (Anıl)
 - **Destek:** Burak, Anıl
 - **Çıktı:** Başvuru dosyası
 - **Kabul kriteri:** Özgün değer, yöntem, iş-zaman planı, risk yönetimi, bütçe ve yaygın etki bölümleri; danışman onayı ve sisteme yükleme. Son tarihi güncel çağrı takviminden doğrulayın.
 - **Not:** 2026 çağrısı (TÜBİTAK duyurusu, 27.10.2026'da doğrulandı): başvuru 07.10–**11.11.2026 17:30**, TÜBİTAK Yönetim Bilgi Sistemi üzerinden; danışman onayı başvuru aşamasında tamamlanmalı (danışmanın güncel YÖK kaydı gerekli); kuruluş yetkilisi e-imzası 16–23.11.2026. Planın 15.11 bitişi son tarihi kaçırıyordu, bitiş 11.11'e çekildi. 05.11.2026: **askıya alındı.** Başvuru dosyası hazır, danışman hocanın dönüşü bekleniyor (hocalarla görüşüldü). Ataberk danışmanla ilgili bilgiyi verince devam edilecek; o zamana kadar bu görevde iş yapılmaz. Son tarih (11.11 17:30) değişmedi.
+- **Not (27.11.2026):** Ataberk: görev tamamen kapandı; bu görevde yapılacak iş kalmadı.
 - **Devir:** 27.10.2026'da Burak'tan devredildi (karar #18).
 
 ---

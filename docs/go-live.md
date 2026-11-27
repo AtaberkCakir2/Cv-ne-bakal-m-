@@ -142,7 +142,7 @@ Sorumlusu Anıl olan maddeler, Ataberk'in tablosuyla aynı amaçla. Kutular işa
 
 Listenin tamamı production'a karşı bir kez yürütüldü. Sorumlusu Ataberk olan maddeler ölçüldü; diğerlerinde repodaki ve production'daki kanıt kontrol edildi, sahibinin ön kontrolü varsa ona atıf yapıldı. Kutular **işaretlenmedi**. ★ = kritik.
 
-**Özet:** 50 madde (#20 ve #22 iptal, listede yok). **Uygun 17 · Kısmen 19 · Değil 8 · Ölçülemedi / henüz zamanı değil 6** (27.11: #3 Kısmen → Uygun). Kritik maddelerden 4'ü **Değil**: #25, #30, #36 ve #41. #25 ve #30 analiz işçisinin production'da olmamasından kaynaklanıyor (T-057). #36 yasal sayfaların yayında olmamasından (#71). #41 için Play kapalı testi 21.12'de başlayacak.
+**Özet:** 50 madde (#20 ve #22 iptal, listede yok). **Uygun 18 · Kısmen 18 · Değil 8 · Ölçülemedi / henüz zamanı değil 6** (27.11: #3 ve #21 Kısmen → Uygun). Kritik maddelerden 4'ü **Değil**: #25, #30, #36 ve #41. #25 ve #30 analiz işçisinin production'da olmamasından kaynaklanıyor (T-057). #36 yasal sayfaların yayında olmamasından (#71). #41 için Play kapalı testi 21.12'de başlayacak.
 
 | Madde | Sorumlu | Durum | Kanıt / eksik (24.11.2026) |
 |---|---|---|---|
@@ -167,7 +167,7 @@ Listenin tamamı production'a karşı bir kez yürütüldü. Sorumlusu Ataberk o
 | 17 En az yetkili kullanıcı | Ataberk | Uygun | `careerai_app` ve `careerai_monitor`: süper kullanıcı değil, rol/DB oluşturamaz; `audit_logs`'ta silme/`TRUNCATE` yetkisi yok |
 | 18 Yavaş sorgu yok | Ataberk | Ölçülemedi | `pg_stat_statements` sayaçları bugün WSL yeniden başlatılınca sıfırlandı (24.11 16:05); kayıtta sadece sağlık sorgusu var. Ölçüm için PC'nin birkaç gün yeniden başlatılmadan açık kalması ve gerçek kullanım gerekiyor |
 | 19 ★ Günlük şifreli yedek | Ataberk | Uygun | restic → B2, 7 snapshot, son 24.11 15:10. PC 02:00'de kapalıysa yedek açılışta alınıyor |
-| 21 ★ Grafana, 12 kural, dış prob | Ataberk | Kısmen | 12 kural yüklü, tetiklenen yok; iç ve dış prob `probe_success=1`. Tünel durdurulunca `DisErisimYok` görülmesi testi yapılmadı |
+| 21 ★ Grafana, 12 kural, dış prob | Ataberk | Uygun | 12 kural yüklü; iç ve dış prob `probe_success=1`. Tünel testi (27.11.2026): `cloudflared` 22:49:38'de durduruldu → alan adı 530, dış prob ~1 dk içinde 0, `DisErisimYok` 22:50:19'da beklemede, 5 dk sonra tetiklendi; iç prob 1 kaldı (yanlışlıkla `ApiHazirDegil` çıkmadı). Tünel 22:59:57'de açıldı → 7 sn'de 200, alarm 55 sn'de kapandı. Kesinti toplam ~10 dk (bilerek) |
 | 23 Grafana panosu | Ataberk | Kısmen | `careerai.json` panosu yüklü (CPU, RAM, disk, kuyruk). Analiz süresi paneli analiz işçisi gelene kadar boş |
 | 24 Loglarda kişisel veri yok | Ataberk | Uygun (örneklem) | Son 72 saatin api ve worker-data loglarında e-posta biçiminde metin 0 satır |
 | 25 ★ Uçtan uca akış production'da | Burak | **Değil** | Production'da analiz işçisi yok: `ai/Dockerfile` (Burak) ve backend'in `analyze_cv`'ye bağlanması (`AiAnalyzer`, Anıl) bekleniyor; sonra `infra/pc/compose.yml`'e `worker-ai` eklenecek (Ataberk) |
