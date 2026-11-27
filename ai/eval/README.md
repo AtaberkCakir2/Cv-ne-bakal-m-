@@ -133,6 +133,8 @@ python ai/eval/scripts/generate_cvs.py --only syn-014
 
 Etiketleyiciler arası F1 0,85'in altındaysa kılavuz yetersiz demektir; kılavuz güncellenip etiketleme tekrar gözden geçirilir. Modelden bunu beklemek de anlamsız olur (hedef F1 ≥ 0,80).
 
+**Model değerlendirmesi (T-055):** `evaluate.py run --tag <ad>` CV'leri üretimdeki çıkarım zincirinden geçirir (Ollama gerekir), `evaluate.py report --tag <ad>` gold'a göre kesinlik/duyarlılık/F1, seviye doğruluğu ve gecikmeyi basar. Sonuçlar [`results/`](results/), rapor [`report.md`](report.md).
+
 ## Taksonomi değişince
 
 `check_labels.py` ve `agreement.py` varsayılan olarak Ataberk'in taksonomisini (T-017, `scraper/taxonomy/skills.csv`) kullanır; ilk 82 yetkinlikli geçici liste (`skills_provisional.json`) sadece örnek etiketlerin testlerinde kalır. Taksonomi değişince `check_labels.py` etiketleri yeniden doğrular; adı değişen yetkinlikler toplu güncellenir.

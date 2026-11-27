@@ -158,12 +158,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-055 · Model değerlendirme raporu
 
-- **Durum:** Yapılacak
+- **Durum:** Devam Ediyor
 - **Tarih:** 30.11.2026 – 06.12.2026 · **Öncelik:** P0 · **Efor:** 12 saat · **Alan:** AI / NLP
 - **Bağımlılık:** T-043, T-019
 - **Destek:** Ataberk, Anıl
 - **Çıktı:** eval/report.md
 - **Kabul kriteri:** 50 etiketli CV üzerinde precision/recall/F1 (hedef F1 ≥ 0,80); öneri alakalılığı (3 değerlendirici, 1-5, hedef ≥ 4,0); gecikme p50/p95. Final rapor ve TÜBİTAK için.
+- **Devam notu (27.11.2026):** Yapılan: `ai/eval/scripts/evaluate.py` (üretim zinciri PDF → maskeleme → v1+LLM, gold'a göre P/R/F1, seviye, gecikme; testi `eval/tests/test_evaluate.py`) ve ön rapor `ai/eval/report.md`. llama3.1:8b ile 50 CV: F1 0,83 (metinli 44 PDF: 0,88), seviye doğruluğu %35, p50/p95 5,5/8,8 sn (geliştirme GPU'su). · Sıradaki adım: T-019 kontrolleri bitince `evaluate.py report --tag 2026-11-27-llama3.1-8b` ile tabloları yenile; production'da tüm zincirin gecikmesi; öneri alakalılığı için 3 değerlendiriciyle 10 CV puanlaması. · Açık sorular / engeller: gold kontrolü (T-019), production analiz işçisi (go-live #25), OCR (T-029). Ataberk'e: taksonomide Express.js'e `express` eş anlamlısı. · Branch: burak/degerlendirme-raporu (burak/sentetik-cv-etiketleme üstüne; o dal birleşmeden PR açılmaz)
 
 ### T-057 · AI worker'ının kuyruğa entegrasyonu
 

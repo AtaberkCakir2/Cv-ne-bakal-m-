@@ -103,6 +103,7 @@ def print_progress(
     layouts = Counter(r["layout"] for r in rows)
     experience = Counter(r["experience"] for r in rows)
     scanned = sum(r["scanned"] == "true" for r in rows)
+
     def humans(cv_id: str) -> int:
         return len(set(labels.get(cv_id, {})) - {AI_ANNOTATOR})
 
