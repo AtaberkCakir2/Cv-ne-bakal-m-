@@ -142,13 +142,13 @@ Sorumlusu Anıl olan maddeler, Ataberk'in tablosuyla aynı amaçla. Kutular işa
 
 Listenin tamamı production'a karşı bir kez yürütüldü. Sorumlusu Ataberk olan maddeler ölçüldü; diğerlerinde repodaki ve production'daki kanıt kontrol edildi, sahibinin ön kontrolü varsa ona atıf yapıldı. Kutular **işaretlenmedi**. ★ = kritik.
 
-**Özet:** 50 madde (#20 ve #22 iptal, listede yok). **Uygun 16 · Kısmen 20 · Değil 8 · Ölçülemedi / henüz zamanı değil 6.** Kritik maddelerden 4'ü **Değil**: #25, #30, #36 ve #41. #25 ve #30 analiz işçisinin production'da olmamasından kaynaklanıyor (T-057). #36 yasal sayfaların yayında olmamasından (#71). #41 için Play kapalı testi 21.12'de başlayacak.
+**Özet:** 50 madde (#20 ve #22 iptal, listede yok). **Uygun 17 · Kısmen 19 · Değil 8 · Ölçülemedi / henüz zamanı değil 6** (27.11: #3 Kısmen → Uygun). Kritik maddelerden 4'ü **Değil**: #25, #30, #36 ve #41. #25 ve #30 analiz işçisinin production'da olmamasından kaynaklanıyor (T-057). #36 yasal sayfaların yayında olmamasından (#71). #41 için Play kapalı testi 21.12'de başlayacak.
 
 | Madde | Sorumlu | Durum | Kanıt / eksik (24.11.2026) |
 |---|---|---|---|
 | 1 ★ PC hazırlığı | Ataberk | Kısmen | Uyku ve hazırda bekletme (prizde) kapalı, Güvenlik Duvarı üç profilde açık, son Windows güncellemesi 21.11, NVIDIA sürücüsü 621.24. BitLocker karar #31 gereği canlıdan hemen önce açılacak (durumu yönetici yetkisiyle okunur, bugün okunmadı) |
 | 2 ★ Port açık değil | Ataberk | Kısmen | `docker compose config`: 15 serviste `ports:` yok, tek istisna Grafana `127.0.0.1:3000`. Aynı ağdaki başka cihazdan nmap hâlâ yapılmadı |
-| 3 ★ HTTPS | Ataberk | Kısmen | HSTS `max-age=15552000; includeSubDomains`, HTTP → HTTPS 301, TLS 1.2 ve 1.3 kabul. TLS 1.0/1.1'in reddedildiği bu bilgisayardan ölçülemedi (yerel openssl eski sürümleri göndermiyor); SSL Labs testi yapılmadı |
+| 3 ★ HTTPS | Ataberk | Uygun | SSL Labs (27.11.2026, `api.cvnebakalim.com`, sonuç gizli): Cloudflare'in 4 adresinin (2 IPv4, 2 IPv6) hepsi **A+**. Protokoller: TLS 1.3 ve 1.2 açık; TLS 1.1, 1.0, SSL 3, SSL 2 kapalı. HSTS uzun süreli (`max-age=15552000; includeSubDomains`), HTTP → HTTPS 301 |
 | 4 DNS, app./api. | Ataberk | Kısmen | `api.cvnebakalim.com` çözülüyor. `app.`, `www.` ve kök alan adının kaydı yok: web adresi kararı (Anıl) ve #71 bekleniyor |
 | 5 Bellek limiti, restart | Ataberk | Uygun | 15 serviste `mem_limit`, `restart: unless-stopped` ve json-file log rotasyonu var |
 | 6 Disk ≥ 40 GB | Ataberk | Uygun | C: 56,2 GB boş (20.11: 67,5 GB; aradaki fark deploy imajları ve vektör imajı) |
