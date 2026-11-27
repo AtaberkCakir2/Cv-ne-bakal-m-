@@ -1,5 +1,4 @@
 import { useQueryClient } from "@tanstack/react-query";
-import { flushSync } from "react-dom";
 import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 
 import { api } from "../api/client";
@@ -29,7 +28,8 @@ export function Layout() {
     if (refresh_token) await api.POST("/api/v1/auth/logout", { body: { refresh_token } }).catch(() => undefined);
     // Önce giriş ekranına geç ve bunu hemen çiz (flushSync): korumalı sayfa hâlâ ekrandayken oturum silinirse
     // RequireAuth "?sonra=" ile yönlendirirdi ve sonraki girişte kullanıcı eski sayfaya dönerdi.
-    flushSync(() => navigate("/giris"));
+    // React Router 7 geçişleri startTransition ile yapar; dışarıdan flushSync sarmak yetmez, seçenek olarak verilir.
+    await navigate("/giris", { flushSync: true });
     clearSession();
     queryClient.clear(); // önceki kullanıcının verisi önbellekte kalmasın
   }
