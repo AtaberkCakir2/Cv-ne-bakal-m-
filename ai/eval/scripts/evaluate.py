@@ -127,7 +127,12 @@ def load_gold(dataset: Path) -> dict[str, dict[str, Any]]:
 
 
 def analyze(
-    pdf: bytes, *, model: str | None, detector: Any, clock: Callable[[], float] = time.perf_counter
+    pdf: bytes,
+    *,
+    model: str | None,
+    prompt: str | None = None,
+    detector: Any = None,
+    clock: Callable[[], float] = time.perf_counter,
 ) -> dict[str, Any]:
     """`pipeline.analyze_cv` 1-3. adımları; ham metin bu fonksiyondan çıkmaz."""
     from extraction.llm import extract_skills_v2
@@ -144,7 +149,9 @@ def analyze(
     masked = mask(parsed.text, lang, detector=detector)
     del parsed
     t2 = clock()
-    result = extract_skills_v2(masked.text, lang, model=model)
+    from prompts import get_prompt
+
+    result = extract_skills_v2(masked.text, lang, model=model, prompt=get_prompt("skill_extraction", prompt))
     t3 = clock()
     return {
         "status": "ok" if result.llm_error is None else "llm_fallback",
@@ -162,7 +169,7 @@ def analyze(
     }
 
 
-def run(dataset: Path, tag: str, *, model: str | None, limit: int | None, ner: bool) -> Path:
+def run(dataset: Path, tag: str, *, model: str | None, prompt: str | None = None, limit: int | None, ner: bool) -> Path:
     from pii.ner import default_detector
 
     detector = default_detector() if ner else None
@@ -177,7 +184,7 @@ def run(dataset: Path, tag: str, *, model: str | None, limit: int | None, ner: b
         record = {
             "cv_id": row["cv_id"],
             "ner": detector is not None,
-            **analyze(pdf.read_bytes(), model=model, detector=detector),
+            **analyze(pdf.read_bytes(), model=model, prompt=prompt, detector=detector),
         }
         with out.open("a", encoding="utf-8") as f:
             f.write(json.dumps(record, ensure_ascii=False) + "\n")
@@ -311,13 +318,14 @@ def main(argv: list[str] | None = None) -> int:
     r = sub.add_parser("run", help="CV'leri zincirden geçirir (Ollama gerekir); yarıda kalırsa kaldığı yerden sürer")
     r.add_argument("--tag", required=True)
     r.add_argument("--model", help="varsayılan: OLLAMA_MODEL veya extraction.llm.DEFAULT_MODEL")
+    r.add_argument("--prompt", help="skill_extraction sürümü (ör. v3); varsayılan: prompts.CURRENT")
     r.add_argument("--limit", type=int)
     r.add_argument("--no-ner", action="store_true", help="ad tespitinde BERTurk'ü kullanma (sadece kurallar)")
     p = sub.add_parser("report", help="sonuç dosyasını gold'a göre puanlar")
     p.add_argument("--tag", required=True)
     args = parser.parse_args(argv)
     if args.cmd == "run":
-        print(run(args.dataset, args.tag, model=args.model, limit=args.limit, ner=not args.no_ner))
+        print(run(args.dataset, args.tag, model=args.model, prompt=args.prompt, limit=args.limit, ner=not args.no_ner))
     else:
         print(report(args.dataset, args.tag), end="")
     return 0

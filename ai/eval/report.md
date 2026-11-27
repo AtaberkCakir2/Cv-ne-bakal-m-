@@ -85,7 +85,16 @@ Doğru bulunan 650 yetkinliğin 482'sinde gold seviyesi belli; model bunların *
 - Model ters yönde de hata yapıyor: beginner → intermediate (50) ve intermediate → advanced (29).
 - Seviye arayüzde gösteriliyor ama eşleştirme puanını etkilemiyor (T-042). Yine de rapor ve sunumda seviyenin
   "tahmini" olduğu söylenmeli.
-- İyileştirme önerisi (ayrı iş): kılavuzdaki süre kurallarını prompt v3'e eklemek ve bu betikle tekrar ölçmek.
+- **Hatanın kaynağı:** seviyesi yanlış veya eksik olan 313 yetkinliğin 126'sını sadece v1 sözlüğü buldu (LLM
+  listesinde yok). v1 seviye çıkarmadığı için bunlar her zaman `unknown`. Kalan hata LLM'in de bulduğu
+  yetkinliklerde (72 `unknown`, 92 yanlış seviye) ve sadece LLM'in bulduklarında (23).
+- **Denenen: kılavuzun seviye kurallarını prompt'a eklemek** (yazılı ifade > iş/staj süresi > proje → temel >
+  sadece liste → unknown). Aynı 50 CV'de F1 değişmedi (0,83). Seviye doğruluğu %35'ten sadece %36'ya çıktı.
+  Model "unknown" yerine bu kez fazla yüksek seviye verdi: gold'da beginner olan 53 yetkinliğe advanced dedi. Kullanıcıya
+  seviyesini olduğundan yüksek göstermek daha kötü olduğu için bu sürüm yayımlanmadı; `CURRENT` v2'de kaldı.
+- **Öneri (ayrı iş):** seviyeyi kurala bağlamak. LLM'den seviye yerine kanıtı istemek (yazılı ifade, iş/proje, süre),
+  seviyeyi kılavuzdaki tabloyla kodda hesaplamak ve v1'in tek başına bulduğu yetkinliklere de bu kanıtı uygulamak.
+  `evaluate.py run --prompt <sürüm>` ile aynı ölçüm tekrarlanabilir.
 
 ## Gecikme
 
