@@ -23,8 +23,16 @@ tarayıcı olmadığı için CORS ayarı gerekmez.
 | `src/api/schema.d.ts` | **Üretilir.** Tek kaynak `web/src/api/openapi.json`: `npm run gen:api` |
 | `src/auth/session.ts` | Access token bellekte, 401'de tek seferlik yenileme (web ile aynı kurallar, T-051) |
 | `src/auth/tokenStore.ts` | Refresh token `expo-secure-store`'da (Android Keystore / iOS Keychain), sadece bu cihaz |
-| `src/config.ts` | API adresi |
-| `App.tsx` | Şimdilik backend sağlık ekranı; giriş, KVKK onayı ve CV yükleme T-061'de |
+| `src/auth/useSession.ts` | Oturum durumu (`useSignedIn`) ve çıkış |
+| `src/auth/consents.ts`, `validation.ts` | KVKK onayları (sürümü web ile aynı) ve form kuralları (web ile aynı) |
+| `src/analysis/cvFile.ts` | Yüklemeden önce dosya kontrolü (PDF, 5 MB) |
+| `src/screens/` | Giriş, kayıt + KVKK onayları, CV yükleme, analiz bekleme (T-061); sonuç panosu T-062'de |
+| `src/ui/` | Ortak bileşenler (alan, düğme, onay kutusu, uyarı) ve açık/koyu tema renkleri |
+| `src/config.ts` | API adresi, yasal metinlerin sitesi |
+| `App.tsx` | Gezinme (React Navigation): oturum yoksa giriş/kayıt, varsa yükleme/analiz |
+
+**CV dosyası:** `expo-document-picker` ile seçilir, uygulamanın geçici önbelleğindeki kopyasıyla gönderilir; uygulama
+dosyayı ya da içeriğini saklamaz, okumaz (CLAUDE.md kural 5). Asıl kontrol (sayfa sayısı, şifreli/bozuk PDF) backend'de.
 
 Backend değişince: web'deki `openapi.json` güncellenir (Anıl), burada `npm run gen:api` ve `npm run typecheck`.
 
