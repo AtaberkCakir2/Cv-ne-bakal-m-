@@ -1,0 +1,101 @@
+{
+  "target_role": {
+    "slug": "mobile-developer",
+    "name": "Mobile Developer"
+  },
+  "postings_analyzed": 200,
+  "match_score": 100.0,
+  "present_skills": [
+    {
+      "skill": "Kotlin",
+      "level": "intermediate",
+      "confidence": 0.95,
+      "verified": true
+    },
+    {
+      "skill": "Flutter",
+      "level": "intermediate",
+      "confidence": 0.95,
+      "verified": true
+    },
+    {
+      "skill": "Android SDK",
+      "level": "unknown",
+      "confidence": 0.85,
+      "verified": true
+    },
+    {
+      "skill": "Swift",
+      "level": "unknown",
+      "confidence": 0.6,
+      "verified": true
+    },
+    {
+      "skill": "Android Studio",
+      "level": "unknown",
+      "confidence": 0.6,
+      "verified": true
+    },
+    {
+      "skill": "Jetpack Compose",
+      "level": "unknown",
+      "confidence": 0.85,
+      "verified": true
+    },
+    {
+      "skill": "Firebase",
+      "level": "unknown",
+      "confidence": 0.85,
+      "verified": true
+    },
+    {
+      "skill": "Dart",
+      "level": "unknown",
+      "confidence": 0.85,
+      "verified": true
+    },
+    {
+      "skill": "REST API",
+      "level": "unknown",
+      "confidence": 0.85,
+      "verified": true
+    },
+    {
+      "skill": "İletişim",
+      "level": "unknown",
+      "confidence": 0.6,
+      "verified": true
+    },
+    {
+      "skill": "Java",
+      "level": "intermediate",
+      "confidence": 0.85,
+      "verified": true
+    },
+    {
+      "skill": "Git",
+      "level": "unknown",
+      "confidence": 0.75,
+      "verified": true
+    },
+    {
+      "skill": "UI/UX Tasarım",
+      "level": "unknown",
+      "confidence": 0.75,
+      "verified": true
+    },
+    {
+      "skill": "Figma",
+      "level": "beginner",
+      "confidence": 0.85,
+      "verified": true
+    },
+    {
+      "skill": "İngilizce",
+      "level": "intermediate",
+      "confidence": 0.85,
+      "verified": true
+    }
+  ],
+  "missing_skills": []
+}

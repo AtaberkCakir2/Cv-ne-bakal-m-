@@ -1,0 +1,16 @@
+{
+  "_aciklama": "Golden test (T-058) için sabit pozisyon talebi: [yetkinlik (taksonomideki standart ad), talep oranı]. Gerçek veri değildir; amaç sonucu belirleyici kılmaktır. Değişirse golden dosyaları yeniden üretilir (README).",
+  "total_postings": 200,
+  "roles": {
+    "backend-developer": ["Backend Developer", [["Python", 0.8], ["Docker", 0.7], ["PostgreSQL", 0.6], ["Git", 0.6], ["REST API", 0.5], ["Redis", 0.3], ["Kubernetes", 0.3]]],
+    "frontend-developer": ["Frontend Developer", [["JavaScript", 0.85], ["TypeScript", 0.7], ["React", 0.7], ["CSS", 0.6], ["HTML", 0.55], ["Next.js", 0.3], ["Jest", 0.3]]],
+    "full-stack-developer": ["Full-Stack Developer", [["JavaScript", 0.8], ["TypeScript", 0.7], ["React", 0.65], ["Node.js", 0.6], ["PostgreSQL", 0.45], ["Docker", 0.45], ["GraphQL", 0.2]]],
+    "mobile-developer": ["Mobile Developer", [["Kotlin", 0.6], ["Swift", 0.55], ["Android SDK", 0.5], ["Git", 0.5], ["Flutter", 0.4], ["REST API", 0.4]]],
+    "data-scientist": ["Data Scientist", [["Python", 0.9], ["SQL", 0.7], ["Pandas", 0.6], ["scikit-learn", 0.5], ["NumPy", 0.4], ["PyTorch", 0.35], ["TensorFlow", 0.3]]],
+    "devops-engineer": ["DevOps Engineer", [["Docker", 0.85], ["Kubernetes", 0.8], ["AWS", 0.6], ["CI/CD", 0.6], ["Linux", 0.6], ["Terraform", 0.55], ["Ansible", 0.3], ["Prometheus", 0.3]]],
+    "qa-engineer": ["QA Engineer", [["Selenium", 0.6], ["Cypress", 0.4], ["Postman", 0.4], ["Git", 0.4], ["Java", 0.35], ["SQL", 0.3], ["Jest", 0.25]]],
+    "ml-engineer": ["ML Engineer", [["Python", 0.9], ["PyTorch", 0.6], ["TensorFlow", 0.5], ["Docker", 0.45], ["scikit-learn", 0.4], ["Kubernetes", 0.3], ["AWS", 0.3]]],
+    "security-engineer": ["Security Engineer", [["Linux", 0.6], ["OWASP", 0.5], ["Python", 0.45], ["Wireshark", 0.4], ["Burp Suite", 0.35], ["AWS", 0.3]]],
+    "game-developer": ["Game Developer", [["Unity", 0.7], ["C#", 0.7], ["C++", 0.5], ["Unreal Engine", 0.4], ["Git", 0.4]]]
+  }
+}

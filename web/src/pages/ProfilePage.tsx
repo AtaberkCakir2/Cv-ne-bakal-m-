@@ -1,6 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useId, useState, type FormEvent } from "react";
-import { flushSync } from "react-dom";
 import { useNavigate } from "react-router-dom";
 
 import { api, problemMessage, unwrap } from "../api/client";
@@ -288,12 +287,12 @@ function DeleteAccountCard() {
       await pendingRefresh(); // süren bir yenileme, silinen oturumu temizlendikten sonra geri yazmasın
       // Backend tüm oturumları kapattı. Korumalı sayfa ekrandayken oturum silinirse RequireAuth "?sonra=/profil" ile
       // yönlendirirdi: önce giriş ekranına geç (flushSync), sonra yerel oturumu ve önbelleği temizle.
-      flushSync(() =>
-        navigate("/giris", {
-          replace: true,
-          state: { notice: "Hesabın kapatıldı. Verilerin 30 gün içinde kalıcı olarak silinecek." },
-        }),
-      );
+      // React Router 7 geçişleri startTransition ile yapar; flushSync seçenek olarak verilir ve geçiş beklenir.
+      await navigate("/giris", {
+        replace: true,
+        flushSync: true,
+        state: { notice: "Hesabın kapatıldı. Verilerin 30 gün içinde kalıcı olarak silinecek." },
+      });
       clearSession();
       queryClient.clear();
     } catch {

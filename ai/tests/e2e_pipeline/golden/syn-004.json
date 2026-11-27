@@ -1,0 +1,155 @@
+{
+  "target_role": {
+    "slug": "backend-developer",
+    "name": "Backend Developer"
+  },
+  "postings_analyzed": 200,
+  "match_score": 92.2,
+  "present_skills": [
+    {
+      "skill": "REST API",
+      "level": "unknown",
+      "confidence": 0.6,
+      "verified": true
+    },
+    {
+      "skill": "Django",
+      "level": "unknown",
+      "confidence": 0.85,
+      "verified": true
+    },
+    {
+      "skill": "PostgreSQL",
+      "level": "unknown",
+      "confidence": 0.85,
+      "verified": true
+    },
+    {
+      "skill": "Spring Boot",
+      "level": "unknown",
+      "confidence": 0.85,
+      "verified": true
+    },
+    {
+      "skill": "Java",
+      "level": "intermediate",
+      "confidence": 0.95,
+      "verified": true
+    },
+    {
+      "skill": "Docker",
+      "level": "unknown",
+      "confidence": 0.85,
+      "verified": true
+    },
+    {
+      "skill": "Jenkins",
+      "level": "unknown",
+      "confidence": 0.6,
+      "verified": true
+    },
+    {
+      "skill": "JUnit",
+      "level": "unknown",
+      "confidence": 0.6,
+      "verified": true
+    },
+    {
+      "skill": "FastAPI",
+      "level": "unknown",
+      "confidence": 0.85,
+      "verified": true
+    },
+    {
+      "skill": "SQLAlchemy",
+      "level": "unknown",
+      "confidence": 0.6,
+      "verified": true
+    },
+    {
+      "skill": "JWT",
+      "level": "unknown",
+      "confidence": 0.6,
+      "verified": true
+    },
+    {
+      "skill": "Redis",
+      "level": "unknown",
+      "confidence": 0.85,
+      "verified": true
+    },
+    {
+      "skill": "Algoritmalar ve Veri Yapıları",
+      "level": "unknown",
+      "confidence": 0.6,
+      "verified": true
+    },
+    {
+      "skill": "C",
+      "level": "unknown",
+      "confidence": 0.6,
+      "verified": true
+    },
+    {
+      "skill": "Python",
+      "level": "advanced",
+      "confidence": 0.85,
+      "verified": true
+    },
+    {
+      "skill": "SQL",
+      "level": "unknown",
+      "confidence": 0.75,
+      "verified": true
+    },
+    {
+      "skill": "Git",
+      "level": "unknown",
+      "confidence": 0.75,
+      "verified": true
+    },
+    {
+      "skill": "Linux",
+      "level": "unknown",
+      "confidence": 0.75,
+      "verified": true
+    },
+    {
+      "skill": "İngilizce",
+      "level": "intermediate",
+      "confidence": 0.85,
+      "verified": true
+    }
+  ],
+  "missing_skills": [
+    {
+      "skill": "Kubernetes",
+      "demand_ratio": 0.3,
+      "priority": 1,
+      "resources": [
+        {
+          "resource_id": 1180,
+          "title": "Kubernetes temelleri",
+          "url": "https://example.com/1180",
+          "provider": "docs",
+          "language": "tr",
+          "level": "beginner",
+          "is_free": true,
+          "reason": "İncelenen 200 Backend Developer ilanının %30'u Kubernetes istiyor. Türkçe, başlangıç seviyesinde, ücretsiz ve yaklaşık 1 saat süren bir kaynak; Kubernetes için iyi bir başlangıç.",
+          "duration_min": 60
+        },
+        {
+          "resource_id": 1181,
+          "title": "Kubernetes ileri",
+          "url": "https://example.com/1181",
+          "provider": "youtube",
+          "language": "en",
+          "level": "intermediate",
+          "is_free": true,
+          "reason": "İncelenen 200 Backend Developer ilanının %30'u Kubernetes istiyor. İngilizce, orta seviyede, ücretsiz ve yaklaşık 2 saat süren bir kaynak; Kubernetes için iyi bir başlangıç.",
+          "duration_min": 120
+        }
+      ]
+    }
+  ]
+}

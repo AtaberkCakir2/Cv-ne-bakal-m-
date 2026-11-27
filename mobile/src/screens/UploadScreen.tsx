@@ -1,8 +1,8 @@
 import * as DocumentPicker from "expo-document-picker";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
-import { cvFileError, formatSize, formatWait, MAX_CV_PAGES, type PickedFile } from "../analysis/cvFile";
+import { cvFileError, discardCvCopy, formatSize, formatWait, MAX_CV_PAGES, type PickedFile } from "../analysis/cvFile";
 import { api, problemMessage, unwrap, type Problem } from "../api/client";
 import type { components } from "../api/schema";
 import type { ScreenProps } from "../navigation";
@@ -16,8 +16,8 @@ const UPLOAD_TIMEOUT_MS = 90_000;
 
 /**
  * T-061: hedef pozisyon seçimi + CV seçme (expo-document-picker) ve yükleme (web/src/pages/UploadPage.tsx ile aynı
- * kurallar). Dosya sadece seçildiği anda cihazdaki geçici kopyasıyla gönderilir; uygulama dosyayı ya da içeriğini
- * saklamaz. Başarılı yüklemede bekleme ekranına geçilir.
+ * kurallar). Dosya önbellekteki geçici kopyasıyla gönderilir; kopya yükleme bitince (başarılı ya da hatalı), başka dosya
+ * seçilince ve ekrandan çıkınca silinir (discardCvCopy). Başarılı yüklemede bekleme ekranına geçilir.
  */
 export function UploadScreen({ navigation }: ScreenProps<"Upload">) {
   const c = useColors();
@@ -29,6 +29,16 @@ export function UploadScreen({ navigation }: ScreenProps<"Upload">) {
   const [roleError, setRoleError] = useState<string>();
   const [formError, setFormError] = useState<string>();
   const [pending, setPending] = useState(false);
+  // Ekrandan çıkarken silinecek önbellek kopyası (state kapanışta eski değeri gösterebilir).
+  const copy = useRef<PickedFile>(undefined);
+
+  function replaceFile(next: PickedFile | undefined) {
+    if (copy.current?.uri !== next?.uri) discardCvCopy(copy.current);
+    copy.current = next;
+    setFile(next);
+  }
+
+  useEffect(() => () => discardCvCopy(copy.current), []);
 
   useEffect(() => {
     let active = true;
@@ -64,7 +74,8 @@ export function UploadScreen({ navigation }: ScreenProps<"Upload">) {
     const candidate: PickedFile = { uri: asset.uri, name: asset.name, size: asset.size, mimeType: asset.mimeType };
     const error = cvFileError(candidate);
     setFileError(error);
-    setFile(error ? undefined : candidate);
+    if (error) discardCvCopy(candidate);
+    replaceFile(error ? undefined : candidate);
   }
 
   async function submit() {
@@ -88,7 +99,6 @@ export function UploadScreen({ navigation }: ScreenProps<"Upload">) {
         },
       });
       if (data) {
-        setFile(undefined); // aynı dosya yanlışlıkla iki kez gönderilmesin
         navigation.navigate("Analysis", { id: data.analysis_id });
         return;
       }
@@ -101,6 +111,9 @@ export function UploadScreen({ navigation }: ScreenProps<"Upload">) {
       );
     } finally {
       clearTimeout(timer);
+      // Kopya her durumda silinir; hata sonrası tekrar denemek için dosya yeniden seçilir. Başarıda aynı dosya iki kez
+      // gönderilmez.
+      replaceFile(undefined);
       setPending(false);
     }
   }

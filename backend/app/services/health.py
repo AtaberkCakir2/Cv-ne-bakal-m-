@@ -18,9 +18,16 @@ from app.schemas.health import DependencyStatus, ReadinessResponse
 Check = Callable[[Settings], Awaitable[None]]
 
 
+# Bağlantı yetmez, uygulama rolü tabloyu da okuyabilmeli: yetkiler eksikse (ör. pg_restore'un GRANT'te yarıda
+# kesildiği geri yükleme) API 500 verirken bu uç yine 200 diyordu (rollback provası, 21.11.2026, #150).
+# Geri yükleme ortada kesilirse yetkilerin bir kısmı gelmiş olabilir; API'nin en çok kullandığı üç tabloya bakılır.
+# Tablolar ilk migration'dan beri var; migration'lar uygulanmamışsa da "hazır değil" doğru sonuçtur.
+DB_READY_SQL = "SELECT (SELECT 1 FROM roles LIMIT 1), (SELECT 1 FROM users LIMIT 1), (SELECT 1 FROM analyses LIMIT 1)"
+
+
 def _ping_db(url: str, timeout_s: int) -> None:
     with psycopg.connect(url, connect_timeout=timeout_s) as conn:
-        conn.execute("SELECT 1")
+        conn.execute(DB_READY_SQL)
 
 
 async def check_db(settings: Settings) -> None:
