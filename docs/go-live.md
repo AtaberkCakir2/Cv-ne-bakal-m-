@@ -4,7 +4,7 @@
 
 - **Go / No-Go toplantısı:** 15.01.2027
 - **Canlıya çıkış (v1.0.0):** 18.01.2027
-- **Hypercare (yakın izleme):** 18–31.01.2027, her gün bir kişi nöbetçi
+- **Hypercare (yakın izleme):** 18–31.01.2027, günlük kontrolü Ataberk yapar (nöbet çizelgesi yok, karar #41)
 - **Barındırma:** production Ataberk'in PC'sinde Docker Compose ile çalışır, alan adına Cloudflare Tunnel ile bağlanır (karar #30). Sistem PC açıkken erişilebilir; hocalara sunum bu PC üzerinden alan adıyla yapılır.
 
 **Kural:** Kritik (★) maddelerin tamamı tamamlanmadan canlıya çıkılmaz. Tamamlanan maddeyi `[x]` olarak işaretleyin (PR ile).
@@ -38,7 +38,7 @@
 - [ ] **15.** ★ Tüm migration'lar production'a uygulandı, downgrade test edildi — _Doğrulama:_ alembic current = head — _Sorumlu:_ Ataberk
 - [ ] **16.** ★ Seed verisi: ≥ 300 yetkinlik, ≥ 10 pozisyon, ≥ 900 eğitim kaynağı, ≥ 2.000 ilan — _Doğrulama:_ Sayım sorguları — _Sorumlu:_ Ataberk
 - [ ] **17.** En az yetkili DB kullanıcısı (uygulama kullanıcısı tablo silemez) — _Doğrulama:_ \du ve yetki kontrolü — _Sorumlu:_ Ataberk
-- [ ] **18.** Yavaş sorgu yok (p95 < 50 ms), indeksler mevcut — _Doğrulama:_ pg_stat_statements — _Sorumlu:_ Ataberk
+- [ ] **18.** Yavaş sorgu yok (p95 < 50 ms), indeksler mevcut — _Doğrulama:_ pg_stat_statements, prova ortamında production dökümüyle tek oturumluk yük (`make staging-slow-queries`, karar #40) — _Sorumlu:_ Ataberk
 
 ### Yedekleme
 
@@ -95,7 +95,7 @@
 ### Destek
 
 - [ ] **47.** Destek e-postası ve hata bildirme formu aktif — _Doğrulama:_ Test mesajı — _Sorumlu:_ Anıl
-- [ ] **48.** Hypercare nöbet çizelgesi (18-31 Ocak) hazır — _Doğrulama:_ Takvim — _Sorumlu:_ Ataberk
+- [ ] ~~**48.** Hypercare nöbet çizelgesi (18-31 Ocak) hazır — _Doğrulama:_ Takvim — _Sorumlu:_ Ataberk~~ — **İptal (karar #41):** dönüşümlü nöbet yok; günlük kontrolü Ataberk yapar, bakamayacağı gün Burak'a veya Anıl'a önceden haber verir
 
 ### Rollback
 
@@ -142,13 +142,13 @@ Sorumlusu Anıl olan maddeler, Ataberk'in tablosuyla aynı amaçla. Kutular işa
 
 Listenin tamamı production'a karşı bir kez yürütüldü. Sorumlusu Ataberk olan maddeler ölçüldü; diğerlerinde repodaki ve production'daki kanıt kontrol edildi, sahibinin ön kontrolü varsa ona atıf yapıldı. Kutular **işaretlenmedi**. ★ = kritik.
 
-**Özet:** 50 madde (#20 ve #22 iptal, listede yok). **Uygun 16 · Kısmen 20 · Değil 8 · Ölçülemedi / henüz zamanı değil 6.** Kritik maddelerden 4'ü **Değil**: #25, #30, #36 ve #41. #25 ve #30 analiz işçisinin production'da olmamasından kaynaklanıyor (T-057). #36 yasal sayfaların yayında olmamasından (#71). #41 için Play kapalı testi 21.12'de başlayacak.
+**Özet:** 49 madde (#20, #22 ve #48 iptal, listede yok). **Uygun 19 · Kısmen 18 · Değil 7 · Ölçülemedi / henüz zamanı değil 5** (27.11: #3 ve #21 Kısmen → Uygun; 28.11: #18 Ölçülemedi → Uygun, #48 iptal). Kritik maddelerden 4'ü **Değil**: #25, #30, #36 ve #41. #25 ve #30 analiz işçisinin production'da olmamasından kaynaklanıyor (T-057). #36 yasal sayfaların yayında olmamasından (#71). #41 için Play kapalı testi 21.12'de başlayacak.
 
 | Madde | Sorumlu | Durum | Kanıt / eksik (24.11.2026) |
 |---|---|---|---|
 | 1 ★ PC hazırlığı | Ataberk | Kısmen | Uyku ve hazırda bekletme (prizde) kapalı, Güvenlik Duvarı üç profilde açık, son Windows güncellemesi 21.11, NVIDIA sürücüsü 621.24. BitLocker karar #31 gereği canlıdan hemen önce açılacak (durumu yönetici yetkisiyle okunur, bugün okunmadı) |
 | 2 ★ Port açık değil | Ataberk | Kısmen | `docker compose config`: 15 serviste `ports:` yok, tek istisna Grafana `127.0.0.1:3000`. Aynı ağdaki başka cihazdan nmap hâlâ yapılmadı |
-| 3 ★ HTTPS | Ataberk | Kısmen | HSTS `max-age=15552000; includeSubDomains`, HTTP → HTTPS 301, TLS 1.2 ve 1.3 kabul. TLS 1.0/1.1'in reddedildiği bu bilgisayardan ölçülemedi (yerel openssl eski sürümleri göndermiyor); SSL Labs testi yapılmadı |
+| 3 ★ HTTPS | Ataberk | Uygun | SSL Labs (27.11.2026, `api.cvnebakalim.com`, sonuç gizli): Cloudflare'in 4 adresinin (2 IPv4, 2 IPv6) hepsi **A+**. Protokoller: TLS 1.3 ve 1.2 açık; TLS 1.1, 1.0, SSL 3, SSL 2 kapalı. HSTS uzun süreli (`max-age=15552000; includeSubDomains`), HTTP → HTTPS 301 |
 | 4 DNS, app./api. | Ataberk | Kısmen | `api.cvnebakalim.com` çözülüyor. `app.`, `www.` ve kök alan adının kaydı yok: web adresi kararı (Anıl) ve #71 bekleniyor |
 | 5 Bellek limiti, restart | Ataberk | Uygun | 15 serviste `mem_limit`, `restart: unless-stopped` ve json-file log rotasyonu var |
 | 6 Disk ≥ 40 GB | Ataberk | Uygun | C: 56,2 GB boş (20.11: 67,5 GB; aradaki fark deploy imajları ve vektör imajı) |
@@ -165,9 +165,9 @@ Listenin tamamı production'a karşı bir kez yürütüldü. Sorumlusu Ataberk o
 | 15 ★ Migration'lar | Ataberk | Uygun | `alembic_version` = 0004 = head |
 | 16 ★ Seed verisi | Ataberk | Uygun | Yetkinlik 374, pozisyon 12, canlı kaynak 1.695, aktif ilan 3.105; boş vektör 0 (24.11 `make prod-embed`) |
 | 17 En az yetkili kullanıcı | Ataberk | Uygun | `careerai_app` ve `careerai_monitor`: süper kullanıcı değil, rol/DB oluşturamaz; `audit_logs`'ta silme/`TRUNCATE` yetkisi yok |
-| 18 Yavaş sorgu yok | Ataberk | Ölçülemedi | `pg_stat_statements` sayaçları bugün WSL yeniden başlatılınca sıfırlandı (24.11 16:05); kayıtta sadece sağlık sorgusu var. Ölçüm için PC'nin birkaç gün yeniden başlatılmadan açık kalması ve gerçek kullanım gerekiyor |
+| 18 Yavaş sorgu yok | Ataberk | Uygun | 28.11.2026, prova ortamında tek oturum (karar #40, `make staging-slow-queries`): 26.11 production dökümü (eb04a84; 4.101 ilan, 1.733 kaynak, 12 pozisyon) + aynı api imajı. 5 turda katalog uçları (12 pozisyon, 50 yetkinlik) ve analiz akışının eşleştirme/öneri sorguları. 9 uygulama sorgusunun hiçbiri 50 ms'yi geçmedi; en yavaşı eşleştirmenin talep sorgusu (ort. 6,7 ms, ≈p95 11,8 ms, en yüksek 15 ms), gerisi ≈p95 ≤ 3,4 ms. HNSW indeksleri mevcut. Giriş gerektiren uçlar yükte yok. 24.11'de production'da ölçülememişti (sayaçlar sıfırlanmıştı) |
 | 19 ★ Günlük şifreli yedek | Ataberk | Uygun | restic → B2, 7 snapshot, son 24.11 15:10. PC 02:00'de kapalıysa yedek açılışta alınıyor |
-| 21 ★ Grafana, 12 kural, dış prob | Ataberk | Kısmen | 12 kural yüklü, tetiklenen yok; iç ve dış prob `probe_success=1`. Tünel durdurulunca `DisErisimYok` görülmesi testi yapılmadı |
+| 21 ★ Grafana, 12 kural, dış prob | Ataberk | Uygun | 12 kural yüklü; iç ve dış prob `probe_success=1`. Tünel testi (27.11.2026): `cloudflared` 22:49:38'de durduruldu → alan adı 530, dış prob ~1 dk içinde 0, `DisErisimYok` 22:50:19'da beklemede, 5 dk sonra tetiklendi; iç prob 1 kaldı (yanlışlıkla `ApiHazirDegil` çıkmadı). Tünel 22:59:57'de açıldı → 7 sn'de 200, alarm 55 sn'de kapandı. Kesinti toplam ~10 dk (bilerek) |
 | 23 Grafana panosu | Ataberk | Kısmen | `careerai.json` panosu yüklü (CPU, RAM, disk, kuyruk). Analiz süresi paneli analiz işçisi gelene kadar boş |
 | 24 Loglarda kişisel veri yok | Ataberk | Uygun (örneklem) | Son 72 saatin api ve worker-data loglarında e-posta biçiminde metin 0 satır |
 | 25 ★ Uçtan uca akış production'da | Burak | **Değil** | Production'da analiz işçisi yok: `ai/Dockerfile` (Burak) ve backend'in `analyze_cv`'ye bağlanması (`AiAnalyzer`, Anıl) bekleniyor; sonra `infra/pc/compose.yml`'e `worker-ai` eklenecek (Ataberk) |
@@ -193,11 +193,10 @@ Listenin tamamı production'a karşı bir kez yürütüldü. Sorumlusu Ataberk o
 | 45 README, API, mimari, model kartı | Anıl | Kısmen | README, `docs/mimari.md` ve ADR'ler (T-079) var; model kartı yok (Burak) |
 | 46 Kullanıcı rehberi / SSS | Anıl | Değil | Tanıtım sayfası yayında değil |
 | 47 Destek e-postası | Anıl | Kısmen | Anıl'ın ön kontrolü: adresin posta alıp almadığı belirsiz |
-| 48 Hypercare nöbet çizelgesi | Ataberk | Değil | Hazırlanmadı (Ocak başında, T-097 öncesi) |
 | 49 ★ Rollback 15 dk | Ataberk | Uygun | 21.11 provası 146 sn; v1.0.0 adayıyla Ocak'ta tekrarlanacak |
 | 50 Go/No-Go toplantısı | Anıl | Henüz zamanı değil | 15.01.2027 |
 
-**Ataberk'in kendi açıkları (canlıdan önce):** #2 nmap (başka cihazdan), #3 SSL Labs, #21 tünel durdurma testi, #18 birkaç günlük kesintisiz ölçüm, #51 telefon paylaşımı denemesi, #44 ekip onayı, #48 nöbet çizelgesi, #1 BitLocker (canlıdan hemen önce), #25 için `worker-ai` servisi (T-057'den sonra).
+**Ataberk'in kendi açıkları (canlıdan önce):** #2 nmap (başka cihazdan), #51 telefon paylaşımı denemesi, #44 ekip onayı, #1 BitLocker (canlıdan hemen önce), #25 için `worker-ai` servisi (T-057'den sonra).
 
 ## Hizmet seviyesi hedefleri (SLO)
 

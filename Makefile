@@ -25,7 +25,7 @@ help:
 	$(info Production / prova (karar #30, infra/pc/deploy.md). Deploy Git Bash'te: bash infra/pc/deploy.sh v1.0.0)
 	$(info make prod-ps   make prod-logs   make prod-model   make prod-local (sunum B plani))
 	$(info make prod-admin EMAIL=ad@ornek.com   (yonetim paneline admin ver))
-	$(info make staging-ps   make staging-down)
+	$(info make staging-ps   make staging-down   make staging-slow-queries (go-live #18))
 	$(info Izleme (T-066, infra/monitoring/README.md): Grafana http://127.0.0.1:3000)
 	$(info make prod-monitoring-reload   make monitoring-check)
 	$(info make backup-init (bir kez)   make backup-now   make backup-list   Geri yukleme testi: bash infra/backup/restore-test.sh)
@@ -114,6 +114,11 @@ prod-embed:
 
 staging-ps:
 	$(PC_STAGING) ps
+
+# Yavaş sorgu ölçümü tek oturumda (go-live #18, karar #40): son production dökümü prova ortamına, yük + rapor, kapat.
+.PHONY: staging-slow-queries
+staging-slow-queries:
+	bash infra/pc/slow-queries-staging.sh
 
 # Prova bitince kapatılır; verisi kalır. Veriyi de silmek için sonuna -v (ortak Ollama modeli silinmez).
 staging-down:

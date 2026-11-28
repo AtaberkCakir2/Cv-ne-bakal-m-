@@ -171,13 +171,14 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-028 · TÜBİTAK 2209-A başvuru dosyası
 
-- **Durum:** Engellendi
+- **Durum:** Tamamlandı
 - **Tarih:** 27.10.2026 – 11.11.2026 · **Öncelik:** P0 · **Efor:** 16 saat · **Alan:** Kongre / TÜBİTAK
 - **Bağımlılık:** T-000 (Anıl)
 - **Destek:** Burak, Anıl
 - **Çıktı:** Başvuru dosyası
 - **Kabul kriteri:** Özgün değer, yöntem, iş-zaman planı, risk yönetimi, bütçe ve yaygın etki bölümleri; danışman onayı ve sisteme yükleme. Son tarihi güncel çağrı takviminden doğrulayın.
 - **Not:** 2026 çağrısı (TÜBİTAK duyurusu, 27.10.2026'da doğrulandı): başvuru 07.10–**11.11.2026 17:30**, TÜBİTAK Yönetim Bilgi Sistemi üzerinden; danışman onayı başvuru aşamasında tamamlanmalı (danışmanın güncel YÖK kaydı gerekli); kuruluş yetkilisi e-imzası 16–23.11.2026. Planın 15.11 bitişi son tarihi kaçırıyordu, bitiş 11.11'e çekildi. 05.11.2026: **askıya alındı.** Başvuru dosyası hazır, danışman hocanın dönüşü bekleniyor (hocalarla görüşüldü). Ataberk danışmanla ilgili bilgiyi verince devam edilecek; o zamana kadar bu görevde iş yapılmaz. Son tarih (11.11 17:30) değişmedi.
+- **Not (27.11.2026):** Ataberk: görev tamamen kapandı; bu görevde yapılacak iş kalmadı.
 - **Devir:** 27.10.2026'da Burak'tan devredildi (karar #18).
 
 ---
@@ -369,7 +370,7 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-091 · Go-live provası
 
-- **Durum:** Yapılacak
+- **Durum:** Devam Ediyor
 - **Tarih:** 04.01.2027 – 10.01.2027 · **Öncelik:** P0 · **Efor:** 4 saat · **Alan:** Go-Live
 - **Bağımlılık:** T-075, T-088
 - **Destek:** Burak, Anıl
@@ -378,6 +379,7 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 - **Not:** 21.11.2026: deploy + rollback provasının ilk turu yapıldı (go-live #49): production dökümüyle 146 sn, geri yükleme prosedüründeki yetki hatası düzeltildi (`docs/runbook/operasyon.md` 2. bölüm). `infra/pc/.env.staging` bu PC'de oluşturuldu. Ocak'ta v1.0.0 adayıyla tekrarlanacak; kalan: checklist kuru çalıştırma.
 - **Not (24.11.2026, kuru çalıştırma):** Listenin tamamı production'a karşı yürütüldü (`docs/go-live.md` "Kuru çalıştırma"): 50 maddeden Uygun 16, Kısmen 20, Değil 8, ölçülemedi/zamanı değil 6 (#34 karar #39 ile yeniden yazıldı). Kritik açıklar: #25 ve #30 (analiz işçisi production'da yok, T-057), #36 (yasal sayfalar, #71), #41 (Play testi 21.12'de). Ocak'ta v1.0.0 adayıyla bu tablo yeniden doldurulur.
 - **Not (21.11.2026, B planı):** `make prod-local` + yeni `make prod-local-web` / `prod-local-down` ile yerel demo ~1 dk'da hazır, production verisiyle tarayıcıda denendi (`infra/pc/deploy.md` §6). Düzeltilen: B planında CORS kapalıydı, yerel web derleme komutu yoktu. Kalan: telefondan internet paylaşımıyla tünel denemesi (Ataberk, elle), analiz akışı T-057'den sonra.
+- **Not (28.11.2026):** Kuru çalıştırma güncellendi (`docs/go-live.md`): #3 SSL Labs A+, #21 tünel durdurma testi, #18 yavaş sorgu (prova ortamında tek oturum, karar #40) Uygun; #48 iptal (karar #41). Özet: 49 madde, Uygun 19 · Kısmen 18 · Değil 7 · Ölçülemedi 5. Kalan (Ataberk): #2 başka cihazdan port taraması, #51 telefon paylaşımıyla tünel, #44 ekip onayı, #1 BitLocker (canlıdan hemen önce); Ocak'ta v1.0.0 adayıyla deploy + rollback ve kuru çalıştırma tekrarı.
 
 ---
 
@@ -399,4 +401,4 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 - **Bağımlılık:** T-094
 - **Destek:** Burak, Anıl
 - **Çıktı:** Hypercare raporu
-- **Kabul kriteri:** Günlük: hata oranı, analiz süresi, kuyruk, disk, yedek kontrolü; PC açık saatleri (09:00–23:00) duyuruldu; nöbet çizelgesi (her gün 1 kişi); kritik hatalara 4 saat içinde müdahale.
+- **Kabul kriteri:** Günlük: hata oranı, analiz süresi, kuyruk, disk, yedek kontrolü; PC açık saatleri (09:00–23:00) duyuruldu; günlük kontrolü Ataberk yapar, bakamayacağı gün Burak'a veya Anıl'a önceden haber verir (nöbet çizelgesi yok, karar #41); kritik hatalara 4 saat içinde müdahale.
