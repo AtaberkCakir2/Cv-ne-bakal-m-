@@ -43,6 +43,8 @@ Bir konuda bilgi gerekirse tahmin etmeden önce bu dosyalara bak:
 |---|---|
 | Proje neden var, jüriye ne söz verildi | `docs/fizibilite-raporu.md` |
 | Alınmış kararlar ve gerekçeleri | `docs/kararlar.md` |
+| v1.0'da ne var / ne yok (MVP kapsamı, başarı kriterleri) | `docs/kapsam.md` |
+| Toplantı gündemleri ve notları | `docs/toplantilar/` |
 | Mimari, teknoloji seçimleri, ortamlar, sunucu servisleri, RACI | `docs/mimari.md` |
 | Veritabanı tabloları ve sütunları | `docs/veritabani.md` |
 | Modüller arası veri formatları, API listesi | `contracts/` |
