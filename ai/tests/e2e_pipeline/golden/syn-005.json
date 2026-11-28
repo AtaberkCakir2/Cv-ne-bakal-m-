@@ -1,0 +1,185 @@
+{
+  "target_role": {
+    "slug": "frontend-developer",
+    "name": "Frontend Developer"
+  },
+  "postings_analyzed": 200,
+  "match_score": 91.6,
+  "present_skills": [
+    {
+      "skill": "HTML",
+      "level": "unknown",
+      "confidence": 0.85,
+      "verified": true
+    },
+    {
+      "skill": "CSS",
+      "level": "unknown",
+      "confidence": 0.85,
+      "verified": true
+    },
+    {
+      "skill": "JavaScript",
+      "level": "unknown",
+      "confidence": 0.85,
+      "verified": true
+    },
+    {
+      "skill": "TypeScript",
+      "level": "unknown",
+      "confidence": 0.85,
+      "verified": true
+    },
+    {
+      "skill": "React",
+      "level": "unknown",
+      "confidence": 0.85,
+      "verified": true
+    },
+    {
+      "skill": "Vue.js",
+      "level": "unknown",
+      "confidence": 0.85,
+      "verified": true
+    },
+    {
+      "skill": "Tailwind CSS",
+      "level": "unknown",
+      "confidence": 0.75,
+      "verified": true
+    },
+    {
+      "skill": "Figma",
+      "level": "unknown",
+      "confidence": 0.75,
+      "verified": true
+    },
+    {
+      "skill": "Git",
+      "level": "unknown",
+      "confidence": 0.75,
+      "verified": true
+    },
+    {
+      "skill": "GitHub",
+      "level": "unknown",
+      "confidence": 0.75,
+      "verified": true
+    },
+    {
+      "skill": "Visual Studio Code",
+      "level": "unknown",
+      "confidence": 0.75,
+      "verified": true
+    },
+    {
+      "skill": "Jest",
+      "level": "beginner",
+      "confidence": 0.85,
+      "verified": true
+    },
+    {
+      "skill": "npm",
+      "level": "unknown",
+      "confidence": 0.75,
+      "verified": true
+    },
+    {
+      "skill": "Vite",
+      "level": "unknown",
+      "confidence": 0.75,
+      "verified": true
+    },
+    {
+      "skill": "Türkçe",
+      "level": "advanced",
+      "confidence": 0.85,
+      "verified": true
+    },
+    {
+      "skill": "İngilizce",
+      "level": "intermediate",
+      "confidence": 0.85,
+      "verified": true
+    },
+    {
+      "skill": "Almanca",
+      "level": "beginner",
+      "confidence": 0.85,
+      "verified": true
+    },
+    {
+      "skill": "UI/UX Tasarım",
+      "level": "unknown",
+      "confidence": 0.6,
+      "verified": true
+    },
+    {
+      "skill": "Storybook",
+      "level": "unknown",
+      "confidence": 0.6,
+      "verified": true
+    },
+    {
+      "skill": "REST API",
+      "level": "unknown",
+      "confidence": 0.6,
+      "verified": true
+    },
+    {
+      "skill": "TanStack Query",
+      "level": "unknown",
+      "confidence": 0.6,
+      "verified": true
+    },
+    {
+      "skill": "Erişilebilirlik",
+      "level": "unknown",
+      "confidence": 0.7,
+      "verified": true
+    },
+    {
+      "skill": "Firebase",
+      "level": "unknown",
+      "confidence": 0.6,
+      "verified": true
+    },
+    {
+      "skill": "Duyarlı Tasarım",
+      "level": "unknown",
+      "confidence": 0.6,
+      "verified": true
+    }
+  ],
+  "missing_skills": [
+    {
+      "skill": "Next.js",
+      "demand_ratio": 0.3,
+      "priority": 1,
+      "resources": [
+        {
+          "resource_id": 1200,
+          "title": "Next.js temelleri",
+          "url": "https://example.com/1200",
+          "provider": "docs",
+          "language": "tr",
+          "level": "beginner",
+          "is_free": true,
+          "reason": "İncelenen 200 Frontend Developer ilanının %30'u Next.js istiyor. Türkçe, başlangıç seviyesinde, ücretsiz ve yaklaşık 1 saat süren bir kaynak; Next.js için iyi bir başlangıç.",
+          "duration_min": 60
+        },
+        {
+          "resource_id": 1201,
+          "title": "Next.js ileri",
+          "url": "https://example.com/1201",
+          "provider": "youtube",
+          "language": "en",
+          "level": "intermediate",
+          "is_free": true,
+          "reason": "İncelenen 200 Frontend Developer ilanının %30'u Next.js istiyor. İngilizce, orta seviyede, ücretsiz ve yaklaşık 2 saat süren bir kaynak; Next.js için iyi bir başlangıç.",
+          "duration_min": 120
+        }
+      ]
+    }
+  ]
+}
