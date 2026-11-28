@@ -142,7 +142,7 @@ Sorumlusu Anıl olan maddeler, Ataberk'in tablosuyla aynı amaçla. Kutular işa
 
 Listenin tamamı production'a karşı bir kez yürütüldü. Sorumlusu Ataberk olan maddeler ölçüldü; diğerlerinde repodaki ve production'daki kanıt kontrol edildi, sahibinin ön kontrolü varsa ona atıf yapıldı. Kutular **işaretlenmedi**. ★ = kritik.
 
-**Özet:** 49 madde (#20, #22 ve #48 iptal, listede yok). **Uygun 19 · Kısmen 18 · Değil 7 · Ölçülemedi / henüz zamanı değil 5** (27.11: #3 ve #21 Kısmen → Uygun; 28.11: #18 Ölçülemedi → Uygun, #48 iptal). Kritik maddelerden 4'ü **Değil**: #25, #30, #36 ve #41. #25 ve #30 analiz işçisinin production'da olmamasından kaynaklanıyor (T-057). #36 yasal sayfaların yayında olmamasından (#71). #41 için Play kapalı testi 21.12'de başlayacak.
+**Özet:** 49 madde (#20, #22 ve #48 iptal, listede yok). **Uygun 20 · Kısmen 17 · Değil 7 · Ölçülemedi / henüz zamanı değil 5** (27.11: #3 ve #21 Kısmen → Uygun; 28.11: #18 Ölçülemedi → Uygun, #44 Kısmen → Uygun, #48 iptal). Kritik maddelerden 4'ü **Değil**: #25, #30, #36 ve #41. #25 ve #30 analiz işçisinin production'da olmamasından kaynaklanıyor (T-057). #36 yasal sayfaların yayında olmamasından (#71). #41 için Play kapalı testi 21.12'de başlayacak.
 
 | Madde | Sorumlu | Durum | Kanıt / eksik (24.11.2026) |
 |---|---|---|---|
@@ -189,14 +189,14 @@ Listenin tamamı production'a karşı bir kez yürütüldü. Sorumlusu Ataberk o
 | 41 ★ Play kapalı testi | Anıl | **Değil** (zamanı gelmedi) | 21.12.2026'da başlayacak (T-076) |
 | 42 Play formları | Anıl | Henüz zamanı değil | Gizlilik URL'si #36'ya bağlı |
 | 43 Mağaza görselleri | Anıl | Henüz zamanı değil | — |
-| 44 Runbook güncel, herkes okudu | Ataberk | Kısmen | `docs/runbook/operasyon.md` ve `felaket-kurtarma.md` güncel; "herkes okudu" onayı alınmadı |
+| 44 Runbook güncel, herkes okudu | Ataberk | Uygun | `docs/runbook/operasyon.md` ve `felaket-kurtarma.md` güncel; Burak ve Anıl okuduklarını 28.11.2026'da ekip kanalında onayladı |
 | 45 README, API, mimari, model kartı | Anıl | Kısmen | README, `docs/mimari.md` ve ADR'ler (T-079) var; model kartı yok (Burak) |
 | 46 Kullanıcı rehberi / SSS | Anıl | Değil | Tanıtım sayfası yayında değil |
 | 47 Destek e-postası | Anıl | Kısmen | Anıl'ın ön kontrolü: adresin posta alıp almadığı belirsiz |
 | 49 ★ Rollback 15 dk | Ataberk | Uygun | 21.11 provası 146 sn; v1.0.0 adayıyla Ocak'ta tekrarlanacak |
 | 50 Go/No-Go toplantısı | Anıl | Henüz zamanı değil | 15.01.2027 |
 
-**Ataberk'in kendi açıkları (canlıdan önce):** #2 nmap (başka cihazdan), #51 telefon paylaşımı denemesi, #44 ekip onayı, #1 BitLocker (canlıdan hemen önce), #25 için `worker-ai` servisi (T-057'den sonra).
+**Ataberk'in kendi açıkları (canlıdan önce):** #2 nmap (başka cihazdan), #51 telefon paylaşımı denemesi, #1 BitLocker (canlıdan hemen önce), #25 için `worker-ai` servisi (T-057'den sonra).
 
 ## Hizmet seviyesi hedefleri (SLO)
 
