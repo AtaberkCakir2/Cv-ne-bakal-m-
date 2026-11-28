@@ -250,12 +250,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-081 · Model kartı ve sınırlılıklar
 
-- **Durum:** Yapılacak
+- **Durum:** Devam Ediyor
 - **Tarih:** 21.12.2026 – 27.12.2026 · **Öncelik:** P1 · **Efor:** 3 saat · **Alan:** Dokümantasyon
 - **Bağımlılık:** T-055
 - **Destek:** —
 - **Çıktı:** docs/model-card
 - **Kabul kriteri:** Kullanılan modeller, değerlendirme sonuçları, bilinen sınırlılıklar ve yanlılık riskleri; kullanıcıya gösterilen sorumluluk reddi metni.
+- **Devam notu (28.11.2026):** Yapılan: `docs/model-card.md` taslağı (modeller, veri, T-055 ön sonuçları, sınırlılıklar, yanlılık riskleri, TR/EN sorumluluk reddi önerisi). · Sıradaki adım: T-019 gold kontrolü ve T-055 ölçümü bitince sayıları güncelle; sorumluluk reddi metni onaylanınca mobil `ResultView`'a ekle, web için Anıl'a ilet. · Açık sorular / engeller: öneri alakalılığı ve production gecikmesi ölçülmedi. · Branch: burak/degerlendirme-raporu
 
 ---
 
