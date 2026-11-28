@@ -1,13 +1,23 @@
 """Kuyruk parçaları (T-039): servis gerekmez. Veritabanı isteyen senaryolar tests/auth/test_analyses_queue.py'de."""
 
+import json
+import sys
+import types
 import uuid
+from contextlib import contextmanager
+from typing import Any
 
 import pytest
+from celery.exceptions import SoftTimeLimitExceeded
 from redis.exceptions import ConnectionError as RedisConnectionError
 
 from app.core.config import Settings
+from app.db.enums import AnalysisErrorCode
+from app.services import analyzer as analyzer_module
 from app.services.analysis_queue import CeleryAnalysisQueue, QueueUnavailable, build_analysis_queue
 from app.services.analyzer import (
+    EXAMPLE_RESULT,
+    AiAnalyzer,
     AnalysisFailed,
     ExampleAnalyzer,
     MissingSkill,
@@ -123,7 +133,8 @@ def test_build_queue_without_store_is_refused() -> None:
         build_analysis_queue(settings(environment="staging")).enqueue(uuid.uuid4(), b"x")
 
 
-def test_example_result_only_in_dev() -> None:
+def test_example_result_only_in_dev(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(analyzer_module, "pipeline_available", lambda: False)
     assert isinstance(build_analyzer(settings(environment="local")), ExampleAnalyzer)
     analyzer = build_analyzer(settings(environment="production"))
     assert isinstance(analyzer, UnavailableAnalyzer)
@@ -151,3 +162,125 @@ def test_result_parsing_tolerates_optional_fields() -> None:
     )
     assert output.present_skills == (PresentSkill("Express", "unknown", None, False),)
     assert output.missing_skills == (MissingSkill("Docker", 0.5, None, (SuggestedResource(3, None),)),)
+
+
+class FakeAiError(Exception):
+    def __init__(self, code: str) -> None:
+        super().__init__(f"CV metni: {code}")  # gerçek mesaj CV parçası içerebilir; sızmamalı
+        self.code = code
+
+
+@pytest.fixture
+def fake_ai(monkeypatch: pytest.MonkeyPatch) -> dict[str, Any]:
+    """Sahte ai/pipeline ve psycopg.connect: AiAnalyzer'ın çağrı biçimini ve hata eşlemesini denetler."""
+    calls: dict[str, Any] = {"raise": None}
+
+    def analyze_cv(
+        pdf: bytes, *, role_id: int, conn: object, embed: object = None, budget_s: float = 165.0
+    ) -> types.SimpleNamespace:
+        calls.update(pdf=pdf, role_id=role_id, conn=conn, embed=embed, budget_s=budget_s)
+        if calls["raise"] is not None:
+            raise FakeAiError(calls["raise"])
+        return types.SimpleNamespace(result=json.loads(EXAMPLE_RESULT.read_text(encoding="utf-8")), stats={})
+
+    pipeline = types.ModuleType("pipeline")
+    pipeline.BUDGET_SECONDS = 165.0  # type: ignore[attr-defined]
+    pipeline.AnalysisError = FakeAiError  # type: ignore[attr-defined]
+    pipeline.analyze_cv = analyze_cv  # type: ignore[attr-defined]
+    monkeypatch.setitem(sys.modules, "pipeline", pipeline)
+
+    @contextmanager
+    def connect(url: str, **kwargs: Any) -> Any:
+        calls.update(url=url, connect_kwargs=kwargs)
+        yield "conn"
+
+    import psycopg
+
+    monkeypatch.setattr(psycopg, "connect", connect)
+    return calls
+
+
+def test_ai_analyzer_calls_pipeline_read_only(fake_ai: dict[str, Any]) -> None:
+    embed = lambda texts: [[0.0] for _ in texts]  # noqa: E731
+    out = AiAnalyzer("postgresql+psycopg://u:p@db:5432/careerai", embed=embed).analyze(b"%PDF", 3)
+    assert out.present_skills and out.missing_skills
+    assert fake_ai["url"] == "postgresql://u:p@db:5432/careerai"
+    assert fake_ai["connect_kwargs"]["options"] == "-c default_transaction_read_only=on"
+    assert fake_ai["connect_kwargs"]["autocommit"] is True
+    assert 160 < fake_ai["budget_s"] <= 165.0
+    assert (fake_ai["pdf"], fake_ai["role_id"], fake_ai["conn"], fake_ai["embed"]) == (b"%PDF", 3, "conn", embed)
+
+
+@pytest.mark.parametrize(
+    ("ai_code", "expected"),
+    [
+        ("NO_TEXT_FOUND", AnalysisErrorCode.NO_TEXT_FOUND),
+        ("PDF_UNREADABLE", AnalysisErrorCode.PDF_UNREADABLE),
+        ("INTERNAL", AnalysisErrorCode.INTERNAL),
+        ("PDF_TOO_LARGE", AnalysisErrorCode.PDF_TOO_LARGE),
+        ("LLM_TIMEOUT", AnalysisErrorCode.LLM_TIMEOUT),
+        ("BILINMEYEN", AnalysisErrorCode.INTERNAL),
+    ],
+)
+def test_ai_analyzer_maps_errors_without_message(
+    fake_ai: dict[str, Any], ai_code: str, expected: AnalysisErrorCode
+) -> None:
+    fake_ai["raise"] = ai_code
+    with pytest.raises(AnalysisFailed) as info:
+        AiAnalyzer("postgresql://x", load_embed=False).analyze(b"%PDF", 1)
+    assert info.value.code is expected
+    assert info.value.__cause__ is None and info.value.__context__ is None
+    assert "CV metni" not in str(info.value)
+
+
+def test_ai_analyzer_continues_without_embedding(fake_ai: dict[str, Any], monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setitem(sys.modules, "embedding", None)  # import edilemez
+    analyzer = AiAnalyzer("postgresql://x")
+    analyzer.analyze(b"%PDF", 1)
+    assert fake_ai["embed"] is None
+    analyzer.analyze(b"%PDF", 1)  # bir kez denenir, her analizde tekrar yüklenmez
+    assert analyzer._load_embed is False
+
+
+def test_build_analyzer_uses_pipeline_when_installed(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(analyzer_module, "pipeline_available", lambda: True)
+    assert isinstance(build_analyzer(settings(environment="production")), AiAnalyzer)
+    assert isinstance(build_analyzer(settings(environment="local")), AiAnalyzer)
+
+
+def _fake_embedding(monkeypatch: pytest.MonkeyPatch, default_encoder: Any) -> None:
+    module = types.ModuleType("embedding")
+    module.default_encoder = default_encoder  # type: ignore[attr-defined]
+    monkeypatch.setitem(sys.modules, "embedding", module)
+
+
+def test_ai_analyzer_loads_embedding_once(fake_ai: dict[str, Any], monkeypatch: pytest.MonkeyPatch) -> None:
+    loads: list[int] = []
+    encoder = lambda texts: [[0.0] for _ in texts]  # noqa: E731
+
+    def load() -> Any:
+        loads.append(1)
+        return encoder
+
+    _fake_embedding(monkeypatch, load)
+    analyzer = AiAnalyzer("postgresql://x")
+    analyzer.analyze(b"%PDF", 1)
+    analyzer.analyze(b"%PDF", 1)
+    assert fake_ai["embed"] is encoder and loads == [1]
+
+
+def test_ai_analyzer_does_not_swallow_time_limit(fake_ai: dict[str, Any], monkeypatch: pytest.MonkeyPatch) -> None:
+    def slow() -> None:
+        raise SoftTimeLimitExceeded
+
+    _fake_embedding(monkeypatch, slow)
+    analyzer = AiAnalyzer("postgresql://x")
+    with pytest.raises(SoftTimeLimitExceeded):
+        analyzer.analyze(b"%PDF", 1)
+    assert "pdf" not in fake_ai  # analiz bütçesine baştan başlanmadı
+    assert analyzer._load_embed is True  # sonraki analiz modeli yeniden dener
+
+
+def test_pipeline_available_needs_importable_package(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setitem(sys.modules, "pipeline", None)
+    assert analyzer_module.pipeline_available() is False
