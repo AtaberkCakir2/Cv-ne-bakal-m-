@@ -1,0 +1,110 @@
+# 20. Bilişim Kongresi: sunum metni ve demo planı (T-027)
+
+Bu belge poster başındaki 3 dakikalık anlatımın metnini, 2 dakikalık yedek demo videosunun çekim planını ve sık gelecek sorulara verilecek cevapları içerir. Kabul kriteri: herkes anlatımı tek başına yapabilmeli, demo videosu hazır olmalı.
+
+Köşeli parantezli yerler (`[…]`) kongreden önce gerçek değerle doldurulur. Ölçülmemiş bir sayı söylenmez. **Benchmark'taki F1 (0,82–0,85) söylenmez:** referans insan etiketi değil, geçici taslak (`ai/eval/benchmark/README.md`). Örnek sonuç cümlesindeki sayılar Ataberk'in 05.11.2026 istatistiğinden (157 arka uç ilanı, en çok istenen PostgreSQL %43); kongreden önce güncel sayıyla değiştirilebilir.
+
+## 1. Üç dakikalık anlatım
+
+Yaklaşık 400 kelime; normal hızda 3 dakika. Her bölümün yanında posterde gösterilecek alan yazıyor.
+
+**Açılış (20 sn) · posterde: başlık ve problem**
+
+> Merhaba, biz CareerAI ekibiyiz. Bir soruyla başlayalım: bir öğrenci backend geliştirici olmak istiyor. İnternette binlerce saatlik ücretsiz eğitim var. Ama hangisinden başlamalı? Sektör bugün gerçekten neyi istiyor ve o öğrenci bunun neresinde?
+
+**Problem (30 sn) · posterde: problem ve mevcut çözümler**
+
+> Müfredatlar sektörün hızına yetişemiyor. LinkedIn, Kariyer.net gibi platformlar ise işverenin tarafında: adayı eler, ama adaya "şunu eksik, şuradan öğren" demez. Kariyer koçluğu da öğrenci bütçesine uygun değil. Biz sistemi adayın tarafına koyduk: bir eleme aracı değil, bir gelişim aracı.
+
+**Çözüm ve akış (60 sn) · posterde: akış diyagramı ve arayüz prototipi**
+
+> Öğrenci hedef pozisyonunu seçiyor ve CV'sini PDF olarak yüklüyor. Sistem dört adımda çalışıyor:
+> Birincisi, PDF'ten metni çıkarıyor; taranmış CV'ler için OCR yedek akışı ekleniyor.
+> İkincisi, ad, telefon, adres gibi kişisel verileri maskeliyor ve yerel dil modeliyle yetkinlikleri çıkarıyor.
+> Üçüncüsü, her gece toplanan güncel ilanlarla karşılaştırıyor ve o pozisyonda en çok aranan yetkinlikleri buluyor. Şu an yedi kaynaktan yaklaşık 2.700 aktif ilan var.
+> Dördüncüsü, eksikleri talep sırasına göre listeliyor ve her biri için kurs, video veya makale öneriyor.
+> Sonuç şöyle bir cümle: "İncelediğimiz 157 backend ilanının %43'ü PostgreSQL istiyor; CV'nde PostgreSQL yok. Şu kaynakla başlayabilirsin."
+
+**Mimari ve KVKK (40 sn) · posterde: mimari diyagram**
+
+> Teknik tarafta web, masaüstü ve Android istemcileri tek bir FastAPI servisine bağlanıyor. Analiz uzun sürdüğü için kuyruğa alınıyor; kullanıcı ilerlemeyi ekranda izliyor. Yapay zeka tarafında hiçbir dış API kullanmıyoruz: model, kendi bilgisayarımızda Ollama ile çalışıyor. CV dosyası ve ham metin hiçbir yerde saklanmıyor, sadece çıkarılan yetkinlikler kalıyor. Bu hem KVKK uyumu hem de sıfır API maliyeti demek.
+
+**Durum ve kapanış (30 sn) · posterde: benchmark ve yol haritası**
+
+> 10 Türkçe sentetik CV'de üç açık kaynak modeli karşılaştırdık ve Llama 3.1 8B'yi seçtik: grafik kartı olmadan en hızlı model oldu, yetkinlik çıkarımı CV başına ortalama 53 saniye sürdü. Doğruluğu elle etiketlenen setle ölçeceğiz. Şu an kimlik doğrulama, CV yükleme, sonuç ekranları ve veri toplama altyapısı çalışıyor; analiz akışını uçtan uca bağlayıp Ocak 2027'de web, masaüstü ve Android'de yayına alacağız. Kendi CV'nizi denemek isterseniz sizi bekleme listesine yazalım. Sorularınızı almaktan memnuniyet duyarız.
+
+### Anlatırken
+
+- Herkes metnin tamamını anlatabilmeli; soru gelince modülün sahibi devralır (scraper/veri: Ataberk, yapay zeka: Burak, backend/arayüz: Anıl).
+- Ezber değil, sıra önemli: **problem → aday tarafı → 4 adım → yerel model/KVKK → durum**.
+- Dinleyen kısa zamanlıysa 1 dakikalık sürüm: açılış sorusu + "aday tarafında" + örnek sonuç cümlesi + "CV saklanmıyor, model yerel".
+
+## 2. İki dakikalık yedek demo videosu
+
+Stantta internet veya sunucu sorun çıkarırsa bu video oynatılır. Tam analiz akışı kongre tarihinde henüz bitmiş olmayacağı için video iki kaynaktan çekilir ve bu açıkça söylenir:
+
+- **Uçtan uca çalışan kısım:** gerçek web uygulaması (`web/`): kayıt, KVKK onayları, giriş, profil, CV yükleme.
+- **Örnek veriyle gösterilen kısım:** aynı uygulamanın analiz bekleme ekranı, sonuç panosu, kaynak detayı ve geçmiş analizler. Yapay zekâ işçisi henüz bağlanmadığı için analiz sonucu veri tabanına elle yazılan örnek veridir (#62, #63, #65 birleşince). Bunlar birleşmezse bu satırlar prototipten (`web/prototip/index.html`) çekilir.
+
+| Süre | Ekran | Kaynak | Seslendirme / alt yazı |
+|---|---|---|---|
+| 0:00–0:10 | Başlık kartı | Video düzenleyici | "CareerAI: CV'ni güncel ilanlarla karşılaştır, eksiğini gör, nereden öğreneceğini bil." |
+| 0:10–0:30 | Kayıt ekranı, 3 onay kutusu, "E-postanı kontrol et" | Gerçek uygulama | "Kayıtta KVKK aydınlatması ve açık rıza ayrı ayrı alınıyor." |
+| 0:30–0:40 | Giriş → Profil | Gerçek uygulama | "Oturum güvenli token yenilemeyle korunuyor." |
+| 0:40–0:55 | Hedef pozisyon seçimi | Gerçek uygulama | "Öğrenci hedefini seçiyor: Backend Developer." |
+| 0:55–1:10 | CV yükleme → analiz ediliyor | Gerçek uygulama | "CV yükleniyor; kişisel veriler maskeleniyor, dosya saklanmıyor." |
+| 1:10–1:45 | Sonuç panosu: uyum skoru, eksik yetkinlikler, talep çubukları | Gerçek uygulama, örnek veri | "Eksikler ilanlardaki talebe göre sıralı. PostgreSQL arka uç ilanlarının %43'ünde isteniyor." |
+| 1:45–1:55 | Kaynak detayı penceresi | Gerçek uygulama, örnek veri | "Her eksik için ücretsiz kaynak önerisi." |
+| 1:55–2:00 | Kapanış kartı: ekip, GitHub, QR | Video düzenleyici | "Yerel yapay zeka · KVKK uyumlu · Ocak 2027'de yayında." |
+
+### Demo ortamını kurma
+
+Çekimden önce bir kez, yerel bilgisayarda (servisler `make up` ile açık, `backend/` klasöründe):
+
+```bash
+python scripts/seed_test_user.py   # sahte hesap: E2E_TEST_EMAIL (@example.com) / E2E_TEST_PASSWORD
+python scripts/seed_demo.py        # contracts/examples'taki örnek sonucu bu hesaba yazar, adresini yazdırır
+```
+
+Sonra web'de bu hesapla giriş yapılır. Geçmiş sayfasında "Backend Developer · 63/100" analizi görünür ve sonuç panosu, kaynak detayı, geri bildirim ve profil ekranları buradan çekilir. Betik main'de (#74).
+
+### Çekim notları
+
+- Sadece sahte hesap (`…@example.com`) ve `contracts/examples/` altındaki anonim CV kullanılır. Gerçek CV, gerçek e-posta, tarayıcı yer imleri veya bildirimler kadrajda olmamalı.
+- Çözünürlük 1920×1080, tarayıcı yakınlaştırması %125, açık tema (stantta ekran parlak ortamda daha iyi okunur).
+- Örnek veriyle çekilen ekranlarda (ve prototip kullanılırsa onda) köşeye küçük bir "Örnek veri" etiketi konur; jüriye çalışan kısımla gösterimi karıştırmış gibi görünmeyiz.
+- Ses kaydı ayrı alınır, video sessiz ortamda da anlaşılsın diye alt yazı eklenir.
+- Video MP4 olarak hem stanttaki bilgisayarda yerel olarak hem de bir USB bellekte durur; internete bağlı olmadan oynatılabilmeli.
+
+## 3. Sık gelecek sorular
+
+| Soru | Cevap | Kim cevaplar |
+|---|---|---|
+| ChatGPT'ye CV'mi yapıştırsam aynısını yapmaz mı? | Genel bir model güncel ilanları bilmez ve "ilanların yüzde kaçı istiyor" diye sayı veremez. Biz her gece topladığımız ilanlardan istatistik çıkarıyoruz. Ayrıca CV'niz dışarıdaki bir şirkete gitmiyor. | Burak |
+| İlanları nereden alıyorsunuz, yasal mı? | Kullanım koşulları izin veren kaynakların resmî API'lerinden veya izin verilen sayfalarından (Remotive, Himalayas, Remote OK, Hacker News, Arbeitnow, Jobicy, Python.org), hız sınırıyla ve kaynak adını göstererek. Türk iş siteleri yazılı izin olmadan otomatik toplamaya izin vermiyor, onlardan toplamıyoruz. Kişisel veri toplamıyoruz; sadece ilan metnindeki yetkinlikleri. | Ataberk |
+| İlanlar Türkçe mi? | Hayır, şu an tamamı İngilizce ve uzaktan çalışma ağırlıklı; bu bilinen bir sınırlılık. Yetkinlik sözlüğü iki dilli olduğu için Türkçe CV'yle eşleşme çalışıyor. Türk sitelerinden yazılı izin almaya çalışıyoruz. | Ataberk |
+| Yetkinlik çıkarımı ne kadar doğru? | Kesin sayıyı henüz söylemiyoruz: ön kıyastaki referans geçiciydi, ekibin elle etiketlediği set bitince ölçeceğiz (hedef F1 ≥ 0,80). Model çıktısını sabit bir yetkinlik sözlüğüyle eşleştiriyoruz; sözlükte olmayan bir yetkinlik "doğrulanmamış" diye işaretleniyor. Önerilen kaynak linklerini de model üretmiyor, sadece bizim veritabanımızdaki listeden seçiyor; uydurma link çıkamaz. | Burak |
+| Analiz ne kadar sürüyor? | Hedefimiz 1–2 dakika, canlı ortamın çalışacağı bilgisayarda henüz ölçmedik. Grafik kartsız bir dizüstünde yalnızca yetkinlik çıkarımı CV başına ortalama 53 saniye sürdü. Bu yüzden kuyruk ve ilerleme ekranı var. | Anıl |
+| CV'm saklanıyor mu? | Hayır. Dosya diske yazılmıyor, ham metin hiçbir yerde tutulmuyor; sadece çıkarılan yetkinlikler ve dosyanın parmak izi (hash) kalıyor. Hesabınızı silince hepsi siliniyor. | Anıl |
+| Sadece yazılım mı? | İlk sürüm yazılım pozisyonlarıyla başlıyor; yetkinlik sözlüğü genişletilerek başka alanlara açılabilir. | Ataberk |
+| Ücretli mi olacak? | Hayır; bitirme projesi ve TÜBİTAK 2209-A kapsamında öğrencilere ücretsiz. | Herkes |
+| LinkedIn'den farkı? | LinkedIn işverenin aracı; size "eksiksin" der, nereden öğreneceğinizi söylemez. Biz eksik listesini ilan verisine dayandırıp öğrenme kaynağıyla birlikte veriyoruz. | Herkes |
+
+## 4. Prova ve stant listesi
+
+**Kongreden önce**
+
+- [ ] Sayılar son kez güncellendi (ilan sayısı, örnek yüzde). Ölçülmemiş sayı varsa cümle çıkarıldı.
+- [ ] Her ekip üyesi anlatımı en az bir kez tek başına, süre tutarak yaptı (hedef 2:45–3:15).
+- [ ] Demo videosu çekildi, ekipçe izlendi, iki ayrı yerde (bilgisayar + USB) duruyor.
+- [ ] Canlı demo için stant bilgisayarında web uygulaması yerelde (`127.0.0.1`) çalışıyor; internet gerekmiyor.
+- [ ] Bekleme listesi için QR kod ve e-posta toplama yöntemi belirlendi (KVKK: sadece e-posta, amacı yazılı).
+
+**Stantta**
+
+- [ ] Poster asıldı (T-026'da teslim alınan baskı).
+- [ ] Bilgisayar şarjda, ekran kilidi ve bildirimler kapalı, video açık sekmede hazır.
+- [ ] Sahte hesap girişli; gerçek hesap/e-posta açık değil.
+- [ ] Gelen önemli sorular ve geri bildirimler not alınıyor (kongre sonrası `docs/kararlar.md` veya görev dosyalarına işlenir).
+
+**Canlı demo bozulursa:** "İnternet bağlantısı yüzünden kayıtlı demoyu göstereyim" deyip videoya geç; hatayı stantta ayıklamaya çalışma.

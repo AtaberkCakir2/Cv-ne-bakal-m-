@@ -140,12 +140,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-027 · Kongre sunumu ve canlı demo
 
-- **Durum:** Yapılacak
+- **Durum:** Devam Ediyor
 - **Tarih:** 09.11.2026 – 15.11.2026 · **Öncelik:** P0 · **Efor:** 6 saat · **Alan:** Kongre / TÜBİTAK
 - **Bağımlılık:** T-026
 - **Destek:** Ataberk, Burak
 - **Çıktı:** Demo videosu + sunum
 - **Kabul kriteri:** Posterin yerleştirilmesi; 3 dakikalık anlatım provası (herkes sunabilmeli); yedek olarak 2 dk demo videosu.
+- **Devam notu (13.11.2026):** Yapılan: anlatım metni, demo planı, soru-cevap ve prova listesi `docs/kongre/sunum-ve-demo.md` (07.11'de güncel gerçeklere göre düzeltildi). Videoda gösterilecek ekranlar (#62/#63/#65/#72) ve `backend/scripts/seed_demo.py` main'de. · Sıradaki adım: (1) Docker'ı aç: Anıl'ın PC'sinde "yeterli sistem kaynağı yok" hatası (WSL bellek ayıramıyor; 16 GB RAM'in ~3 GB'ı boş). Çözüm önerisi `%USERPROFILE%\.wslconfig` → `[wsl2] memory=6GB swap=4GB` (Anıl'ın onayı bekleniyor), ağır uygulamaları kapatıp Docker Desktop'ı yeniden başlat; "Reset to factory defaults" kullanma. (2) `make up` (sadece postgres + redis yeter), `backend/`'de `seed_test_user.py` ve `seed_demo.py`, backend + web'i 127.0.0.1'de başlat. (3) Akışı tarayıcıda yürütüp ekran görüntüleri al, ffmpeg ile plandaki zamanlamaya göre alt yazılı MP4 yap, örnek veri ekranlarına "Örnek veri" etiketi. (4) Ekipçe prova. · Açık sorular / engeller: Docker (yukarıda); kongre günü ve stant saati (görev bitişi 15.11); T-026 poster teslimi. · Branch: anil/kongre-sunumu
 
 ### T-039 · Asenkron analiz işi (Celery + Redis)
 
