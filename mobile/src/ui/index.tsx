@@ -67,11 +67,13 @@ export function Button({
   onPress: () => void;
   loading?: boolean;
   disabled?: boolean;
-  variant?: "primary" | "secondary" | "link";
+  variant?: "primary" | "secondary" | "link" | "danger";
 }) {
   const c = useColors();
   const off = disabled || loading;
-  const primary = variant === "primary";
+  const filled = variant === "primary" || variant === "danger";
+  const fill = variant === "danger" ? c.error : c.primary;
+  const onFill = variant === "danger" ? c.surface : c.onPrimary;
   return (
     <Pressable
       accessibilityRole={variant === "link" ? "link" : "button"}
@@ -80,17 +82,54 @@ export function Button({
       onPress={onPress}
       style={({ pressed }) => [
         variant === "link" ? styles.link : styles.button,
-        primary && { backgroundColor: c.primary },
+        filled && { backgroundColor: fill },
         variant === "secondary" && { borderColor: c.primary, borderWidth: 1 },
         (pressed || off) && { opacity: 0.6 },
       ]}
     >
       {loading ? (
-        <ActivityIndicator color={primary ? c.onPrimary : c.primary} accessibilityLabel="İşleniyor" />
+        <ActivityIndicator color={filled ? onFill : c.primary} accessibilityLabel="İşleniyor" />
       ) : (
-        <Text style={[styles.buttonText, { color: primary ? c.onPrimary : c.primary }]}>{title}</Text>
+        <Text style={[styles.buttonText, { color: filled ? onFill : c.primary }]}>{title}</Text>
       )}
     </Pressable>
+  );
+}
+
+/** Başlıklı bölüm (web'deki Card karşılığı). */
+export function Section({ title, children }: { title?: string; children: ReactNode }) {
+  const c = useColors();
+  return (
+    <View style={[styles.section, { backgroundColor: c.surface, borderColor: c.border }]}>
+      {title && (
+        <Text accessibilityRole="header" style={[styles.sectionTitle, { color: c.text }]}>
+          {title}
+        </Text>
+      )}
+      {children}
+    </View>
+  );
+}
+
+/** Yetkinlik etiketi; `meta` küçük yazıyla (seviye vb.). */
+export function Chip({ label, meta }: { label: string; meta?: string }) {
+  const c = useColors();
+  return (
+    <View style={[styles.chip, { borderColor: c.border, backgroundColor: c.bg }]}>
+      <Text style={{ color: c.text, fontWeight: "600" }}>{label}</Text>
+      {meta && <Text style={{ color: c.muted, fontSize: 12 }}>{meta}</Text>}
+    </View>
+  );
+}
+
+/** Oran çubuğu (0–1); ekran okuyucuya yüzde olarak okunur. */
+export function RatioBar({ ratio, label }: { ratio: number; label: string }) {
+  const c = useColors();
+  const pct = Math.round(Math.min(1, Math.max(0, ratio)) * 100);
+  return (
+    <View accessible accessibilityLabel={label} style={[styles.bar, { backgroundColor: c.border }]}>
+      <View style={[styles.barFill, { width: `${pct}%`, backgroundColor: c.primary }]} />
+    </View>
   );
 }
 
@@ -175,4 +214,9 @@ const styles = StyleSheet.create({
   box: { width: 24, height: 24, borderWidth: 2, borderRadius: 4, alignItems: "center", justifyContent: "center" },
   checkLabel: { flex: 1, fontSize: 15, lineHeight: 21 },
   center: { flex: 1, alignItems: "center", justifyContent: "center" },
+  section: { borderWidth: 1, borderRadius: 12, padding: 16, gap: 10 },
+  sectionTitle: { fontSize: 18, fontWeight: "700" },
+  chip: { borderWidth: 1, borderRadius: 16, paddingHorizontal: 10, paddingVertical: 4 },
+  bar: { height: 8, borderRadius: 4, overflow: "hidden" },
+  barFill: { height: 8, borderRadius: 4 },
 });
