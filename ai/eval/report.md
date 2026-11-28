@@ -1,6 +1,6 @@
 # Model değerlendirme raporu (T-055)
 
-> **Durum: ön sonuç (27.11.2026).** Gold etiketleri şu an Claude'un etiketleri (karar #40); ekibin kontrolü
+> **Durum: ön sonuç (27.11.2026).** Gold etiketleri şu an Claude'un etiketleri (karar #43); ekibin kontrolü
 > (kişi başı 3–4 CV) bitince ölçüm aynı komutla tekrarlanır ve bu rapor güncellenir. Öneri alakalılığı ve
 > production gecikmesi henüz ölçülmedi (aşağıda "Eksikler").
 
@@ -23,7 +23,7 @@
 | Ollama | 0.40.18 (yerel kurulum; production'daki sabit sürüm 0.40.13, #45) |
 | Donanım | i7-13700H, 32 GB RAM, RTX 4060 Laptop 8 GB (model tamamı GPU'da) |
 | Veri | `eval/dataset`: 50 sentetik CV (karar #20), 25 Türkçe / 25 İngilizce, 21'i çok sütunlu, 6'sı taranmış |
-| Gold | `eval/dataset/gold/*.json`, 822 yetkinlik; şu an hepsi Claude etiketi (karar #40), ekip kontrolü sürüyor |
+| Gold | `eval/dataset/gold/*.json`, 822 yetkinlik; şu an hepsi Claude etiketi (karar #43), ekip kontrolü sürüyor |
 | Komut | `python eval/scripts/evaluate.py run --tag 2026-11-27-llama3.1-8b` ve `... report --tag ...` (ai/ klasöründe) |
 | Ham sonuç | [`results/2026-11-27-llama3.1-8b.jsonl`](results/2026-11-27-llama3.1-8b.jsonl): sadece çıkarılan adlar, seviyeler, süreler; CV metni yok |
 
@@ -114,7 +114,7 @@ verilmeli.
 
 ## Eksikler (T-055 bitmeden)
 
-1. **Gold kontrolü (T-019, karar #40):** ekip 3–4'er CV kontrol edecek. Bitince `evaluate.py report` tekrar
+1. **Gold kontrolü (T-019, karar #43):** ekip 3–4'er CV kontrol edecek. Bitince `evaluate.py report` tekrar
    çalıştırılır; `run` tekrarı gerekmez, çünkü model çıktısı değişmez.
 2. **Öneri alakalılığı:** 3 değerlendirici, 1–5 ölçeği, hedef ≥ 4,0. Analiz işçisi production'da çalışınca
    (go-live #25) 10 CV'nin öneri listesi puanlanacak.
