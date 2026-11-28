@@ -19,7 +19,7 @@ Yaklaşık 400 kelime; normal hızda 3 dakika. Her bölümün yanında posterde 
 **Çözüm ve akış (60 sn) · posterde: akış diyagramı ve arayüz prototipi**
 
 > Öğrenci hedef pozisyonunu seçiyor ve CV'sini PDF olarak yüklüyor. Sistem dört adımda çalışıyor:
-> Birincisi, PDF'ten metni çıkarıyor; taranmış CV'lerde OCR devreye giriyor.
+> Birincisi, PDF'ten metni çıkarıyor; taranmış CV'ler için OCR yedek akışı ekleniyor.
 > İkincisi, ad, telefon, adres gibi kişisel verileri maskeliyor ve yerel dil modeliyle yetkinlikleri çıkarıyor.
 > Üçüncüsü, her gece toplanan güncel ilanlarla karşılaştırıyor ve o pozisyonda en çok aranan yetkinlikleri buluyor. Şu an yedi kaynaktan yaklaşık 2.700 aktif ilan var.
 > Dördüncüsü, eksikleri talep sırasına göre listeliyor ve her biri için kurs, video veya makale öneriyor.
@@ -66,7 +66,7 @@ python scripts/seed_test_user.py   # sahte hesap: E2E_TEST_EMAIL (@example.com) 
 python scripts/seed_demo.py        # contracts/examples'taki örnek sonucu bu hesaba yazar, adresini yazdırır
 ```
 
-Sonra web'de bu hesapla giriş yapılır. Geçmiş sayfasında "Backend Developer · 63/100" analizi görünür ve sonuç panosu, kaynak detayı, geri bildirim ve profil ekranları buradan çekilir. Betik #72'nin dalında (`anil/demo-verisi`); yığın main'e birleşmeden önce çekim o daldan yapılır.
+Sonra web'de bu hesapla giriş yapılır. Geçmiş sayfasında "Backend Developer · 63/100" analizi görünür ve sonuç panosu, kaynak detayı, geri bildirim ve profil ekranları buradan çekilir. Betik main'de (#74).
 
 ### Çekim notları
 
@@ -81,7 +81,7 @@ Sonra web'de bu hesapla giriş yapılır. Geçmiş sayfasında "Backend Develope
 | Soru | Cevap | Kim cevaplar |
 |---|---|---|
 | ChatGPT'ye CV'mi yapıştırsam aynısını yapmaz mı? | Genel bir model güncel ilanları bilmez ve "ilanların yüzde kaçı istiyor" diye sayı veremez. Biz her gece topladığımız ilanlardan istatistik çıkarıyoruz. Ayrıca CV'niz dışarıdaki bir şirkete gitmiyor. | Burak |
-| İlanları nereden alıyorsunuz, yasal mı? | Kullanım koşulları izin veren kaynakların resmî API'lerinden (Remotive, Himalayas, Remote OK, Hacker News, Arbeitnow, Jobicy), hız sınırıyla ve kaynak adını göstererek. Türk iş siteleri yazılı izin olmadan otomatik toplamaya izin vermiyor, onlardan toplamıyoruz. Kişisel veri toplamıyoruz; sadece ilan metnindeki yetkinlikleri. | Ataberk |
+| İlanları nereden alıyorsunuz, yasal mı? | Kullanım koşulları izin veren kaynakların resmî API'lerinden veya izin verilen sayfalarından (Remotive, Himalayas, Remote OK, Hacker News, Arbeitnow, Jobicy, Python.org), hız sınırıyla ve kaynak adını göstererek. Türk iş siteleri yazılı izin olmadan otomatik toplamaya izin vermiyor, onlardan toplamıyoruz. Kişisel veri toplamıyoruz; sadece ilan metnindeki yetkinlikleri. | Ataberk |
 | İlanlar Türkçe mi? | Hayır, şu an tamamı İngilizce ve uzaktan çalışma ağırlıklı; bu bilinen bir sınırlılık. Yetkinlik sözlüğü iki dilli olduğu için Türkçe CV'yle eşleşme çalışıyor. Türk sitelerinden yazılı izin almaya çalışıyoruz. | Ataberk |
 | Yetkinlik çıkarımı ne kadar doğru? | Kesin sayıyı henüz söylemiyoruz: ön kıyastaki referans geçiciydi, ekibin elle etiketlediği set bitince ölçeceğiz (hedef F1 ≥ 0,80). Model çıktısını sabit bir yetkinlik sözlüğüyle eşleştiriyoruz; sözlükte olmayan bir yetkinlik "doğrulanmamış" diye işaretleniyor. Önerilen kaynak linklerini de model üretmiyor, sadece bizim veritabanımızdaki listeden seçiyor; uydurma link çıkamaz. | Burak |
 | Analiz ne kadar sürüyor? | Hedefimiz 1–2 dakika, canlı ortamın çalışacağı bilgisayarda henüz ölçmedik. Grafik kartsız bir dizüstünde yalnızca yetkinlik çıkarımı CV başına ortalama 53 saniye sürdü. Bu yüzden kuyruk ve ilerleme ekranı var. | Anıl |
