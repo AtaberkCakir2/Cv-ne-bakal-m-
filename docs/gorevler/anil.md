@@ -247,12 +247,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-065 · KVKK aydınlatma metni, açık rıza, gizlilik politikası, kullanım koşulları
 
-- **Durum:** Yapılacak
+- **Durum:** Devam Ediyor
 - **Tarih:** 30.11.2026 – 06.12.2026 · **Öncelik:** P0 · **Efor:** 8 saat · **Alan:** Güvenlik & KVKK
 - **Bağımlılık:** T-030 (Burak)
 - **Destek:** Burak
 - **Çıktı:** Yasal metinler (web sayfası)
 - **Kabul kriteri:** Danışman/hukuk birimi kontrolü; uygulama içi onay; consents tablosuna sürüm kaydı; gizlilik politikası URL'si (mağazalar için zorunlu); VERBİS yükümlülüğü değerlendirildi.
+- **Devam notu (07.11.2026):** Yapılan: dört metnin taslağı + hesap silme sayfası `docs/yasal/`; metinler karar #30'a göre güncellendi (barındırma Türkiye'deki ekip bilgisayarı, Cloudflare = yurt dışı aktarım, yedek en fazla 35 gün); Cloudflare Pages için statik site üreticisi `web/yasal-site/build.mjs` (`npm run build:yasal`); kayıt ekranı onay sürümü `2026-12-taslak`. · Sıradaki adım: README'deki açık noktaları danışmana götürmek (veri sorumlusu, hukuki sebep, yurt dışı aktarım dayanağı, VERBİS); Profil ekranında verileri indirme ve hesap silme düğmeleri; Pages projesini Ataberk'le kurmak. · Açık sorular / engeller: audit_logs ve refresh_tokens temizlik işi yok; disk şifrelemesi teyidi; e-posta servisi seçilmedi. · Branch: anil/kvkk-metinleri
 
 ### T-069 · API entegrasyon testleri
 
