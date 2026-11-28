@@ -30,6 +30,12 @@ Backend = Literal["pdfplumber", "pymupdf"]
 logger = logging.getLogger(__name__)
 
 
+def _is_time_limit(exc: BaseException) -> bool:
+    """İşçinin süre aşımı (Celery/billiard `SoftTimeLimitExceeded`) `Exception`'dan türer; "bozuk PDF" sayılıp
+    yutulmamalı, görevin kendisi bitmeli. ai/ Celery'ye bağımlı olmasın diye sınıf adına bakılır."""
+    return type(exc).__name__ == "SoftTimeLimitExceeded"
+
+
 @dataclass(frozen=True)
 class ParseResult:
     text: str
@@ -51,6 +57,8 @@ def extract_text(data: bytes, *, max_bytes: int = MAX_BYTES, max_pages: int = MA
     try:
         page_count, encrypted = backends.inspect(data)
     except Exception as exc:  # noqa: BLE001 — açılamayan her dosya "bozuk" sayılır
+        if _is_time_limit(exc):
+            raise
         logger.info("PDF açılamadı: %s", type(exc).__name__)
         raise PdfError(Reason.CORRUPT) from exc
     if encrypted:
@@ -67,6 +75,8 @@ def extract_text(data: bytes, *, max_bytes: int = MAX_BYTES, max_pages: int = MA
         try:
             result = _build(read(data), name)
         except Exception as exc:  # noqa: BLE001 — bir kütüphane düşerse diğeri denenir
+            if _is_time_limit(exc):
+                raise
             logger.warning("%s ile okunamadı: %s", name, type(exc).__name__)
             continue
         if best is None or len(result.text) > len(best.text):
