@@ -88,7 +88,7 @@ def analyze_cv(
     clock: Callable[[], float] = time.monotonic,
 ) -> AnalysisOutput:
     """`transport_factory(timeout)`: Ollama istemcisi (testte sahtesi). `embed`: taksonomide olmayan adları vektöre
-    çevirir (embedding.default_encoder().encode); None ise anlamsal eşleşme yapılmaz."""
+    çevirir (ör. `embedding.default_encoder()`, çağrılabilir nesne); None ise anlamsal eşleşme yapılmaz."""
     start = clock()
     factory = transport_factory or (lambda timeout: ollama_transport(timeout=timeout))
     stats: dict[str, Any] = {}

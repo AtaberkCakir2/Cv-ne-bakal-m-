@@ -124,6 +124,20 @@ def test_falls_back_to_pymupdf_when_pdfplumber_fails(monkeypatch: pytest.MonkeyP
     assert "Python ve FastAPI ile REST API uç noktaları geliştirdim." in result.text
 
 
+class SoftTimeLimitExceeded(Exception):  # noqa: N818 — Celery'deki adla aynı olmalı
+    """billiard.exceptions.SoftTimeLimitExceeded'in yerine (ai/ Celery'ye bağımlı değil)."""
+
+
+@pytest.mark.parametrize("target", ["inspect", "pdfplumber_pages"])
+def test_worker_time_limit_is_not_swallowed(monkeypatch: pytest.MonkeyPatch, target: str) -> None:
+    def timed_out(_: bytes) -> None:
+        raise SoftTimeLimitExceeded()
+
+    monkeypatch.setattr(backends_module, target, timed_out)
+    with pytest.raises(SoftTimeLimitExceeded):
+        extract_text(make_pdf([single_column_cv()]))
+
+
 def test_both_backends_give_same_text() -> None:
     data = make_pdf([two_column_cv()])
     from parsing.extract import _build
