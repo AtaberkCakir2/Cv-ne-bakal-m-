@@ -74,7 +74,7 @@ Skor = Olasılık × Etki (1–5). Seviye: ≥ 15 Yüksek, 8–14 Orta, < 8 Dü�
 - **Olasılık / Etki / Skor:** 4 / 3 / **12 (Orta)** · **Sorumlu:** Ataberk
 - **Önlem:** Karar #30: uyku ve hazırda bekletme kapalı, Docker Desktop otomatik başlar, konteynerler `unless-stopped`; güncellemeler etkin saatler dışında, sunum haftası ertelenir; Grafana'da dış erişim probu (PC açıkken; PC dışı izleyici yok, karar #32); günlük şifreli PC dışı yedek; DR tatbikatı; sunum için B planı (aynı sürüm 127.0.0.1'de yerel demo, telefondan internet paylaşımı). PC'de pil algılanmıyor: elektrik kesilince kapanır.
 - **Gerçekleşirse (B planı):** Yedekten başka bir ekip bilgisayarına kurulum ve tünel bağlantısını oraya taşıma (RTO < 4 saat).
-- **Erken uyarı:** Grafana'da `DisErisimYok`; Cloudflare 1033/530 hata sayfası (PC tamamen kapanırsa otomatik uyarı yok, nöbetçi günlük kontrolde fark eder)
+- **Erken uyarı:** Grafana'da `DisErisimYok`; Cloudflare 1033/530 hata sayfası (PC tamamen kapanırsa otomatik uyarı yok, Ataberk günlük kontrolde fark eder, karar #41)
 
 ### R-11 · Türkçe ilan verisinin yetersiz kalması
 
