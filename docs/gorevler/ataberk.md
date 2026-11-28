@@ -279,13 +279,15 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-070 · Tanıtım (landing) sayfası
 
-- **Durum:** Yapılacak
+- **Durum:** Devam Ediyor
 - **Tarih:** 07.12.2026 – 13.12.2026 · **Öncelik:** P2 · **Efor:** 6 saat · **Alan:** Web / Masaüstü
 - **Bağımlılık:** T-022 (Anıl)
 - **Destek:** Anıl
 - **Çıktı:** Landing sayfası
 - **Kabul kriteri:** Ürün tanıtımı, ekran görüntüleri, indirme linkleri (Windows/macOS/Android), gizlilik politikası ve KVKK linkleri, iletişim.
 - **Not:** 13.11.2026: T-010'dan devralındı: sayfa Cloudflare Pages'te yayınlanır ve kök alan adı `cvnebakalim.com` Pages projesine bağlanır (Anıl'ın yasal sayfaları #71 ile aynı Pages projesi olabilir).
+- **Not (21.11.2026):** Sayfa `infra/landing/` (saf HTML/CSS, uygulamanın tasarım değerleri, açık/koyu tema, 375 px'te taşma yok): tanıtım, nasıl çalışır, gizlilik güvenceleri, ekran görüntüleri (sahte CV, E2E ortamından `ekran-goruntuleri.mjs`), indirme (web, Windows/macOS → karar #36 sürüm reposu, Android "yakında"), SSS, yasal bağlantılar, iletişim, ESCO atfı. Yasal sitenin (#71) Pages projesine kök sayfa olarak eklenir (`build.sh`). Kalan: #71 birleşince Cloudflare Pages projesini kurmak ve kök alan adını bağlamak (`infra/landing/README.md`), canlı adreste kontrol.
+- **Devam notu (21.11.2026):** Yapılan: sayfa, ekran görüntüleri ve `build.sh` PR #152'de (inceleme bekliyor). · Sıradaki adım: #152 ve Anıl'ın #71'i birleşince Cloudflare → Workers & Pages → Create → Pages → Connect to Git; ayarlar `infra/landing/README.md` tablosunda (build komutu, çıktı `web/yasal-site/dist`, `NODE_VERSION=22`, `APP_URL`); Custom domains: `cvnebakalim.com` + `www`. Sonra canlıda kontrol: kök sayfa, `/gizlilik/`, `/hesap-silme/`, `_headers` (CSP), telefonda görünüm. · Açık sorular / engeller: #71 (Anıl) birleşmedi; web arayüzünün adresi (`app.cvnebakalim.com` Pages mi tünel mi) Anıl'la kesinleşmedi; Android bağlantısı T-095'te eklenecek. · Branch: `ataberk/tanitim-sayfasi`
 
 ---
 
@@ -320,6 +322,7 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 - **Çıktı:** Production ortamı
 - **Kabul kriteri:** PC'de ayrı compose projesi (`careerai-prod`, kendi volume'ları); en az yetkili DB kullanıcıları; sırlar `.env` (sadece bu PC'de, Windows kullanıcı izinleriyle korunur, repoda yok); hiçbir servis host'a port açmaz, dış erişim sadece `cloudflared`; kaynak limitleri (mem_limit), `restart: unless-stopped`. PC kapalıyken kaçan gece toplaması açılışta telafi edilir (R-18).
 - **Not:** 15.11.2026. Ayrı `careerai-prod` projesi, kendi volume'ları, `mem_limit` + `restart: unless-stopped` (15 servisin hepsi), host'a port yok (tek istisna Grafana 127.0.0.1) zaten vardı; denetlendi. Yeni: en az yetkili `careerai_app` rolü (`infra/pc/app-role.sql`, deploy.sh `setup_app_role`; migration sahip rolle `migrate`), view yenileme migration 0004 `refresh_role_skill_stats()` (SECURITY DEFINER), `audit_logs` sadece ekleme; test `backend/tests/db/test_app_role.py`. Kaçan gece toplaması açılışta telafi (`scraper/collector/tasks.py` `missed_nightly`, test `test_catch_up.py`). `.env.prod` izinleri sadece Ataberk/SYSTEM/Administrators (icacls, `infra/pc/deploy.md` §2). Production'da denendi: api ve worker-data `careerai_app` ile bağlı, DDL ve doğrudan REFRESH reddediliyor, kaçan toplama açılışta başladı. #89 ve #94'ün (o da #88'in) üstüne kurulu.
+- **Not (22.11.2026, çift toplama):** PC 21.11 21:17'de yeniden başladı, Docker Desktop otomatik başlamadığı için 03:00 kaçtı. 03:23'te açılınca beat kaçan 03:00'ü kendisi de tetikledi, telafi de kuyruğa koydu: iki görev arka arkaya çalıştı (03:23–03:37 ve 03:37–), kilit tek eşzamanlı işçide ikincisini durdurmuyordu. `nightly()` artık son 03:00'ten sonra toplama başladıysa atlıyor (`nightly_slot`, `ran_since`; elle `force=True`), test `test_catch_up.py`. Kalan (elle): Docker Desktop → Settings → General → "Start Docker Desktop when you sign in".
 
 ### T-079 · Mimari doküman ve ADR'ler
 
@@ -346,13 +349,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-087 · Felaket kurtarma tatbikatı
 
-- **Durum:** Devam Ediyor
+- **Durum:** Tamamlandı
 - **Tarih:** 28.12.2026 – 03.01.2027 · **Öncelik:** P0 · **Efor:** 6 saat · **Alan:** Operasyon / İzleme
 - **Bağımlılık:** T-068, T-075
 - **Destek:** —
 - **Çıktı:** DR tatbikat raporu
 - **Kabul kriteri:** Başka bir bilgisayara (ör. Burak'ın veya Anıl'ın) yedekten sıfırdan kurulum ve tünelin oraya taşınması. Hedef: RTO < 4 saat, RPO < 24 saat. Süre ölçülüp runbook'a yazıldı.
-- **Not:** 18.11.2026: Prosedür ve tatbikat kaydı hazır (`docs/runbook/felaket-kurtarma.md`); production PC'sinde gerçek veriyle geri yükleme testi geçti (1,97 MB, 12 sn, 11 tablo eşleşti). Kalan: Burak'ın veya Anıl'ın bilgisayarında tatbikat (geçici `dr-test` tüneliyle), süreleri tabloya yazmak; önce parola yöneticisindeki `.env.prod` kaydının eksiksiz olduğu kontrol edilmeli (prosedür 0. adım).
+- **Not:** 20.11.2026: Başka bilgisayarda tatbikat **iptal edildi (karar #37)**; görev prosedür ve production PC'sindeki geri yükleme testiyle kapatıldı. Kabul kriterindeki RTO ölçülmedi. 18.11.2026: Prosedür ve tatbikat kaydı hazır (`docs/runbook/felaket-kurtarma.md`); production PC'sinde gerçek veriyle geri yükleme testi geçti (1,97 MB, 12 sn, 11 tablo eşleşti). Kalan: Burak'ın veya Anıl'ın bilgisayarında tatbikat (geçici `dr-test` tüneliyle), süreleri tabloya yazmak; önce parola yöneticisindeki `.env.prod` kaydının eksiksiz olduğu kontrol edilmeli (prosedür 0. adım).
 
 ### T-088 · Operasyon runbook'u
 
@@ -372,6 +375,9 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 - **Destek:** Burak, Anıl
 - **Çıktı:** Prova notu
 - **Kabul kriteri:** PC'de prova projesinde (`careerai-staging`) production'ın birebir kopyasıyla deploy + rollback provası; checklist üzerinden kuru çalıştırma; sunum B planı (127.0.0.1'de yerel demo, telefondan internet paylaşımı) denendi.
+- **Not:** 21.11.2026: deploy + rollback provasının ilk turu yapıldı (go-live #49): production dökümüyle 146 sn, geri yükleme prosedüründeki yetki hatası düzeltildi (`docs/runbook/operasyon.md` 2. bölüm). `infra/pc/.env.staging` bu PC'de oluşturuldu. Ocak'ta v1.0.0 adayıyla tekrarlanacak; kalan: checklist kuru çalıştırma.
+- **Not (24.11.2026, kuru çalıştırma):** Listenin tamamı production'a karşı yürütüldü (`docs/go-live.md` "Kuru çalıştırma"): 50 maddeden Uygun 16, Kısmen 20, Değil 8, ölçülemedi/zamanı değil 6 (#34 karar #39 ile yeniden yazıldı). Kritik açıklar: #25 ve #30 (analiz işçisi production'da yok, T-057), #36 (yasal sayfalar, #71), #41 (Play testi 21.12'de). Ocak'ta v1.0.0 adayıyla bu tablo yeniden doldurulur.
+- **Not (21.11.2026, B planı):** `make prod-local` + yeni `make prod-local-web` / `prod-local-down` ile yerel demo ~1 dk'da hazır, production verisiyle tarayıcıda denendi (`infra/pc/deploy.md` §6). Düzeltilen: B planında CORS kapalıydı, yerel web derleme komutu yoktu. Kalan: telefondan internet paylaşımıyla tünel denemesi (Ataberk, elle), analiz akışı T-057'den sonra.
 
 ---
 
@@ -384,7 +390,7 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 - **Bağımlılık:** T-093 (Anıl)
 - **Destek:** Burak, Anıl
 - **Çıktı:** Canlı sistem
-- **Kabul kriteri:** v1.0.0 etiketi; PC'de `make deploy TAG=v1.0.0`; migration; smoke test alan adı üzerinden; DNS/tünel/SSL kontrolü; başarısızlıkta 15 dk içinde rollback.
+- **Kabul kriteri:** v1.0.0 etiketi; PC'de `bash infra/pc/deploy.sh v1.0.0` (`infra/pc/deploy.md` §4; migration betiğin içinde); smoke test alan adı üzerinden; DNS/tünel/SSL kontrolü; başarısızlıkta 15 dk içinde rollback.
 
 ### T-097 · Hypercare (2 hafta yakın izleme)
 

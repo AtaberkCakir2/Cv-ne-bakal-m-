@@ -82,9 +82,18 @@ prod-logs:
 prod-model:
 	$(PC_PROD) exec ollama ollama pull $(MODEL)
 
-# Sunum B planı: api'yi sadece bu PC'ye açar (127.0.0.1:8100).
+# Sunum B planı (infra/pc/deploy.md §6): api'yi sadece bu PC'ye açar (127.0.0.1:8100), yerel web arayüzünü
+# 127.0.0.1:5173'te sunar (Ctrl+C ile durur). Bitince: make prod-local-down (api normal ayarlarına döner).
+LOCAL_API_PORT ?= 8100
+.PHONY: prod-local prod-local-web prod-local-down
 prod-local:
 	$(PC_PROD) -f infra/pc/compose.local.yml up -d --no-build --wait api
+
+prod-local-web:
+	cd web && npm ci --no-audit --no-fund && VITE_API_URL=http://127.0.0.1:$(LOCAL_API_PORT) npm run build 	  && npx vite preview --host 127.0.0.1 --port 5173 --strictPort
+
+prod-local-down:
+	$(PC_PROD) up -d --no-build --wait api
 
 # Uygulamada kayıtlı bir kullanıcıyı yönetim paneline admin yapar (T-063, backend/app/admin/README.md).
 #   make prod-admin EMAIL=ad@ornek.com      geri almak: make prod-admin EMAIL=ad@ornek.com REVOKE=--revoke
@@ -96,6 +105,12 @@ prod-admin:
 .PHONY: prod-slow-queries
 prod-slow-queries:
 	$(PC_PROD) exec -T postgres sh -c 'psql -U "$$POSTGRES_USER" -d "$$POSTGRES_DB"' < infra/pc/slow-queries.sql
+
+# Vektörü boş yetkinlik ve ilanlara embedding (T-057 gelene kadar; infra/pc/deploy.md "7. Vektörler"). Git Bash.
+#   make prod-embed            yeni ilanlar      make prod-embed HEPSI=1   model değişince hepsi
+.PHONY: prod-embed
+prod-embed:
+	HEPSI=$(HEPSI) bash infra/pc/embed.sh
 
 staging-ps:
 	$(PC_STAGING) ps

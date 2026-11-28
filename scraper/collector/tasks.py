@@ -90,29 +90,44 @@ def missed_nightly(last_started: datetime | None, now: datetime) -> bool:
 
     Son 03:00'ten sonra hiç toplama başlamadıysa kaçmıştır. Hiç toplama yoksa da (yeni kurulum) kaçmış sayılır.
     """
+    slot = nightly_slot(now)
+    if now - slot < CATCH_UP_GRACE:
+        return False
+    return not ran_since(last_started, slot)
+
+
+def nightly_slot(now: datetime) -> datetime:
+    """`now`'dan önceki son planlı gece toplaması zamanı (03:00, İstanbul)."""
     local = now.astimezone(TZ)
     slot = local.replace(hour=NIGHTLY_HOUR, minute=0, second=0, microsecond=0)
-    if local < slot:
-        slot -= timedelta(days=1)
-    if local - slot < CATCH_UP_GRACE:
-        return False
+    return slot if local >= slot else slot - timedelta(days=1)
+
+
+def ran_since(last_started: datetime | None, slot: datetime) -> bool:
+    """`slot`'tan sonra toplama başlamış mı. Veritabanından saat dilimsiz gelirse UTC sayılır."""
     if last_started is None:
-        return True
+        return False
     if last_started.tzinfo is None:
         last_started = last_started.replace(tzinfo=UTC)
-    return last_started < slot
+    return last_started >= slot
+
+
+def _last_nightly_start() -> datetime | None:
+    with get_sessionmaker()() as session:
+        last: datetime | None = session.scalar(select(func.max(ScrapeRun.started_at)))
+    return last
 
 
 @worker_ready.connect
 def _catch_up_missed_nightly(**_: Any) -> None:
     """İşçi açılınca kaçan gece toplamasını hemen kuyruğa koyar (T-075, R-18).
 
-    Celery beat kaçan zamanı telafi etmez: PC 03:00'te kapalıysa o gece toplama hiç olmazdı. Kilit (LOCK_KEY)
-    sayesinde beat ile üst üste binmez. Veritabanına ulaşılamazsa işçi yine açılır, sadece uyarı yazılır.
+    Beat'e güvenilmez: zamanlama dosyası yoksa veya bozulduysa kaçan zamanı hiç tetiklemez. Dosya sağlamsa beat
+    açılışta kaçan 03:00'ü kendisi de tetikler (22.11.2026, production): aynı gece iki görev kuyruğa girer. İkincisi
+    `nightly()` içindeki dilim kontrolüyle atlanır. Veritabanına ulaşılamazsa işçi yine açılır, sadece uyarı yazılır.
     """
     try:
-        with get_sessionmaker()() as session:
-            last = session.scalar(select(func.max(ScrapeRun.started_at)))
+        last = _last_nightly_start()
     except Exception:
         log.exception("Kaçan gece toplaması kontrol edilemedi")
         return
@@ -151,13 +166,22 @@ def _catch_up_missed_link_check(**_: Any) -> None:
 
 
 @app.task(name=NIGHTLY_TASK, soft_time_limit=SOFT_LIMIT_S, time_limit=SOFT_LIMIT_S + 600)
-def nightly() -> dict[str, Any]:
+def nightly(force: bool = False) -> dict[str, Any]:
+    """Gece zinciri. Son 03:00'ten sonra zaten toplama yapıldıysa atlanır (beat + açılış telafisi aynı geceyi iki kez
+    kuyruğa koyabilir; işçi tek eşzamanlı olduğu için kilit ikincisini durdurmaz). Elle yeniden toplamak için
+    `force=True`: `celery -A collector.tasks call collector.nightly --queue data --kwargs '{"force": true}'`.
+    """
     # Elle tetikleme ile beat aynı anda düşerse iki toplama üst üste binmesin.
     lock = Redis.from_url(get_settings().redis_url).lock(LOCK_KEY, timeout=SOFT_LIMIT_S + 600, blocking=False)
     if not lock.acquire():
         log.warning("Gece toplaması zaten çalışıyor, atlandı")
         return {"skipped": True}
     try:
+        if not force:
+            last = _last_nightly_start()
+            if ran_since(last, nightly_slot(datetime.now(UTC))):
+                log.info("Bu geceki toplama zaten yapıldı (son başlangıç: %s), atlandı", last)
+                return {"skipped": True}
         report = run_nightly(get_sessionmaker())
     finally:
         lock.release()

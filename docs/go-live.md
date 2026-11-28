@@ -43,7 +43,7 @@
 ### Yedekleme
 
 - [ ] **19.** ★ Günlük otomatik yedek çalışıyor ve PC dışında şifreli duruyor — _Doğrulama:_ restic snapshots listesi — _Sorumlu:_ Ataberk
-- [ ] **20.** ★ Yedekten başka bir bilgisayara geri yükleme test edildi (RTO < 4 saat) — _Doğrulama:_ DR tatbikat raporu — _Sorumlu:_ Ataberk
+- [ ] ~~**20.** ★ Yedekten başka bir bilgisayara geri yükleme test edildi (RTO < 4 saat) — _Doğrulama:_ DR tatbikat raporu — _Sorumlu:_ Ataberk~~ — **İptal (karar #37):** başka bilgisayarda tatbikat yapılmayacak; prosedür (`docs/runbook/felaket-kurtarma.md`) ve production PC'sindeki geri yükleme testi yeterli sayıldı
 
 ### İzleme
 
@@ -69,7 +69,7 @@
 
 ### Veri
 
-- [ ] **34.** Gece toplama işi son 7 günde hatasız çalıştı — _Doğrulama:_ scrape_runs tablosu — _Sorumlu:_ Ataberk
+- [ ] **34.** Gece toplama işi PC'nin açık olduğu son 7 takvim gününde hatasız çalıştı; PC'nin kapalı kaldığı gecelerin toplaması açılışta telafi edildi (karar #39) — _Doğrulama:_ scrape_runs tablosu — _Sorumlu:_ Ataberk
 - [ ] **35.** Ölü kaynak linki oranı < %2 — _Doğrulama:_ Link kontrol raporu — _Sorumlu:_ Ataberk
 
 ### KVKK / Hukuki
@@ -110,17 +110,94 @@ Canlıya çıkıştan iki ay önce, sorumlusu Ataberk olan ve production'da bug�
 |---|---|---|
 | 2 ★ Port açık değil | Uygun | `docker compose config`: hiçbir serviste `ports:` yok; tek istisna Grafana `127.0.0.1:3000`. Ağdan nmap henüz yapılmadı |
 | 5 Bellek limiti, restart | Uygun | 15 servisin hepsinde `mem_limit` ve `restart: unless-stopped` |
-| 6 Disk ≥ 40 GB boş | **Sınırda** | C: 49 GB boş (%90 dolu; 06.11'de 71 GB). Docker: 4,7 GB kullanılmayan build cache, 3,6 GB kullanılmayan imaj temizlenebilir |
+| 6 Disk ≥ 40 GB boş | **Uygun** | 20.11.2026: C: **67,5 GB** boş (önce 49,6 GB). Kullanılmayan imajlar (eski Ollama 0.40.10 dahil), build önbelleği, trivy önbelleği ve sahipsiz birimler silindi; Docker'ın sanal diski `fstrim` + `Optimize-VHD` ile 43,6 GB'tan 22,8 GB'a küçültüldü (yönetici PowerShell, Docker kapalıyken; production ~10 dk kapalı kaldı). Docker içinde silinen yer C:'ye kendiliğinden dönmez, sanal disk ayrıca küçültülmelidir |
 | 15 ★ Migration'lar | Uygun | `alembic_version` = 0004 (head). Downgrade gerçek veriyle denendi (18.11.2026, `make backup-migration-test`): production yedeğinin kopyasında 0004 → 0003 → 0004 satır sayıları aynı; base'e kadar tek tek geri alma ve head'e dönüş 26 sn. Not: uygulama rolü `alembic_version`'ı okuyamaz (en az yetki), kontrol sahip rolle yapılır |
-| 16 ★ Seed verisi | **Eksik** | Yetkinlik 374 (≥ 300 ✓), pozisyon 12 (≥ 10 ✓), kaynak **530** (≥ 900 ✗), aktif ilan **1.682** (≥ 2.000 ✗, gece toplamasıyla artıyor) |
+| 16 ★ Seed verisi | **Uygun** | 20.11.2026: yetkinlik 374 (≥ 300 ✓), pozisyon 12 (≥ 10 ✓), canlı kaynak **1.565** (≥ 900 ✓; 469 Türkçe, 1.096 İngilizce; T-046'nın 1.039 YouTube videosu `resources-import` ile yüklendi, `.env.prod`'a `YOUTUBE_API_KEY` eklendi), aktif ilan **2.213** (≥ 2.000 ✓). 3'ten az kaynağı kalan 4 yetkinlik: gradle, ibm-cloud, turkish, wandb (günlük YouTube araması 06:00'da sürüyor). Vektörler: 374 yetkinlik ve 2.213 aktif ilanın hepsinde `embedding` dolu (20.11.2026, `infra/pc/deploy.md` "7. Vektörler"; AI işçisi gelene kadar yeni ilanlar için elle tekrarlanır) |
 | 17 En az yetkili DB kullanıcısı | Uygun | `careerai_app`: süper kullanıcı değil, hiçbir tablonun sahibi değil, `TRUNCATE` yok; `careerai_monitor` salt okunur (T-075) |
 | 18 Yavaş sorgu yok | Ölçüm hazır | HNSW indeksleri var. `pg_stat_statements` açıldı (18.11.2026: `compose.yml` + `deploy.sh setup_stats`); bir sonraki deploy'dan sonra birkaç gün kullanımın ardından `make prod-slow-queries` ile ölçülecek (≈p95 = ortalama + 1,645σ; kesin p95 Loki'deki istek süresinden) |
 | 19 ★ Günlük yedek, PC dışında şifreli | Uygun | restic → B2, son yedek 18.11.2026 00:33; haftalık depo kontrolü 15.11.2026 |
-| 20 ★ Başka bilgisayara geri yükleme | Hazırlık | Prosedür: `docs/runbook/felaket-kurtarma.md`. Production PC'sinde geri yükleme testi geçti (12 sn, 11 tablo eşleşti); başka bilgisayarda tatbikat yapılmadı (T-087) |
+| 20 ★ Başka bilgisayara geri yükleme | **İptal (karar #37)** | Prosedür: `docs/runbook/felaket-kurtarma.md`. Production PC'sinde geri yükleme testi geçti (12 sn, 11 tablo eşleşti); başka bilgisayarda tatbikat yapılmadı (T-087) |
 | 21 ★ Grafana, 12 kural, dış prob | Uygun | 12 uyarı kuralı yüklü, dış prob `api.cvnebakalim.com` `up`. Tünel durdurma testi yapılmadı |
 | 24 Loglarda kişisel veri yok | Uygun (örneklem) | Son 1 saatin api ve worker-data loglarında e-posta adresi biçiminde metin yok |
 | 34 Gece toplaması 7 gün hatasız | **Değil** | 12 çalışmanın 12'si başarılı, ama sadece 15.11 ve 18.11 günleri: PC kapalı kaldığı için 7 günlük kesintisiz seri yok |
-| 35 Ölü link < %2 | Ölçülmedi | Production'da link kontrolü hiç çalışmadı (530 kaynağın hepsinde `last_checked_at` boş): pazar 07:00'de PC kapalıydı. 18.11.2026: kaçan kontrol artık işçi açılışında telafi ediliyor; oran `python -m collector resources-report` ile (worker-data içinde) okunur. Bir sonraki deploy'dan sonra ölçülecek |
+| 35 Ölü link < %2 | **Uygun** | 20.11.2026, deploy sonrası işçi açılışında telafi edilen ilk kontrol: 526 link, **4 ölü = %0,8**, geri gelen 0 (`python -m collector resources-report`, worker-data içinde). YouTube videoları yüklendikten sonra 4/1.565 = %0,3 (yeni videolar yüklenirken API'den doğrulanır). Haftalık kontrol pazar 07:00; PC kapalıysa açılışta telafi edilir |
+| 49 ★ Rollback 15 dk içinde | **Uygun** | 21.11.2026, prova ortamında production dökümüyle: yeni sürüm deploy + veri bozulması → önceki imaj + deploy öncesi dökümden yükleme + yetkiler = **146 sn**; satır sayıları ve API uçları doğru (`docs/runbook/operasyon.md` 2. bölüm "Prova"). Provada geri yükleme prosedüründeki yetki hatası bulunup düzeltildi |
+
+### Ön kontrol (18.11.2026, Anıl)
+
+Sorumlusu Anıl olan maddeler, Ataberk'in tablosuyla aynı amaçla. Kutular işaretlenmedi.
+
+| Madde | Bugünkü durum | Kanıt / eksik |
+|---|---|---|
+| 9 ★ IDOR | Uygun (otomatik test) | `test_result_of_another_user_is_404`: başkasının analizine GET ve DELETE 404, listede görünmüyor, kayıt silinmiyor. `test_status_is_visible_only_to_the_owner`: durum yoklaması sadece sahibine açık. Production'da iki hesapla elle deneme yapılmadı |
+| 10 ★ Dosya yükleme sınırları | Uygun (otomatik test) | `backend/app/core/uploads.py`: 5 MB, 5 sayfa. Testlerde: 5 MB'tan büyük dosya ve sınırı aşan istek gövdesi okunmadan reddediliyor; 6 sayfa reddediliyor; PDF diye gönderilen PNG/ZIP (magic byte) ve şifreli PDF 415 alıyor (`backend/tests/test_analyses_upload.py`). Kötü dosya setiyle production'da deneme yapılmadı |
+| 26 ★ Doğrulama ve sıfırlama e-postaları | Ölçülmedi | Production'dan Gmail ve Outlook'a deneme gönderimi yapılmadı |
+| 27 Hata ekranları | Uygun (yerel, elle) | 18.11'de e2e yığınında (`tests/e2e/ortam.sh`) web'den denendi. Her durumda Türkçe ve ne yapılacağını söyleyen mesaj çıktı: 6 MB dosya, 6 sayfa, şifreli PDF, bozuk PDF, PDF diye gönderilen PNG, kuyruk Redis'i kapalıyken 503 ("Sistem şu an yoğun… 60 saniye sonra tekrar dene", yanıt ~9 sn), saatlik sınır 429 ("… 60 dakika sonra tekrar dene"). Bulgular: reddedilen yüklemeler saatlik 5 hakkı harcıyordu (düzeltme #127); 6 sayfalık dosyada mesaj, sınırlardan hangisinin aşıldığını söylemiyor (P2). Analiz zaman aşımı: 19.11'de işçi durdurulup `ANALYSIS_STALE_AFTER_S=40` ile denendi; süre dolunca analiz `failed` (INTERNAL) oldu ve web'de "Analiz tamamlanamadı. Lütfen tekrar deneyin." ile "Tekrar dene" düğmesi çıktı. Production'da bu süre 65 dk; bekleme ekranı 7. dakikadan sonra "beklenenden uzun sürüyor" uyarısı gösteriyor |
+| 28 Electron kurulumu | Kısmen | Windows: kurulum dosyası (0.1.0, 121 MB) 19.11'de geliştirme bilgisayarında sessiz kurulumla (kullanıcı kapsamı) kurulup kaldırıldı: kurulum 12 sn, kısayollar ve kayıt girdisi oluştu, kurulu uygulama `--smoke` ile açıldı, kaldırma 11 sn ve iz bırakmadı. Kaldırınca oturum klasörünün kalması bulgusu #125'te düzeltildi. Eksik: temiz Windows 10/11 makinesi ve sihirbazın elle tıklanarak denenmesi; macOS (Mac erişimi yok, CI ile derleme önerisi #141) |
+| 29 Otomatik güncelleme | **Engelli** | Repo özel olduğu için Releases dosyaları token'sız indirilemiyor; yayın yeri önerisi karar #36. Karar çıkmadan v1.0.0 → v1.0.1 testi yapılamaz |
+| 41 ★ Play kapalı testi | Başlamadı | 21.12.2026'da en az 12 testçiyle başlamalı (T-076); testçiler beta listesinden (`docs/uat/beta-uat-plani.md`) |
+| 47 Destek e-postası, hata bildirme | Kısmen | Web ve masaüstünde "Hata bildir" bağlantısı `iletisim@cvnebakalim.com` adresine e-posta açıyor (#124). Adresin posta alıp almadığı ve gelen kutusunu kimin okuyacağı belirlenmedi |
+
+### Kuru çalıştırma (24.11.2026, Ataberk, T-091)
+
+Listenin tamamı production'a karşı bir kez yürütüldü. Sorumlusu Ataberk olan maddeler ölçüldü; diğerlerinde repodaki ve production'daki kanıt kontrol edildi, sahibinin ön kontrolü varsa ona atıf yapıldı. Kutular **işaretlenmedi**. ★ = kritik.
+
+**Özet:** 50 madde (#20 ve #22 iptal, listede yok). **Uygun 16 · Kısmen 20 · Değil 8 · Ölçülemedi / henüz zamanı değil 6.** Kritik maddelerden 4'ü **Değil**: #25, #30, #36 ve #41. #25 ve #30 analiz işçisinin production'da olmamasından kaynaklanıyor (T-057). #36 yasal sayfaların yayında olmamasından (#71). #41 için Play kapalı testi 21.12'de başlayacak.
+
+| Madde | Sorumlu | Durum | Kanıt / eksik (24.11.2026) |
+|---|---|---|---|
+| 1 ★ PC hazırlığı | Ataberk | Kısmen | Uyku ve hazırda bekletme (prizde) kapalı, Güvenlik Duvarı üç profilde açık, son Windows güncellemesi 21.11, NVIDIA sürücüsü 621.24. BitLocker karar #31 gereği canlıdan hemen önce açılacak (durumu yönetici yetkisiyle okunur, bugün okunmadı) |
+| 2 ★ Port açık değil | Ataberk | Kısmen | `docker compose config`: 15 serviste `ports:` yok, tek istisna Grafana `127.0.0.1:3000`. Aynı ağdaki başka cihazdan nmap hâlâ yapılmadı |
+| 3 ★ HTTPS | Ataberk | Kısmen | HSTS `max-age=15552000; includeSubDomains`, HTTP → HTTPS 301, TLS 1.2 ve 1.3 kabul. TLS 1.0/1.1'in reddedildiği bu bilgisayardan ölçülemedi (yerel openssl eski sürümleri göndermiyor); SSL Labs testi yapılmadı |
+| 4 DNS, app./api. | Ataberk | Kısmen | `api.cvnebakalim.com` çözülüyor. `app.`, `www.` ve kök alan adının kaydı yok: web adresi kararı (Anıl) ve #71 bekleniyor |
+| 5 Bellek limiti, restart | Ataberk | Uygun | 15 serviste `mem_limit`, `restart: unless-stopped` ve json-file log rotasyonu var |
+| 6 Disk ≥ 40 GB | Ataberk | Uygun | C: 56,2 GB boş (20.11: 67,5 GB; aradaki fark deploy imajları ve vektör imajı) |
+| 51 ★ Sunum düzeni, B planı | Ataberk | Kısmen | B planı 21.11'de denendi (yerel demo ~1 dk). Telefondan internet paylaşımıyla tünel denenmedi; sunum haftası Windows güncellemesi ertelemesi o hafta yapılacak |
+| 52 Tanıtım/yasal sayfalar Pages'te | Anıl | Değil | Kök ve `www` için DNS kaydı yok; Pages projesi #71 birleşince açılacak (`infra/landing/README.md`) |
+| 7 ★ Repoda sır yok | Ataberk | Uygun | gitleaks tüm geçmiş temiz (23.11 haftalık tarama ve 24.11 `main` push'u); GitHub secret scanning açık uyarı 0 |
+| 8 ★ Kritik/yüksek açık yok | Ataberk | Uygun | 23.11 haftalık taramada pip-audit (backend, ai, scraper), npm audit (web, mobile) ve Trivy (api, worker-data, backup) yeşil. Dependabot'ta 2 orta seviye uyarı (`minimatch`: `mobile/`, `web/desktop/`), kritik/yüksek yok |
+| 9 ★ IDOR | Anıl | Kısmen | Otomatik testler var (Anıl'ın ön kontrolü); production'da iki hesapla elle deneme yok |
+| 10 ★ Dosya yükleme sınırları | Anıl | Kısmen | Otomatik testler var; production'da kötü dosya setiyle deneme yok |
+| 11 Rate limit | Anıl | Kısmen | Kodda var, reddedilen yükleme hakkı yemiyor (#127); production'da betikle 429 doğrulaması yapılmadı |
+| 12 CORS, güvenlik başlıkları | Anıl | Kısmen | API yanıtında CSP `default-src 'none'`, `X-Frame-Options: DENY`, HSTS var. Production `CORS_ORIGINS` sadece `app://careerai` (masaüstü); web adresi belli olunca eklenecek. securityheaders.com testi yapılmadı |
+| 13 Prompt injection | Burak | Kısmen | Koruma ve çıktı doğrulama birleşti (#158); production'da analiz olmadığı için 5 saldırı CV'siyle deneme yapılamadı |
+| 14 Admin paneli | Ataberk | Uygun | `/admin` → Cloudflare Access girişine 302 (uygulama ayrıca Access JWT'sini doğruluyor), `/docs` 404 |
+| 15 ★ Migration'lar | Ataberk | Uygun | `alembic_version` = 0004 = head |
+| 16 ★ Seed verisi | Ataberk | Uygun | Yetkinlik 374, pozisyon 12, canlı kaynak 1.695, aktif ilan 3.105; boş vektör 0 (24.11 `make prod-embed`) |
+| 17 En az yetkili kullanıcı | Ataberk | Uygun | `careerai_app` ve `careerai_monitor`: süper kullanıcı değil, rol/DB oluşturamaz; `audit_logs`'ta silme/`TRUNCATE` yetkisi yok |
+| 18 Yavaş sorgu yok | Ataberk | Ölçülemedi | `pg_stat_statements` sayaçları bugün WSL yeniden başlatılınca sıfırlandı (24.11 16:05); kayıtta sadece sağlık sorgusu var. Ölçüm için PC'nin birkaç gün yeniden başlatılmadan açık kalması ve gerçek kullanım gerekiyor |
+| 19 ★ Günlük şifreli yedek | Ataberk | Uygun | restic → B2, 7 snapshot, son 24.11 15:10. PC 02:00'de kapalıysa yedek açılışta alınıyor |
+| 21 ★ Grafana, 12 kural, dış prob | Ataberk | Kısmen | 12 kural yüklü, tetiklenen yok; iç ve dış prob `probe_success=1`. Tünel durdurulunca `DisErisimYok` görülmesi testi yapılmadı |
+| 23 Grafana panosu | Ataberk | Kısmen | `careerai.json` panosu yüklü (CPU, RAM, disk, kuyruk). Analiz süresi paneli analiz işçisi gelene kadar boş |
+| 24 Loglarda kişisel veri yok | Ataberk | Uygun (örneklem) | Son 72 saatin api ve worker-data loglarında e-posta biçiminde metin 0 satır |
+| 25 ★ Uçtan uca akış production'da | Burak | **Değil** | Production'da analiz işçisi yok: `ai/Dockerfile` (Burak) ve backend'in `analyze_cv`'ye bağlanması (`AiAnalyzer`, Anıl) bekleniyor; sonra `infra/pc/compose.yml`'e `worker-ai` eklenecek (Ataberk) |
+| 26 ★ Doğrulama/sıfırlama e-postaları | Anıl | Ölçülmedi | Anıl'ın ön kontrolündeki durum değişmedi |
+| 27 Hata ekranları | Anıl | Uygun (yerel) | Anıl'ın ön kontrolü; production'da analiz hatası ekranları T-057 sonrası |
+| 28 Electron kurulumu | Anıl | Kısmen | Anıl'ın ön kontrolü: temiz Windows ve macOS eksik |
+| 29 Otomatik güncelleme | Anıl | Kısmen | Yayın deposu açıldı (`cvnebakalim-surumler`, public); v1.0.0 → v1.0.1 testi yapılmadı |
+| 30 ★ F1 ≥ 0,80, öneri puanı ≥ 4,0 | Burak | **Değil** | `ai/eval/report.md` yok; ölçüm raporu bekleniyor |
+| 31 ★ Uydurma link yok | Burak | Kısmen | Golden testler birleşti (#160); production'da 100 analiz örneklemi analiz olmadığı için yapılamaz |
+| 32 Analiz p95 < 120 sn | Burak | Ölçülemedi | Ollama GPU ile (#168): prompt 82, üretim 4,8 token/sn (CPU'da 14,8 ve 3,1). Gerçek analiz süresi T-057 sonrası yük testiyle (T-072) |
+| 33 Model ve prompt sürümü sabit | Burak | Değil | Model karar #26 ile seçildi (`llama3.1:8b`, `ai/extraction/llm.py` `DEFAULT_MODEL`); sürüm sabitlenmedi: production'daki etiket digest'le bağlı değil (şu an `46e0c10c039e`), v1.0.0 ile birlikte sabitlenecek |
+| 34 Gece toplaması hatasız (karar #39) | Ataberk | Uygun | 18–24.11 arası PC'nin açık olduğu 6 günde 42 çalışma, **0 hata**; 19.11'de PC kapalıydı. 22.11 ve 23.11'de kaçan geceler açılışta telafi edildi, ikinci kez toplanmadı (#162) |
+| 35 Ölü link < %2 | Ataberk | Uygun | 4 / 1.699 = **%0,24**, son kontrol 24.11 15:09 |
+| 36 ★ Yasal metinler yayında | Burak | **Değil** | Metinler #71'de (taslak); yayın yeri (Pages, kök alan adı) henüz açılmadı. Mobil ve web bu adreslere bağlantı veriyor |
+| 37 ★ CV saklanmıyor | Burak | Kısmen | Mobil önbellek kopyası silme #161'de eklendi; disk/yedek taraması production'da analiz başlayınca yapılmalı |
+| 38 ★ Hesap silme, dışa aktarma | Anıl | Kısmen | E2E testinde hesap silme var (#166 ile React Router 7 sonrası düzeltildi); production'da test hesabıyla deneme yok |
+| 39 Veri ihlali prosedürü | Burak | Uygun | `docs/runbook/operasyon.md` §6: ilk adımlar ≤ 1 saat, KVK Kurulu'na ≤ 72 saat |
+| 40 İlan kaynaklarının koşulları | Ataberk | Uygun | Production'daki 6 kaynak (Hacker News, Himalayas, Remote OK, Remotive, Jobicy, Arbeitnow) `scraper/kaynak-uygunluk.md`'de ✅. Arbeitnow ve Jobicy kaynak atfı istiyor: web'de `SourceAttribution.tsx` var; mobilde de olmalı (Burak) |
+| 41 ★ Play kapalı testi | Anıl | **Değil** (zamanı gelmedi) | 21.12.2026'da başlayacak (T-076) |
+| 42 Play formları | Anıl | Henüz zamanı değil | Gizlilik URL'si #36'ya bağlı |
+| 43 Mağaza görselleri | Anıl | Henüz zamanı değil | — |
+| 44 Runbook güncel, herkes okudu | Ataberk | Kısmen | `docs/runbook/operasyon.md` ve `felaket-kurtarma.md` güncel; "herkes okudu" onayı alınmadı |
+| 45 README, API, mimari, model kartı | Anıl | Kısmen | README, `docs/mimari.md` ve ADR'ler (T-079) var; model kartı yok (Burak) |
+| 46 Kullanıcı rehberi / SSS | Anıl | Değil | Tanıtım sayfası yayında değil |
+| 47 Destek e-postası | Anıl | Kısmen | Anıl'ın ön kontrolü: adresin posta alıp almadığı belirsiz |
+| 48 Hypercare nöbet çizelgesi | Ataberk | Değil | Hazırlanmadı (Ocak başında, T-097 öncesi) |
+| 49 ★ Rollback 15 dk | Ataberk | Uygun | 21.11 provası 146 sn; v1.0.0 adayıyla Ocak'ta tekrarlanacak |
+| 50 Go/No-Go toplantısı | Anıl | Henüz zamanı değil | 15.01.2027 |
+
+**Ataberk'in kendi açıkları (canlıdan önce):** #2 nmap (başka cihazdan), #3 SSL Labs, #21 tünel durdurma testi, #18 birkaç günlük kesintisiz ölçüm, #51 telefon paylaşımı denemesi, #44 ekip onayı, #48 nöbet çizelgesi, #1 BitLocker (canlıdan hemen önce), #25 için `worker-ai` servisi (T-057'den sonra).
 
 ## Hizmet seviyesi hedefleri (SLO)
 
