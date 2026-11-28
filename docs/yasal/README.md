@@ -55,6 +55,6 @@ npm run build:yasal   # çıktı: web/yasal-site/dist/
 | `/hesap-silme/` | hesap-silme.md |
 | `/acik-riza/` | acik-riza.md (sadece madde 3'te açık rıza seçilirse yayımlanır) |
 
-Dosyalar arasındaki `.md` bağlantıları bu adreslere çevrilir. Metin "TASLAK" satırı içerdiği sürece her sayfanın üstünde taslak uyarısı görünür ve arama motorlarına kapalıdır (`noindex`). Cloudflare Pages ayarı: derleme komutu `cd web && npm ci && npm run build:yasal`, çıktı klasörü `web/yasal-site/dist`, ortam değişkenleri `NODE_VERSION=22` ve `APP_URL` (uygulamanın adresi; varsayılan `https://app.cvnebakalim.com`, alt alan adı Ataberk'le teyit edilecek).
+Dosyalar arasındaki `.md` bağlantıları bu adreslere çevrilir. Metin "TASLAK" satırı içerdiği sürece her sayfanın üstünde taslak uyarısı görünür ve arama motorlarına kapalıdır (`noindex`). Cloudflare Pages ayarı: derleme komutu `cd web && npm ci && npm run build:yasal`, çıktı klasörü `web/yasal-site/dist`, ortam değişkenleri `NODE_VERSION=22` ve `APP_URL` (uygulamanın adresi; varsayılan `https://app.cvnebakalim.com`, karar #42).
 
 **Yayından önce:** karar #30 kabul edilmiş olmalı (#67); Profil ekranında verileri indirme ve hesap silme düğmeleri bulunmalı, çünkü metinler "Profil → Verilerim / Hesabını sil" yolunu anlatıyor ve Google Play incelemesi bu yolu arar; metinlerde `[…]` kalmamalı.
