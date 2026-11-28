@@ -2,13 +2,15 @@ import { useRef, useState } from "react";
 
 import { api, problemMessage } from "../api/client";
 import { setTokens } from "../auth/session";
+import { takeSignOutNotice } from "../auth/useSession";
 import { emailError, hasErrors, type Errors } from "../auth/validation";
 import type { ScreenProps } from "../navigation";
 import { Alert, Body, Button, Field, Screen, Title, type TextInputRef } from "../ui";
 
 /** T-061: giriş (web/src/pages/auth/LoginPage.tsx ile aynı kurallar). Başarılı girişte uygulama ekranları açılır. */
 export function LoginScreen({ navigation, route }: ScreenProps<"Login">) {
-  const notice = route.params?.notice;
+  const [signOut] = useState(takeSignOutNotice);
+  const notice = route.params?.notice ?? signOut;
   const passwordRef = useRef<TextInputRef>(null);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

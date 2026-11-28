@@ -19,3 +19,10 @@ export const CONSENTS: { type: ConsentType; label: string; url: string }[] = [
   },
   { type: "kullanim_kosullari", label: "Kullanım koşullarını kabul ediyorum.", url: `${LEGAL_URL}/kullanim-kosullari/` },
 ];
+
+/** Profildeki onay listesinde metnin adı (web ile aynı). */
+export const CONSENT_NAMES: Record<ConsentType, string> = {
+  kvkk_aydinlatma: "KVKK aydınlatma metni",
+  acik_riza: "CV analizi için açık rıza",
+  kullanim_kosullari: "Kullanım koşulları",
+};
