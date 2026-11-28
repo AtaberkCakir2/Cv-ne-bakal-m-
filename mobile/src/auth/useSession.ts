@@ -21,3 +21,17 @@ export async function logout(): Promise<void> {
   if (refresh_token) await api.POST("/api/v1/auth/logout", { body: { refresh_token } }).catch(() => undefined);
   await clearSession();
 }
+
+// Oturum kapanınca giriş ekranında bir kez gösterilecek bilgi (ör. hesap silindi). Ekranlar oturuma göre değiştiği için
+// gezinme parametresiyle taşınamaz.
+let signOutNotice: string | undefined;
+
+export function setSignOutNotice(notice: string): void {
+  signOutNotice = notice;
+}
+
+export function takeSignOutNotice(): string | undefined {
+  const notice = signOutNotice;
+  signOutNotice = undefined;
+  return notice;
+}

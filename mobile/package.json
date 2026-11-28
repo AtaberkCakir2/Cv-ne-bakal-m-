@@ -32,5 +32,12 @@
     "gen:api": "openapi-typescript ../web/src/api/openapi.json -o src/api/schema.d.ts",
     "lint": "expo lint"
   },
-  "private": true
+  "private": true,
+  "expo": {
+    "install": {
+      "exclude": [
+        "typescript"
+      ]
+    }
+  }
 }
