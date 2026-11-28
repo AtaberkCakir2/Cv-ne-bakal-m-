@@ -26,10 +26,13 @@ tarayıcı olmadığı için CORS ayarı gerekmez.
 | `src/auth/useSession.ts` | Oturum durumu (`useSignedIn`) ve çıkış |
 | `src/auth/consents.ts`, `validation.ts` | KVKK onayları (sürümü web ile aynı) ve form kuralları (web ile aynı) |
 | `src/analysis/cvFile.ts` | Yüklemeden önce dosya kontrolü (PDF, 5 MB) |
-| `src/screens/` | Giriş, kayıt + KVKK onayları, CV yükleme, analiz bekleme (T-061); sonuç panosu T-062'de |
+| `src/analysis/ResultView.tsx`, `format.ts` | Sonuç panosu, geri bildirim, ilan/YouTube kaynak atfı; metinler web ile aynı |
+| `src/screens/` | Giriş, kayıt + KVKK onayları, CV yükleme, analiz bekleme (T-061); sonuç, kaynak detayı, geçmiş, profil ve hesap silme (T-062) |
 | `src/ui/` | Ortak bileşenler (alan, düğme, onay kutusu, uyarı) ve açık/koyu tema renkleri |
 | `src/config.ts` | API adresi, yasal metinlerin sitesi |
-| `App.tsx` | Gezinme (React Navigation): oturum yoksa giriş/kayıt, varsa yükleme/analiz |
+| `App.tsx` | Gezinme (React Navigation): oturum yoksa giriş/kayıt, varsa yükleme, analiz, kaynak, geçmiş, profil |
+
+Verileri JSON olarak indirme (KVKK) şimdilik sadece web uygulamasında; profil ekranı oraya yönlendirir.
 
 **CV dosyası:** `expo-document-picker` ile seçilir, uygulamanın geçici önbelleğindeki kopyasıyla gönderilir; uygulama
 dosyayı ya da içeriğini saklamaz, okumaz (CLAUDE.md kural 5). Asıl kontrol (sayfa sayısı, şifreli/bozuk PDF) backend'de.
@@ -48,4 +51,8 @@ Expo hesabı ve `eas init` (proje kimliği `app.json`'a yazılır) ilk derlemede
 npm run lint         # eslint (eslint-config-expo)
 npm run typecheck    # tsc --noEmit
 npm audit            # güvenlik raporu G-8: package-lock.json artık var
+npx expo-doctor      # Expo SDK ile paket sürümleri uyumlu mu
 ```
+
+TypeScript bilerek 5.9'da (`openapi-typescript` 7 TypeScript 5 istiyor); `package.json` → `expo.install.exclude` bu yüzden
+`typescript` içerir.

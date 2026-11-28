@@ -211,12 +211,13 @@ Kaynak: `docs/plan/CareerAI_Proje_ve_GoLive_Plani.xlsx` (başlangıç planı, re
 
 ### T-062 · Mobil ekranlar — sonuç panosu, kaynaklar, profil
 
-- **Durum:** Yapılacak
+- **Durum:** Devam Ediyor
 - **Tarih:** 14.12.2026 – 20.12.2026 · **Öncelik:** P0 · **Efor:** 12 saat · **Alan:** Mobil
 - **Bağımlılık:** T-061, T-048 (Anıl)
 - **Destek:** Anıl
 - **Çıktı:** Android AAB
 - **Kabul kriteri:** Sonuç panosu, kaynak detayı, geçmiş analizler, profil ve hesap silme; Android AAB üretimi (EAS Build).
+- **Devam notu (27.11.2026):** Yapılan: `mobile/src/analysis/ResultView.tsx` (uyum puanı, bulunanlar, talep oranlı eksikler, kaynaklar, geri bildirim, ilan/YouTube atfı), `screens/ResourceScreen.tsx` (kaynak detayı, tarayıcıda açma), `HistoryScreen.tsx` (20'şer sayfalama, aşağı çekip yenileme, onaylı silme), `ProfileScreen.tsx` (ad ve hedef pozisyon, onaylar + açık rızayı geri alma/verme, şifreyle hesap silme → giriş ekranına bilgiyle dönüş). Metinler ve kurallar web ile aynı; typecheck, lint, `expo-doctor` (20/20) ve `expo export --platform android` temiz. 27.11: main (T-061 #161, T-048) birleştirildi; API tipleri güncel (`gen:api` fark yok), typecheck/lint/export yine temiz. İlan kaynağı atfı (go-live #40) `ResultView`'da. · Sıradaki adım: (1) T-061 ile birlikte Android cihazda uçtan uca deneme; (2) AAB: Expo hesabıyla `npx eas-cli login`, `eas init` (proje kimliği `app.json`'a yazılır, commit'lenir), `npx eas-cli build -p android --profile production` → AAB indirilir; sonra durum Tamamlandı. · Açık sorular / engeller: Expo hesabı ekipçe açılmalı (kimin hesabı, Play Console ile aynı mı); verileri indirme mobilde yok, web'e yönlendiriliyor (gerekirse expo-sharing ile eklenir). · Branch: burak/mobil-ekranlar-2
 
 ### T-074 · Prompt injection koruması ve çıktı doğrulama
 
