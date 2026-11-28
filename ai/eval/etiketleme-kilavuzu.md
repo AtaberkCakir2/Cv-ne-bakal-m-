@@ -45,7 +45,7 @@ Sadece CV'de **açıkça** yazıyorsa ("3 yıl Java", "2021–2024 arası Python
 - `notes` alanına CV'den **alıntı, isim, şirket adı veya kişiyi tanıtabilecek bilgi yazmayın**. Bu dosyalar repoya girer.
 - Taranmış CV'yi okuyamıyorsanız tahmin etmeyin; `notes`'a "okunamadı" yazın.
 
-## Claude etiketini kontrol eden için (karar #40)
+## Claude etiketini kontrol eden için (karar #43)
 
 `labels/<cv_id>/claude.json` Claude'un bu kılavuza göre verdiği etikettir; kontrol edilmemiş CV'nin gold'u da odur. Kontrolde CV'yi baştan okuyun, gold dosyasını bu kılavuza göre düzeltin ve `adjudicator`'a kendi adınızı yazın (ayrıntı: `README.md` → Kontrol). Claude'un tutarlı uyguladığı yorumlar (kontrolde aynı ölçüyle bakın):
 

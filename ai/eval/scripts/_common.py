@@ -16,7 +16,7 @@ DEFAULT_DATASET = EVAL_DIR / "dataset"
 DEFAULT_SKILLS = EVAL_DIR.parents[1] / "scraper" / "taxonomy" / "skills.csv"
 
 TEAM = ("ataberk", "burak", "anil")
-# Karar #40: etiketleri Claude da verir (`claude.json`); ekip bir kısmını kontrol edip gold'a kendi adıyla yazar.
+# Karar #43: etiketleri Claude da verir (`claude.json`); ekip bir kısmını kontrol edip gold'a kendi adıyla yazar.
 AI_ANNOTATOR = "claude"
 ANNOTATORS = (*TEAM, AI_ANNOTATOR)
 LEVELS = ("beginner", "intermediate", "advanced", "unknown")
