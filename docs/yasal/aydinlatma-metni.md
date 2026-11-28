@@ -29,7 +29,7 @@ Cv'ne Bakalım!, [üniversite adı] [bölüm adı] bitirme projesi olarak geliş
 
 **CV dosyanızı ve CV'nizin metnini kalıcı olarak saklamıyoruz.** Dosya sadece analiz sırasında işlenir ve analiz biter bitmez silinir; veritabanına, kayıtlara (log) veya yedeklere yazılmaz. Analizden sonra sadece çıkarılan yetkinlikler, dosyanın sayfa sayısı ve dosyanın parmak izi (SHA-256 özeti) hesabınızla ilişkili olarak tutulur; dosya içeriği bu özetten geri elde edilemez.
 
-CV'nizde yer alan ad, telefon, e-posta, adres, T.C. kimlik numarası ve doğum tarihi gibi kişisel veriler, yapay zeka modeline verilmeden önce otomatik olarak maskelenir; otomatik maskelemenin hata payı olabilir. [Liste T-030 ile kesinleşecek.] Analiz, hizmeti barındırdığımız bilgisayarda (Türkiye) çalışan yerel bir yapay zeka modeliyle yapılır; CV'niz OpenAI, Google gibi üçüncü taraf yapay zeka hizmetlerine gönderilmez.
+CV'nizde yer alan ad-soyad, telefon, e-posta, T.C. kimlik numarası, IBAN, adres, doğum tarihi ve kişisel bağlantılar (LinkedIn, GitHub vb.), yapay zeka modeline verilmeden önce otomatik olarak maskelenir; otomatik maskelemenin hata payı olabilir. Analiz, hizmeti barındırdığımız bilgisayarda (Türkiye) çalışan yerel bir yapay zeka modeliyle yapılır; CV'niz OpenAI, Google gibi üçüncü taraf yapay zeka hizmetlerine gönderilmez.
 
 **Lütfen CV'nize sağlık, din, etnik köken, siyasi görüş, dernek/sendika üyeliği gibi özel nitelikli kişisel verileri koymayın; fotoğraf da gerekmez.** Bunlar analiz için gerekmez. Bulunurlarsa da saklanmaz, yetkinlik çıkarımı dışında hiçbir amaçla kullanılmaz.
 
@@ -57,9 +57,8 @@ Uygulama ve veritabanı, proje ekibinden bir üyeye ait, Türkiye'de bulunan bir
 | Alıcı | Ne için | Hangi veri | Konum |
 |---|---|---|---|
 | Cloudflare, Inc. | Alan adı, DNS, HTTPS bağlantısı ve uygulamaya erişim tüneli (Cloudflare Tunnel); tanıtım ve yasal sayfaların yayını (Cloudflare Pages) | Uygulamayla aranızdaki trafiğin tamamı: IP adresiniz, istekleriniz ve yüklediğiniz CV dosyası dahil. Bağlantı şifrelidir; ancak HTTPS Cloudflare'in sunucularında açılıp tünelle yeniden şifrelendiği için içerik aktarım sırasında Cloudflare'in sistemlerinden geçer. Cloudflare bu içeriği hizmet dışında kullanmaz ve saklamaz [Cloudflare'in veri işleme şartlarıyla teyit edilecek]. | ABD; trafik Cloudflare'in size en yakın veri merkezinden geçer |
-| Yedek depolama sağlayıcı [Backblaze B2 öngörülüyor; bölge seçilecek] | Şifreli günlük yedek | Veritabanı yedeği (bizim tarafımızda şifrelenir; sağlayıcı içeriği okuyamaz) | [ABD veya AB bölgesi] |
+| Backblaze, Inc. (Backblaze B2) | Şifreli günlük yedek | Veritabanı yedeği (bizim tarafımızda şifrelenir; sağlayıcı içeriği okuyamaz) | AB, EU Central bölgesi (Amsterdam, Hollanda); şirket ABD merkezli |
 | E-posta gönderim servisi [henüz seçilmedi] | Doğrulama ve şifre sıfırlama e-postaları | E-posta adresi | [ülke] |
-| Hata izleme servisi [henüz seçilmedi; kullanılmazsa satır çıkar] | Uygulama hatalarının tespiti | Hata kaydı (mümkün olduğunca kişisel veri içermeyecek şekilde yapılandırılır) | [ülke] |
 
 Yetkili kamu kurum ve kuruluşlarına, kanunen zorunlu olduğu hallerde ve istenen ölçüde aktarılabilir.
 
